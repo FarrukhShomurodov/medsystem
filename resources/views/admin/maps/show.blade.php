@@ -1,0 +1,105 @@
+@extends('admin.layouts.app')
+
+@section('title')
+    <title>Медицинская система | Карта пациента</title>
+@endsection
+
+@section('content')
+    <h6 class="py-3 breadcrumb-wrapper mb-4">
+        <span class="text-muted fw-light"><a class="text-muted"
+                                             href="{{ route('maps.index') }}">Карты</a> /</span> {{ $mapDetails['patient']['full_name'] }}
+    </h6>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Основная информация</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>ID карты:</strong> {{ $mapDetails['id'] }}</p>
+            <p><strong>Пациент:</strong> <a
+                    href="{{ route('patients.show', $mapDetails['patient']['id']) }}"> {{ $mapDetails['patient']['full_name'] }}
+                    (ID: {{ $mapDetails['patient']['id'] }}) </a></p>
+            <p><strong>Дата создания:</strong> {{ $mapDetails['created_at'] }}</p>
+            <p><strong>Лечащий врач:</strong> {{ $mapDetails['doctor']['name'] }}
+                ({{ $mapDetails['doctor']['speciality'] }})</p>
+            <p><strong>Учреждение:</strong> {{ $mapDetails['institution']['name'] }}</p>
+            <p><strong>Адрес:</strong> {{ $mapDetails['institution']['address'] }}</p>
+            <p><strong>Контакты:</strong> {{ $mapDetails['institution']['contacts'] }}</p>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>Госпитализация</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Дата госпитализации:</strong> {{ $mapDetails['admission']['date'] ?? 'Не указано' }}</p>
+            <p><strong>Дата выписки:</strong> {{ $mapDetails['admission']['discharge_date'] ?? 'Не указано' }}</p>
+            <p><strong>Диагноз при
+                    госпитализации:</strong> {{ $mapDetails['admission']['admission_diagnosis']['code'] }}
+                - {{ $mapDetails['admission']['admission_diagnosis']['description'] }}</p>
+            <p><strong>Диагноз при выписке:</strong> {{ $mapDetails['admission']['discharge_diagnosis']['code'] }}
+                - {{ $mapDetails['admission']['discharge_diagnosis']['description'] }}</p>
+            <p><strong>Цель обследования:</strong> {{ $mapDetails['admission']['purpose'] }}</p>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>Анамнез</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Жалобы:</strong> {{ $mapDetails['anamnesis']['complaints'] }}</p>
+            <p><strong>История заболевания:</strong> {{ $mapDetails['anamnesis']['disease_history'] }}</p>
+            <p><strong>Общий анамнез:</strong> {{ $mapDetails['anamnesis']['general_anamnesises'] }}</p>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>Обследования</h5>
+        </div>
+        <div class="card-body">
+            @if($mapDetails['examinations']['analyzes']->isNotEmpty())
+                <ul>
+                    @foreach($mapDetails['examinations']['analyzes'] as $analyze)
+                        <li>
+                            <strong>Дата:</strong> {{ $analyze['date'] }} |
+                            <strong>Результаты:</strong>
+                            @if(!empty($analyze['results']))
+                                <table class="table table-bordered mt-2">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Тип анализа</th>
+                                        <th>Единица измерения</th>
+                                        <th>Значение</th>
+                                        <th>Референсный диапазон</th>
+                                        <th>Комментарий</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($analyze['results'] as $result)
+                                        <tr>
+                                            <td>{{ $result['id'] }}</td>
+                                            <td>{{ $result['type']->name }}</td>
+                                            <td>{{ $result['unit'] }}</td>
+                                            <td>{{ $result['value'] }}</td>
+                                            <td>{{ $result['reference_range'] }}</td>
+                                            <td>{{ $result['comment'] }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            @else
+                                Нет данных
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <p>Данные обследований отсутствуют.</p>
+            @endif
+        </div>
+    </div>
+@endsection
