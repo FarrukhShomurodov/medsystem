@@ -7,7 +7,7 @@
 @section('content')
     <h6 class="py-3 breadcrumb-wrapper mb-4">
         <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('service.staffs.index') }}">Персоналы</a> /</span>Редактировать
+                                             href="{{ route('service.staffs.index') }}">Персонал</a> /</span>Редактировать
     </h6>
 
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">

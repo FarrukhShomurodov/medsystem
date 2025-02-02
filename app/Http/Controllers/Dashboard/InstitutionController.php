@@ -37,7 +37,7 @@ class InstitutionController
         $validated = $request->validated();
         $this->service->store((array)$validated);
 
-        return redirect()->route('institutions.index')->with('success', 'Заведение успешно добавлена!');
+        return redirect()->route('institutions.index')->with('success', 'Отделение успешно добавлена!');
     }
 
     public function edit(Institution $institution): View
@@ -50,13 +50,13 @@ class InstitutionController
         $validated = $request->validated();
         $this->service->update($institution, (array)$validated);
 
-        return redirect()->route('institutions.index')->with('success', 'Заведение успешно обновлена!');
+        return redirect()->route('institutions.index')->with('success', 'Отделение успешно обновлена!');
     }
 
     public function destroy(Institution $institution): RedirectResponse
     {
         $this->service->destroy($institution);
 
-        return redirect()->route('institutions.index')->with('success', 'Заведение успешно удалена!');
+        return redirect()->route('institutions.index')->with('success', 'Отделение успешно удалена!');
     }
 }

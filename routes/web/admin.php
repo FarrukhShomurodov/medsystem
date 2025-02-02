@@ -18,9 +18,11 @@ use App\Http\Controllers\Dashboard\MedicalDeviceController;
 use App\Http\Controllers\Dashboard\MedicalEquipmentController;
 use App\Http\Controllers\Dashboard\MedicationController;
 use App\Http\Controllers\Dashboard\PatientController;
+use App\Http\Controllers\Dashboard\PatientServiceController;
 use App\Http\Controllers\Dashboard\ProcedureController;
 use App\Http\Controllers\Dashboard\RegionController;
 use App\Http\Controllers\Dashboard\ServiceCategoryController;
+use App\Http\Controllers\Dashboard\ServiceController;
 use App\Http\Controllers\Dashboard\ServiceEquipmentController;
 use App\Http\Controllers\Dashboard\ServiceMethodController;
 use App\Http\Controllers\Dashboard\ServiceStaffController;
@@ -57,7 +59,9 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::resource('medications', MedicationController::class);
 
     // services
-    Route::prefix('service')->group(function () {
+    Route::prefix('services')->group(function () {
+        Route::resource('', ServiceController::class)->names('services')->parameter('', 'service')->except('show');
+        Route::resource('assign-patient', PatientServiceController::class)->names('patient.services')->parameter('assign-patient', 'service');
         Route::resource('categories', ServiceCategoryController::class);
         Route::resource('procedures', ProcedureController::class);
         Route::resource('methods', ServiceMethodController::class)->names('service.methods');

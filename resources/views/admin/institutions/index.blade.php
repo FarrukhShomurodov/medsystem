@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Медицинская система | Заведение</title>
+    <title>Медицинская система | Отделение</title>
 @endsection
 
 @section('content')
     <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light">Заведение</span>
+        <span class="text-muted fw-light">Отделение</span>
     </h6>
 
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
@@ -33,7 +33,7 @@
 
     <div class="card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Заведение</h5>
+            <h5 class="card-header">Отделение</h5>
             <a href="{{ route('institutions.create') }}" class="btn btn-primary "
                style="margin-right: 22px;">Создать</a>
         </div>

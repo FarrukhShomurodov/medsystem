@@ -47,7 +47,7 @@ class AnalyzeService
                     $validated['equipments'][$key] = MedicalEquipment::query()->create(['name' => $equipment])->id;
                 }
             }
-            $analyze->methods()->sync($validated['equipments']);
+            $analyze->equipments()->sync($validated['equipments']);
 
             return $analyze;
         });
@@ -91,7 +91,7 @@ class AnalyzeService
                     $validated['equipments'][$key] = MedicalEquipment::query()->create(['name' => $equipment])->id;
                 }
             }
-            $analyze->methods()->sync($validated['equipments']);
+            $analyze->equipments()->sync($validated['equipments']);
 
             return $analyze;
         });

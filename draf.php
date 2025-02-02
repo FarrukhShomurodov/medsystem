@@ -23,10 +23,10 @@ return [
         'description',
         'code',
         'price *',
-        'discount *',
+        'discount',
         'currency',
         'duration',
-        'service_category_id',
+        'service_category_id *',
     ],
 
     'patient_service' => [
@@ -38,8 +38,7 @@ return [
         'service_date *',
         'service_time *',
         'place' => [
-            'institution/cabinet',
-            'address',
+            'institution/cabinet'
         ],
         'results',
         'status',
