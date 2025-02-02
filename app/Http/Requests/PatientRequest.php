@@ -13,7 +13,7 @@ class PatientRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             // Основные данные
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -64,20 +64,30 @@ class PatientRequest extends FormRequest
             'rh_factor' => 'nullable|string|max:255',
             'special_instructions' => 'nullable|string|max:255',
 
-            // История обращений
-            'institution_id' => 'required',
-
             'passport_scan' => 'nullable|string|max:255',
             'insurance_policy_scan' => 'nullable|string|max:255',
             'other_scans' => 'nullable|string|max:255',
             'notes' => 'nullable|string|max:255',
 
-            // pivot
             'allegories' => 'required|array',
             'medical_devices' => 'required|array',
             'chronic_diseases' => 'required|array',
-            'doctors' => 'required|array',
-            'doctors.*' => 'required|int|exists:doctors,id',
         ];
+
+        if ($this->method() == 'PUT') {
+            $rules = array_merge($rules, [
+                'institution_id' => 'nullable',
+                'doctor_id' => 'nullable|int|exists:doctors,id',
+                'admission_date' => 'nullable|date|date_format:Y-m-d',
+            ]);
+        } else if ($this->method() == 'POST') {
+            $rules = array_merge($rules, [
+                'institution_id' => 'required',
+                'doctor_id' => 'required|int|exists:doctors,id',
+                'admission_date' => 'required|date|date_format:Y-m-d',
+            ]);
+        }
+
+        return $rules;
     }
 }

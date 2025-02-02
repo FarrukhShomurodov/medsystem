@@ -916,52 +916,39 @@
                 {{-- История обращений --}}
                 <div id="visit-history" class="content">
                     <div class="content-header mb-3">
-                        <h6 class="mb-0">История обращений</h6>
+                        <h6 class="mb-3">История обращений</h6>
+                        <p>Кол-во посещений: 0 </p>
                     </div>
                     <div class="row g-3">
                         <div>
-                            <label class="form-label" for="basic-icon-default-visits">Количество посещений</label>
-                            <div class="input-group input-group-merge">
-                                <input type="number" id="basic-icon-default-visits"
-                                       class="form-control @error('visits') is-invalid @enderror"
-                                       placeholder="Количество посещений" aria-label="Количество посещений"
-                                       name="visits"
-                                       value="{{ old('visits', 0) }}" aria-describedby="basic-icon-default-visits2"
-                                       disabled/>
-                            </div>
-                            @error('visits')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label class="form-label" for="basic-icon-default-visit-dates">Даты предыдущих
-                                посещений</label>
+                            <label class="form-label" for="basic-icon-default-visit-dates">Дата посещения <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <input type="date" id="basic-icon-default-visit-dates"
-                                       class="form-control @error('visit_dates') is-invalid @enderror"
-                                       placeholder="Дата посещения" aria-label="Дата посещения" name="visit_dates"
-                                       value="{{ old('visit_dates', 0) }}"
-                                       aria-describedby="basic-icon-default-visit-dates2" disabled/>
+                                       class="form-control flatpickr-date @error('admission_date') is-invalid @enderror"
+                                       placeholder="YYYY-MM-DD" name="admission_date"
+                                       value="{{ old('admission_date') }}"
+                                       required
+                                       aria-describedby="basic-icon-default-visit-dates2"/>
                             </div>
-                            @error('visit_dates')
+                            @error('admission_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-doctors">Лечащие врачи<span
+                            <label class="form-label" for="basic-icon-default-doctors">Лечащий врач<span
                                     class="text-danger">*</span></label>
-                            <select id="basic-icon-default-doctors" name="doctors[]"
-                                    class="form-control select2 @error('doctors') is-invalid @enderror"
+                            <select id="basic-icon-default-doctors" name="doctor_id"
+                                    class="form-control select2 @error('doctor_id') is-invalid @enderror"
                                     multiple required>
-                                <option value="" disabled>Выберите врачей</option>
+                                <option value="" disabled>Выберите врача</option>
                                 @foreach($doctors as $doctor)
                                     <option
-                                        value="{{ $doctor->id }}" @selected(in_array($doctor->id, old('doctors', [])))>{{ $doctor->first_name }}</option>
+                                        value="{{ $doctor->id }}" @selected($doctor->id == old('doctor_id'))>{{ $doctor->first_name }}</option>
                                 @endforeach
                             </select>
-                            @error('doctors')
+                            @error('doctor_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

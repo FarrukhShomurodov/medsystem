@@ -90,7 +90,7 @@
                             <select id="basic-icon-default-departments" name="laboratory_id"
                                     class="form-control select2 @error('laboratory_id') is-invalid @enderror"
                                     required>
-                                <option value="" disabled>Выберите лабораторию</option>
+                                <option value="" selected disabled>Выберите лабораторию</option>
                                 @foreach($laboratories as $laboratory)
                                     <option
                                         value="{{ $laboratory->id }}" @selected($laboratory->id == old('laboratory_id'))>{{ $laboratory->name }}</option>
@@ -121,14 +121,14 @@
 
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-medical_staff">Ответственный медицинский
-                                персонал <span
-                                    class="text-danger">*</span></label>
+                                персонал </label>
                             <select id="basic-icon-default-medical_staff" name="medical_staff"
-                                    class="form-control select2 @error('medical_staff') is-invalid @enderror" required>
-                                <option value="" disabled>Выберите персонал</option>
+                                    class="form-control select2 @error('medical_staff') is-invalid @enderror">
+                                <option value="" selected disabled>Выберите персонал</option>
                                 <option value="doctor" @selected('doctor' == old('medical_staff'))>Врач</option>
                                 <option value="assist" @selected('assist' == old('medical_staff'))>Лаборант</option>
                             </select>
+
                             @error('medical_staff')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -191,8 +191,7 @@
 
                         <div class="col-12">
                             <label class="form-label" for="basic-icon-default-target">Цель
-                                анализа <span
-                                    class="text-danger">*</span></label>
+                                анализа </label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-history2"
                                       class="input-group-text @error('target') text-danger icon-border @enderror">
@@ -203,7 +202,6 @@
                                           placeholder="Цель анализа"
                                           aria-label="Цель анализа"
                                           name="target"
-                                          required
                                           aria-describedby="basic-icon-default-history2">{{ old('target') }}</textarea>
                             </div>
                             @error('target')
@@ -269,8 +267,7 @@
                         <div class="col-sm-4">
                             <label class="form-label" for="flatpickr-expected_result_date">Срок готовности (ожидаемая
                                 дата
-                                результата) <span
-                                    class="text-danger">*</span></label>
+                                результата)</label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-birth-date2"
                                       class="input-group-text @error('expected_result_date') text-danger icon-border @enderror">
@@ -278,7 +275,6 @@
                                 </span>
                                 <input type="text" name="expected_result_date" value="{{ old('expected_result_date') }}"
                                        id="flatpickr-expected_result_date"
-                                       required
                                        class="form-control flatpickr-date @error('expected_result_date') is-invalid @enderror"
                                        placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2"/>
                             </div>
@@ -305,8 +301,7 @@
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label" for="basic-icon-default-notes">Примичание <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-notes">Примичание </label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-history2"
                                       class="input-group-text @error('notes') text-danger icon-border @enderror">
@@ -317,9 +312,9 @@
                                           placeholder="Примичание"
                                           aria-label="Примичание"
                                           name="notes"
-                                          required
                                           aria-describedby="basic-icon-default-history2">{{ old('notes') }}</textarea>
                             </div>
+
                             @error('notes')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

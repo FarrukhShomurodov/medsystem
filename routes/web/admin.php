@@ -18,6 +18,7 @@ use App\Http\Controllers\Dashboard\MedicalDeviceController;
 use App\Http\Controllers\Dashboard\MedicalEquipmentController;
 use App\Http\Controllers\Dashboard\PatientController;
 use App\Http\Controllers\Dashboard\RegionController;
+use App\Http\Controllers\Dashboard\ServiceCategoryController;
 use App\Http\Controllers\Dashboard\SpecialtyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -41,11 +42,14 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // analyze result
     Route::get('analyze-result/{analyze}', [AnalyzeResultController::class, 'create'])->name('analyze.result');
-
     Route::post('analyze-result/{analyze}', [AnalyzeResultController::class, 'store'])->name('analyze.result.store');
     Route::get('analyze-result-show/{analyze}', [AnalyzeResultController::class, 'show'])->name('analyze.result.show');
     Route::get('analyze-result-edit/{analyze}', [AnalyzeResultController::class, 'edit'])->name('analyze.result.edit');
     Route::put('analyze-result/{analyze}', [AnalyzeResultController::class, 'update'])->name('analyze.result.update');
+
+    Route::prefix('service')->group(function () {
+        Route::resource('categories', ServiceCategoryController::class);
+    });
 
     Route::resource('laboratories', LaboratoryController::class);
     Route::resource('methods', AnalyzeMethodController::class);

@@ -71,6 +71,27 @@
             </ul>
         </li>
 
+        {{-- Услуги --}}
+        <li class="menu-item {{ Request::is('dashboard/analyzes*') ||  Request::is('dashboard/service/categories*')  ? 'open' : '' }}"
+            style="">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon bx bx-plus-medical"></i>
+                <div data-i18n="Услуги">Услуги</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ Request::is('dashboard/analyzes*') ? 'active' : '' }}">
+                    <a href="{{route('analyzes.index')}}" class="menu-link">
+                        <div data-i18n="Список">Список</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('dashboard/service/categories*') ? 'active' : '' }}">
+                    <a href="{{route('categories.index')}}" class="menu-link">
+                        <div data-i18n="Категории">Категории</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
         <li class="menu-item {{ Request::is('dashboard/doctors*') || Request::is('dashboard/specialties*')  ? 'open' : '' }}"
             style="">
             <a href="javascript:void(0);" class="menu-link menu-toggle">

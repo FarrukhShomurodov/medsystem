@@ -74,6 +74,9 @@ class PatientController
                 'doctors' => $patient->doctors,
                 'examination_maps' => $patient->examinationMaps,
             ],
+            'history' => [
+                'maps' => $patient->examinationMaps,
+            ],
         ];
 
         return view('admin.patients.show', compact('patientDetails'));
@@ -109,14 +112,23 @@ class PatientController
         $allegories = Allegory::query()->get();
         $devices = MedicalDevice::query()->get();
         $diseases = ChronicDisease::query()->get();
+        $maps = $patient->examinationMaps;
 
-
-        return view('admin.patients.edit', compact('patient', 'regions', 'cities', 'doctors', 'institutions', 'allegories', 'devices', 'diseases'));
+        return view('admin.patients.edit', compact('patient', 'regions', 'cities', 'doctors', 'institutions', 'allegories', 'devices', 'diseases', 'maps'));
     }
 
     public function update(PatientRequest $request, Patient $patient): RedirectResponse
     {
         $validated = $request->validated();
+
+        if (
+            (!empty($validated['institution_id']) && empty($validated['doctor_id']) && empty($validated['admission_date'])) ||
+            (!empty($validated['doctor_id']) && empty($validated['institution_id']) && empty($validated['admission_date'])) ||
+            (!empty($validated['admission_date']) && empty($validated['institution_id']) && empty($validated['doctor_id']))
+        ) {
+            return redirect()->back()->withErrors('Заполните все поля для добавления обращения или не заполняйте их вообще!');
+        }
+
         $this->service->update($patient, (array)$validated);
 
         return redirect()->route('patients.index')->with('success', 'Пациент устройство  успешно обновлена!');

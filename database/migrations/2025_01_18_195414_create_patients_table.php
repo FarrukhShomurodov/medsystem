@@ -59,11 +59,6 @@ return new class extends Migration {
             $table->string('rh_factor')->nullable();
             $table->string('special_instructions')->nullable();
 
-            // История обращений
-            $table->string('visit_count')->default(0);
-            $table->date('last_visit_date')->nullable();
-            $table->foreignId('institution_id')->constrained()->cascadeOnDelete();
-
             $table->string('passport_scan')->nullable();
             $table->string('insurance_policy_scan')->nullable();
             $table->string('other_scans')->nullable();

@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Requests\ExaminationMapRequest;
+use App\Models\AnalyzeMethod;
+use App\Models\AnalyzeType;
 use App\Models\Doctor;
 use App\Models\ExaminationMap;
 use App\Models\Institution;
+use App\Models\Laboratory;
+use App\Models\MedicalEquipment;
 use App\Models\Patient;
 use App\Services\ExaminationService;
 use Illuminate\Contracts\View\View;
@@ -91,8 +95,12 @@ class ExaminationMapController
         $doctors = Doctor::query()->get();
         $institutions = Institution::query()->get();
         $patients = Patient::query()->get();
+        $laboratories = Laboratory::query()->get();
+        $types = AnalyzeType::query()->get();
+        $equipments = MedicalEquipment::query()->get();
+        $methods = AnalyzeMethod::query()->get();
 
-        return view('admin.maps.create', compact('doctors', 'institutions', 'patients'));
+        return view('admin.maps.create', compact('doctors', 'institutions', 'patients', 'laboratories', 'types', 'equipments', 'methods'));
     }
 
     public function store(ExaminationMapRequest $request): RedirectResponse
@@ -108,13 +116,29 @@ class ExaminationMapController
         $doctors = Doctor::query()->get();
         $institutions = Institution::query()->get();
         $patients = Patient::query()->get();
+        $laboratories = Laboratory::query()->get();
+        $types = AnalyzeType::query()->get();
+        $equipments = MedicalEquipment::query()->get();
+        $methods = AnalyzeMethod::query()->get();
 
-        return view('admin.maps.edit', compact('map', 'doctors', 'institutions', 'patients'));
+        return view('admin.maps.edit', compact('map', 'doctors', 'institutions', 'patients', 'laboratories', 'types', 'equipments', 'methods'));
     }
 
     public function update(ExaminationMapRequest $request, ExaminationMap $map): RedirectResponse
     {
         $validated = $request->validated();
+
+        $requiredFields = ['laboratory_id', 'types', 'methods', 'analysis_time', 'equipments'];
+
+        $anyFieldFilled = collect($requiredFields)->contains(fn($field) => !empty($validated[$field]));
+
+        $allFieldsFilled = collect($requiredFields)->every(fn($field) => !empty($validated[$field]));
+
+        if ($anyFieldFilled && !$allFieldsFilled) {
+            return redirect()->back()->withErrors('Заполните все обязательные поля, кроме медицинского персонала, или не заполняйте их вообще!');
+        }
+
+
         $this->service->update($map, (array)$validated);
 
         return redirect()->route('maps.index')->with('success', 'Карта обследования  успешно обновлена!');

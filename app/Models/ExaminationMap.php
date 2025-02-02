@@ -22,7 +22,6 @@ class ExaminationMap extends Model
         'complaints',
         'general_anamnesises',
         'disease_history',
-        'created_by'
     ];
 
     public function doctor(): BelongsTo

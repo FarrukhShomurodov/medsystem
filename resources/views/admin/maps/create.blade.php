@@ -45,6 +45,13 @@
                     <span class="bs-stepper-label">Анамнез</span>
                 </button>
             </div>
+            <div class="line"></div>
+            <div class="step" data-target="#analyzes">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">3</span>
+                    <span class="bs-stepper-label">Анализ</span>
+                </button>
+            </div>
         </div>
 
         <div class="bs-stepper-content">
@@ -65,7 +72,8 @@
                                 <option value="" disabled>Выберите пациента</option>
                                 @foreach($patients as $patient)
                                     <option
-                                        value="{{ $patient->id }}" @selected($patient->id == old('patient_id'))>{{ $patient->first_name }} - {{  ($patient->id) }}</option>
+                                        value="{{ $patient->id }}" @selected($patient->id == old('patient_id'))>{{ $patient->first_name }}
+                                        - {{  ($patient->id) }}</option>
                                 @endforeach
                             </select>
                             @error('patient_id')
@@ -90,9 +98,9 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-departments">Отделение, к которому
+                            <label class="form-label" for="basic-icon-default-department">Отделение, к которому
                                 прикреплен <span class="text-danger">*</span></label>
-                            <select id="basic-icon-default-departments" name="institution_id"
+                            <select id="basic-icon-default-department" name="institution_id"
                                     class="form-control select2 @error('institution_id') is-invalid @enderror"
                                     required>
                                 <option value="" disabled>Выберите отделение</option>
@@ -147,7 +155,7 @@
 
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-admission_diagnosis_code">Код по
-                                МКБ-10 <span class="text-danger">*</span></label>
+                                МКБ-10 </label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-first-name2"
                                       class="input-group-text @error('admission_diagnosis_code') text-danger icon-border @enderror">
@@ -157,7 +165,6 @@
                                        class="form-control @error('admission_diagnosis_code') is-invalid @enderror"
                                        placeholder="код по МКБ-10 " aria-label="код по МКБ-10 "
                                        name="admission_diagnosis_code"
-                                       required
                                        value="{{ old('admission_diagnosis_code') }}"
                                        aria-describedby="basic-icon-default-first-name2"/>
                             </div>
@@ -169,7 +176,7 @@
 
                         <div>
                             <label class="form-label" for="basic-icon-default-admission_diagnosis_description">Диагноз
-                                при госпитализации <span class="text-danger">*</span></label>
+                                при госпитализации </label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-history2"
                                       class="input-group-text @error('admission_diagnosis_description') text-danger icon-border @enderror">
@@ -179,7 +186,6 @@
                                           class="form-control @error('admission_diagnosis_description') is-invalid @enderror"
                                           placeholder="Диагноз при госпитализации"
                                           aria-label="Диагноз при госпитализации"
-                                          required
                                           name="admission_diagnosis_description"
                                           aria-describedby="basic-icon-default-history2">{{ old('admission_diagnosis_description') }}</textarea>
                             </div>
@@ -297,8 +303,7 @@
 
                     <div class="row g-3">
                         <div>
-                            <label class="form-label" for="basic-icon-default-complaints">Жалобы пациента <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-complaints">Жалобы пациента</label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-history2"
                                       class="input-group-text @error('complaints') text-danger icon-border @enderror">
@@ -309,8 +314,7 @@
                                           placeholder="Жалобы пациента"
                                           aria-label="Жалобы пациента"
                                           name="complaints"
-                                          aria-describedby="basic-icon-default-history2"
-                                          required>{{ old('complaints') }}</textarea>
+                                          aria-describedby="basic-icon-default-history2">{{ old('complaints') }}</textarea>
                             </div>
                             @error('complaints')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -319,7 +323,7 @@
 
                         <div>
                             <label class="form-label" for="basic-icon-default-disease_history">История настоящего
-                                заболевания <span class="text-danger">*</span></label>
+                                заболевания </label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-history2"
                                       class="input-group-text @error('disease_history') text-danger icon-border @enderror">
@@ -330,7 +334,6 @@
                                           placeholder="История настоящего заболевания"
                                           aria-label="История настоящего заболевания"
                                           name="disease_history"
-                                          required
                                           aria-describedby="basic-icon-default-history2">{{ old('disease_history') }}</textarea>
                             </div>
                             @error('disease_history')
@@ -339,8 +342,8 @@
                         </div>
 
                         <div>
-                            <label class="form-label" for="basic-icon-default-general_anamnesises">Общий анамнез <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-general_anamnesises">Общий
+                                анамнез </label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-history2"
                                       class="input-group-text @error('general_anamnesises') text-danger icon-border @enderror">
@@ -351,10 +354,130 @@
                                           placeholder="Общий анамнез"
                                           aria-label="Общий анамнез"
                                           name="general_anamnesises"
-                                          required
                                           aria-describedby="basic-icon-default-history2">{{ old('general_anamnesises') }}</textarea>
                             </div>
                             @error('general_anamnesises')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev"><i
+                                    class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                <span class="d-sm-inline-block d-none">Назад</span>
+                            </button>
+                            <button type="submit" class="btn btn-success">Сохранить</button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Анализ --}}
+                <div id="analyzes" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Анализ</h6>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-departments">Лаборатории <span
+                                    class="text-danger">*</span></label>
+                            <select id="basic-icon-default-departments" name="laboratory_id"
+                                    class="form-control select2 @error('laboratory_id') is-invalid @enderror"
+                                    required>
+                                <option value="" disabled>Выберите лабораторию</option>
+                                @foreach($laboratories as $laboratory)
+                                    <option
+                                        value="{{ $laboratory->id }}" @selected($laboratory->id == old('laboratory_id'))>{{ $laboratory->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('laboratory_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-types">Типы анализов <span
+                                    class="text-danger">*</span></label>
+                            <select id="basic-icon-default-types" name="types[]"
+                                    class="form-control select2 @error('types') is-invalid @enderror"
+                                    multiple
+                                    required>
+                                <option value="" disabled>Выберите тип</option>
+                                @foreach($types as $type)
+                                    <option
+                                        value="{{ $type->id }}" @selected(in_array($type->id, old('types',[])))>{{ $type->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('types')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-medical_staff">Ответственный медицинский
+                                персонал </label>
+                            <select id="basic-icon-default-medical_staff" name="medical_staff"
+                                    class="form-control select2 @error('medical_staff') is-invalid @enderror">
+                                <option value="" disabled>Выберите персонал</option>
+                                <option value="doctor" @selected('doctor' == old('medical_staff'))>Врач</option>
+                                <option value="assist" @selected('assist' == old('medical_staff'))>Лаборант</option>
+                            </select>
+
+                            @error('medical_staff')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="flatpickr-datetime">Дата и время сдачи анализа <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <span id="basic-icon-birth-date2"
+                                      class="input-group-text @error('analysis_time') text-danger icon-border @enderror">
+                                    <i class="bx bx-calendar"></i>
+                                </span>
+                                <input type="text" name="analysis_time" value="{{ old('analysis_time') }}"
+                                       id="flatpickr-datetime"
+                                       required
+                                       class="form-control flatpickr-date-time @error('analysis_time') is-invalid @enderror"
+                                       placeholder="YYYY-MM-DD HH:MM" aria-describedby="basic-icon-birth-date2"/>
+                            </div>
+                            @error('analysis_time')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-methods">Метод исследования <span
+                                    class="text-danger">*</span></label>
+                            <select id="basic-icon-default-methods" name="methods[]"
+                                    class="form-control select2 @error('methods') is-invalid @enderror" multiple
+                                    required>
+                                <option value="" disabled>Выберите метод</option>
+                                @foreach($methods as $method)
+                                    <option
+                                        value="{{ $method->id }}" @selected(in_array($method->id, old('methods',[])))>{{ $method->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('methods')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-equipments">Оборудование <span
+                                    class="text-danger">*</span></label>
+                            <select id="basic-icon-default-equipments" name="equipments[]"
+                                    class="form-control select2 @error('equipments') is-invalid @enderror"
+                                    multiple
+                                    required>
+                                <option value="" disabled>Выберите оборудования</option>
+                                @foreach($equipments as $equipment)
+                                    <option
+                                        value="{{ $equipment->id }}" @selected(in_array($equipment->id, old('equipments',[])))>{{ $equipment->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('equipments')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

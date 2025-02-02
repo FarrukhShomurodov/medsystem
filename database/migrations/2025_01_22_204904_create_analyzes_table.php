@@ -15,12 +15,12 @@ return new class extends Migration {
             $table->foreignId('laboratory_id')->constrained()->cascadeOnDelete();
             $table->foreignId('doctor_id')->constrained()->cascadeOnDelete();
             $table->dateTime('analysis_time');
-            $table->date('expected_result_date');
+            $table->date('expected_result_date')->nullable();
 //            $table->foreignId('laboratory_assistant_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->enum('medical_staff', ['assist', 'doctor']);
-            $table->longText('target');
+            $table->enum('medical_staff', ['assist', 'doctor'])->nullable();
+            $table->longText('target')->nullable();
             $table->enum('status', ['assigned', 'completed', 'received']);
-            $table->longText('notes');
+            $table->longText('notes')->nullable();
             $table->timestamps();
         });
     }

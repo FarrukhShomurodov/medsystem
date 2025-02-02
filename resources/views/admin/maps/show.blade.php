@@ -55,48 +55,45 @@
         </div>
     </div>
 
-    <div class="card mt-4">
-        <div class="card-header">
-            <h5>Обследования</h5>
-        </div>
-        <div class="card-body">
+
+    <div class="card mt-3">
+        <div class="card-datatable table-responsive col-12">
+            <div class="card-header">
+                <h5>Обследования</h5>
+            </div>
             @if($mapDetails['examinations']['analyzes']->isNotEmpty())
-                <ul>
-                    @foreach($mapDetails['examinations']['analyzes'] as $analyze)
-                        <li>
-                            <strong>Дата:</strong> {{ $analyze['date'] }} |
-                            <strong>Результаты:</strong>
-                            @if(!empty($analyze['results']))
-                                <table class="table table-bordered mt-2">
-                                    <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Тип анализа</th>
-                                        <th>Единица измерения</th>
-                                        <th>Значение</th>
-                                        <th>Референсный диапазон</th>
-                                        <th>Комментарий</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($analyze['results'] as $result)
-                                        <tr>
-                                            <td>{{ $result['id'] }}</td>
-                                            <td>{{ $result['type']->name }}</td>
-                                            <td>{{ $result['unit'] }}</td>
-                                            <td>{{ $result['value'] }}</td>
-                                            <td>{{ $result['reference_range'] }}</td>
-                                            <td>{{ $result['comment'] }}</td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            @else
-                                Нет данных
-                            @endif
-                        </li>
-                    @endforeach
-                </ul>
+                @foreach($mapDetails['examinations']['analyzes'] as $analyze)
+                    @if(!empty($analyze['results']))
+                        <table class="datatables-users table border-top">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Тип анализа</th>
+                                <th>Единица измерения</th>
+                                <th>Значение</th>
+                                <th>Референсный диапазон</th>
+                                <th>Комментарий</th>
+                                <th>Дата</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($analyze['results'] as $result)
+                                <tr>
+                                    <td>{{ $result['id'] }}</td>
+                                    <td>{{ $result['type']->name }}</td>
+                                    <td>{{ $result['unit'] }}</td>
+                                    <td>{{ $result['value'] }}</td>
+                                    <td>{{ $result['reference_range'] }}</td>
+                                    <td>{{ $result['comment'] }}</td>
+                                    <td>{{ $analyze['date'] }}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    @else
+                        Нет данных
+                    @endif
+                @endforeach
             @else
                 <p>Данные обследований отсутствуют.</p>
             @endif

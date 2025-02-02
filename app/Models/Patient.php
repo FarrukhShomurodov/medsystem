@@ -65,11 +65,6 @@ class Patient extends Model
         'rh_factor',
         'special_instructions',
 
-        // История обращений
-        'visit_count',
-        'last_visit_date',
-        'institution_id',
-
         'passport_scan',
         'insurance_policy_scan',
         'other_scans',
@@ -91,10 +86,6 @@ class Patient extends Model
         return $this->belongsToMany(ChronicDisease::class, 'patient_chronic_diseases', 'patient_id', 'chronic_disease_id');
     }
 
-    public function doctors(): BelongsToMany
-    {
-        return $this->belongsToMany(Doctor::class, 'patient_doctors', 'patient_id', 'doctor_id');
-    }
 
     public function region(): BelongsTo
     {
@@ -114,11 +105,6 @@ class Patient extends Model
     public function registeredCity(): BelongsTo
     {
         return $this->belongsTo(City::class, 'registered_city_id');
-    }
-
-    public function institution(): BelongsTo
-    {
-        return $this->belongsTo(Institution::class);
     }
 
     // Examination Map

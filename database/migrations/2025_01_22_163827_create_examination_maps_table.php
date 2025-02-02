@@ -14,15 +14,14 @@ return new class extends Migration {
             $table->foreignId('institution_id')->constrained()->cascadeOnDelete();
             $table->date('admission_date');
             $table->date('discharge_date')->nullable();
-            $table->string('admission_diagnosis_code');
-            $table->longText('admission_diagnosis_description');
+            $table->string('admission_diagnosis_code')->nullable();
+            $table->longText('admission_diagnosis_description')->nullable();
             $table->string('discharge_diagnosis_code')->nullable();
             $table->longText('discharge_diagnosis_description')->nullable();
             $table->longText('examination_purpose')->nullable();
-            $table->longText('complaints');
-            $table->longText('general_anamnesises');
-            $table->longText('disease_history');
-            $table->integer('created_by')->nullable();
+            $table->longText('complaints')->nullable();
+            $table->longText('general_anamnesises')->nullable();
+            $table->longText('disease_history')->nullable();
             $table->timestamps();
         });
     }

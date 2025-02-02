@@ -44,11 +44,6 @@ class PatientService
                 ])->id;
             }
 
-            if (!is_numeric($validated['institution_id'])) {
-                $validated['institution_id'] = Institution::query()->create(['name' => $validated['institution_id']])->id;
-            }
-
-
             $patient = Patient::query()->create($validated);
 
             //  Allegories
@@ -78,7 +73,19 @@ class PatientService
 
             $patient->diseases()->sync($validated['chronic_diseases']);
 
-            $patient->doctors()->sync($validated['doctors']);
+
+            // Examination Map
+            if (!is_numeric($validated['institution_id'])) {
+                $validated['institution_id'] = Institution::query()->create(['name' => $validated['institution_id']])->id;
+            }
+
+            $mapData = [
+                'institution_id' => $validated['institution_id'],
+                'doctor_id' => $validated['doctor_id'],
+                'admission_date' => $validated['admission_date'],
+            ];
+
+            $patient->examinationMaps()->create($mapData);
 
             return $patient;
         });
@@ -118,11 +125,6 @@ class PatientService
                 ])->id;
             }
 
-            if (!is_numeric($validated['institution_id'])) {
-                $validated['institution_id'] = Institution::query()->create(['name' => $validated['institution_id']])->id;
-            }
-
-
             $patient->update($validated);
 
             //  Allegories
@@ -152,7 +154,21 @@ class PatientService
 
             $patient->diseases()->sync($validated['chronic_diseases']);
 
-            $patient->doctors()->sync($validated['doctors']);
+            // Examination Map
+            if (isset($validated['institution_id']) && isset($validated['doctor_id']) && isset($validated['admission_date'])) {
+                if (!is_numeric($validated['institution_id'])) {
+                    $validated['institution_id'] = Institution::query()->create(['name' => $validated['institution_id']])->id;
+                }
+
+                $mapData = [
+                    'institution_id' => $validated['institution_id'],
+                    'doctor_id' => $validated['doctor_id'],
+                    'admission_date' => $validated['admission_date'],
+                ];
+
+                $patient->examinationMaps()->create($mapData);
+            }
+
             return $patient;
         });
 

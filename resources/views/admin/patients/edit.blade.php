@@ -169,7 +169,8 @@
                             <select class="form-control select2" id="basic-icon-gender" name="gender" required>
                                 <option value="" disabled>Выберите пол</option>
                                 <option value="male" @selected('male' == old('gender', $patient->male))>Мужской</option>
-                                <option value="female" @selected('female' == old('gender', $patient->female))>Женский</option>
+                                <option value="female" @selected('female' == old('gender', $patient->female))>Женский
+                                </option>
                             </select>
                         </div>
 
@@ -317,7 +318,8 @@
                                 </span>
                                 <input type="text" id="basic-icon-default-phone-alt"
                                        class="form-control phone @error('additional_phone') is-invalid @enderror"
-                                       name="additional_phone" value="{{ old('additional_phone',$patient->additional_phone) }}"
+                                       name="additional_phone"
+                                       value="{{ old('additional_phone',$patient->additional_phone) }}"
                                        placeholder="+ 998 (XX) XXX XX XX" aria-label="+ 998 (XX) XXX XX XX"
                                        aria-describedby="basic-icon-default-phone-alt2"/>
                             </div>
@@ -354,7 +356,7 @@
                             <select class="form-control select2 @error('region_id') is-invalid @enderror"
                                     id="basic-icon-default-region" name="region_id"
                                     required>
-                                <option value="" disabled selected >Выберите область</option>
+                                <option value="" disabled selected>Выберите область</option>
                                 @foreach($regions as $region)
                                     <option
                                         value="{{ $region->id }}" @selected($region->id == old('region_id',$patient->region_id))>{{ $region->name }}</option>
@@ -841,7 +843,7 @@
                             <select id="basic-icon-default-blood-type" name="blood_type"
                                     class="form-control select2 @error('blood_type') is-invalid @enderror"
                                     required>
-                                <option value="" disabled >Выберите группу крови</option>
+                                <option value="" disabled>Выберите группу крови</option>
                                 @foreach (App\Models\Patient::BLOOD_TYPES as $bloodType)
                                     <option
                                         value="{{ $bloodType }}" @selected($bloodType == old('blood_type',$patient->blood_type))>{{ $bloodType }}</option>
@@ -876,7 +878,7 @@
                             <select id="basic-icon-default-medical-devices" name="medical_devices[]"
                                     class="form-control select2 @error('medical_devices') is-invalid @enderror"
                                     required>
-                                <option value="" disabled >Выберите устройство</option>
+                                <option value="" disabled>Выберите устройство</option>
                                 @foreach($devices as $device)
                                     <option
                                         value="{{ $device->id }}" @selected(in_array($device->id, old('medical_devices', $patient->devices->pluck('id')->toArray())))>{{ $device->name }}</option>
@@ -922,67 +924,76 @@
                 {{-- История обращений --}}
                 <div id="visit-history" class="content">
                     <div class="content-header mb-3">
-                        <h6 class="mb-0">История обращений</h6>
+                        <h6 class="mb-3">История обращений</h6>
+                        <p>Кол-во посещений: {{ $maps->count() }} </p>
                     </div>
                     <div class="row g-3">
-                        <div>
-                            <label class="form-label" for="basic-icon-default-visits">Количество посещений</label>
-                            <div class="input-group input-group-merge">
-                                <input type="number" id="basic-icon-default-visits"
-                                       class="form-control @error('visits') is-invalid @enderror"
-                                       placeholder="Количество посещений" aria-label="Количество посещений"
-                                       name="visits"
-                                       value="{{ old('visits', $patient->visits) }}"
-                                       aria-describedby="basic-icon-default-visits2"
-                                       disabled/>
-                            </div>
-                            @error('visits')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="card-datatable table-responsive col-12">
+                            <table class="datatables-users table border-top">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Даты предыдущих посещений</th>
+                                    <th>Отделение</th>
+                                    <th>Врач</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($maps as $map)
+                                    <tr>
+                                        <td>{{ $map->id }}</td>
+                                        <td>{{ $map->admission_date }}</td>
+                                        <td>{{ $map->institution->name }}</td>
+                                        <td>{{ $map->doctor->first_name }}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="content-header">
+                            <h6 class="mb-0">Новая обращение</h6>
                         </div>
 
                         <div>
-                            <label class="form-label" for="basic-icon-default-visit-dates">Даты предыдущих
-                                посещений</label>
+                            <label class="form-label" for="basic-icon-default-visit-dates">Дата посещения </label>
                             <div class="input-group input-group-merge">
                                 <input type="date" id="basic-icon-default-visit-dates"
-                                       class="form-control @error('visit_dates') is-invalid @enderror"
-                                       placeholder="Дата посещения" aria-label="Дата посещения" name="visit_dates"
-                                       value="{{ old('visit_dates', $patient->visit_dates) }}"
-                                       aria-describedby="basic-icon-default-visit-dates2" disabled/>
+                                       class="form-control flatpickr-date @error('admission_date') is-invalid @enderror"
+                                       placeholder="YYYY-MM-DD" name="admission_date"
+                                       value="{{ old('admission_date') }}"
+                                       aria-describedby="basic-icon-default-visit-dates2"/>
                             </div>
-                            @error('visit_dates')
+                            @error('admission_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-doctors">Лечащие врачи<span
-                                    class="text-danger">*</span></label>
-                            <select id="basic-icon-default-doctors" name="doctors[]"
-                                    class="form-control select2 @error('doctors') is-invalid @enderror"
-                                    multiple required>
-                                <option value="" disabled>Выберите врачей</option>
+                            <label class="form-label" for="basic-icon-default-doctors">Лечащий врач</label>
+                            <select id="basic-icon-default-doctors" name="doctor_id"
+                                    class="form-control select2 @error('doctor_id') is-invalid @enderror"
+                                    multiple>
+                                <option value="" disabled>Выберите врача</option>
                                 @foreach($doctors as $doctor)
                                     <option
-                                        value="{{ $doctor->id }}" @selected(in_array($doctor->id, old('doctors', $patient->doctors->pluck('id')->toArray())))>{{ $doctor->first_name }}</option>
+                                        value="{{ $doctor->id }}" @selected($doctor->id == old('doctor_id'))>{{ $doctor->first_name }}</option>
                                 @endforeach
                             </select>
-                            @error('doctors')
+                            @error('doctor_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-departments">Отделение, к которому
-                                прикреплен<span class="text-danger">*</span></label>
+                                прикреплен</label>
                             <select id="basic-icon-default-departments" name="institution_id"
-                                    class="form-control select2 @error('institution_id') is-invalid @enderror" multiple
-                                    required>
+                                    class="form-control select2 @error('institution_id') is-invalid @enderror" multiple>
                                 <option value="" disabled>Выберите отделение</option>
                                 @foreach($institutions as $institution)
                                     <option
-                                        value="{{ $institution->id }}" @selected($institution->id == old('institution_id', $patient->institution_id))>{{ $institution->name }}</option>
+                                        value="{{ $institution->id }}" @selected($institution->id == old('institution_id'))>{{ $institution->name }}</option>
                                 @endforeach
                             </select>
                             @error('institution_id')

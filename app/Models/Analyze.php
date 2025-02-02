@@ -16,7 +16,6 @@ class Analyze extends Model
         'doctor_id',
         'analysis_time',
         'expected_result_date',
-//        'laboratory_assistant_id',
         'medical_staff',
         'target',
         'status',
@@ -67,9 +66,4 @@ class Analyze extends Model
     {
         return $this->hasMany(AnalyzeResult::class);
     }
-
-//    public function assistants(): BelongsTo
-//    {
-//        return $this->belongsTo(::class);
-//    }
 }
