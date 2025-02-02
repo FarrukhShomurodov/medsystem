@@ -72,7 +72,10 @@
         </li>
 
         {{-- Услуги --}}
-        <li class="menu-item {{ Request::is('dashboard/analyzes*') ||  Request::is('dashboard/service/categories*') || Request::is('dashboard/medications*') || Request::is('dashboard/service/procedures*') || Request::is('dashboard/service/methods*') || Request::is('dashboard/service/equipments*') ? 'open' : '' }}"
+        <li class="menu-item {{ Request::is('dashboard/analyzes*') ||  Request::is('dashboard/service/categories*')
+            || Request::is('dashboard/medications*') || Request::is('dashboard/service/procedures*')
+            || Request::is('dashboard/service/methods*') || Request::is('dashboard/service/equipments*')
+            || Request::is('dashboard/service/staff-specialties*') ? 'open' : '' }}"
             style="">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon bx bx-plus-medical"></i>
@@ -109,6 +112,26 @@
                         <div data-i18n="Оборудование">Оборудование</div>
                     </a>
                 </li>
+
+                <li class="menu-item {{ Request::is('dashboard/doctors*') || Request::is('dashboard/service/staff-specialties*')  ? 'open' : '' }}"
+                    style="">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <div data-i18n="Персонал">Персонал</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item {{ Request::is('dashboard/doctors*') ? 'active' : '' }}">
+                            <a href="{{route('doctors.index')}}" class="menu-link">
+                                <div data-i18n="Список">Список</div>
+                            </a>
+                        </li>
+                        <li class="menu-item {{ Request::is('dashboard/service/staff-specialties*') ? 'active' : '' }}">
+                            <a href="{{route('service.staff.specialties.index')}}" class="menu-link">
+                                <div data-i18n="Специальности">Специальности</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
             </ul>
         </li>
 
