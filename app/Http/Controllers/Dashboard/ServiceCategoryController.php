@@ -38,7 +38,7 @@ class ServiceCategoryController
         $validated = $request->validated();
         $this->service->store((array)$validated);
 
-        return redirect()->route('categories.index')->with('success', 'Категория сервиса успешно добавлена!');
+        return redirect()->route('categories.index')->with('success', 'Категория успешно добавлена!');
     }
 
     public function edit(ServiceCategory $category): View
@@ -51,13 +51,13 @@ class ServiceCategoryController
         $validated = $request->validated();
         $this->service->update($category, (array)$validated);
 
-        return redirect()->route('categories.index')->with('success', 'Категория сервиса успешно обновлена!');
+        return redirect()->route('categories.index')->with('success', 'Категория успешно обновлена!');
     }
 
     public function destroy(ServiceCategory $category): RedirectResponse
     {
         $this->service->destroy($category);
 
-        return redirect()->route('categories.index')->with('success', 'Категория сервиса успешно удалена!');
+        return redirect()->route('categories.index')->with('success', 'Категория успешно удалена!');
     }
 }

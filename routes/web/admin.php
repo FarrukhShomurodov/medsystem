@@ -21,6 +21,7 @@ use App\Http\Controllers\Dashboard\PatientController;
 use App\Http\Controllers\Dashboard\ProcedureController;
 use App\Http\Controllers\Dashboard\RegionController;
 use App\Http\Controllers\Dashboard\ServiceCategoryController;
+use App\Http\Controllers\Dashboard\ServiceMethodController;
 use App\Http\Controllers\Dashboard\SpecialtyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::prefix('service')->group(function () {
         Route::resource('categories', ServiceCategoryController::class);
         Route::resource('procedures', ProcedureController::class);
+        Route::resource('methods', ServiceMethodController::class)->names('service.methods');
     });
 
     Route::resource('laboratories', LaboratoryController::class);
