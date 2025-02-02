@@ -18,6 +18,7 @@ use App\Http\Controllers\Dashboard\MedicalDeviceController;
 use App\Http\Controllers\Dashboard\MedicalEquipmentController;
 use App\Http\Controllers\Dashboard\MedicationController;
 use App\Http\Controllers\Dashboard\PatientController;
+use App\Http\Controllers\Dashboard\ProcedureController;
 use App\Http\Controllers\Dashboard\RegionController;
 use App\Http\Controllers\Dashboard\ServiceCategoryController;
 use App\Http\Controllers\Dashboard\SpecialtyController;
@@ -54,6 +55,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     // services
     Route::prefix('service')->group(function () {
         Route::resource('categories', ServiceCategoryController::class);
+        Route::resource('procedures', ProcedureController::class);
     });
 
     Route::resource('laboratories', LaboratoryController::class);

@@ -6,35 +6,16 @@ return [
         'name',
     ],
 
-    'patient_service_to_medications_assignment *' => [
-        'medication_id',
-        'patient_service_id',
-        'dosage',
-        'admission_period',
-        'notes',
-    ],
-
-    //
     'procedures *' => [
         'name',
     ],
 
-    'patient_service_to_procedures_assignment *' => [
-        'procedure_id',
-        'patient_service_id',
-        'service_date *',
-    ],
-
     'service_methods',
-    'patient_service_to_methods_assignments',
 
-    'patient_service_equipments',
-    'patient_service_to_equipments_assignment',
+    'service_equipments',
 
-    'service_staff',
     'service_staff_specialties',
-    'patient_service_to_staffs_assignment',
-
+    'service_staff',
 
     'service' => [
         'id',
@@ -72,4 +53,22 @@ return [
             'percentage_of_coverage',
         ]
     ],
+
+    'patient_service_to_medications_assignment *' => [
+        'medication_id',
+        'patient_service_id',
+        'dosage',
+        'admission_period',
+        'notes',
+    ],
+
+    'patient_service_to_procedures_assignment *' => [
+        'procedure_id',
+        'patient_service_id',
+        'service_date *',
+    ],
+
+    'patient_service_to_staffs_assignment',
+    'patient_service_to_equipments_assignment',
+    'patient_service_to_methods_assignments',
 ];
