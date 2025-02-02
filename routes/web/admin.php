@@ -23,6 +23,7 @@ use App\Http\Controllers\Dashboard\RegionController;
 use App\Http\Controllers\Dashboard\ServiceCategoryController;
 use App\Http\Controllers\Dashboard\ServiceEquipmentController;
 use App\Http\Controllers\Dashboard\ServiceMethodController;
+use App\Http\Controllers\Dashboard\ServiceStaffController;
 use App\Http\Controllers\Dashboard\ServiceStaffSpecialtyController;
 use App\Http\Controllers\Dashboard\SpecialtyController;
 use Illuminate\Http\Request;
@@ -62,6 +63,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         Route::resource('methods', ServiceMethodController::class)->names('service.methods');
         Route::resource('equipments', ServiceEquipmentController::class)->names('service.equipments');
         Route::resource('staff-specialties', ServiceStaffSpecialtyController::class)->parameter('staff-specialties', 'specialty')->names('service.staff.specialties');
+        Route::resource('staffs', ServiceStaffController::class)->names('service.staffs');
     });
 
     Route::resource('laboratories', LaboratoryController::class);

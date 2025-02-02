@@ -75,7 +75,7 @@
         <li class="menu-item {{ Request::is('dashboard/analyzes*') ||  Request::is('dashboard/service/categories*')
             || Request::is('dashboard/medications*') || Request::is('dashboard/service/procedures*')
             || Request::is('dashboard/service/methods*') || Request::is('dashboard/service/equipments*')
-            || Request::is('dashboard/service/staff-specialties*') ? 'open' : '' }}"
+            || Request::is('dashboard/service/staff-specialties*') || Request::is('dashboard/service/staffs*') ? 'open' : '' }}"
             style="">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon bx bx-plus-medical"></i>
@@ -84,7 +84,7 @@
             <ul class="menu-sub">
                 <li class="menu-item {{ Request::is('dashboard/analyzes*') ? 'active' : '' }}">
                     <a href="{{route('analyzes.index')}}" class="menu-link">
-                        <div data-i18n="Список">Список</div>
+                        <div data-i18n="Список">Список</div>z
                     </a>
                 </li>
                 <li class="menu-item {{ Request::is('dashboard/service/categories*') ? 'active' : '' }}">
@@ -113,14 +113,14 @@
                     </a>
                 </li>
 
-                <li class="menu-item {{ Request::is('dashboard/doctors*') || Request::is('dashboard/service/staff-specialties*')  ? 'open' : '' }}"
+                <li class="menu-item {{ Request::is('dashboard/service/staffs*') || Request::is('dashboard/service/staff-specialties*')  ? 'open' : '' }}"
                     style="">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <div data-i18n="Персонал">Персонал</div>
+                        <div data-i18n="Персоналы">Персоналы</div>
                     </a>
                     <ul class="menu-sub">
-                        <li class="menu-item {{ Request::is('dashboard/doctors*') ? 'active' : '' }}">
-                            <a href="{{route('doctors.index')}}" class="menu-link">
+                        <li class="menu-item {{ Request::is('dashboard/service/staffs*') ? 'active' : '' }}">
+                            <a href="{{route('service.staffs.index')}}" class="menu-link">
                                 <div data-i18n="Список">Список</div>
                             </a>
                         </li>
