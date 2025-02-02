@@ -16,6 +16,7 @@ use App\Http\Controllers\Dashboard\InstitutionController;
 use App\Http\Controllers\Dashboard\LaboratoryController;
 use App\Http\Controllers\Dashboard\MedicalDeviceController;
 use App\Http\Controllers\Dashboard\MedicalEquipmentController;
+use App\Http\Controllers\Dashboard\MedicationController;
 use App\Http\Controllers\Dashboard\PatientController;
 use App\Http\Controllers\Dashboard\RegionController;
 use App\Http\Controllers\Dashboard\ServiceCategoryController;
@@ -47,6 +48,10 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::get('analyze-result-edit/{analyze}', [AnalyzeResultController::class, 'edit'])->name('analyze.result.edit');
     Route::put('analyze-result/{analyze}', [AnalyzeResultController::class, 'update'])->name('analyze.result.update');
 
+    // medications
+    Route::resource('medications', MedicationController::class);
+
+    // services
     Route::prefix('service')->group(function () {
         Route::resource('categories', ServiceCategoryController::class);
     });

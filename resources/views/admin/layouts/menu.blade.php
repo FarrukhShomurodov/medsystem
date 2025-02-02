@@ -72,7 +72,7 @@
         </li>
 
         {{-- Услуги --}}
-        <li class="menu-item {{ Request::is('dashboard/analyzes*') ||  Request::is('dashboard/service/categories*')  ? 'open' : '' }}"
+        <li class="menu-item {{ Request::is('dashboard/analyzes*') ||  Request::is('dashboard/service/categories*') || Request::is('dashboard/medications*')  ? 'open' : '' }}"
             style="">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon bx bx-plus-medical"></i>
@@ -87,6 +87,11 @@
                 <li class="menu-item {{ Request::is('dashboard/service/categories*') ? 'active' : '' }}">
                     <a href="{{route('categories.index')}}" class="menu-link">
                         <div data-i18n="Категории">Категории</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('dashboard/medications*') ? 'active' : '' }}">
+                    <a href="{{route('medications.index')}}" class="menu-link">
+                        <div data-i18n="Препараты">Препараты</div>
                     </a>
                 </li>
             </ul>

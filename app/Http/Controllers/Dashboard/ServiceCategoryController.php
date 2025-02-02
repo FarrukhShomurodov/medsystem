@@ -59,6 +59,5 @@ class ServiceCategoryController
         $this->service->destroy($category);
 
         return redirect()->route('categories.index')->with('success', 'Категория сервиса успешно удалена!');
-
     }
 }
