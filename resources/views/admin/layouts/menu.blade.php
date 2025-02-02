@@ -184,7 +184,7 @@
         <li class="menu-item {{ Request::is('dashboard/institutions*') ? 'active' : '' }}">
             <a href="{{ route('institutions.index') }}" class="menu-link">
                 <i class="menu-icon bx bx-buildings"></i>
-                <div data-i18n="Заведение">Заведение</div>
+                <div data-i18n="Отделение">Отделение</div>
             </a>
         </li>
 
