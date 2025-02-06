@@ -38,9 +38,16 @@
                 </button>
             </div>
             <div class="line"></div>
-            <div class="step" data-target="#additional_data">
+            <div class="step" data-target="#procedures">
                 <button type="button" class="step-trigger">
                     <span class="bs-stepper-circle">3</span>
+                    <span class="bs-stepper-label">Процедуры</span>
+                </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#additional_data">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">4</span>
                     <span class="bs-stepper-label">Финансовая информация</span>
                 </button>
             </div>
@@ -275,6 +282,77 @@
                     </div>
                 </div>
 
+                <!-- Процедуры -->
+                <div id="procedures" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Процедуры</h6>
+                    </div>
+                    <div class="row g-3">
+                        <div class="mb-3">
+                            <label class="form-label">Процедуры</label>
+                            <div id="procedures-container">
+                                @foreach($service->procedures as $index => $procedure)
+                                    <div class="row mb-2 procedure-row">
+                                        <div class="col-sm-5">
+                                            <select name="procedures[]" class="form-control select2"
+                                                    data-placeholder="Выберите или введите новую процедуру" required>
+                                                <option value="{{ $procedure->id }}">{{ $procedure->name }}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <input type="date" name="procedure_dates[]"
+                                                   class="form-control"
+                                                   value="{{ old('procedure_dates.'.$index, now()->format('Y-m-d')) }}"
+                                                   required>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <button type="button" class="btn btn-danger btn-remove-procedure">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <button type="button" class="btn btn-primary mt-2" id="btn-add-procedure">
+                                <i class="fas fa-plus me-2"></i> Добавить процедуру
+                            </button>
+
+                            <template id="procedure-template">
+                                <div class="row mb-2 procedure-row">
+                                    <div class="col-sm-5">
+                                        <select name="procedures[]" class="form-control procedure-select"
+                                                data-placeholder="Выберите или введите новую процедуру" required>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input type="date" name="procedure_dates[]"
+                                               class="form-control"
+                                               value="{{ now()->format('Y-m-d') }}"
+                                               required>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button type="button" class="btn btn-danger btn-remove-procedure">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+
+                        <!-- Navigation -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Финансовая информация -->
                 <div id="additional_data" class="content">
                     <div class="content-header mb-3">
@@ -393,6 +471,42 @@
             // Initialize Flatpickr
             flatpickr('.flatpickr-date', {dateFormat: 'Y-m-d'});
             flatpickr('.flatpickr-time', {enableTime: true, noCalendar: true});
+
+
+            // procedures
+            const container = document.getElementById('procedures-container');
+            const template = document.getElementById('procedure-template');
+
+            function initSelect2(element) {
+                const procedureData = {!! json_encode($procedures->map(function($procedure) {
+                    return ['id' => $procedure->id, 'text' => $procedure->name];
+                })) !!};
+
+                $(element).select2({
+                    tags: true,
+                    placeholder: $(element).data('placeholder'),
+                    data: procedureData,
+                    createTag: function (params) {
+                        return {
+                            id: params.term,
+                            text: params.term + ' (новая)'
+                        };
+                    }
+                });
+            }
+
+            document.getElementById('btn-add-procedure').addEventListener('click', function () {
+                const clone = template.content.cloneNode(true);
+                const select = clone.querySelector('.procedure-select');
+                container.appendChild(clone);
+                initSelect2(select);
+            });
+
+            container.addEventListener('click', function (e) {
+                if (e.target.closest('.btn-remove-procedure')) {
+                    e.target.closest('.procedure-row').remove();
+                }
+            });
         });
     </script>
 @endsection

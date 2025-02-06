@@ -36,6 +36,11 @@ class PatientServiceRequest extends FormRequest
             'equipments' => 'nullable|array',
             'staffs' => 'required|array',
             'staffs.*' => 'required|int|exists:service_staff,id',
+
+            'procedures' => 'nullable|array',
+            'procedures.*' => 'required|string',
+            'procedure_dates' => 'required|array|size:' . count($this->procedures),
+            'procedure_dates.*' => 'date',
         ];
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Doctor;
 use App\Models\Institution;
 use App\Models\Patient;
 use App\Models\PatientService;
+use App\Models\Procedure;
 use App\Models\Service;
 use App\Models\ServiceEquipment;
 use App\Models\ServiceMethod;
@@ -50,8 +51,9 @@ class PatientServiceController
         $methods = ServiceMethod::query()->get();
         $equipments = ServiceEquipment::query()->get();
         $staffs = ServiceStaff::query()->get();
+        $procedures = Procedure::query()->get();
 
-        return view('admin.patient_services.create', compact('services', 'patients', 'doctors', 'institutions', 'methods', 'equipments', 'staffs'));
+        return view('admin.patient_services.create', compact('services', 'patients', 'doctors', 'institutions', 'methods', 'equipments', 'staffs', 'procedures'));
     }
 
     public function store(PatientServiceRequest $request): RedirectResponse
@@ -73,8 +75,9 @@ class PatientServiceController
         $staffs = ServiceStaff::query()->get();
         $service->with('methods');
         $maps = $service->patient->examinationMaps;
+        $procedures = Procedure::query()->get();
 
-        return view('admin.patient_services.edit', compact('maintanances', 'patients', 'doctors', 'institutions', 'methods', 'equipments', 'staffs', 'service', 'maps'));
+        return view('admin.patient_services.edit', compact('maintanances', 'patients', 'doctors', 'institutions', 'methods', 'equipments', 'staffs', 'service', 'maps', 'procedures'));
     }
 
     public function update(PatientServiceRequest $request, PatientService $service): RedirectResponse

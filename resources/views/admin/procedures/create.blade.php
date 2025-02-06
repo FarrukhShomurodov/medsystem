@@ -27,7 +27,7 @@
             <h5 class="mb-0">Создать</h5>
         </div>
         <div class="card-body">
-            <form action="{{ route('proceduresw.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('procedures.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="mb-3">
