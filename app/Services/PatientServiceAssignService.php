@@ -40,7 +40,7 @@ class PatientServiceAssignService
             $service->equipments()->sync($validated['equipments']);
 
             // staff
-            $service->staffs()->sync($validated['equipments']);
+            $service->staffs()->sync($validated['staffs']);
 
             return $service;
         });
@@ -53,12 +53,12 @@ class PatientServiceAssignService
      */
     public function update(PatientService $service, array $validated): PatientService
     {
-        $service = DB::transaction(function () use ($validated) {
+        $service = DB::transaction(function () use ($validated, $service) {
             if (!is_numeric($validated['institution_id'])) {
                 $validated['institution_id'] = Institution::query()->create(['name' => $validated['institution_id']])->id;
             }
 
-            $service = PatientService::query()->update($validated);
+            $service->update($validated);
 
             //  methods
             foreach ($validated['methods'] as $key => $method) {
@@ -78,7 +78,7 @@ class PatientServiceAssignService
             $service->equipments()->sync($validated['equipments']);
 
             // staff
-            $service->staffs()->sync($validated['equipments']);
+            $service->staffs()->sync($validated['staffs']);
 
             return $service;
         });

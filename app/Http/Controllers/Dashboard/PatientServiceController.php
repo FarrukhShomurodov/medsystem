@@ -64,12 +64,17 @@ class PatientServiceController
 
     public function edit(PatientService $service): View
     {
-        $services = Service::query()->get();
-        $patients = Patient::query()->get();
+        $maintanances = Service::query()->get();
+        $patients = Patient::query()->with('examinationMaps')->get();
         $doctors = Doctor::query()->get();
-        $institution = Institution::query()->get();
+        $institutions = Institution::query()->get();
+        $methods = ServiceMethod::query()->get();
+        $equipments = ServiceEquipment::query()->get();
+        $staffs = ServiceStaff::query()->get();
+        $service->with('methods');
+        $maps = $service->patient->examinationMaps;
 
-        return view('admin.patient_services.edit', compact('services', 'patients', 'doctors', 'institution', 'service'));
+        return view('admin.patient_services.edit', compact('maintanances', 'patients', 'doctors', 'institutions', 'methods', 'equipments', 'staffs', 'service', 'maps'));
     }
 
     public function update(PatientServiceRequest $request, PatientService $service): RedirectResponse

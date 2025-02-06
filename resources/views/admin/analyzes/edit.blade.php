@@ -78,7 +78,11 @@
                             <label class="form-label" for="patient-map">Карты</label>
                             <select id="patient-map" name="examination_map_id"
                                     class="form-control select2 @error('examination_map_id') is-invalid @enderror">
-                                <option value="" disabled selected>Выберите карту</option>
+                                @foreach($maps as $map)
+                                    <option value="{{$map->id}}" @selected($map->id == $analyze->examination_map_id)>
+                                        {{ $map->patient->first_name }} — {{ $map->admission_date }}
+                                    </option>
+                                @endforeach
                             </select>
                             @error('examination_map_id')
                             <div class="invalid-feedback">{{ $message }}</div>

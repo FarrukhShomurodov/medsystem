@@ -102,11 +102,11 @@ class PatientService extends Model
 
     public function methods(): belongsToMany
     {
-        return $this->belongsToMany(AnalyzeMethod::class, 'patient_service_to_methods_assignments', 'patient_service_id', 'service_methods_id');
+        return $this->belongsToMany(ServiceMethod::class, 'patient_service_to_methods_assignments', 'patient_service_id', 'service_methods_id');
     }
 
     public function staffs(): belongsToMany
     {
-        return $this->belongsToMany(AnalyzeMethod::class, 'patient_service_to_staffs_assignment', 'patient_service_id', 'service_staff_id');
+        return $this->belongsToMany(ServiceStaff::class, 'patient_service_to_staffs_assignment', 'patient_service_id', 'service_staff_id');
     }
 }

@@ -65,7 +65,7 @@ class AnalyzeController
         $equipments = MedicalEquipment::query()->get();
         $methods = AnalyzeMethod::query()->get();
         $patients = Patient::query()->get();
-        $maps = ExaminationMap::query()->get();
+        $maps = $analyze->patient->examinationMaps;
 
         return view('admin.analyzes.edit', compact('doctors', 'types', 'patients', 'laboratories', 'equipments', 'maps', 'methods', 'analyze'));
     }

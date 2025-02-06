@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Медицинская система | Редактировать анализ</title>
+    <title>Медицинская система | Редактировать назначиную услугу</title>
 @endsection
 
 @section('content')
     <h6 class="py-3 breadcrumb-wrapper mb-4">
         <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('analyzes.index') }}">Анализы </a> /</span>Редактировать
+                                             href="{{ route('analyzes.index') }}">Услуги </a> /</span>Редактировать
     </h6>
 
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
@@ -22,7 +22,6 @@
         @endif
     </div>
 
-
     <div class="bs-stepper wizard-numbered wizard-vertical vertical shadow-sm mt-2">
         <div class="bs-stepper-header">
             <div class="step" data-target="#basic-data">
@@ -32,32 +31,34 @@
                 </button>
             </div>
             <div class="line"></div>
-            <div class="step" data-target="#info">
+            <div class="step" data-target="#details">
                 <button type="button" class="step-trigger">
                     <span class="bs-stepper-circle">2</span>
-                    <span class="bs-stepper-label">Направления</span>
+                    <span class="bs-stepper-label">Детали</span>
                 </button>
             </div>
             <div class="line"></div>
             <div class="step" data-target="#additional_data">
                 <button type="button" class="step-trigger">
                     <span class="bs-stepper-circle">3</span>
-                    <span class="bs-stepper-label">Дополнительные данные</span>
+                    <span class="bs-stepper-label">Финансовая информация</span>
                 </button>
             </div>
         </div>
 
         <div class="bs-stepper-content">
-            <form method="post" action="{{ route('analyzes.update', $analyze->id) }}"
+            <form method="post" action="{{ route('patient.services.update',  $service->id) }}"
                   enctype="multipart/form-data">
                 @csrf
                 @method('put')
+
                 <!-- Основные данные -->
                 <div id="basic-data" class="content">
                     <div class="content-header mb-3">
                         <h6 class="mb-0">Основные данные</h6>
                     </div>
                     <div class="row g-3">
+                        <!-- Patient -->
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-patient">Пациент <span
                                     class="text-danger">*</span></label>
@@ -66,273 +67,288 @@
                                 <option value="" disabled selected>Выберите пациента</option>
                                 @foreach($patients as $patient)
                                     <option
-                                        value="{{ $patient->id }}" @selected($patient->id == old('patient_id', $analyze->patient_id))>{{ $patient->first_name }}</option>
+                                        value="{{ $patient->id }}" @selected(old('patient_id', $service->patient_id) == $patient->id)>
+                                        {{ $patient->first_name }}
+                                    </option>
                                 @endforeach
                             </select>
                             @error('patient_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
+                        <!-- Examination Map -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="patient-map">Карты</label>
+                            <label class="form-label" for="patient-map">Карта обследования <span
+                                    class="text-danger">*</span></label>
                             <select id="patient-map" name="examination_map_id"
-                                    class="form-control select2 @error('examination_map_id') is-invalid @enderror">
-                                <option value="" disabled selected>Выберите карту</option>
+                                    class="form-control select2 @error('examination_map_id') is-invalid @enderror"
+                                    required>
+                                @foreach($maps as $map)
+                                    <option value="{{$map->id}}" @selected($map->id == $service->examination_map_id)>
+                                        {{ $map->patient->first_name }} — {{ $map->admission_date }}
+                                    </option>
+                                @endforeach
                             </select>
                             @error('examination_map_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
+                        <!-- Service -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-departments">Лаборатории <span
-                                    class="text-danger">*</span></label>
-                            <select id="basic-icon-default-departments" name="laboratory_id"
-                                    class="form-control select2 @error('laboratory_id') is-invalid @enderror"
-                                    required>
-                                <option value="" disabled>Выберите лабораторию</option>
-                                @foreach($laboratories as $laboratory)
+                            <label class="form-label" for="service_id">Услуга <span class="text-danger">*</span></label>
+                            <select id="service_id" name="service_id"
+                                    class="form-control select2 @error('service_id') is-invalid @enderror" required>
+                                <option value="" disabled selected>Выберите услугу</option>
+                                @foreach($maintanances as $maintanance)
                                     <option
-                                        value="{{ $laboratory->id }}" @selected($laboratory->id == old('laboratory_id', $analyze->laboratory_id))>{{ $laboratory->name }}</option>
+                                        value="{{ $maintanance->id }}" @selected(old('service_id', $service->service_id) == $maintanance->id)>
+                                        {{ $maintanance->name }}
+                                    </option>
                                 @endforeach
                             </select>
-                            @error('laboratory_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            @error('service_id')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
+                        <!-- Doctor -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-types">Типы анализов <span
-                                    class="text-danger">*</span></label>
-                            <select id="basic-icon-default-types" name="types[]"
-                                    class="form-control select2 @error('types') is-invalid @enderror"
-                                    multiple
-                                    required>
-                                <option value="" disabled>Выберите тип</option>
-                                @foreach($types as $type)
-                                    <option
-                                        value="{{ $type->id }}" @selected(in_array($type->id, old('types',$analyze->types->pluck('id')->toArray())))>{{ $type->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('types')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-medical_staff">Ответственный медицинский
-                                персонал </label>
-                            <select id="basic-icon-default-medical_staff" name="medical_staff"
-                                    class="form-control select2 @error('medical_staff') is-invalid @enderror">
-                                <option value="" disabled>Выберите персонал</option>
-                                <option
-                                    value="doctor" @selected('doctor' == old('medical_staff', $analyze->medical_staff))>
-                                    Врач
-                                </option>
-                                <option
-                                    value="assist" @selected('assist' == old('medical_staff', $analyze->medical_staff))>
-                                    Лаборант
-                                </option>
-                            </select>
-                            @error('medical_staff')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="flatpickr-datetime">Дата и время сдачи анализа <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('analysis_time') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
-                                <input type="text" name="analysis_time"
-                                       value="{{ old('analysis_time', $analyze->analysis_time) }}"
-                                       id="flatpickr-datetime"
-                                       required
-                                       class="form-control flatpickr-date-time @error('analysis_time') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD HH:MM" aria-describedby="basic-icon-birth-date2"/>
-                            </div>
-                            @error('analysis_time')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-
-                        <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-label-secondary btn-prev" disabled>
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                <span class="d-sm-inline-block d-none">Назад</span>
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                <span class="d-sm-inline-block d-none me-sm-1">Далее</span>
-                                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Направления --}}
-                <div id="info" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">Направления</h6>
-                    </div>
-
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="form-label" for="basic-icon-default-doctors">Лечащие врачи <span
-                                    class="text-danger">*</span></label>
-                            <select id="basic-icon-default-doctors" name="doctor_id"
-                                    class="form-control select2 @error('doctor_id') is-invalid @enderror" required>
+                            <label class="form-label" for="doctor_id">Лечащий врач</label>
+                            <select id="doctor_id" name="doctor_id"
+                                    class="form-control select2 @error('doctor_id') is-invalid @enderror">
+                                <option value="" selected>Не выбрано</option>
                                 @foreach($doctors as $doctor)
                                     <option
-                                        value="{{ $doctor->id }}" @selected($doctor->id == old('doctor_id', $analyze->doctor_id))>{{ $doctor->first_name }}</option>
+                                        value="{{ $doctor->id }}" @selected(old('doctor_id', $service->doctor_id) == $doctor->id)>
+                                        {{ $doctor->first_name }}
+                                    </option>
                                 @endforeach
                             </select>
                             @error('doctor_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
-                        <div class="col-12">
-                            <label class="form-label" for="basic-icon-default-target">Цель
-                                анализа </label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-default-history2"
-                                      class="input-group-text @error('target') text-danger icon-border @enderror">
-                                    <i class="bx bx-notepad"></i>
-                                </span>
-                                <textarea id="basic-icon-default-target"
-                                          class="form-control @error('target') is-invalid @enderror"
-                                          placeholder="Цель анализа"
-                                          aria-label="Цель анализа"
-                                          name="target"
-                                          aria-describedby="basic-icon-default-history2">{{ old('target', $analyze->target) }}</textarea>
-                            </div>
-                            @error('target')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <!-- Institution -->
+                        <div class="col-sm-4">
+                            <label class="form-label" for="institution_id">Отделение</label>
+                            <select id="institution_id" name="institution_id"
+                                    class="form-control select2 @error('institution_id') is-invalid @enderror">
+                                <option value="" selected>Не выбрано</option>
+                                @foreach($institutions as $institution)
+                                    <option
+                                        value="{{ $institution->id }}" @selected(old('institution_id', $service->institution_id) == $institution->id)>
+                                        {{ $institution->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('institution_id')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
+                        <!-- Place -->
+                        <div class="col-sm-4">
+                            <label class="form-label" for="place">Место оказания <span
+                                    class="text-danger">*</span></label>
+                            <select id="place" name="place"
+                                    class="form-control select2 @error('place') is-invalid @enderror" required>
+                                @foreach(\App\Models\PatientService::PLACE as $value)
+                                    <option value="{{ $value }}" @selected(old('place' ,$service->place) == $value)>
+                                        {{ $value }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('place')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <!-- Navigation -->
                         <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev">
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                <span class="d-sm-inline-block d-none">Назад</span>
+                            <button class="btn btn-label-secondary btn-prev" disabled>
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
                             </button>
-                            <button class="btn btn-primary btn-next"><span class="d-sm-inline-block d-none">Далее</span>
-                                <i
-                                    class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                {{-- Дополнительные данные --}}
-                <div id="additional_data" class="content">
+                <!-- Детали -->
+                <div id="details" class="content">
                     <div class="content-header mb-3">
-                        <h6 class="mb-0">Дополнительные данные</h6>
+                        <h6 class="mb-0">Детали</h6>
                     </div>
-
                     <div class="row g-3">
+                        {{-- status --}}
+                        <input type="hidden" name="status" value="assigned">
+
+                        <!-- Service Date -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-methods">Метод исследования <span
-                                    class="text-danger">*</span></label>
-                            <select id="basic-icon-default-methods" name="methods[]"
-                                    class="form-control select2 @error('methods') is-invalid @enderror" multiple
-                                    required>
-                                <option value="" disabled>Выберите метод</option>
+                            <label class="form-label" for="service_date">Дата услуги <span class="text-danger">*</span></label>
+                            <input type="text" name="service_date" id="service_date"
+                                   class="form-control flatpickr-date @error('service_date') is-invalid @enderror"
+                                   value="{{ old('service_date', $service->service_date) }}" required>
+                            @error('service_date')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <!-- Service Time -->
+                        <div class="col-sm-4">
+                            <label class="form-label" for="service_time">Время услуги</label>
+                            <input type="text"
+                                   name="service_time"
+                                   id="service_time"
+                                   class="flatpickr-time form-control @error('service_time') is-invalid @enderror"
+                                   value="{{ old('service_time', $service->service_time) }}">
+                            @error('service_time')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Methods -->
+                        <div class="col-sm-4">
+                            <label class="form-label" for="methods">Методики</label>
+                            <select id="methods" name="methods[]"
+                                    class="form-control select2 @error('methods') is-invalid @enderror" multiple>
                                 @foreach($methods as $method)
                                     <option
-                                        value="{{ $method->id }}" @selected(in_array($method->id, old('methods', $analyze->methods->pluck('id')->toArray())))>{{ $method->name }}</option>
+                                        value="{{ $method->id }}" @selected(in_array($method->id, old('methods', $service->methods->pluck('id')->toArray())))>
+                                        {{ $method->name }}
+                                    </option>
                                 @endforeach
                             </select>
                             @error('methods')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-equipments">Оборудование <span
-                                    class="text-danger">*</span></label>
-                            <select id="basic-icon-default-equipments" name="equipments[]"
-                                    class="form-control select2 @error('equipments') is-invalid @enderror"
-                                    multiple
-                                    required>
-                                <option value="" disabled>Выберите оборудования</option>
+                        <!-- Equipments -->
+                        <div class="col-sm-6">
+                            <label class="form-label" for="equipments">Оборудование</label>
+                            <select id="equipments" name="equipments[]"
+                                    class="form-control select2 @error('equipments') is-invalid @enderror" multiple>
                                 @foreach($equipments as $equipment)
                                     <option
-                                        value="{{ $equipment->id }}" @selected(in_array($equipment->id, old('equipments', $analyze->equipments->pluck('id')->toArray())))>{{ $equipment->name }}</option>
+                                        value="{{ $equipment->id }}" @selected(in_array($equipment->id, old('equipments', $service->equipments->pluck('id')->toArray())))>
+                                        {{ $equipment->name }}
+                                    </option>
                                 @endforeach
                             </select>
                             @error('equipments')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
+                        <!-- Staffs -->
+                        <div class="col-sm-6">
+                            <label class="form-label" for="staffs">Персонал <span class="text-danger">*</span></label>
+                            <select id="staffs" name="staffs[]"
+                                    class="form-control select2 @error('staffs') is-invalid @enderror" multiple
+                                    required>
+                                @foreach($staffs as $staff)
+                                    <option
+                                        value="{{ $staff->id }}" @selected(in_array($staff->id, old('staffs', $service->staffs->pluck('id')->toArray())))>
+                                        {{ $staff->first_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('staffs')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <!-- Results -->
+                        <div class="col-12">
+                            <label class="form-label" for="result">Результаты</label>
+                            <textarea id="result" name="result"
+                                      class="form-control @error('result') is-invalid @enderror"
+                                      rows="4">{{ old('result', $service->result) }}</textarea>
+                            @error('result')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Финансовая информация -->
+                <div id="additional_data" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Финансовая информация</h6>
+                    </div>
+                    <div class="row g-3">
+                        <!-- Payment Status -->
+                        <div class="col-sm-6">
+                            <label class="form-label" for="payment_status">Статус оплаты</label>
+                            <select id="payment_status" name="payment[status]"
+                                    class="form-control select2 @error('payment.status') is-invalid @enderror">
+                                <option value="" selected>Не выбрано</option>
+                                @foreach(\App\Models\PatientService::PAYMENT_STATUS as $status)
+                                    <option
+                                        value="{{ $status }}" @selected(old('payment.status', $service->payment['status']) == $status)>
+                                        {{ $status }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('payment.status')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <!-- Payment Method -->
+                        <div class="col-sm-6">
+                            <label class="form-label" for="payment_method">Метод оплаты</label>
+                            <select id="payment_method" name="payment[method]"
+                                    class="form-control select2 @error('payment.method') is-invalid @enderror">
+                                <option value="" selected>Не выбрано</option>
+                                @foreach(\App\Models\PatientService::PAYMENT_METHOD as $method)
+                                    <option
+                                        value="{{ $method }}" @selected(old('payment.method', $service->payment['method']) == $method)>
+                                        {{ $method }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('payment.method')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <!-- Insurance -->
+                        <div class="col-sm-4">
+                            <label class="form-label" for="insurance_company">Страховая компания</label>
+                            <input type="text" id="insurance_company" name="insurance_policy[company_name]"
+                                   class="form-control @error('insurance_policy.company_name') is-invalid @enderror"
+                                   value="{{ old('insurance_policy.company_name' , $service->insurance_policy['company_name']) }}">
+                            @error('insurance_policy.company_name')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="flatpickr-expected_result_date">Срок готовности (ожидаемая
-                                дата
-                                результата)</label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('expected_result_date') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
-                                <input type="text" name="expected_result_date"
-                                       value="{{ old('expected_result_date', $analyze->expected_result_date) }}"
-                                       id="flatpickr-expected_result_date"
-                                       class="form-control flatpickr-date @error('expected_result_date') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2"/>
-                            </div>
-                            @error('expected_result_date')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label class="form-label" for="policy_number">Номер полиса</label>
+                            <input type="text" id="policy_number" name="insurance_policy[insurance_policy_number]"
+                                   class="form-control @error('insurance_policy.insurance_policy_number') is-invalid @enderror"
+                                   value="{{ old('insurance_policy.insurance_policy_number' , $service->insurance_policy['insurance_policy_number']) }}">
+                            @error('insurance_policy.insurance_policy_number')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
-                        <div class="col-12">
-                            <label class="form-label" for="basic-icon-default-status">Статус <span
-                                    class="text-danger">*</span></label>
-                            <select id="basic-icon-default-status" name="status"
-                                    class="form-control select2 @error('status') is-invalid @enderror"
-                                    readonly="readonly"
-                                    required>
-                                <option
-                                    value="assigned" selected>
-                                    Назначен
-                                </option>
-                            </select>
-                            @error('status')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="col-sm-4">
+                            <label class="form-label" for="coverage">Процент покрытия</label>
+                            <input type="number" id="coverage" name="insurance_policy[percentage_of_coverage]"
+                                   class="form-control @error('insurance_policy.percentage_of_coverage') is-invalid @enderror"
+                                   value="{{ old('insurance_policy.percentage_of_coverage', $service->insurance_policy['percentage_of_coverage']) }}">
+                            @error('insurance_policy.percentage_of_coverage')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
-                        <div class="col-12">
-                            <label class="form-label" for="basic-icon-default-notes">Примичание </label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-default-history2"
-                                      class="input-group-text @error('notes') text-danger icon-border @enderror">
-                                    <i class="bx bx-notepad"></i>
-                                </span>
-                                <textarea id="basic-icon-default-notes"
-                                          class="form-control @error('notes') is-invalid @enderror"
-                                          placeholder="Примичание"
-                                          aria-label="Примичание"
-                                          name="notes"
-                                          aria-describedby="basic-icon-default-history2">{{ old('notes', $analyze->notes) }}</textarea>
-                            </div>
-                            @error('notes')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
+                        <!-- Navigation -->
                         <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev"><i
-                                    class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                <span class="d-sm-inline-block d-none">Назад</span>
+                            <button class="btn btn-primary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
                             </button>
-                            <button type="submit" class="btn btn-warning">Редактировать</button>
+                            <button type="submit" class="btn btn-success">Сохранить</button>
                         </div>
                     </div>
                 </div>
@@ -344,9 +360,15 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
+            // Load Examination Maps
             $('#basic-icon-default-patient').on('change', function () {
                 const patientId = $(this).val();
                 const mapSelect = $('#patient-map');
+
+                if (!patientId) {
+                    mapSelect.html('<option value="" disabled selected>Сначала выберите пациента</option>');
+                    return;
+                }
 
                 mapSelect.html('<option value="" disabled selected>Загрузка...</option>');
 
@@ -354,19 +376,23 @@
                     url: `/api/examination-map-by-patient/${patientId}`,
                     type: 'GET',
                     success: function (data) {
-                        console.log(data)
                         mapSelect.html('<option value="" disabled selected>Выберите карту</option>');
                         data.forEach(map => {
-                            $('#patient-map').append(
-                                `<option value="${map.id}">${map.patient_name} — ${map.admission_date} — ${map.institution_name} — ${map.diagnosis}</option>`
+                            mapSelect.append(
+                                `<option value="${map.id}">${map.patient_name} — ${map.admission_date}</option>`
                             );
                         });
+                        mapSelect.val(null).trigger('change');
                     },
                     error: function () {
-                        mapSelect.html('<option value="" disabled selected>Ошибка загрузки карт</option>');
+                        mapSelect.html('<option value="" disabled selected>Ошибка загрузки</option>');
                     }
                 });
             });
+
+            // Initialize Flatpickr
+            flatpickr('.flatpickr-date', {dateFormat: 'Y-m-d'});
+            flatpickr('.flatpickr-time', {enableTime: true, noCalendar: true});
         });
     </script>
 @endsection
