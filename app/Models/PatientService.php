@@ -119,4 +119,14 @@ class PatientService extends Model
             'procedure_id'
         )->withPivot('procedure_date');
     }
+
+    public function medications(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Medication::class,
+            'patient_service_to_medications_assignment',
+            'patient_service_id',
+            'medication_id'
+        )->withPivot('dosage', 'admission_period', 'notes');
+    }
 }

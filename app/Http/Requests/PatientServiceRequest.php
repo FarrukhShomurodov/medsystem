@@ -39,8 +39,35 @@ class PatientServiceRequest extends FormRequest
 
             'procedures' => 'nullable|array',
             'procedures.*' => 'required|string',
-            'procedure_dates' => 'required|array|size:' . count($this->procedures),
+            'procedure_dates' => [
+                'nullable',
+                'array',
+                Rule::when($this->has('procedures'), [
+                    'size:' . count($this->input('procedures', []))
+                ])
+            ],
             'procedure_dates.*' => 'date',
+
+            'medications' => 'nullable|array',
+            'medications.*' => 'required|string',
+            'dosages' => [
+                'required',
+                'array',
+                Rule::when($this->has('procedures'), [
+                    'size:' . count($this->input('medications', []))
+                ])
+            ],
+            'dosages.*' => 'required|string|max:50',
+            'admission_periods' => [
+                'required',
+                'array',
+                Rule::when($this->has('procedures'), [
+                    'size:' . count($this->input('medications', []))
+                ])
+            ],
+            'admission_periods.*' => 'required|string|max:100',
+            'medication_notes' => 'nullable|array',
+            'medication_notes.*' => 'nullable|string|max:500',
         ];
     }
 }

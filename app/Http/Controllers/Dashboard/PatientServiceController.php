@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Requests\PatientServiceRequest;
 use App\Models\Doctor;
 use App\Models\Institution;
+use App\Models\Medication;
 use App\Models\Patient;
 use App\Models\PatientService;
 use App\Models\Procedure;
@@ -52,8 +53,9 @@ class PatientServiceController
         $equipments = ServiceEquipment::query()->get();
         $staffs = ServiceStaff::query()->get();
         $procedures = Procedure::query()->get();
+        $medications = Medication::query()->get();
 
-        return view('admin.patient_services.create', compact('services', 'patients', 'doctors', 'institutions', 'methods', 'equipments', 'staffs', 'procedures'));
+        return view('admin.patient_services.create', compact('services', 'patients', 'doctors', 'institutions', 'methods', 'equipments', 'staffs', 'procedures', 'medications'));
     }
 
     public function store(PatientServiceRequest $request): RedirectResponse
@@ -76,8 +78,9 @@ class PatientServiceController
         $service->with('methods');
         $maps = $service->patient->examinationMaps;
         $procedures = Procedure::query()->get();
+        $medications = Medication::query()->get();
 
-        return view('admin.patient_services.edit', compact('maintanances', 'patients', 'doctors', 'institutions', 'methods', 'equipments', 'staffs', 'service', 'maps', 'procedures'));
+        return view('admin.patient_services.edit', compact('maintanances', 'patients', 'doctors', 'institutions', 'methods', 'equipments', 'staffs', 'service', 'maps', 'procedures', 'medications'));
     }
 
     public function update(PatientServiceRequest $request, PatientService $service): RedirectResponse

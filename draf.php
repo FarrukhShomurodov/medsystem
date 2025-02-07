@@ -53,14 +53,6 @@ return [
         ]
     ],
 
-    'patient_service_to_medications_assignment *' => [
-        'medication_id',
-        'patient_service_id',
-        'dosage',
-        'admission_period',
-        'notes',
-    ],
-
     'patient_service_to_procedures_assignment *' => [
         'procedure_id',
         'patient_service_id',
@@ -70,4 +62,12 @@ return [
     'patient_service_to_staffs_assignment',
     'patient_service_to_equipments_assignment',
     'patient_service_to_methods_assignments',
+
+    'patient_service_to_medications_assignment *' => [
+        'medication_id',
+        'patient_service_id',
+        'dosage',
+        'admission_period',
+        'notes',
+    ],
 ];

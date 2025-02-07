@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Institution;
+use App\Models\Medication;
 use App\Models\PatientService;
 use App\Models\Procedure;
 use App\Models\ServiceEquipment;
@@ -24,13 +25,16 @@ class PatientServiceAssignService
             $service = PatientService::query()->create($validated);
 
             //  methods
-            foreach ($validated['methods'] as $key => $method) {
-                if (!is_numeric($method)) {
-                    $validated['methods'][$key] = ServiceMethod::query()->create(['name' => $method])->id;
+            if (isset($validated['methods'])) {
+                foreach ($validated['methods'] as $key => $method) {
+                    if (!is_numeric($method)) {
+                        $validated['methods'][$key] = ServiceMethod::query()->create(['name' => $method])->id;
+                    }
                 }
+
+                $service->methods()->sync($validated['methods']);
             }
 
-            $service->methods()->sync($validated['methods']);
 
             //  equipments
             if (isset($validated['equipments'])) {
@@ -63,6 +67,26 @@ class PatientServiceAssignService
 
                 $service->procedures()->sync($procedureData);
             }
+            // medications
+            if (isset($validated['medications'])) {
+                $medicationData = [];
+
+                foreach ($validated['medications'] as $index => $medication) {
+                    if (!is_numeric($medication)) {
+                        $medicationModel = Medication::firstOrCreate(['name' => trim($medication)]);
+                    } else {
+                        $medicationModel = Medication::findOrFail($medication);
+                    }
+
+                    $medicationData[$medicationModel->id] = [
+                        'dosage' => $validated['dosages'][$index],
+                        'admission_period' => $validated['admission_periods'][$index],
+                        'notes' => $validated['medication_notes'][$index] ?? null,
+                    ];
+                }
+
+                $service->medications()->sync($medicationData);
+            }
 
             return $service;
         });
@@ -89,6 +113,7 @@ class PatientServiceAssignService
                         $validated['methods'][$key] = ServiceMethod::query()->create(['name' => $method])->id;
                     }
                 }
+
                 $service->methods()->sync($validated['methods']);
             }
 
@@ -122,6 +147,27 @@ class PatientServiceAssignService
                 }
 
                 $service->procedures()->sync($procedureData);
+            }
+
+            // medications
+            if (isset($validated['medications'])) {
+                $medicationData = [];
+
+                foreach ($validated['medications'] as $index => $medication) {
+                    if (!is_numeric($medication)) {
+                        $medicationModel = Medication::firstOrCreate(['name' => trim($medication)]);
+                    } else {
+                        $medicationModel = Medication::findOrFail($medication);
+                    }
+
+                    $medicationData[$medicationModel->id] = [
+                        'dosage' => $validated['dosages'][$index],
+                        'admission_period' => $validated['admission_periods'][$index],
+                        'notes' => $validated['medication_notes'][$index] ?? null,
+                    ];
+                }
+
+                $service->medications()->sync($medicationData);
             }
 
             return $service;

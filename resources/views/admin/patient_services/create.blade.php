@@ -45,9 +45,16 @@
                 </button>
             </div>
             <div class="line"></div>
-            <div class="step" data-target="#additional_data">
+            <div class="step" data-target="#medicaments">
                 <button type="button" class="step-trigger">
                     <span class="bs-stepper-circle">4</span>
+                    <span class="bs-stepper-label">Препараты</span>
+                </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#additional_data">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">5</span>
                     <span class="bs-stepper-label">Финансовая информация</span>
                 </button>
             </div>
@@ -319,6 +326,107 @@
                     </div>
                 </div>
 
+                <!-- Препараты -->
+                <div id="medicaments" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Препараты</h6>
+                    </div>
+                    <div class="row g-3">
+                        <div class="mb-3">
+                            <label class="form-label">Препараты</label>
+                            <div id="medications-container">
+                                {{--                                @foreach(old('medications', $service->medications ?? []) as $index => $medication)--}}
+                                {{--                                    <div class="row mb-2 medication-row">--}}
+                                {{--                                        <div class="col-sm-3">--}}
+                                {{--                                            <select name="medications[]" class="form-control medication-select"--}}
+                                {{--                                                    required>--}}
+                                {{--                                                @if(is_numeric($medication))--}}
+                                {{--                                                    <option value="{{ $medication }}" selected>--}}
+                                {{--                                                        {{ Medication::find($medication)->name }}--}}
+                                {{--                                                    </option>--}}
+                                {{--                                                @else--}}
+                                {{--                                                    <option value="{{ $medication }}"--}}
+                                {{--                                                            selected>{{ $medication }}</option>--}}
+                                {{--                                                @endif--}}
+                                {{--                                            </select>--}}
+                                {{--                                        </div>--}}
+                                {{--                                        <div class="col-sm-2">--}}
+                                {{--                                            <input type="text" name="dosages[]"--}}
+                                {{--                                                   class="form-control"--}}
+                                {{--                                                   placeholder="Дозировка"--}}
+                                {{--                                                   value="{{ old('dosages.'.$index) }}"--}}
+                                {{--                                                   required>--}}
+                                {{--                                        </div>--}}
+                                {{--                                        <div class="col-sm-2">--}}
+                                {{--                                            <input type="text" name="admission_periods[]"--}}
+                                {{--                                                   class="form-control"--}}
+                                {{--                                                   placeholder="Период приёма"--}}
+                                {{--                                                   value="{{ old('admission_periods.'.$index) }}"--}}
+                                {{--                                                   required>--}}
+                                {{--                                        </div>--}}
+                                {{--                                        <div class="col-sm-3">--}}
+                                {{--                                        <textarea name="medication_notes[]"--}}
+                                {{--                                                  class="form-control"--}}
+                                {{--                                                  placeholder="Примечания">{{ old('medication_notes.'.$index) }}</textarea>--}}
+                                {{--                                        </div>--}}
+                                {{--                                        <div class="col-sm-2">--}}
+                                {{--                                            <button type="button" class="btn btn-danger btn-remove-medication">--}}
+                                {{--                                                <i class="fas fa-trash"></i>--}}
+                                {{--                                            </button>--}}
+                                {{--                                        </div>--}}
+                                {{--                                    </div>--}}
+                                {{--                                @endforeach--}}
+                            </div>
+
+                            <button type="button" class="btn btn-primary mt-2" id="btn-add-medication">
+                                <i class="fas fa-plus me-2"></i> Добавить препарат
+                            </button>
+
+                            <template id="medication-template">
+                                <div class="row mb-2 medication-row">
+                                    <div class="col-sm-3">
+                                        <select name="medications[]" class="form-control medication-select"
+                                                required></select>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="text" name="dosages[]"
+                                               class="form-control"
+                                               placeholder="Дозировка"
+                                               required>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="text" name="admission_periods[]"
+                                               class="form-control"
+                                               placeholder="Период приёма"
+                                               required>
+                                    </div>
+                                    <div class="col-sm-3">
+                <textarea name="medication_notes[]"
+                          class="form-control"
+                          placeholder="Примечания"></textarea>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button type="button" class="btn btn-danger btn-remove-medication">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+
+                        <!-- Navigation -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Финансовая информация -->
                 <div id="additional_data" class="content">
                     <div class="content-header mb-3">
@@ -470,6 +578,42 @@
                 if (e.target.closest('.btn-remove-procedure')) {
                     e.target.closest('.procedure-row').remove();
                 }
+            });
+
+            // medications
+            const containerMedicaments = document.getElementById('medications-container');
+            const templateMedicaments = document.getElementById('medication-template');
+
+            function initMedicationSelect(element) {
+                $(element).select2({
+                    tags: true,
+                    placeholder: 'Выберите медикамент',
+                    data: {!! json_encode($medications->map(fn($m) => ['id' => $m->id, 'text' => $m->name])) !!},
+                    createTag: function (params) {
+                        return {
+                            id: params.term,
+                            text: params.term + ' (новый)'
+                        };
+                    }
+                });
+            }
+
+            // Инициализация существующих селектов
+            $('.medication-select').each(function () {
+                initMedicationSelect(this);
+            });
+
+            // Добавление новой строки
+            $('#btn-add-medication').click(function () {
+                const clone = templateMedicaments.content.cloneNode(true);
+                const select = clone.querySelector('.medication-select');
+                containerMedicaments.appendChild(clone);
+                initMedicationSelect(select);
+            });
+
+            // Удаление строки
+            $(containerMedicaments).on('click', '.btn-remove-medication', function () {
+                $(this).closest('.medication-row').remove();
             });
         });
     </script>
