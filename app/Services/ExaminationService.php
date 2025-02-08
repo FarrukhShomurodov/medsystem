@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\DB;
 class ExaminationService
 {
     private AnalyzeService $service;
+    private PatientServiceAssignService $patientService;
 
-    public function __construct(AnalyzeService $service)
+    public function __construct(AnalyzeService $service, PatientServiceAssignService $patientService)
     {
         $this->service = $service;
+        $this->patientService = $patientService;
     }
 
     /**
@@ -43,6 +45,24 @@ class ExaminationService
             ];
 
             $this->service->store($analyzeData);
+
+            $serviceData = [
+                'service_id' => $validated['service_id'],
+                'patient_id' => $patient->id,
+                'examination_map_id' => $map->id,
+                'service_date' => $validated['service_date'],
+                'place' => $validated['place'],
+                'status' => $validated['service_status'],
+                'staffs' => $validated['staffs'],
+                'procedures' => $validated['procedures'],
+                'procedure_dates' => $validated['procedure_dates'],
+                'medications' => $validated['medications'],
+                'dosages' => $validated['dosages'],
+                'admission_periods' => $validated['admission_periods'],
+                'medication_notes' => $validated['medication_notes'],
+            ];
+
+            $this->patientService->store($serviceData);
 
             return $map;
         });

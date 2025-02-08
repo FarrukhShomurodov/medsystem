@@ -335,47 +335,6 @@
                         <div class="mb-3">
                             <label class="form-label">Препараты</label>
                             <div id="medications-container">
-                                {{--                                @foreach(old('medications', $service->medications ?? []) as $index => $medication)--}}
-                                {{--                                    <div class="row mb-2 medication-row">--}}
-                                {{--                                        <div class="col-sm-3">--}}
-                                {{--                                            <select name="medications[]" class="form-control medication-select"--}}
-                                {{--                                                    required>--}}
-                                {{--                                                @if(is_numeric($medication))--}}
-                                {{--                                                    <option value="{{ $medication }}" selected>--}}
-                                {{--                                                        {{ Medication::find($medication)->name }}--}}
-                                {{--                                                    </option>--}}
-                                {{--                                                @else--}}
-                                {{--                                                    <option value="{{ $medication }}"--}}
-                                {{--                                                            selected>{{ $medication }}</option>--}}
-                                {{--                                                @endif--}}
-                                {{--                                            </select>--}}
-                                {{--                                        </div>--}}
-                                {{--                                        <div class="col-sm-2">--}}
-                                {{--                                            <input type="text" name="dosages[]"--}}
-                                {{--                                                   class="form-control"--}}
-                                {{--                                                   placeholder="Дозировка"--}}
-                                {{--                                                   value="{{ old('dosages.'.$index) }}"--}}
-                                {{--                                                   required>--}}
-                                {{--                                        </div>--}}
-                                {{--                                        <div class="col-sm-2">--}}
-                                {{--                                            <input type="text" name="admission_periods[]"--}}
-                                {{--                                                   class="form-control"--}}
-                                {{--                                                   placeholder="Период приёма"--}}
-                                {{--                                                   value="{{ old('admission_periods.'.$index) }}"--}}
-                                {{--                                                   required>--}}
-                                {{--                                        </div>--}}
-                                {{--                                        <div class="col-sm-3">--}}
-                                {{--                                        <textarea name="medication_notes[]"--}}
-                                {{--                                                  class="form-control"--}}
-                                {{--                                                  placeholder="Примечания">{{ old('medication_notes.'.$index) }}</textarea>--}}
-                                {{--                                        </div>--}}
-                                {{--                                        <div class="col-sm-2">--}}
-                                {{--                                            <button type="button" class="btn btn-danger btn-remove-medication">--}}
-                                {{--                                                <i class="fas fa-trash"></i>--}}
-                                {{--                                            </button>--}}
-                                {{--                                        </div>--}}
-                                {{--                                    </div>--}}
-                                {{--                                @endforeach--}}
                             </div>
 
                             <button type="button" class="btn btn-primary mt-2" id="btn-add-medication">

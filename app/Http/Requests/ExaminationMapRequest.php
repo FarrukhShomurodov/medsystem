@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Analyze;
+use App\Models\PatientService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -52,6 +53,49 @@ class ExaminationMapRequest extends FormRequest
                 'equipments' => 'required|array',
             ]);
         }
+
+
+        $rules = array_merge($rules, [
+            'service_id' => 'nullable|exists:services,id',
+            'service_date' => 'nullable|date',
+            'place' => ['nullable', Rule::in(PatientService::PLACE)],
+            'service_status' => ['nullable', Rule::in(PatientService::STATUS)],
+            'staffs' => 'nullable|array',
+            'staffs.*' => 'required|int|exists:service_staff,id',
+
+            'procedures' => 'nullable|array',
+            'procedures.*' => 'required|string',
+            'procedure_dates' => [
+                'nullable',
+                'array',
+                Rule::when($this->has('procedures'), [
+                    'size:' . count($this->input('procedures', []))
+                ])
+            ],
+            'procedure_dates.*' => 'date',
+
+            'medications' => 'nullable|array',
+            'medications.*' => 'required|string',
+            'dosages' => [
+                'required',
+                'array',
+                Rule::when($this->has('procedures'), [
+                    'size:' . count($this->input('medications', []))
+                ])
+            ],
+            'dosages.*' => 'required|string|max:50',
+            'admission_periods' => [
+                'required',
+                'array',
+                Rule::when($this->has('procedures'), [
+                    'size:' . count($this->input('medications', []))
+                ])
+            ],
+            'admission_periods.*' => 'required|string|max:100',
+            'medication_notes' => 'nullable|array',
+            'medication_notes.*' => 'nullable|string|max:500',
+        ]);
+
 
         return $rules;
     }

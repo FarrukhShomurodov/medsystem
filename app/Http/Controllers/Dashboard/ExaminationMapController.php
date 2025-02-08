@@ -10,7 +10,11 @@ use App\Models\ExaminationMap;
 use App\Models\Institution;
 use App\Models\Laboratory;
 use App\Models\MedicalEquipment;
+use App\Models\Medication;
 use App\Models\Patient;
+use App\Models\Procedure;
+use App\Models\Service;
+use App\Models\ServiceStaff;
 use App\Services\ExaminationService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -100,7 +104,14 @@ class ExaminationMapController
         $equipments = MedicalEquipment::query()->get();
         $methods = AnalyzeMethod::query()->get();
 
-        return view('admin.maps.create', compact('doctors', 'institutions', 'patients', 'laboratories', 'types', 'equipments', 'methods'));
+        //service
+        $procedures = Procedure::query()->get();
+        $medications = Medication::query()->get();
+        $staffs = ServiceStaff::query()->get();
+        $services = Service::query()->get();
+
+        return view('admin.maps.create', compact('doctors', 'institutions', 'patients', 'laboratories', 'types', 'equipments', 'methods', 'procedures', 'medications', 'staffs',
+            'services'));
     }
 
     public function store(ExaminationMapRequest $request): RedirectResponse
@@ -121,7 +132,14 @@ class ExaminationMapController
         $equipments = MedicalEquipment::query()->get();
         $methods = AnalyzeMethod::query()->get();
 
-        return view('admin.maps.edit', compact('map', 'doctors', 'institutions', 'patients', 'laboratories', 'types', 'equipments', 'methods'));
+        //service
+        $procedures = Procedure::query()->get();
+        $medications = Medication::query()->get();
+        $staffs = ServiceStaff::query()->get();
+        $services = Service::query()->get();
+
+        return view('admin.maps.edit', compact('map', 'doctors', 'institutions', 'patients', 'laboratories', 'types', 'equipments', 'methods', 'procedures', 'medications', 'staffs',
+            'services'));
     }
 
     public function update(ExaminationMapRequest $request, ExaminationMap $map): RedirectResponse

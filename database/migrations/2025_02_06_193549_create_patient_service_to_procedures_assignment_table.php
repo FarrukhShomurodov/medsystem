@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('patient_service_id')->constrained('patient_services')->cascadeOnDelete();
             $table->foreignId('procedure_id')->constrained('procedures')->cascadeOnDelete();
-            $table->date('procedure_date');
+            $table->date('procedure_date')->nullable();
             $table->timestamps();
         });
     }
