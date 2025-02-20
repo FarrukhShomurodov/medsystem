@@ -8,17 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class DepartmentService extends Model
 {
     protected $fillable = [
-        'department_id',
-        'service_id',
+        'name'
     ];
-
-    public function department(): BelongsTo
-    {
-        return $this->belongsTo(Department::class);
-    }
-
-    public function service(): BelongsTo
-    {
-        return $this->belongsTo(Service::class);
-    }
 }

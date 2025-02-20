@@ -181,18 +181,32 @@
             </ul>
         </li>
 
-{{--        <li class="menu-item {{ Request::is('dashboard/institutions*') ? 'active' : '' }}">--}}
-{{--            <a href="{{ route('institutions.index') }}" class="menu-link">--}}
-{{--                <i class="menu-icon bx bx-buildings"></i>--}}
-{{--                <div data-i18n="Отделение">Отделение</div>--}}
-{{--            </a>--}}
-{{--        </li>  --}}
+        {{--        <li class="menu-item {{ Request::is('dashboard/institutions*') ? 'active' : '' }}">--}}
+        {{--            <a href="{{ route('institutions.index') }}" class="menu-link">--}}
+        {{--                <i class="menu-icon bx bx-buildings"></i>--}}
+        {{--                <div data-i18n="Отделение">Отделение</div>--}}
+        {{--            </a>--}}
+        {{--        </li>  --}}
 
-        <li class="menu-item {{ Request::is('dashboard/departments*') ? 'active' : '' }}">
-            <a href="{{ route('departments.index') }}" class="menu-link">
+
+        <li class="menu-item {{ Request::is('dashboard/departments') || Request::is('dashboard/departments/create') || Request::is('dashboard/edit/*') || Request::is('dashboard/departments/service*')  ? 'open' : '' }}"
+            style="">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon bx bx-buildings"></i>
                 <div data-i18n="Отделение">Отделение</div>
             </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ Request::is('dashboard/departments') || Request::is('dashboard/departments/create') || Request::is('dashboard/edit/*') ? 'active' : '' }}">
+                    <a href="{{route('departments.index')}}" class="menu-link">
+                        <div data-i18n="Список">Список</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('dashboard/departments/service*') ? 'active' : '' }}">
+                    <a href="{{route('departments.service.index')}}" class="menu-link">
+                        <div data-i18n="Услуги">Услуги</div>
+                    </a>
+                </li>
+            </ul>
         </li>
 
         <li class="menu-item {{ Request::is('dashboard/allegories*') ? 'active' : '' }}">

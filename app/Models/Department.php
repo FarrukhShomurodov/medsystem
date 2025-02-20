@@ -37,7 +37,7 @@ class Department extends Model
 
     public function service(): BelongsToMany
     {
-        return $this->belongsToMany(Service::class, 'department_services');
+        return $this->belongsToMany(DepartmentService::class, 'department_services');
     }
 
     public function license(): HasOne

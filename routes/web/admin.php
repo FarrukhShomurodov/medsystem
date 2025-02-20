@@ -11,6 +11,7 @@ use App\Http\Controllers\Dashboard\ChronicDiseaseController;
 use App\Http\Controllers\Dashboard\CityController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\DepartmentController;
+use App\Http\Controllers\Dashboard\DepartmentServiceController;
 use App\Http\Controllers\Dashboard\DoctorController;
 use App\Http\Controllers\Dashboard\ExaminationMapController;
 use App\Http\Controllers\Dashboard\InstitutionController;
@@ -45,7 +46,11 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::resource('specialties', SpecialtyController::class);
     Route::resource('doctors', DoctorController::class);
     Route::resource('institutions', InstitutionController::class);
-    Route::resource('departments', DepartmentController::class);
+
+    Route::prefix('departments')->group(function () {
+        Route::resource('', DepartmentController::class)->names('departments');
+        Route::resource('/service', DepartmentServiceController::class)->names('departments.service');
+    });
 
     // analyze
     Route::resource('analyzes', AnalyzeController::class);
