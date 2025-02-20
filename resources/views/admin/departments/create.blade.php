@@ -1,0 +1,399 @@
+@extends('admin.layouts.app')
+
+@section('title')
+    <title>Медицинская система | Отделение</title>
+@endsection
+
+@section('content')
+    <h6 class="py-3 breadcrumb-wrapper mb-4">
+        <span class="text-muted fw-light"><a class="text-muted"
+                                             href="{{ route('departments.index') }}">Отделение </a> /</span>Создать
+    </h6>
+
+    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
+                    <i class="bx bx-error-circle fs-4 me-2"></i>
+                    {{ $error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endforeach
+        @endif
+    </div>
+
+    <div class="bs-stepper wizard-numbered wizard-vertical vertical shadow-sm mt-2">
+        <div class="bs-stepper-header">
+            <div class="step" data-target="#basic-data">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">1</span>
+                    <span class="bs-stepper-label">Основные данные</span>
+                </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#contacts">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">2</span>
+                    <span class="bs-stepper-label">Контактная информация</span>
+                </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#employee_details">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">3</span>
+                    <span class="bs-stepper-label">Рабочие данные</span>
+                </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#licenses">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">4</span>
+                    <span class="bs-stepper-label">Лицензии</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="bs-stepper-content">
+            <form method="post" action="{{ route('departments.store') }}" enctype="multipart/form-data">
+                @csrf
+
+                <!-- Основные данные -->
+                <div id="basic-data" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Основные данные</h6>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-default-company">Название <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-company2"
+                                  class="input-group-text @error('name') text-danger icon-border @enderror"><i
+                                    class="bx bx-rename"></i></span>
+                                <input type="text" id="basic-icon-default-company"
+                                       class="form-control @error('name') is-invalid @enderror"
+                                       placeholder="Название" aria-label="Название"
+                                       name="name"
+                                       value="{{ old('name') }}"
+                                       aria-describedby="basic-icon-default-company2" required/>
+                            </div>
+                            @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="type">Типы <span
+                                    class="text-danger">*</span></label>
+                            <select id="type" name="type_id"
+                                    class="form-control select2 @error('type_id') is-invalid @enderror" required>
+                                @foreach($types as $type)
+                                    <option value="{{ $type->id }}" @selected(old('type_id') == $type->id)>
+                                        {{ $type->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('type_id')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label" for="basic-icon-default-target">Описание </label>
+                            <div class="input-group input-group-merge">
+                                <span id="basic-icon-default-history2"
+                                      class="input-group-text @error('target') text-danger icon-border @enderror">
+                                    <i class="bx bx-notepad"></i>
+                                </span>
+                                <textarea id="basic-icon-default-target"
+                                          class="form-control @error('target') is-invalid @enderror"
+                                          placeholder="Описание"
+                                          aria-label="Описание"
+                                          name="target"
+                                          aria-describedby="basic-icon-default-history2">{{ old('target') }}</textarea>
+                            </div>
+                            @error('target')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-label-secondary btn-prev" disabled>
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Контактная информация -->
+                <div id="contacts" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Контактная информация</h6>
+                    </div>
+                    <div class="row g-3">
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-phone">Телефон </label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-phone2"
+                                  class="input-group-text @error('phone') text-danger icon-border @enderror"><i
+                                    class="bx bx-phone"></i></span>
+                                <input type="text" id="basic-icon-default-phone"
+                                       class="form-control phone @error('phone') is-invalid @enderror"
+                                       name="phone"
+                                       value="{{ old('phone') }}"
+                                       placeholder="+ 998 (XX) XXX XX XX" aria-label="+ 998 (XX) XXX XX XX"
+                                       aria-describedby="basic-icon-default-phone2"/>
+                            </div>
+
+                            @error('phone')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-address">
+                                Адрес
+                            </label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-company2"
+                                  class="input-group-text @error('address') text-danger icon-border @enderror">
+                                <i class="bx bx-map"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-address"
+                                       class="form-control @error('address') is-invalid @enderror"
+                                       placeholder="Адрес" aria-label="Адрес"
+                                       name="address"
+                                       value="{{ old('address') }}"
+                                       aria-describedby="basic-icon-default-company2"/>
+                            </div>
+
+                            @error('address')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-email">Email</label>
+                            <div class="input-group input-group-merge">
+                            <span class="input-group-text @error('email') text-danger icon-border @enderror"><i
+                                    class="bx bx-envelope"></i></span>
+                                <input type="email" id="basic-icon-default-email"
+                                       class="form-control @error('email') is-invalid @enderror" placeholder="Email"
+                                       name="email"
+                                       value="{{ old('email') }}"
+                                       aria-label="Email" aria-describedby="basic-icon-default-email2"/>
+                            </div>
+                            @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-fax">Fax</label>
+                            <div class="input-group input-group-merge">
+                            <span class="input-group-text @error('fax') text-danger icon-border @enderror"><i
+                                    class="bx bx-printer"></i></span>
+                                <input type="text" id="basic-icon-default-fax"
+                                       class="form-control @error('fax') is-invalid @enderror" placeholder="Fax"
+                                       name="fax"
+                                       value="{{ old('fax') }}"
+                                       aria-label="Fax" aria-describedby="basic-icon-default-fax2"/>
+                            </div>
+                            @error('fax')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-head_name">ФИО (руководителя)</label>
+                            <div class="input-group input-group-merge">
+                                <span class="input-group-text @error('head_name') text-danger icon-border @enderror"><i
+                                        class="bx bx-user"></i></span>
+                                <input type="text" id="basic-icon-default-head_name"
+                                       class="form-control @error('head_name') is-invalid @enderror"
+                                       placeholder="ФИО (руководителя)"
+                                       name="head_name"
+                                       value="{{ old('head_name') }}"
+                                       aria-label="ФИО (руководителя)" aria-describedby="basic-icon-default-head_name"/>
+                            </div>
+                            @error('head_name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-head_position">Должность</label>
+                            <div class="input-group input-group-merge">
+                            <span class="input-group-text @error('head_position') text-danger icon-border @enderror"><i
+                                    class="bx bx-briefcase"></i></span>
+                                <input type="text" id="basic-icon-default-head_position"
+                                       class="form-control @error('head_position') is-invalid @enderror"
+                                       placeholder="Должность"
+                                       name="head_position"
+                                       value="{{ old('head_position') }}"
+                                       aria-label="Должность" aria-describedby="basic-icon-default-head_position"/>
+                            </div>
+                            @error('head_position')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label" for="basic-icon-default-head_contact">Контакт</label>
+                            <div class="input-group input-group-merge">
+                            <span class="input-group-text @error('head_contact') text-danger icon-border @enderror">
+                                <i class="bx bx-phone"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-head_contact"
+                                       class="form-control @error('head_contact') is-invalid @enderror"
+                                       placeholder="Контакт"
+                                       name="head_contact"
+                                       value="{{ old('head_contact') }}"
+                                       aria-label="Контакт" aria-describedby="basic-icon-default-head_contact"/>
+                            </div>
+                            @error('head_contact')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Рабочие данные -->
+                <div id="employee_details" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Рабочие данные</h6>
+                    </div>
+                    <div class="row g-3">
+                        <!-- total_beds -->
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-default-total_beds">Количество коек </label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-total_beds"
+                                  class="input-group-text @error('total_beds') text-danger icon-border @enderror"><i
+                                    class="bx bx-bed"></i></span>
+                                <input type="text" id="basic-icon-default-total_beds"
+                                       class="form-control @error('total_beds') is-invalid @enderror"
+                                       name="total_beds"
+                                       value="{{ old('total_beds') }}"
+                                       placeholder="Количество коек" aria-label="Количество коек"
+                                       aria-describedby="basic-icon-default-total_beds"/>
+                            </div>
+
+                            @error('total_beds')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- occupied_beds -->
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-default-occupied_beds">Занятые койки </label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-occupied_beds"
+                                  class="input-group-text @error('occupied_beds') text-danger icon-border @enderror"><i
+                                    class="bx bx-bed"></i></span>
+                                <input type="text" id="basic-icon-default-occupied_beds"
+                                       class="form-control @error('occupied_beds') is-invalid @enderror"
+                                       name="occupied_beds"
+                                       value="{{ old('occupied_beds') }}"
+                                       placeholder="Занятые койки" aria-label="Занятые койки"
+                                       aria-describedby="basic-icon-default-occupied_beds"/>
+                            </div>
+
+                            @error('occupied_beds')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Лицензии -->
+                <div id="licenses" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Лицензии</h6>
+                    </div>
+                    <div class="row g-3">
+                        <!-- license_number -->
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-default-license_number">Номер лицензии </label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-license_number"
+                                  class="input-group-text @error('license_number') text-danger icon-border @enderror"><i
+                                    class="bx bx-bed"></i></span>
+                                <input type="text" id="basic-icon-default-license_number"
+                                       class="form-control @error('license_number') is-invalid @enderror"
+                                       name="license_number"
+                                       value="{{ old('license_number') }}"
+                                       placeholder="Номер лицензии" aria-label="Номер лицензии"
+                                       aria-describedby="basic-icon-default-license_number"/>
+                            </div>
+
+                            @error('license_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-expiration_date">Срок действия лицензии <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <span id="basic-icon-birth-date2"
+                                      class="input-group-text @error('expiration_date') text-danger icon-border @enderror">
+                                    <i class="bx bx-calendar"></i>
+                                </span>
+                                <input type="text" name="expiration_date" value="{{ old('expiration_date') }}"
+                                       id="basic-icon-expiration_date"
+                                       class="form-control flatpickr-date @error('v') is-invalid @enderror"
+                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2" required/>
+                            </div>
+                            @error('expiration_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button type="submit" class="btn btn-success">Сохранить</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+@endsection
+
+@section('scripts')
+    <script>
+        $(document).ready(function () {
+            // Initialize Flatpickr
+            flatpickr('.flatpickr-date', {dateFormat: 'Y-m-d'});
+            flatpickr('.flatpickr-time', {enableTime: true, noCalendar: true, time_24hr: true});
+        });
+    </script>
+@endsection

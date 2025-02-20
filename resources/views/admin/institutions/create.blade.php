@@ -83,7 +83,7 @@
                                    name="phone"
                                    value="{{ old('phone') }}"
                                    placeholder="+ 998 (XX) XXX XX XX" aria-label="+ 998 (XX) XXX XX XX"
-                                   aria-describedby="basic-icon-default-phone2" />
+                                   aria-describedby="basic-icon-default-phone2"/>
                         </div>
 
                         @error('phone')
@@ -105,7 +105,8 @@
                         </div>
                         @error('email')
                         <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror</div>
+                        @enderror
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Сохранить</button>

@@ -52,6 +52,14 @@
                     <span class="bs-stepper-label">Анализ</span>
                 </button>
             </div>
+
+            <div class="line"></div>
+            <div class="step" data-target="#service">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">4</span>
+                    <span class="bs-stepper-label">Услуги</span>
+                </button>
+            </div>
         </div>
 
         <div class="bs-stepper-content">
@@ -521,6 +529,156 @@
                         </div>
 
                         <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-label-secondary btn-prev" disabled>
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                <span class="d-sm-inline-block d-none">Назад</span>
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                <span class="d-sm-inline-block d-none me-sm-1">Далее</span>
+                                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="service" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Услуги</h6>
+                    </div>
+
+                    <div class="row g-3">
+                        {{-- status --}}
+                        <input type="hidden" name="service_status" value="assigned">
+
+                        <div class="col-12">
+                            <label class="form-label" for="service_id">Услуга</label>
+                            <select id="service_id" name="service_id"
+                                    class="form-control select2 @error('service_id') is-invalid @enderror">
+                                <option value="" disabled selected>Выберите услугу</option>
+                                @foreach($services as $service)
+                                    <option value="{{ $service->id }}" @selected(old('service_id') == $service->id)>
+                                        {{ $service->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('service_id')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <!-- Service Date -->
+                        <div class="col-sm-4">
+                            <label class="form-label" for="service_date">Дата услуги</label>
+                            <input type="text" name="service_date" id="service_date"
+                                   class="form-control flatpickr-date @error('service_date') is-invalid @enderror"
+                                   value="{{ old('service_date') }}">
+                            @error('service_date')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <!-- Place -->
+                        <div class="col-sm-4">
+                            <label class="form-label" for="place">Место оказания </label>
+                            <select id="place" name="place"
+                                    class="form-control select2 @error('place') is-invalid @enderror">
+                                @foreach(\App\Models\PatientService::PLACE as $value)
+                                    <option value="{{ $value }}" @selected(old('place') == $value)>
+                                        {{ $value }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('place')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <!-- Staffs -->
+                        <div class="col-sm-4">
+                            <label class="form-label" for="staffs">Персонал </label>
+                            <select id="staffs" name="staffs[]"
+                                    class="form-control select2 @error('staffs') is-invalid @enderror" multiple>
+                                @foreach($staffs as $staff)
+                                    <option value="{{ $staff->id }}" @selected(in_array($staff->id, old('staffs', [])))>
+                                        {{ $staff->first_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('staffs')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Процедуры</label>
+                            <div id="procedures-container">
+                            </div>
+
+                            <button type="button" class="btn btn-primary mt-2" id="btn-add-procedure">
+                                <i class="fas fa-plus me-2"></i> Добавить процедуру
+                            </button>
+
+                            <template id="procedure-template">
+                                <div class="row mb-2 procedure-row">
+                                    <div class="col-sm-5">
+                                        <select name="procedures[]" class="form-control procedure-select"
+                                                data-placeholder="Выберите или введите новую процедуру" required>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input type="date" name="procedure_dates[]"
+                                               class="form-control"
+                                               value="{{ now()->format('Y-m-d') }}"
+                                               required>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button type="button" class="btn btn-danger btn-remove-procedure">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Препараты</label>
+                            <div id="medications-container">
+                            </div>
+
+                            <button type="button" class="btn btn-primary mt-2" id="btn-add-medication">
+                                <i class="fas fa-plus me-2"></i> Добавить препарат
+                            </button>
+
+                            <template id="medication-template">
+                                <div class="row mb-2 medication-row">
+                                    <div class="col-sm-3">
+                                        <select name="medications[]" class="form-control medication-select"
+                                                required></select>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="text" name="dosages[]"
+                                               class="form-control"
+                                               placeholder="Дозировка"
+                                               required>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="text" name="admission_periods[]"
+                                               class="form-control"
+                                               placeholder="Период приёма"
+                                               required>
+                                    </div>
+                                    <div class="col-sm-3">
+                <textarea name="medication_notes[]"
+                          class="form-control"
+                          placeholder="Примечания"></textarea>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button type="button" class="btn btn-danger btn-remove-medication">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+
+                        <div class="col-12 d-flex justify-content-between">
                             <button class="btn btn-primary btn-prev"><i
                                     class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                 <span class="d-sm-inline-block d-none">Назад</span>
@@ -556,6 +714,72 @@
                 if ($(this).val() === '+ 998 ') {
                     $(this).val('');
                 }
+            });
+
+            // procedures
+            const container = document.getElementById('procedures-container');
+            const template = document.getElementById('procedure-template');
+
+            function initSelect2(element) {
+                const procedureData = {!! json_encode($procedures->map(function($procedure) {
+                    return ['id' => $procedure->id, 'text' => $procedure->name];
+                })) !!};
+
+                $(element).select2({
+                    tags: true,
+                    placeholder: $(element).data('placeholder'),
+                    data: procedureData,
+                    createTag: function (params) {
+                        return {
+                            id: params.term,
+                            text: params.term + ' (новая)'
+                        };
+                    }
+                });
+            }
+
+            document.getElementById('btn-add-procedure').addEventListener('click', function () {
+                const clone = template.content.cloneNode(true);
+                const select = clone.querySelector('.procedure-select');
+                container.appendChild(clone);
+                initSelect2(select);
+            });
+
+            container.addEventListener('click', function (e) {
+                if (e.target.closest('.btn-remove-procedure')) {
+                    e.target.closest('.procedure-row').remove();
+                }
+            });
+
+            // medications
+            const containerMedicaments = document.getElementById('medications-container');
+            const templateMedicaments = document.getElementById('medication-template');
+
+            function initMedicationSelect(element) {
+                $(element).select2({
+                    tags: true,
+                    placeholder: 'Выберите медикамент',
+                    data: {!! json_encode($medications->map(fn($m) => ['id' => $m->id, 'text' => $m->name])) !!},
+                    createTag: function (params) {
+                        return {
+                            id: params.term,
+                            text: params.term
+                        };
+                    }
+                });
+            }
+
+            // Добавление новой строки
+            $('#btn-add-medication').click(function () {
+                const clone = templateMedicaments.content.cloneNode(true);
+                const select = clone.querySelector('.medication-select');
+                containerMedicaments.appendChild(clone);
+                initMedicationSelect(select);
+            });
+
+            // Удаление строки
+            $(containerMedicaments).on('click', '.btn-remove-medication', function () {
+                $(this).closest('.medication-row').remove();
             });
         })
     </script>

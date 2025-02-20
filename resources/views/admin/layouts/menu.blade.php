@@ -181,8 +181,15 @@
             </ul>
         </li>
 
-        <li class="menu-item {{ Request::is('dashboard/institutions*') ? 'active' : '' }}">
-            <a href="{{ route('institutions.index') }}" class="menu-link">
+{{--        <li class="menu-item {{ Request::is('dashboard/institutions*') ? 'active' : '' }}">--}}
+{{--            <a href="{{ route('institutions.index') }}" class="menu-link">--}}
+{{--                <i class="menu-icon bx bx-buildings"></i>--}}
+{{--                <div data-i18n="Отделение">Отделение</div>--}}
+{{--            </a>--}}
+{{--        </li>  --}}
+
+        <li class="menu-item {{ Request::is('dashboard/departments*') ? 'active' : '' }}">
+            <a href="{{ route('departments.index') }}" class="menu-link">
                 <i class="menu-icon bx bx-buildings"></i>
                 <div data-i18n="Отделение">Отделение</div>
             </a>

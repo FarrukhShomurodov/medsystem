@@ -43,4 +43,9 @@ class ExaminationMap extends Model
     {
         return $this->hasMany(Analyze::class);
     }
+
+    public function services(): HasMany
+    {
+        return $this->hasMany(PatientService::class);
+    }
 }
