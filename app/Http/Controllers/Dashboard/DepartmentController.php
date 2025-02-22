@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Requests\DepartmentRequest;
 use App\Models\Department;
+use App\Models\DepartmentEquipment;
 use App\Models\DepartmentType;
+use App\Models\DepartmentService as Services;
 use App\Services\DepartmentService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -31,7 +33,11 @@ class DepartmentController
     public function create(): View
     {
         $types = DepartmentType::query()->get();
-        return view('admin.departments.create', compact('types'));
+        $services = Services::query()->get();
+        $equipments = DepartmentEquipment::query()->get();
+        $departments = Department::query()->get();
+
+        return view('admin.departments.create', compact('types', 'services', 'departments', 'equipments'));
     }
 
     public function store(DepartmentRequest $request): RedirectResponse
@@ -45,7 +51,8 @@ class DepartmentController
     public function edit(Department $department): View
     {
         $types = DepartmentType::query()->get();
-        return view('admin.departments.edit', compact('department', 'types'));
+        $services = Services::query()->get();
+        return view('admin.departments.edit', compact('department', 'types', 'services'));
     }
 
     public function update(DepartmentRequest $request, Department $department): RedirectResponse

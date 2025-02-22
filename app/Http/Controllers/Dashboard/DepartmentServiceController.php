@@ -37,7 +37,7 @@ class DepartmentServiceController
         $validated = $request->validated();
         $this->service->store((array)$validated);
 
-        return redirect()->route('departments.service.index')->with('success', 'Город успешно добавлен!');
+        return redirect()->route('departments.service.index')->with('success', 'Услуга отделение успешно добавлена!');
     }
 
     public function edit(DepartmentService $service): View
@@ -50,13 +50,13 @@ class DepartmentServiceController
         $validated = $request->validated();
         $this->service->update($service, (array)$validated);
 
-        return redirect()->route('departments.service.index')->with('success', 'Город успешно обновлен!');
+        return redirect()->route('departments.service.index')->with('success', 'Услуга отделение успешно обновлена!');
     }
 
     public function destroy(DepartmentService $service): RedirectResponse
     {
         $this->service->destroy($service);
 
-        return redirect()->route('departments.service.index')->with('success', 'Город успешно удален!');
+        return redirect()->route('departments.service.index')->with('success', 'Услуга отделение успешно удалена!');
     }
 }
