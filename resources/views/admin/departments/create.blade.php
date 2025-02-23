@@ -51,6 +51,20 @@
                     <span class="bs-stepper-label">Лицензии</span>
                 </button>
             </div>
+            <div class="line"></div>
+            <div class="step" data-target="#ralations">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">5</span>
+                    <span class="bs-stepper-label">Свять с отделениями</span>
+                </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#resources">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">6</span>
+                    <span class="bs-stepper-label">Ресурсы</span>
+                </button>
+            </div>
         </div>
 
         <div class="bs-stepper-content">
@@ -98,20 +112,20 @@
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label" for="basic-icon-default-target">Описание </label>
+                            <label class="form-label" for="basic-icon-default-description">Описание </label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-history2"
-                                      class="input-group-text @error('target') text-danger icon-border @enderror">
+                                      class="input-group-text @error('description') text-danger icon-border @enderror">
                                     <i class="bx bx-notepad"></i>
                                 </span>
-                                <textarea id="basic-icon-default-target"
-                                          class="form-control @error('target') is-invalid @enderror"
+                                <textarea id="basic-icon-default-description"
+                                          class="form-control @error('description') is-invalid @enderror"
                                           placeholder="Описание"
                                           aria-label="Описание"
-                                          name="target"
-                                          aria-describedby="basic-icon-default-history2">{{ old('target') }}</textarea>
+                                          name="description"
+                                          aria-describedby="basic-icon-default-history2">{{ old('description') }}</textarea>
                             </div>
-                            @error('target')
+                            @error('description')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -285,7 +299,7 @@
                             <span id="basic-icon-default-total_beds"
                                   class="input-group-text @error('total_beds') text-danger icon-border @enderror"><i
                                     class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-total_beds"
+                                <input type="number" id="basic-icon-default-total_beds"
                                        class="form-control @error('total_beds') is-invalid @enderror"
                                        name="total_beds"
                                        value="{{ old('total_beds') }}"
@@ -305,7 +319,7 @@
                             <span id="basic-icon-default-occupied_beds"
                                   class="input-group-text @error('occupied_beds') text-danger icon-border @enderror"><i
                                     class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-occupied_beds"
+                                <input type="number" id="basic-icon-default-occupied_beds"
                                        class="form-control @error('occupied_beds') is-invalid @enderror"
                                        name="occupied_beds"
                                        value="{{ old('occupied_beds') }}"
@@ -314,6 +328,26 @@
                             </div>
 
                             @error('occupied_beds')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label" for="services">Услуги <span
+                                    class="text-danger">*</span></label>
+
+                            <select id="services" name="services[]"
+                                    class="form-control select2 @error('services') is-invalid @enderror" required
+                                    multiple>
+                                @foreach($services as $service)
+                                    <option
+                                        value="{{ $service->id }}" @selected(in_array($service->id, old('services', [])) )>
+                                        {{ $service->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('services')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -366,10 +400,86 @@
                                 </span>
                                 <input type="text" name="expiration_date" value="{{ old('expiration_date') }}"
                                        id="basic-icon-expiration_date"
-                                       class="form-control flatpickr-date @error('v') is-invalid @enderror"
+                                       class="form-control flatpickr-date @error('expiration_date') is-invalid @enderror"
                                        placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2" required/>
                             </div>
                             @error('expiration_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Свять с отделениями -->
+                <div id="ralations" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Свять с отделениями</h6>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label" for="relations">Отделения<span
+                                    class="text-danger">*</span></label>
+
+                            <select id="relations" name="relations[]"
+                                    class="form-control select2 @error('relations') is-invalid @enderror"
+                                    multiple>
+                                @foreach($departments as $department)
+                                    <option
+                                        value="{{ $department->id }}" @selected(in_array($department->id, old('relations', [])) )>
+                                        {{ $department->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('relations')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ресурсы -->
+                <div id="resources" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Ресурсы</h6>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label" for="equipments">Оборудование<span
+                                    class="text-danger">*</span></label>
+
+                            <select id="equipments" name="equipments[]"
+                                    class="form-control select2 @error('equipments') is-invalid @enderror" required
+                                    multiple>
+                                @foreach($equipments as $equipment)
+                                    <option
+                                        value="{{ $equipment->id }}" @selected(in_array($equipment->id, old('equipments', [])) )>
+                                        {{ $equipment->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('equipments')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

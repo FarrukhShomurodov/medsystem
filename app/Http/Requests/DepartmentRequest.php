@@ -19,6 +19,7 @@ class DepartmentRequest extends FormRequest
             'total_beds' => 'required|integer|min:0',
             'occupied_beds' => 'required|integer|min:0|lte:total_beds',
             'phone' => 'required|string|max:20',
+            'address' => 'required|string',
             'email' => 'nullable|email|max:255',
             'fax' => 'nullable|string|max:20',
             'head_name' => 'nullable|string|max:255',
@@ -27,11 +28,11 @@ class DepartmentRequest extends FormRequest
             'doctors_count' => 'integer|min:0',
             'nurses_count' => 'integer|min:0',
             'lab_technicians_count' => 'integer|min:0',
-            'last_inspection' => 'nullable|date',
-            'status' => 'required|in:active,inactive,pending',
             'license_number' => 'required|string',
-            'expiration_date' => 'required|date|after:today',
+            'expiration_date' => 'required|date',
             'services' => 'required|array',
+            'relations' => 'nullable|array',
+            'equipments' => 'required|array',
         ];
     }
 }

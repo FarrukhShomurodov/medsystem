@@ -11,7 +11,6 @@ class DepartmentEmploye extends Model
         'department_id',
         'doctors_count',
         'nurses_count',
-        'lab_technicians_count',
     ];
 
     public function department(): BelongsTo

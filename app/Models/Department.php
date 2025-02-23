@@ -35,9 +35,19 @@ class Department extends Model
         return $this->hasOne(DepartmentEmploye::class);
     }
 
-    public function service(): BelongsToMany
+    public function services(): BelongsToMany
     {
-        return $this->belongsToMany(DepartmentService::class, 'department_services');
+        return $this->belongsToMany(DepartmentService::class, 'department_service_assignment', 'department_id', 'department_service_id');
+    }
+
+    public function relations(): BelongsToMany
+    {
+        return $this->belongsToMany(Department::class, 'department_relations', 'department_id', 'relation_department_id');
+    }
+
+    public function equipments(): BelongsToMany
+    {
+        return $this->belongsToMany(DepartmentService::class, 'department_equipment_assignment', 'department_id', 'department_equipment_id');
     }
 
     public function license(): HasOne

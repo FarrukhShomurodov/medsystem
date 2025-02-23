@@ -56,9 +56,9 @@
                         <td>
                             <div class="d-inline-block text-nowrap">
                                 <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('departments.edit', $service->id) }}'"><i
+                                        onclick="location.href='{{ route('departments.edit', $department->id) }}'"><i
                                         class="bx bx-edit"></i></button>
-                                <form action="{{ route('departments.destroy', $service->id) }}" method="POST"
+                                <form action="{{ route('departments.destroy', $department->id) }}" method="POST"
                                       style="display:inline;">
                                     @csrf
                                     @method('DELETE')

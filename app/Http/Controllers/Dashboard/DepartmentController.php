@@ -45,7 +45,7 @@ class DepartmentController
         $validated = $request->validated();
         $this->service->store((array)$validated);
 
-        return redirect()->route('departments.index')->with('success', 'Город успешно добавлен!');
+        return redirect()->route('departments.index')->with('success', 'Отделение успешно добавлен!');
     }
 
     public function edit(Department $department): View
@@ -60,13 +60,13 @@ class DepartmentController
         $validated = $request->validated();
         $this->service->update($department, (array)$validated);
 
-        return redirect()->route('departments.index')->with('success', 'Город успешно обновлен!');
+        return redirect()->route('departments.index')->with('success', 'Отделение успешно обновлен!');
     }
 
     public function destroy(Department $department): RedirectResponse
     {
         $this->service->destroy($department);
 
-        return redirect()->route('departments.index')->with('success', 'Город успешно удален!');
+        return redirect()->route('departments.index')->with('success', 'Отделение успешно удален!');
     }
 }

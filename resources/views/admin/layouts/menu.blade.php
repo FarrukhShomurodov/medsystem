@@ -189,25 +189,61 @@
         {{--        </li>  --}}
 
 
-        <li class="menu-item {{ Request::is('dashboard/departments') || Request::is('dashboard/departments/create') || Request::is('dashboard/edit/*') || Request::is('dashboard/departments/service*')  ? 'open' : '' }}"
-            style="">
+        <li class="menu-item {{ Request::is('dashboard/departments') || Request::is('dashboard/departments/create') || Request::is('dashboard/departments/edit/*')
+            || Request::is('dashboard/departments/services*')
+            || Request::is('dashboard/departments/types*')
+            || Request::is('dashboard/departments/equipments*')  ? 'open' : '' }}" style="">
+
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon bx bx-buildings"></i>
                 <div data-i18n="Отделение">Отделение</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {{ Request::is('dashboard/departments') || Request::is('dashboard/departments/create') || Request::is('dashboard/edit/*') ? 'active' : '' }}">
+                <li class="menu-item {{ Request::is('dashboard/departments') || Request::is('dashboard/departments/create') || Request::is('dashboard/departments/edit/*') ? 'active' : '' }}">
                     <a href="{{route('departments.index')}}" class="menu-link">
                         <div data-i18n="Список">Список</div>
                     </a>
                 </li>
-                <li class="menu-item {{ Request::is('dashboard/departments/service*') ? 'active' : '' }}">
+                <li class="menu-item {{ Request::is('dashboard/departments/types*') ? 'active' : '' }}">
+                    <a href="{{route('departments.type.index')}}" class="menu-link">
+                        <div data-i18n="Типы">Типы</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('dashboard/departments/services*') ? 'active' : '' }}">
                     <a href="{{route('departments.service.index')}}" class="menu-link">
                         <div data-i18n="Услуги">Услуги</div>
                     </a>
                 </li>
+                <li class="menu-item {{ Request::is('dashboard/departments/equipments*') ? 'active' : '' }}">
+                    <a href="{{route('departments.equipment.index')}}" class="menu-link">
+                        <div data-i18n="Оборудование">Оборудование</div>
+                    </a>
+                </li>
             </ul>
         </li>
+
+
+        <li class="menu-item {{ Request::is('dashboard/staffs')
+            || Request::is('dashboard/staffs/create')
+            || Request::is('dashboard/staffs/edit/*') ? 'open' : '' }}" style="">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon  bx bx-user"></i>
+                <div data-i18n="Персонал">Персонал</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ Request::is('dashboard/staffs') || Request::is('dashboard/staffs/create') || Request::is('dashboard/staff/edit/*') ? 'active' : '' }}">
+                    <a href="{{route('staffs.index')}}" class="menu-link">
+                        <div data-i18n="Список">Список</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('dashboard/staffs/positions*') ? 'active' : '' }}">
+                    <a href="{{route('staffs.position.index')}}" class="menu-link">
+                        <div data-i18n="Должность">Должность</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
 
         <li class="menu-item {{ Request::is('dashboard/allegories*') ? 'active' : '' }}">
             <a href="{{ route('allegories.index') }}" class="menu-link">

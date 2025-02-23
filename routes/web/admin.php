@@ -11,7 +11,9 @@ use App\Http\Controllers\Dashboard\ChronicDiseaseController;
 use App\Http\Controllers\Dashboard\CityController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\DepartmentController;
+use App\Http\Controllers\Dashboard\DepartmentEquipmentController;
 use App\Http\Controllers\Dashboard\DepartmentServiceController;
+use App\Http\Controllers\Dashboard\DepartmentTypeController;
 use App\Http\Controllers\Dashboard\DoctorController;
 use App\Http\Controllers\Dashboard\ExaminationMapController;
 use App\Http\Controllers\Dashboard\InstitutionController;
@@ -30,6 +32,8 @@ use App\Http\Controllers\Dashboard\ServiceMethodController;
 use App\Http\Controllers\Dashboard\ServiceStaffController;
 use App\Http\Controllers\Dashboard\ServiceStaffSpecialtyController;
 use App\Http\Controllers\Dashboard\SpecialtyController;
+use App\Http\Controllers\Dashboard\StaffController;
+use App\Http\Controllers\Dashboard\StaffPositionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,10 +51,21 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::resource('doctors', DoctorController::class);
     Route::resource('institutions', InstitutionController::class);
 
+    // department
     Route::prefix('departments')->group(function () {
         Route::resource('', DepartmentController::class)->names('departments');
-        Route::resource('/service', DepartmentServiceController::class)->names('departments.service');
+        Route::resource('/services', DepartmentServiceController::class)->names('departments.service');
+        Route::resource('/types', DepartmentTypeController::class)->names('departments.type');
+        Route::resource('/equipments', DepartmentEquipmentController::class)->names('departments.equipment');
     });
+
+
+    // staff
+    Route::prefix('staffs')->group(function () {
+        Route::resource('', StaffController::class)->names('staffs')->parameter('', 'staff');
+        Route::resource('/positions', StaffPositionController::class)->names('staffs.position');
+    });
+
 
     // analyze
     Route::resource('analyzes', AnalyzeController::class);

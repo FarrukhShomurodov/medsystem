@@ -10,9 +10,9 @@ return new class extends Migration {
         Schema::create('department_employes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();
-            $table->integer('doctors_count');
-            $table->integer('nurses_count');
-            $table->integer('lab_technicians_count');
+            $table->integer('doctors_count')->default(0);
+            $table->integer('nurses_count')->default(0);
+//            $table->integer('lab_technicians_count');
             $table->timestamps();
         });
     }

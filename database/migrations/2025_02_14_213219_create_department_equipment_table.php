@@ -9,7 +9,6 @@ return new class extends Migration {
     {
         Schema::create('department_equipment', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('department_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->date('last_inspection');
             $table->enum('status', ['working', 'broken']);

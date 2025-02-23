@@ -527,10 +527,11 @@
 
                         <!-- Navigation -->
                         <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev">
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            <button class="btn btn-primary btn-prev"><i
+                                    class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                <span class="d-sm-inline-block d-none">Назад</span>
                             </button>
-                            <button type="submit" class="btn btn-success">Сохранить</button>
+                            <button type="submit" class="btn btn-warning">Редактировать</button>
                         </div>
                     </div>
                 </div>

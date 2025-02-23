@@ -9,10 +9,11 @@ return new class extends Migration {
     {
         Schema::create('department_contacts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('department_id ')->constrained()->cascadeOnDelete();
+            $table->foreignId('department_id')->constrained()->cascadeOnDelete();
             $table->string('phone');
             $table->string('email');
             $table->string('fax');
+            $table->text('address');
             $table->string('head_name');
             $table->string('head_position');
             $table->string('head_contact');
