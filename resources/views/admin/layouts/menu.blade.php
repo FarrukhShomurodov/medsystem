@@ -233,18 +233,21 @@
             </ul>
         </li>
 
-        <li class="menu-item {{ Request::is('dashboard/warehouses/types*') || Request::is('dashboard/suppliers*') ? 'open' : '' }}"
+        <li class="menu-item {{ Request::is('dashboard/warehouses/types*')
+            || Request::is('dashboard/suppliers*')
+            || Request::is('dashboard/warehouses') || Request::is('dashboard/warehouses/create')
+            || Request::is('dashboard/warehouses/edit/*') ? 'open' : '' }}"
             style="">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon bx bx-store"></i>
                 <div data-i18n="Склад">Склад</div>
             </a>
             <ul class="menu-sub">
-                {{--                <li class="menu-item {{ Request::is('dashboard/staffs') || Request::is('dashboard/staffs/create') || Request::is('dashboard/staff/edit/*') ? 'active' : '' }}">--}}
-                {{--                    <a href="{{route('staffs.index')}}" class="menu-link">--}}
-                {{--                        <div data-i18n="Список">Список</div>--}}
-                {{--                    </a>--}}
-                {{--                </li>--}}
+                <li class="menu-item {{ Request::is('dashboard/warehouses') || Request::is('dashboard/warehouses/create') || Request::is('dashboard/warehouses/edit/*') ? 'active' : '' }}">
+                    <a href="{{route('warehouses.index')}}" class="menu-link">
+                        <div data-i18n="Список">Список</div>
+                    </a>
+                </li>
                 <li class="menu-item {{ Request::is('dashboard/warehouses/types*') ? 'active' : '' }}">
                     <a href="{{route('warehouses.type.index')}}" class="menu-link">
                         <div data-i18n="Типы">Типы</div>

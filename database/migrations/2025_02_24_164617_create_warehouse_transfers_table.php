@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('warehouse_transfers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('warehouse_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('supplier_id')->constrained('medical_supplies')->cascadeOnDelete();
+            $table->foreignId('supplier_id')->constrained('suppliers')->cascadeOnDelete();
             $table->string('transport');
             $table->string('invoices');
             $table->string('quality_certificates');

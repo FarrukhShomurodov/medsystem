@@ -36,6 +36,7 @@ use App\Http\Controllers\Dashboard\SpecialtyController;
 use App\Http\Controllers\Dashboard\StaffController;
 use App\Http\Controllers\Dashboard\StaffPositionController;
 use App\Http\Controllers\Dashboard\SupplierController;
+use App\Http\Controllers\Dashboard\WarehouseController;
 use App\Http\Controllers\Dashboard\WarehouseTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -78,6 +79,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // warehouse
     Route::prefix('warehouses')->group(function () {
+        Route::resource('/', WarehouseController::class)->names('warehouses');
         Route::resource('/types', WarehouseTypeController::class)->names('warehouses.type');
     });
 
