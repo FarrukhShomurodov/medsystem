@@ -11,7 +11,7 @@ use App\Http\Controllers\Dashboard\ChronicDiseaseController;
 use App\Http\Controllers\Dashboard\CityController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\DepartmentController;
-use App\Http\Controllers\Dashboard\DepartmentEquipmentController;
+use App\Http\Controllers\Dashboard\EquipmentController;
 use App\Http\Controllers\Dashboard\DepartmentServiceController;
 use App\Http\Controllers\Dashboard\DepartmentTypeController;
 use App\Http\Controllers\Dashboard\DoctorController;
@@ -20,6 +20,7 @@ use App\Http\Controllers\Dashboard\InstitutionController;
 use App\Http\Controllers\Dashboard\LaboratoryController;
 use App\Http\Controllers\Dashboard\MedicalDeviceController;
 use App\Http\Controllers\Dashboard\MedicalEquipmentController;
+use App\Http\Controllers\Dashboard\MedicalSupplyController;
 use App\Http\Controllers\Dashboard\MedicationController;
 use App\Http\Controllers\Dashboard\PatientController;
 use App\Http\Controllers\Dashboard\PatientServiceController;
@@ -34,6 +35,8 @@ use App\Http\Controllers\Dashboard\ServiceStaffSpecialtyController;
 use App\Http\Controllers\Dashboard\SpecialtyController;
 use App\Http\Controllers\Dashboard\StaffController;
 use App\Http\Controllers\Dashboard\StaffPositionController;
+use App\Http\Controllers\Dashboard\SupplierController;
+use App\Http\Controllers\Dashboard\WarehouseTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -56,14 +59,26 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         Route::resource('', DepartmentController::class)->names('departments');
         Route::resource('/services', DepartmentServiceController::class)->names('departments.service');
         Route::resource('/types', DepartmentTypeController::class)->names('departments.type');
-        Route::resource('/equipments', DepartmentEquipmentController::class)->names('departments.equipment');
     });
 
+    //equipments
+    Route::resource('/equipments', EquipmentController::class)->names('equipment');
 
     // staff
     Route::prefix('staffs')->group(function () {
         Route::resource('', StaffController::class)->names('staffs')->parameter('', 'staff');
         Route::resource('/positions', StaffPositionController::class)->names('staffs.position');
+    });
+
+    // supplies
+    Route::resource('supplies', MedicalSupplyController::class);
+
+    // suppliers
+    Route::resource('suppliers', SupplierController::class);
+
+    // warehouse
+    Route::prefix('warehouses')->group(function () {
+        Route::resource('/types', WarehouseTypeController::class)->names('warehouses.type');
     });
 
 
@@ -94,7 +109,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     Route::resource('laboratories', LaboratoryController::class);
     Route::resource('methods', AnalyzeMethodController::class);
-    Route::resource('equipments', MedicalEquipmentController::class);
+//    Route::resource('equipments', MedicalEquipmentController::class);
     Route::resource('types', AnalyzeTypeController::class);
 
     Route::resource('regions', RegionController::class);

@@ -36,7 +36,7 @@
             </a>
         </li>
 
-        <li class="menu-item {{ Request::is('dashboard/analyzes*') || Request::is('dashboard/laboratories*') || Request::is('dashboard/methods*') || Request::is('dashboard/equipments*') || Request::is('dashboard/types*')  ? 'open' : '' }}"
+        <li class="menu-item {{ Request::is('dashboard/analyzes*') || Request::is('dashboard/laboratories*') || Request::is('dashboard/methods*') || Request::is('dashboard/types*')  ? 'open' : '' }}"
             style="">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon bx bx-dna"></i>
@@ -56,11 +56,6 @@
                 <li class="menu-item {{ Request::is('dashboard/methods*') ? 'active' : '' }}">
                     <a href="{{route('methods.index')}}" class="menu-link">
                         <div data-i18n="Методы">Методы</div>
-                    </a>
-                </li>
-                <li class="menu-item {{ Request::is('dashboard/equipments*') ? 'active' : '' }}">
-                    <a href="{{route('equipments.index')}}" class="menu-link">
-                        <div data-i18n="Оборудование">Оборудование</div>
                     </a>
                 </li>
                 <li class="menu-item {{ Request::is('dashboard/types*') ? 'active' : '' }}">
@@ -191,8 +186,7 @@
 
         <li class="menu-item {{ Request::is('dashboard/departments') || Request::is('dashboard/departments/create') || Request::is('dashboard/departments/edit/*')
             || Request::is('dashboard/departments/services*')
-            || Request::is('dashboard/departments/types*')
-            || Request::is('dashboard/departments/equipments*')  ? 'open' : '' }}" style="">
+            || Request::is('dashboard/departments/types*')  ? 'open' : '' }}" style="">
 
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon bx bx-buildings"></i>
@@ -212,11 +206,6 @@
                 <li class="menu-item {{ Request::is('dashboard/departments/services*') ? 'active' : '' }}">
                     <a href="{{route('departments.service.index')}}" class="menu-link">
                         <div data-i18n="Услуги">Услуги</div>
-                    </a>
-                </li>
-                <li class="menu-item {{ Request::is('dashboard/departments/equipments*') ? 'active' : '' }}">
-                    <a href="{{route('departments.equipment.index')}}" class="menu-link">
-                        <div data-i18n="Оборудование">Оборудование</div>
                     </a>
                 </li>
             </ul>
@@ -244,6 +233,44 @@
             </ul>
         </li>
 
+        <li class="menu-item {{ Request::is('dashboard/warehouses/types*') || Request::is('dashboard/suppliers*') ? 'open' : '' }}"
+            style="">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon bx bx-store"></i>
+                <div data-i18n="Склад">Склад</div>
+            </a>
+            <ul class="menu-sub">
+                {{--                <li class="menu-item {{ Request::is('dashboard/staffs') || Request::is('dashboard/staffs/create') || Request::is('dashboard/staff/edit/*') ? 'active' : '' }}">--}}
+                {{--                    <a href="{{route('staffs.index')}}" class="menu-link">--}}
+                {{--                        <div data-i18n="Список">Список</div>--}}
+                {{--                    </a>--}}
+                {{--                </li>--}}
+                <li class="menu-item {{ Request::is('dashboard/warehouses/types*') ? 'active' : '' }}">
+                    <a href="{{route('warehouses.type.index')}}" class="menu-link">
+                        <div data-i18n="Типы">Типы</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('dashboard/suppliers*') ? 'active' : '' }}">
+                    <a href="{{route('suppliers.index')}}" class="menu-link">
+                        <div data-i18n="Поставшик">Поставшик</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="menu-item {{ Request::is('dashboard/equipments*') ? 'active' : '' }}">
+            <a href="{{ route('equipment.index') }}" class="menu-link">
+                <i class="menu-icon bx bx-first-aid"></i>
+                <div data-i18n="Оборудование">Оборудование</div>
+            </a>
+        </li>
+
+        <li class="menu-item {{ Request::is('dashboard/supplies*') ? 'active' : '' }}">
+            <a href="{{ route('supplies.index') }}" class="menu-link">
+                <i class="menu-icon bx bx-package"></i>
+                <div data-i18n="Расходные материалы">Расходные материалы</div>
+            </a>
+        </li>
 
         <li class="menu-item {{ Request::is('dashboard/allegories*') ? 'active' : '' }}">
             <a href="{{ route('allegories.index') }}" class="menu-link">

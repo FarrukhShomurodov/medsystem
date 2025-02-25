@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Requests\DepartmentRequest;
 use App\Models\Department;
-use App\Models\DepartmentEquipment;
+use App\Models\Equipment;
 use App\Models\DepartmentType;
 use App\Models\DepartmentService as Services;
 use App\Services\DepartmentService;
@@ -34,7 +34,7 @@ class DepartmentController
     {
         $types = DepartmentType::query()->get();
         $services = Services::query()->get();
-        $equipments = DepartmentEquipment::query()->get();
+        $equipments = Equipment::query()->get();
         $departments = Department::query()->get();
 
         return view('admin.departments.create', compact('types', 'services', 'departments', 'equipments'));

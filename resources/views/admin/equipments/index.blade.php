@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Медицинская система | Оборудование </title>
+    <title>Медицинская система | Обородувание</title>
 @endsection
 
 @section('content')
     <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light">Оборудование </span>
+        <span class="text-muted fw-light">Обородувание</span>
     </h6>
 
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
@@ -33,8 +33,8 @@
 
     <div class="card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Оборудование </h5>
-            <a href="{{ route('equipments.create') }}" class="btn btn-primary "
+            <h5 class="card-header">Обородувание</h5>
+            <a href="{{ route('equipment.create') }}" class="btn btn-primary "
                style="margin-right: 22px;">Создать</a>
         </div>
         <div class="card-datatable table-responsive">
@@ -43,21 +43,24 @@
                 <tr>
                     <th>#</th>
                     <th>Название</th>
+                    <th>Статус</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($equipments as $device)
+                @foreach($equipments as $equipment)
                     <tr>
-                        <td>{{ $device->id }}</td>
-                        <td>{{ $device->name }}</td>
+                        <td>{{ $equipment->id }}</td>
+                        <td>{{ $equipment->name }}</td>
+                        <td>{{ $equipment->status }}</td>
 
                         <td>
                             <div class="d-inline-block text-nowrap">
                                 <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('equipments.edit', $device->id) }}'"><i
+                                        onclick="location.href='{{ route('equipment.edit', $equipment->id) }}'">
+                                    <i
                                         class="bx bx-edit"></i></button>
-                                <form action="{{ route('equipments.destroy', $device->id) }}" method="POST"
+                                <form action="{{ route('equipment.destroy', $equipment->id) }}" method="POST"
                                       style="display:inline;">
                                     @csrf
                                     @method('DELETE')

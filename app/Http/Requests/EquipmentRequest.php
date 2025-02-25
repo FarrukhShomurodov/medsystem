@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Models\DepartmentEquipment;
+use App\Models\Equipment;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class DepartmentEquipmentRequest extends FormRequest
+class EquipmentRequest extends FormRequest
 {
     /**
      * @return array<string>
@@ -16,7 +16,7 @@ class DepartmentEquipmentRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'last_inspection' => 'required|date',
-            'status' => ['required', Rule::in(DepartmentEquipment::STATUS)],
+            'status' => ['required', Rule::in(Equipment::STATUS)],
         ];
     }
 }

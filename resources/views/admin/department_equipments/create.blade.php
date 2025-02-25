@@ -33,11 +33,11 @@
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label" for="basic-icon-default-company">Название <span
-                                class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
                         <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
                                   class="input-group-text @error('name') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
+                                        class="bx bx-rename"></i></span>
                             <input type="text" id="basic-icon-default-company"
                                    class="form-control @error('name') is-invalid @enderror"
                                    placeholder="Название" aria-label="Название"
@@ -52,15 +52,15 @@
 
                     <div class="mb-3 col-6">
                         <label class="form-label" for="status">Статус <span
-                                class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
 
                         <select name="status"
                                 class="select2 form-control @error('status') is-invalid @enderror"
                                 id="status"
                                 required>
-                            @foreach(\App\Models\DepartmentEquipment::STATUS as $status)
+                            @foreach(\App\Models\Equipment::STATUS as $status)
                                 <option
-                                    value="{{ $status }}" @selected($status == old('region_id'))> {{ $status }} </option>
+                                        value="{{ $status }}" @selected($status == old('region_id'))> {{ $status }} </option>
                             @endforeach
                         </select>
 
@@ -72,7 +72,7 @@
 
                 <div class="mb-3">
                     <label class="form-label" for="basic-icon-last_inspection">Дата последней проверки <span
-                            class="text-danger">*</span></label>
+                                class="text-danger">*</span></label>
                     <div class="input-group input-group-merge">
                                 <span id="basic-icon-birth-date2"
                                       class="input-group-text @error('last_inspection') text-danger icon-border @enderror">

@@ -7,17 +7,20 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('department_equipment', function (Blueprint $table) {
+        Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->date('last_inspection');
-            $table->enum('status', ['working', 'broken']);
+            $table->string('contract_terms');
+            $table->string('phone');
+            $table->string('email');
+            $table->string('address');
+            $table->string('delivery_schedule');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('department_equipment');
+        Schema::dropIfExists('suppliers');
     }
 };
