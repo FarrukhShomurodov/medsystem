@@ -24,6 +24,7 @@ use App\Http\Controllers\Dashboard\MedicalSupplyController;
 use App\Http\Controllers\Dashboard\MedicationController;
 use App\Http\Controllers\Dashboard\PatientController;
 use App\Http\Controllers\Dashboard\PatientServiceController;
+use App\Http\Controllers\Dashboard\PharmacyTypeController;
 use App\Http\Controllers\Dashboard\ProcedureController;
 use App\Http\Controllers\Dashboard\RegionController;
 use App\Http\Controllers\Dashboard\ServiceCategoryController;
@@ -83,6 +84,10 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         Route::resource('/types', WarehouseTypeController::class)->names('warehouses.type');
     });
 
+    // pharmacy
+    Route::prefix('pharmacy')->group(function () {
+        Route::resource('/types', PharmacyTypeController::class)->names('pharmacy.types');
+    });
 
     // analyze
     Route::resource('analyzes', AnalyzeController::class);
