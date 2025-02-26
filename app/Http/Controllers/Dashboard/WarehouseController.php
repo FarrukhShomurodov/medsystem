@@ -51,8 +51,10 @@ class WarehouseController
     public function edit(Warehouse $warehouse): View
     {
         $types = WarehouseType::query()->get();
+        $medications = Medication::query()->get();
+        $suppliers = Supplier::query()->get();
 
-        return view('admin.warehouses.edit', compact('warehouse', 'types'));
+        return view('admin.warehouses.edit', compact('warehouse', 'types', 'medications', 'suppliers'));
     }
 
     public function update(WarehouseRequest $request, Warehouse $warehouse): RedirectResponse

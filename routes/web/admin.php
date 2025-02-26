@@ -79,7 +79,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // warehouse
     Route::prefix('warehouses')->group(function () {
-        Route::resource('/', WarehouseController::class)->names('warehouses');
+        Route::resource('/', WarehouseController::class)->names('warehouses')->parameter('', 'warehouse');
         Route::resource('/types', WarehouseTypeController::class)->names('warehouses.type');
     });
 
