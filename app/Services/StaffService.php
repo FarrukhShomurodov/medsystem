@@ -41,9 +41,15 @@ class StaffService
             $validated['staff_id'] = $staff->id;
 
             // Создание связанных записей
-            $staff->contact()->create($validated);
-            $staff->document()->create($validated);
-            $staff->professionalData()->create($validated);
+            $staff->contact()->update(
+                array_intersect_key($validated, array_flip($staff->contact->getFillable()))
+            );
+            $staff->document()->update(
+                array_intersect_key($validated, array_flip($staff->document->getFillable()))
+            );
+            $staff->professionalData()->update(
+                array_intersect_key($validated, array_flip($staff->professionalData->getFillable()))
+            );
 
             // Синхронизация услуг
             if (!empty($validated['services'])) {

@@ -52,7 +52,10 @@ class DepartmentController
     {
         $types = DepartmentType::query()->get();
         $services = Services::query()->get();
-        return view('admin.departments.edit', compact('department', 'types', 'services'));
+        $equipments = Equipment::query()->get();
+        $departments = Department::query()->get();
+
+        return view('admin.departments.edit', compact('department', 'types', 'services', 'departments', 'equipments'));
     }
 
     public function update(DepartmentRequest $request, Department $department): RedirectResponse

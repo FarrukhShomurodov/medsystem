@@ -68,7 +68,7 @@
 
         {{-- Услуги --}}
         <li class="menu-item {{ Request::is('dashboard/services*') ||  Request::is('dashboard/services/categories*')
-            || Request::is('dashboard/medications*') || Request::is('dashboard/services/procedures*')
+            || Request::is('dashboard/services/procedures*')
             || Request::is('dashboard/services/methods*') || Request::is('dashboard/services/equipments*')
             || Request::is('dashboard/services/staff-specialties*') || Request::is('dashboard/services/staffs*')
             || Request::is('dashboard/services/assign-patient*') ? 'open' : '' }}"
@@ -91,11 +91,6 @@
                 <li class="menu-item {{ Request::is('dashboard/services/categories*') ? 'active' : '' }}">
                     <a href="{{route('categories.index')}}" class="menu-link">
                         <div data-i18n="Категории">Категории</div>
-                    </a>
-                </li>
-                <li class="menu-item {{ Request::is('dashboard/medications*') ? 'active' : '' }}">
-                    <a href="{{route('medications.index')}}" class="menu-link">
-                        <div data-i18n="Препараты">Препараты</div>
                     </a>
                 </li>
                 <li class="menu-item {{ Request::is('dashboard/services/procedures*') ? 'active' : '' }}">
@@ -265,6 +260,13 @@
             <a href="{{ route('equipment.index') }}" class="menu-link">
                 <i class="menu-icon bx bx-first-aid"></i>
                 <div data-i18n="Оборудование">Оборудование</div>
+            </a>
+        </li>
+
+        <li class="menu-item {{ Request::is('dashboard/medications*') ? 'active' : '' }}">
+            <a href="{{ route('medications.index') }}" class="menu-link">
+                <i class="menu-icon bx bx-capsule"></i>
+                <div data-i18n="Препараты">Препараты</div>
             </a>
         </li>
 

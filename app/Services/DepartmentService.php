@@ -51,10 +51,18 @@ class DepartmentService
             $validated['department_id'] = $department->id;
 
             // Создание связанных записей
-            $department->contact()->create($validated);
-            $department->bed()->create($validated);
-            $department->employee()->create($validated);
-            $department->license()->create($validated);
+            $department->contact()->update(
+                array_intersect_key($validated, array_flip($department->contact->getFillable()))
+            );
+            $department->bed()->update(
+                array_intersect_key($validated, array_flip($department->bed->getFillable()))
+            );
+            $department->employee()->update(
+                array_intersect_key($validated, array_flip($department->employee->getFillable()))
+            );
+            $department->license()->update(
+                array_intersect_key($validated, array_flip($department->license->getFillable()))
+            );
 
             // Синхронизация услуг
             if (!empty($validated['services'])) {

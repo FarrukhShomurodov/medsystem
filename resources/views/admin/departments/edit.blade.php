@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Медицинская система | Редактировать назначиную услугу</title>
+    <title>Медицинская система | Отделение</title>
 @endsection
 
 @section('content')
     <h6 class="py-3 breadcrumb-wrapper mb-4">
         <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('analyzes.index') }}">Услуги </a> /</span>Редактировать
+                                             href="{{ route('departments.index') }}">Отделение </a> /</span>Редактировать
     </h6>
 
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
@@ -31,37 +31,44 @@
                 </button>
             </div>
             <div class="line"></div>
-            <div class="step" data-target="#details">
+            <div class="step" data-target="#contacts">
                 <button type="button" class="step-trigger">
                     <span class="bs-stepper-circle">2</span>
-                    <span class="bs-stepper-label">Детали</span>
+                    <span class="bs-stepper-label">Контактная информация</span>
                 </button>
             </div>
             <div class="line"></div>
-            <div class="step" data-target="#procedures">
+            <div class="step" data-target="#employee_details">
                 <button type="button" class="step-trigger">
                     <span class="bs-stepper-circle">3</span>
-                    <span class="bs-stepper-label">Процедуры</span>
+                    <span class="bs-stepper-label">Рабочие данные</span>
                 </button>
             </div>
             <div class="line"></div>
-            <div class="step" data-target="#medicaments">
+            <div class="step" data-target="#licenses">
                 <button type="button" class="step-trigger">
                     <span class="bs-stepper-circle">4</span>
-                    <span class="bs-stepper-label">Препараты</span>
+                    <span class="bs-stepper-label">Лицензии</span>
                 </button>
             </div>
             <div class="line"></div>
-            <div class="step" data-target="#additional_data">
+            <div class="step" data-target="#ralations">
                 <button type="button" class="step-trigger">
                     <span class="bs-stepper-circle">5</span>
-                    <span class="bs-stepper-label">Финансовая информация</span>
+                    <span class="bs-stepper-label">Свять с отделениями</span>
+                </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#resources">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">6</span>
+                    <span class="bs-stepper-label">Ресурсы</span>
                 </button>
             </div>
         </div>
 
         <div class="bs-stepper-content">
-            <form method="post" action="{{ route('patient.services.update',  $service->id) }}"
+            <form method="post" action="{{ route('departments.update', $department->id) }}"
                   enctype="multipart/form-data">
                 @csrf
                 @method('put')
@@ -72,106 +79,58 @@
                         <h6 class="mb-0">Основные данные</h6>
                     </div>
                     <div class="row g-3">
-                        <!-- Patient -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-patient">Пациент <span
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-default-company">Название <span
                                     class="text-danger">*</span></label>
-                            <select id="basic-icon-default-patient" name="patient_id"
-                                    class="form-control select2 @error('patient_id') is-invalid @enderror" required>
-                                <option value="" disabled selected>Выберите пациента</option>
-                                @foreach($patients as $patient)
-                                    <option
-                                        value="{{ $patient->id }}" @selected(old('patient_id', $service->patient_id) == $patient->id)>
-                                        {{ $patient->first_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('patient_id')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-company2"
+                                  class="input-group-text @error('name') text-danger icon-border @enderror"><i
+                                    class="bx bx-rename"></i></span>
+                                <input type="text" id="basic-icon-default-company"
+                                       class="form-control @error('name') is-invalid @enderror"
+                                       placeholder="Название" aria-label="Название"
+                                       name="name"
+                                       value="{{ old('name', $department->name) }}"
+                                       aria-describedby="basic-icon-default-company2" required/>
+                            </div>
+                            @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <!-- Examination Map -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="patient-map">Карта обследования <span
+                        <div class="col-sm-6">
+                            <label class="form-label" for="type">Типы <span
                                     class="text-danger">*</span></label>
-                            <select id="patient-map" name="examination_map_id"
-                                    class="form-control select2 @error('examination_map_id') is-invalid @enderror"
-                                    required>
-                                @foreach($maps as $map)
-                                    <option value="{{$map->id}}" @selected($map->id == $service->examination_map_id)>
-                                        {{ $map->patient->first_name }} — {{ $map->admission_date }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('examination_map_id')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <!-- Service -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="service_id">Услуга <span class="text-danger">*</span></label>
-                            <select id="service_id" name="service_id"
-                                    class="form-control select2 @error('service_id') is-invalid @enderror" required>
-                                <option value="" disabled selected>Выберите услугу</option>
-                                @foreach($maintanances as $maintanance)
+                            <select id="type" name="type_id"
+                                    class="form-control select2 @error('type_id') is-invalid @enderror" required>
+                                @foreach($types as $type)
                                     <option
-                                        value="{{ $maintanance->id }}" @selected(old('service_id', $service->service_id) == $maintanance->id)>
-                                        {{ $maintanance->name }}
+                                        value="{{ $type->id }}" @selected(old('type_id', $department->type_id) == $type->id)>
+                                        {{ $type->name }}
                                     </option>
                                 @endforeach
                             </select>
-                            @error('service_id')
+                            @error('type_id')
                             <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
-                        <!-- Doctor -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="doctor_id">Лечащий врач</label>
-                            <select id="doctor_id" name="doctor_id"
-                                    class="form-control select2 @error('doctor_id') is-invalid @enderror">
-                                <option value="" selected>Не выбрано</option>
-                                @foreach($doctors as $doctor)
-                                    <option
-                                        value="{{ $doctor->id }}" @selected(old('doctor_id', $service->doctor_id) == $doctor->id)>
-                                        {{ $doctor->first_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('doctor_id')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <!-- Institution -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="institution_id">Отделение</label>
-                            <select id="institution_id" name="institution_id"
-                                    class="form-control select2 @error('institution_id') is-invalid @enderror">
-                                <option value="" selected>Не выбрано</option>
-                                @foreach($institutions as $institution)
-                                    <option
-                                        value="{{ $institution->id }}" @selected(old('institution_id', $service->institution_id) == $institution->id)>
-                                        {{ $institution->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('institution_id')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <!-- Place -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="place">Место оказания <span
-                                    class="text-danger">*</span></label>
-                            <select id="place" name="place"
-                                    class="form-control select2 @error('place') is-invalid @enderror" required>
-                                @foreach(\App\Models\PatientService::PLACE as $value)
-                                    <option value="{{ $value }}" @selected(old('place' ,$service->place) == $value)>
-                                        {{ $value }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('place')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <div class="col-12">
+                            <label class="form-label" for="basic-icon-default-description">Описание </label>
+                            <div class="input-group input-group-merge">
+                                <span id="basic-icon-default-history2"
+                                      class="input-group-text @error('description') text-danger icon-border @enderror">
+                                    <i class="bx bx-notepad"></i>
+                                </span>
+                                <textarea id="basic-icon-default-description"
+                                          class="form-control @error('description') is-invalid @enderror"
+                                          placeholder="Описание"
+                                          aria-label="Описание"
+                                          name="description"
+                                          aria-describedby="basic-icon-default-history2">{{ old('description', $department->description) }}</textarea>
+                            </div>
+                            @error('description')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <!-- Navigation -->
@@ -186,343 +145,347 @@
                     </div>
                 </div>
 
-                <!-- Детали -->
-                <div id="details" class="content">
+                <!-- Контактная информация -->
+                <div id="contacts" class="content">
                     <div class="content-header mb-3">
-                        <h6 class="mb-0">Детали</h6>
+                        <h6 class="mb-0">Контактная информация</h6>
                     </div>
                     <div class="row g-3">
-                        {{-- status --}}
-                        <input type="hidden" name="status" value="assigned">
 
-                        <!-- Service Date -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="service_date">Дата услуги <span class="text-danger">*</span></label>
-                            <input type="text" name="service_date" id="service_date"
-                                   class="form-control flatpickr-date @error('service_date') is-invalid @enderror"
-                                   value="{{ old('service_date', $service->service_date) }}" required>
-                            @error('service_date')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
+                            <label class="form-label" for="basic-icon-default-phone">Телефон </label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-phone2"
+                                  class="input-group-text @error('phone') text-danger icon-border @enderror"><i
+                                    class="bx bx-phone"></i></span>
+                                <input type="text" id="basic-icon-default-phone"
+                                       class="form-control phone @error('phone') is-invalid @enderror"
+                                       name="phone"
+                                       value="{{ old('phone', $department->contact->phone) }}"
+                                       placeholder="+ 998 (XX) XXX XX XX" aria-label="+ 998 (XX) XXX XX XX"
+                                       aria-describedby="basic-icon-default-phone2"/>
+                            </div>
 
-                        <!-- Service Time -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="service_time">Время услуги</label>
-                            <input type="text"
-                                   name="service_time"
-                                   id="service_time"
-                                   class="flatpickr-time form-control @error('service_time') is-invalid @enderror"
-                                   value="{{ old('service_time', $service->service_time) }}">
-                            @error('service_time')
+                            @error('phone')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <!-- Methods -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="methods">Методики</label>
-                            <select id="methods" name="methods[]"
-                                    class="form-control select2 @error('methods') is-invalid @enderror" multiple>
-                                @foreach($methods as $method)
+                            <label class="form-label" for="basic-icon-default-address">
+                                Адрес
+                            </label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-company2"
+                                  class="input-group-text @error('address') text-danger icon-border @enderror">
+                                <i class="bx bx-map"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-address"
+                                       class="form-control @error('address') is-invalid @enderror"
+                                       placeholder="Адрес" aria-label="Адрес"
+                                       name="address"
+                                       value="{{ old('address', $department->contact->address) }}"
+                                       aria-describedby="basic-icon-default-company2"/>
+                            </div>
+
+                            @error('address')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-email">Email</label>
+                            <div class="input-group input-group-merge">
+                            <span class="input-group-text @error('email') text-danger icon-border @enderror"><i
+                                    class="bx bx-envelope"></i></span>
+                                <input type="email" id="basic-icon-default-email"
+                                       class="form-control @error('email') is-invalid @enderror" placeholder="Email"
+                                       name="email"
+                                       value="{{ old('email', $department->contact->email) }}"
+                                       aria-label="Email" aria-describedby="basic-icon-default-email2"/>
+                            </div>
+                            @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-fax">Fax</label>
+                            <div class="input-group input-group-merge">
+                            <span class="input-group-text @error('fax') text-danger icon-border @enderror"><i
+                                    class="bx bx-printer"></i></span>
+                                <input type="text" id="basic-icon-default-fax"
+                                       class="form-control @error('fax') is-invalid @enderror" placeholder="Fax"
+                                       name="fax"
+                                       value="{{ old('fax', $department->contact->fax) }}"
+                                       aria-label="Fax" aria-describedby="basic-icon-default-fax2"/>
+                            </div>
+                            @error('fax')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-head_name">ФИО (руководителя)</label>
+                            <div class="input-group input-group-merge">
+                                <span class="input-group-text @error('head_name') text-danger icon-border @enderror"><i
+                                        class="bx bx-user"></i></span>
+                                <input type="text" id="basic-icon-default-head_name"
+                                       class="form-control @error('head_name') is-invalid @enderror"
+                                       placeholder="ФИО (руководителя)"
+                                       name="head_name"
+                                       value="{{ old('head_name', $department->contact->head_name) }}"
+                                       aria-label="ФИО (руководителя)" aria-describedby="basic-icon-default-head_name"/>
+                            </div>
+                            @error('head_name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-head_position">Должность</label>
+                            <div class="input-group input-group-merge">
+                            <span class="input-group-text @error('head_position') text-danger icon-border @enderror"><i
+                                    class="bx bx-briefcase"></i></span>
+                                <input type="text" id="basic-icon-default-head_position"
+                                       class="form-control @error('head_position') is-invalid @enderror"
+                                       placeholder="Должность"
+                                       name="head_position"
+                                       value="{{ old('head_position', $department->contact->head_position) }}"
+                                       aria-label="Должность" aria-describedby="basic-icon-default-head_position"/>
+                            </div>
+                            @error('head_position')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label" for="basic-icon-default-head_contact">Контакт</label>
+                            <div class="input-group input-group-merge">
+                            <span class="input-group-text @error('head_contact') text-danger icon-border @enderror">
+                                <i class="bx bx-phone"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-head_contact"
+                                       class="form-control @error('head_contact') is-invalid @enderror"
+                                       placeholder="Контакт"
+                                       name="head_contact"
+                                       value="{{ old('head_contact', $department->contact->head_contact) }}"
+                                       aria-label="Контакт" aria-describedby="basic-icon-default-head_contact"/>
+                            </div>
+                            @error('head_contact')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Рабочие данные -->
+                <div id="employee_details" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Рабочие данные</h6>
+                    </div>
+                    <div class="row g-3">
+                        <!-- total_beds -->
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-default-total_beds">Количество коек </label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-total_beds"
+                                  class="input-group-text @error('total_beds') text-danger icon-border @enderror"><i
+                                    class="bx bx-bed"></i></span>
+                                <input type="number" id="basic-icon-default-total_beds"
+                                       class="form-control @error('total_beds') is-invalid @enderror"
+                                       name="total_beds"
+                                       value="{{ old('total_beds', $department->bed->total_beds) }}"
+                                       placeholder="Количество коек" aria-label="Количество коек"
+                                       aria-describedby="basic-icon-default-total_beds"/>
+                            </div>
+
+                            @error('total_beds')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- occupied_beds -->
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-default-occupied_beds">Занятые койки </label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-occupied_beds"
+                                  class="input-group-text @error('occupied_beds') text-danger icon-border @enderror"><i
+                                    class="bx bx-bed"></i></span>
+                                <input type="number" id="basic-icon-default-occupied_beds"
+                                       class="form-control @error('occupied_beds') is-invalid @enderror"
+                                       name="occupied_beds"
+                                       value="{{ old('occupied_beds', $department->bed->occupied_beds) }}"
+                                       placeholder="Занятые койки" aria-label="Занятые койки"
+                                       aria-describedby="basic-icon-default-occupied_beds"/>
+                            </div>
+
+                            @error('occupied_beds')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label" for="services">Услуги <span
+                                    class="text-danger">*</span></label>
+
+                            <select id="services" name="services[]"
+                                    class="form-control select2 @error('services') is-invalid @enderror" required
+                                    multiple>
+                                @foreach($services as $service)
                                     <option
-                                        value="{{ $method->id }}" @selected(in_array($method->id, old('methods', $service->methods->pluck('id')->toArray())))>
-                                        {{ $method->name }}
+                                        value="{{ $service->id }}" @selected(in_array($service->id, old('services', $department->services->pluck('id')->toArray())) )>
+                                        {{ $service->name }}
                                     </option>
                                 @endforeach
                             </select>
-                            @error('methods')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+
+                            @error('services')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <!-- Equipments -->
+                        <!-- Navigation -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Лицензии -->
+                <div id="licenses" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Лицензии</h6>
+                    </div>
+                    <div class="row g-3">
+                        <!-- license_number -->
                         <div class="col-sm-6">
-                            <label class="form-label" for="equipments">Оборудование</label>
+                            <label class="form-label" for="basic-icon-default-license_number">Номер лицензии </label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-license_number"
+                                  class="input-group-text @error('license_number') text-danger icon-border @enderror"><i
+                                    class="bx bx-bed"></i></span>
+                                <input type="text" id="basic-icon-default-license_number"
+                                       class="form-control @error('license_number') is-invalid @enderror"
+                                       name="license_number"
+                                       value="{{ old('license_number', $department->license->license_number) }}"
+                                       placeholder="Номер лицензии" aria-label="Номер лицензии"
+                                       aria-describedby="basic-icon-default-license_number"/>
+                            </div>
+
+                            @error('license_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-expiration_date">Срок действия лицензии <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <span id="basic-icon-birth-date2"
+                                      class="input-group-text @error('expiration_date') text-danger icon-border @enderror">
+                                    <i class="bx bx-calendar"></i>
+                                </span>
+                                <input type="text" name="expiration_date"
+                                       value="{{ old('expiration_date', $department->license->expiration_date) }}"
+                                       id="basic-icon-expiration_date"
+                                       class="form-control flatpickr-date @error('expiration_date') is-invalid @enderror"
+                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2" required/>
+                            </div>
+                            @error('expiration_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Свять с отделениями -->
+                <div id="ralations" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Свять с отделениями</h6>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label" for="relations">Отделения<span
+                                    class="text-danger">*</span></label>
+
+                            <select id="relations" name="relations[]"
+                                    class="form-control select2 @error('relations') is-invalid @enderror"
+                                    multiple>
+                                @foreach($departments as $department)
+                                    <option
+                                        value="{{ $department->id }}" @selected(in_array($department->id, old('relations', $department->relations->pluck('id')->toArray())) )>
+                                        {{ $department->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('relations')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ресурсы -->
+                <div id="resources" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Ресурсы</h6>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label" for="equipments">Оборудование<span
+                                    class="text-danger">*</span></label>
+
                             <select id="equipments" name="equipments[]"
-                                    class="form-control select2 @error('equipments') is-invalid @enderror" multiple>
+                                    class="form-control select2 @error('equipments') is-invalid @enderror" required
+                                    multiple>
                                 @foreach($equipments as $equipment)
                                     <option
-                                        value="{{ $equipment->id }}" @selected(in_array($equipment->id, old('equipments', $service->equipments->pluck('id')->toArray())))>
+                                        value="{{ $equipment->id }}" @selected(in_array($equipment->id, old('equipments', $department->equipments->pluck('id')->toArray())) )>
                                         {{ $equipment->name }}
                                     </option>
                                 @endforeach
                             </select>
+
                             @error('equipments')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <!-- Staffs -->
-                        <div class="col-sm-6">
-                            <label class="form-label" for="staffs">Персонал <span class="text-danger">*</span></label>
-                            <select id="staffs" name="staffs[]"
-                                    class="form-control select2 @error('staffs') is-invalid @enderror" multiple
-                                    required>
-                                @foreach($staffs as $staff)
-                                    <option
-                                        value="{{ $staff->id }}" @selected(in_array($staff->id, old('staffs', $service->staffs->pluck('id')->toArray())))>
-                                        {{ $staff->first_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('staffs')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <!-- Results -->
-                        <div class="col-12">
-                            <label class="form-label" for="result">Результаты</label>
-                            <textarea id="result" name="result"
-                                      class="form-control @error('result') is-invalid @enderror"
-                                      rows="4">{{ old('result', $service->result) }}</textarea>
-                            @error('result')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <!-- Navigation -->
-                        <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev">
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Процедуры -->
-                <div id="procedures" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">Процедуры</h6>
-                    </div>
-                    <div class="row g-3">
-                        <div class="mb-3">
-                            <label class="form-label">Процедуры</label>
-                            <div id="procedures-container">
-                                @foreach($service->procedures as $index => $procedure)
-                                    <div class="row mb-2 procedure-row">
-                                        <div class="col-sm-5">
-                                            <select name="procedures[]" class="form-control select2"
-                                                    data-placeholder="Выберите или введите новую процедуру" required>
-                                                <option value="{{ $procedure->id }}">{{ $procedure->name }}</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-5">
-                                            <input type="date" name="procedure_dates[]"
-                                                   class="form-control"
-                                                   value="{{ old('procedure_dates.'.$index, now()->format('Y-m-d')) }}"
-                                                   required>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <button type="button" class="btn btn-danger btn-remove-procedure">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            <button type="button" class="btn btn-primary mt-2" id="btn-add-procedure">
-                                <i class="fas fa-plus me-2"></i> Добавить процедуру
-                            </button>
-
-                            <template id="procedure-template">
-                                <div class="row mb-2 procedure-row">
-                                    <div class="col-sm-5">
-                                        <select name="procedures[]" class="form-control procedure-select"
-                                                data-placeholder="Выберите или введите новую процедуру" required>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-5">
-                                        <input type="date" name="procedure_dates[]"
-                                               class="form-control"
-                                               value="{{ now()->format('Y-m-d') }}"
-                                               required>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <button type="button" class="btn btn-danger btn-remove-procedure">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-
-
-                        <!-- Navigation -->
-                        <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev">
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Препараты -->
-                <div id="medicaments" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">Препараты</h6>
-                    </div>
-                    <div class="row g-3">
-                        <div class="mb-3">
-                            <label class="form-label">Препараты</label>
-                            <div id="medications-container">
-                                @foreach($service->medications as $index => $medication)
-                                    <div class="row mb-2 medication-row">
-                                        <div class="col-sm-3">
-                                            <select name="medications[]" class="form-control medication-select"
-                                                    required>
-                                                <option value="{{ $medication->id }}"
-                                                        selected>{{ $medication->name }}</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <input type="text"
-                                                   name="dosages[]"
-                                                   class="form-control"
-                                                   placeholder="Дозировка"
-                                                   value="{{ old('dosages.'.$index, $medication->pivot->dosage) }}"
-                                                   required>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <input type="text"
-                                                   name="admission_periods[]"
-                                                   class="form-control"
-                                                   placeholder="Период приёма"
-                                                   value="{{ old('admission_periods.'.$index, $medication->pivot->admission_period) }}"
-                                                   required>
-                                        </div>
-                                        <div class="col-sm-3">
-            <textarea name="medication_notes[]"
-                      class="form-control"
-                      placeholder="Примечания">{{ old('medication_notes.'.$index, $medication->pivot->notes) }}</textarea>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <button type="button" class="btn btn-danger btn-remove-medication">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            <button type="button" class="btn btn-primary mt-2" id="btn-add-medication">
-                                <i class="fas fa-plus me-2"></i> Добавить препарат
-                            </button>
-
-                            <template id="medication-template">
-                                <div class="row mb-2 medication-row">
-                                    <div class="col-sm-3">
-                                        <select name="medications[]" class="form-control medication-select"
-                                                required></select>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <input type="text" name="dosages[]"
-                                               class="form-control"
-                                               placeholder="Дозировка"
-                                               required>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <input type="text" name="admission_periods[]"
-                                               class="form-control"
-                                               placeholder="Период приёма"
-                                               required>
-                                    </div>
-                                    <div class="col-sm-3">
-                <textarea name="medication_notes[]"
-                          class="form-control"
-                          placeholder="Примечания"></textarea>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <button type="button" class="btn btn-danger btn-remove-medication">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-
-
-                        <!-- Navigation -->
-                        <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev">
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Финансовая информация -->
-                <div id="additional_data" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">Финансовая информация</h6>
-                    </div>
-                    <div class="row g-3">
-                        <!-- Payment Status -->
-                        <div class="col-sm-6">
-                            <label class="form-label" for="payment_status">Статус оплаты</label>
-                            <select id="payment_status" name="payment[status]"
-                                    class="form-control select2 @error('payment.status') is-invalid @enderror">
-                                <option value="" selected>Не выбрано</option>
-                                @foreach(\App\Models\PatientService::PAYMENT_STATUS as $status)
-                                    <option
-                                        value="{{ $status }}" @selected(old('payment.status', $service->payment['status']) == $status)>
-                                        {{ $status }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('payment.status')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <!-- Payment Method -->
-                        <div class="col-sm-6">
-                            <label class="form-label" for="payment_method">Метод оплаты</label>
-                            <select id="payment_method" name="payment[method]"
-                                    class="form-control select2 @error('payment.method') is-invalid @enderror">
-                                <option value="" selected>Не выбрано</option>
-                                @foreach(\App\Models\PatientService::PAYMENT_METHOD as $method)
-                                    <option
-                                        value="{{ $method }}" @selected(old('payment.method', $service->payment['method']) == $method)>
-                                        {{ $method }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('payment.method')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <!-- Insurance -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="insurance_company">Страховая компания</label>
-                            <input type="text" id="insurance_company" name="insurance_policy[company_name]"
-                                   class="form-control @error('insurance_policy.company_name') is-invalid @enderror"
-                                   value="{{ old('insurance_policy.company_name' , $service->insurance_policy['company_name']) }}">
-                            @error('insurance_policy.company_name')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="policy_number">Номер полиса</label>
-                            <input type="text" id="policy_number" name="insurance_policy[insurance_policy_number]"
-                                   class="form-control @error('insurance_policy.insurance_policy_number') is-invalid @enderror"
-                                   value="{{ old('insurance_policy.insurance_policy_number' , $service->insurance_policy['insurance_policy_number']) }}">
-                            @error('insurance_policy.insurance_policy_number')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="coverage">Процент покрытия</label>
-                            <input type="number" id="coverage" name="insurance_policy[percentage_of_coverage]"
-                                   class="form-control @error('insurance_policy.percentage_of_coverage') is-invalid @enderror"
-                                   value="{{ old('insurance_policy.percentage_of_coverage', $service->insurance_policy['percentage_of_coverage']) }}">
-                            @error('insurance_policy.percentage_of_coverage')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <!-- Navigation -->
@@ -543,106 +506,9 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
-            // Load Examination Maps
-            $('#basic-icon-default-patient').on('change', function () {
-                const patientId = $(this).val();
-                const mapSelect = $('#patient-map');
-
-                if (!patientId) {
-                    mapSelect.html('<option value="" disabled selected>Сначала выберите пациента</option>');
-                    return;
-                }
-
-                mapSelect.html('<option value="" disabled selected>Загрузка...</option>');
-
-                $.ajax({
-                    url: `/api/examination-map-by-patient/${patientId}`,
-                    type: 'GET',
-                    success: function (data) {
-                        mapSelect.html('<option value="" disabled selected>Выберите карту</option>');
-                        data.forEach(map => {
-                            mapSelect.append(
-                                `<option value="${map.id}">${map.patient_name} — ${map.admission_date}</option>`
-                            );
-                        });
-                        mapSelect.val(null).trigger('change');
-                    },
-                    error: function () {
-                        mapSelect.html('<option value="" disabled selected>Ошибка загрузки</option>');
-                    }
-                });
-            });
-
             // Initialize Flatpickr
             flatpickr('.flatpickr-date', {dateFormat: 'Y-m-d'});
-            flatpickr('.flatpickr-time', {enableTime: true, noCalendar: true});
-
-
-            // procedures
-            const container = document.getElementById('procedures-container');
-            const template = document.getElementById('procedure-template');
-
-            function initSelect2(element) {
-                const procedureData = {!! json_encode($procedures->map(function($procedure) {
-                    return ['id' => $procedure->id, 'text' => $procedure->name];
-                })) !!};
-
-                $(element).select2({
-                    tags: true,
-                    placeholder: $(element).data('placeholder'),
-                    data: procedureData,
-                    createTag: function (params) {
-                        return {
-                            id: params.term,
-                            text: params.term + ' (новая)'
-                        };
-                    }
-                });
-            }
-
-            document.getElementById('btn-add-procedure').addEventListener('click', function () {
-                const clone = template.content.cloneNode(true);
-                const select = clone.querySelector('.procedure-select');
-                container.appendChild(clone);
-                initSelect2(select);
-            });
-
-            container.addEventListener('click', function (e) {
-                if (e.target.closest('.btn-remove-procedure')) {
-                    e.target.closest('.procedure-row').remove();
-                }
-            });
-
-            // medications
-            const containerMedicaments = document.getElementById('medications-container');
-            const templateMedicaments = document.getElementById('medication-template');
-
-            function initMedicationSelect(element) {
-                $(element).select2({
-                    tags: true,
-                    placeholder: 'Выберите медикамент',
-                    data: {!! json_encode($medications->map(fn($m) => ['id' => $m->id, 'text' => $m->name])) !!},
-                    createTag: function (params) {
-                        return {
-                            id: params.term,
-                            text: params.term
-                        };
-                    }
-                });
-            }
-
-            // Добавление новой строки
-            $('#btn-add-medication').click(function () {
-                const clone = templateMedicaments.content.cloneNode(true);
-                const select = clone.querySelector('.medication-select');
-                containerMedicaments.appendChild(clone);
-                initMedicationSelect(select);
-            });
-
-            // Удаление строки
-            $(containerMedicaments).on('click', '.btn-remove-medication', function () {
-                $(this).closest('.medication-row').remove();
-            });
+            flatpickr('.flatpickr-time', {enableTime: true, noCalendar: true, time_24hr: true});
         });
     </script>
 @endsection

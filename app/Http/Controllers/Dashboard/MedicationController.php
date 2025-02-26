@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-
 use App\Http\Requests\MedicationRequest;
 use App\Models\Medication;
+use App\Models\Supplier;
 use App\Services\MedicationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -30,7 +30,8 @@ class MedicationController
 
     public function create(): View
     {
-        return view('admin.medications.create');
+        $suppliers = Supplier::query()->get();
+        return view('admin.medications.create', compact('suppliers'));
     }
 
     public function store(MedicationRequest $request): RedirectResponse
@@ -43,7 +44,8 @@ class MedicationController
 
     public function edit(Medication $medication): View
     {
-        return view('admin.medications.edit', compact('medication'));
+        $suppliers = Supplier::query()->get();
+        return view('admin.medications.edit', compact('medication', 'suppliers'));
     }
 
     public function update(MedicationRequest $request, Medication $medication): RedirectResponse

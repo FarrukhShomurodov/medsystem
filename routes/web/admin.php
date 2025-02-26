@@ -57,7 +57,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // department
     Route::prefix('departments')->group(function () {
-        Route::resource('', DepartmentController::class)->names('departments');
+        Route::resource('', DepartmentController::class)->names('departments')->parameter('', 'department');
         Route::resource('/services', DepartmentServiceController::class)->names('departments.service');
         Route::resource('/types', DepartmentTypeController::class)->names('departments.type');
     });

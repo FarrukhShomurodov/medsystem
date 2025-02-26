@@ -4,13 +4,19 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
         Schema::create('medications', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('release_form');
+            $table->string('dosage');
+            $table->string('manufacturer');
+            $table->string('country_of_manufacture');
+            $table->string('registration_number');
+            $table->date('registration_date');
+            $table->date('expiration_date');
             $table->timestamps();
         });
     }
