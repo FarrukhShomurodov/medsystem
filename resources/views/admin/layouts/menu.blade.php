@@ -256,18 +256,19 @@
             </ul>
         </li>
 
-        <li class="menu-item {{ Request::is('dashboard/pharmacy/types*') ? 'open' : '' }}"
+        <li class="menu-item {{ Request::is('dashboard/pharmacy/types*')
+            || Request::is('dashboard/pharmacy') || Request::is('dashboard/pharmacy/create') || Request::is('dashboard/pharmacy/edit/*') ? 'open' : '' }}"
             style="">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon bx bx-clinic"></i>
                 <div data-i18n="Аптека">Аптека</div>
             </a>
             <ul class="menu-sub">
-                {{--                <li class="menu-item {{ Request::is('dashboard/warehouses') || Request::is('dashboard/warehouses/create') || Request::is('dashboard/warehouses/edit/*') ? 'active' : '' }}">--}}
-                {{--                    <a href="{{route('warehouses.index')}}" class="menu-link">--}}
-                {{--                        <div data-i18n="Список">Список</div>--}}
-                {{--                    </a>--}}
-                {{--                </li>--}}
+                <li class="menu-item {{ Request::is('dashboard/pharmacy') || Request::is('dashboard/pharmacy/create') || Request::is('dashboard/pharmacy/edit/*') ? 'active' : '' }}">
+                    <a href="{{route('pharmacies.index')}}" class="menu-link">
+                        <div data-i18n="Список">Список</div>
+                    </a>
+                </li>
                 <li class="menu-item {{ Request::is('dashboard/pharmacy/types*') ? 'active' : '' }}">
                     <a href="{{route('pharmacy.types.index')}}" class="menu-link">
                         <div data-i18n="Типы">Типы</div>
