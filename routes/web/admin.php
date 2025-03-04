@@ -55,7 +55,6 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::resource('admins', AdminController::class);
 
     Route::resource('specialties', SpecialtyController::class);
-    Route::resource('doctors', DoctorController::class);
     Route::resource('institutions', InstitutionController::class);
 
     // department
@@ -70,7 +69,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // staff
     Route::prefix('staffs')->group(function () {
-        Route::resource('', StaffController::class)->names('staffs')->parameter('', 'staff');
+        Route::resource('', StaffController::class)->names('staffs')->parameter('', 'staff')->except('show');
         Route::resource('/positions', StaffPositionController::class)->names('staffs.position');
     });
 
@@ -118,7 +117,6 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         Route::resource('categories', ServiceCategoryController::class);
         Route::resource('procedures', ProcedureController::class);
         Route::resource('methods', ServiceMethodController::class)->names('service.methods');
-        Route::resource('equipments', ServiceEquipmentController::class)->names('service.equipments');
         Route::resource('staff-specialties', ServiceStaffSpecialtyController::class)->parameter('staff-specialties', 'specialty')->names('service.staff.specialties');
         Route::resource('staffs', ServiceStaffController::class)->names('service.staffs');
     });

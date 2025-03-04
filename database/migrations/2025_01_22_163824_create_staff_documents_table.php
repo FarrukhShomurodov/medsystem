@@ -11,12 +11,12 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('staff_id')->constrained()->cascadeOnDelete();
             $table->string('employment_contract_number');
-            $table->string('employment_contract_date_of_signing');
+            $table->date('employment_contract_date_of_signing');
             $table->string('employment_contract_validity_period');
             $table->string('dismissal_orders_number');
-            $table->string('dismissal_orders_date');
+            $table->date('dismissal_orders_date');
             $table->string('dismissal_reception_number');
-            $table->string('dismissal_reception_date');
+            $table->date('dismissal_reception_date');
             $table->string('passport_series');
             $table->string('INN');
             $table->string('SNILS');

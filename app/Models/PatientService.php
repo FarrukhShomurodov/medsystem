@@ -17,7 +17,7 @@ class PatientService extends Model
         'service_id',
         'patient_id',
         'examination_map_id',
-        'doctor_id',
+        'staff_id',
         'institution_id',
         'service_date',
         'service_time',
@@ -87,7 +87,7 @@ class PatientService extends Model
 
     public function doctor(): BelongsTo
     {
-        return $this->belongsTo(Doctor::class);
+        return $this->belongsTo(Staff::class);
     }
 
     public function institution(): BelongsTo

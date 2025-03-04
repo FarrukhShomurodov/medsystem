@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Requests\PatientServiceRequest;
-use App\Models\Doctor;
+use App\Models\Equipment;
 use App\Models\Institution;
 use App\Models\Medication;
 use App\Models\Patient;
 use App\Models\PatientService;
 use App\Models\Procedure;
 use App\Models\Service;
-use App\Models\ServiceEquipment;
 use App\Models\ServiceMethod;
 use App\Models\ServiceStaff;
+use App\Models\Staff;
 use App\Services\PatientServiceAssignService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -47,10 +47,12 @@ class PatientServiceController
     {
         $services = Service::query()->get();
         $patients = Patient::query()->get();
-        $doctors = Doctor::query()->get();
+        $doctors = Staff::whereHas('professionalData', function ($query) {
+            $query->where('position_id', 1);
+        })->get();
         $institutions = Institution::query()->get();
         $methods = ServiceMethod::query()->get();
-        $equipments = ServiceEquipment::query()->get();
+        $equipments = Equipment::query()->get();
         $staffs = ServiceStaff::query()->get();
         $procedures = Procedure::query()->get();
         $medications = Medication::query()->get();
@@ -70,10 +72,12 @@ class PatientServiceController
     {
         $maintanances = Service::query()->get();
         $patients = Patient::query()->with('examinationMaps')->get();
-        $doctors = Doctor::query()->get();
+        $doctors = Staff::whereHas('professionalData', function ($query) {
+            $query->where('position_id', 1);
+        })->get();
         $institutions = Institution::query()->get();
         $methods = ServiceMethod::query()->get();
-        $equipments = ServiceEquipment::query()->get();
+        $equipments = Equipment::query()->get();
         $staffs = ServiceStaff::query()->get();
         $service->with('methods');
         $maps = $service->patient->examinationMaps;

@@ -17,7 +17,7 @@ class AnalyzeRequest extends FormRequest
             'patient_id' => 'required|int|exists:patients,id',
             'examination_map_id' => 'nullable|int|exists:examination_maps,id',
             'laboratory_id' => 'required',
-            'doctor_id' => 'required|int|exists:doctors,id',
+            'staff_id' => 'required|int|exists:staffs,id',
             'analysis_time' => 'required',
             'expected_result_date' => 'nullable|date',
             'medical_staff' => ['nullable', Rule::in(Analyze::MEDICAL_STAFF)],

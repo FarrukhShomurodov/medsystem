@@ -173,7 +173,8 @@
                     <div class="row g-3">
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-phone">Телефон </label>
+                            <label class="form-label" for="basic-icon-default-phone">Телефон <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-phone2"
                                   class="input-group-text @error('phone') text-danger icon-border @enderror"><i
@@ -182,6 +183,7 @@
                                        class="form-control phone @error('phone') is-invalid @enderror"
                                        name="phone"
                                        value="{{ old('phone') }}"
+                                       required
                                        placeholder="+ 998 (XX) XXX XX XX" aria-label="+ 998 (XX) XXX XX XX"
                                        aria-describedby="basic-icon-default-phone2"/>
                             </div>
@@ -192,13 +194,15 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-email">Email</label>
+                            <label class="form-label" for="basic-icon-default-email">Email <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                             <span class="input-group-text @error('email') text-danger icon-border @enderror"><i
                                     class="bx bx-envelope"></i></span>
                                 <input type="email" id="basic-icon-default-email"
                                        class="form-control @error('email') is-invalid @enderror" placeholder="Email"
                                        name="email"
+                                       required
                                        value="{{ old('email') }}"
                                        aria-label="Email" aria-describedby="basic-icon-default-email2"/>
                             </div>
@@ -211,6 +215,8 @@
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-address">
                                 Адрес
+                                <span
+                                    class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
@@ -221,6 +227,7 @@
                                        class="form-control @error('address') is-invalid @enderror"
                                        placeholder="Адрес" aria-label="Адрес"
                                        name="address"
+                                       required
                                        value="{{ old('address') }}"
                                        aria-describedby="basic-icon-default-company2"/>
                             </div>
@@ -233,7 +240,8 @@
 
                         {{-- Emergency --}}
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-email">Экстраный кантакт (ФИО)</label>
+                            <label class="form-label" for="basic-icon-default-email">Экстраный кантакт (ФИО) <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                             <span
                                 class="input-group-text @error('emergency_contact_name') text-danger icon-border @enderror"><i
@@ -242,6 +250,7 @@
                                        class="form-control @error('emergency_contact_name') is-invalid @enderror"
                                        placeholder="Экстраный кантакт (ФИО)"
                                        name="emergency_contact_name"
+                                       required
                                        value="{{ old('emergency_contact_name') }}"
                                        aria-label="Экстраный кантакт (ФИО)"
                                        aria-describedby="basic-icon-default-emergency_contact_name"/>
@@ -253,7 +262,8 @@
 
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-emergency_contact_phone">Экстраный кантакт
-                                (Телефон)</label>
+                                (Телефон) <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-emergency_contact_phone"
                                   class="input-group-text @error('emergency_contact_phone') text-danger icon-border @enderror"><i
@@ -261,6 +271,7 @@
                                 <input type="text" id="basic-icon-default-emergency_contact_phone"
                                        class="form-control phone @error('emergency_contact_phone') is-invalid @enderror"
                                        name="emergency_contact_phone"
+                                       required
                                        value="{{ old('emergency_contact_phone') }}"
                                        placeholder="+ 998 (XX) XXX XX XX" aria-label="+ 998 (XX) XXX XX XX"
                                        aria-describedby="basic-icon-default-emergency_contact_phone"/>
@@ -274,6 +285,8 @@
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-emergency_contact_relation">
                                 Экстраный кантакт (кем приходит)
+                                <span
+                                    class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
@@ -285,6 +298,7 @@
                                        placeholder=" Экстраный кантакт (кем приходит)"
                                        aria-label="Экстраный кантакт (кем приходит)"
                                        name="emergency_contact_relation"
+                                       required
                                        value="{{ old('emergency_contact_relation') }}"
                                        aria-describedby="basic-icon-default-company2"/>
                             </div>
@@ -309,7 +323,8 @@
                 <!-- Проф. данные -->
                 <div id="employee_details" class="content">
                     <div class="content-header mb-3">
-                        <h6 class="mb-0">Проф. данные</h6>
+                        <h6 class="mb-0">Проф. данные <span
+                                class="text-danger">*</span></h6>
                     </div>
                     <div class="row g-3">
                         <div class="col-sm-4">
@@ -411,7 +426,8 @@
 
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-education_name">Название
-                                Образование </label>
+                                Образование <span
+                                    class="text-danger">*</span> </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-education_name"
                                   class="input-group-text @error('education_name') text-danger icon-border @enderror"><i
@@ -420,6 +436,7 @@
                                        class="form-control @error('education_name') is-invalid @enderror"
                                        name="education_name"
                                        value="{{ old('education_name') }}"
+                                       required
                                        placeholder="Название Образование" aria-label="Название Образование"
                                        aria-describedby="basic-icon-default-education_name"/>
                             </div>
@@ -452,7 +469,8 @@
 
                         <div class="col-sm-4">
                             <label class="form-label"
-                                   for="basic-icon-default-certificate_name">Название сертификата</label>
+                                   for="basic-icon-default-certificate_name">Название сертификата <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-education_name"
                                   class="input-group-text @error('certificate_name') text-danger icon-border @enderror"><i
@@ -461,6 +479,7 @@
                                        class="form-control @error('certificate_name') is-invalid @enderror"
                                        name="certificate_name"
                                        value="{{ old('certificate_name') }}"
+                                       required
                                        placeholder="Название сертификата" aria-label="Название сертификата"
                                        aria-describedby="basic-icon-default-education_name"/>
                             </div>
@@ -472,7 +491,8 @@
 
                         <div class="col-sm-4">
                             <label class="form-label"
-                                   for="basic-icon-default-certificate_number">Номер лицензии </label>
+                                   for="basic-icon-default-certificate_number">Номер лицензии<span
+                                    class="text-danger">*</span> </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-education_name"
                                   class="input-group-text @error('certificate_number') text-danger icon-border @enderror"><i
@@ -480,6 +500,7 @@
                                 <input type="text" id="basic-icon-default-education_name"
                                        class="form-control @error('certificate_number') is-invalid @enderror"
                                        name="certificate_number"
+                                       required
                                        value="{{ old('certificate_number') }}"
                                        placeholder="Номер лицензии" aria-label="Номер лицензии"
                                        aria-describedby="basic-icon-default-education_name"/>
@@ -548,206 +569,215 @@
                         <h6 class="mb-0">Документы</h6>
                     </div>
                     <div class="row g-3">
-                        <!-- license_number -->
-
+                        <!-- Номер трудового договора -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-employment_contract_number">employment_contract_number</label>
+                            <label class="form-label" for="employment_contract_number">Номер трудового договора
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-employment_contract_number"
-                                  class="input-group-text @error('employment_contract_number') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-employment_contract_number"
+                <span id="employment_contract_number"
+                      class="input-group-text @error('employment_contract_number') text-danger icon-border @enderror">
+                    <i class="bx bx-bed"></i>
+                </span>
+                                <input type="text" id="employment_contract_number"
                                        class="form-control @error('employment_contract_number') is-invalid @enderror"
-                                       name="employment_contract_number"
-                                       value="{{ old('employment_contract_number') }}"
-                                       placeholder="Номер трудовой договор" aria-label="Номер трудовой договор"
-                                       aria-describedby="basic-icon-default-employment_contract_number"/>
+                                       name="employment_contract_number" value="{{ old('employment_contract_number') }}"
+                                       required placeholder="Номер трудового договора"
+                                       aria-label="Номер трудового договора"
+                                       aria-describedby="employment_contract_number"/>
                             </div>
-
                             @error('employment_contract_number')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- Дата подписания трудового договора -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-employment_contract_date_of_signing">employment_contract_date_of_signing</label>
+                            <label class="form-label" for="employment_contract_date_of_signing">Дата подписания
+                                трудового договора
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-employment_contract_date_of_signing"
-                                  class="input-group-text @error('employment_contract_date_of_signing') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-employment_contract_date_of_signing"
-                                       class="form-control @error('employment_contract_date_of_signing') is-invalid @enderror"
-                                       name="employment_contract_date_of_signing"
-                                       value="{{ old('employment_contract_date_of_signing') }}"
-                                       placeholder="Номер трудовой договор" aria-label="Номер трудовой договор"
-                                       aria-describedby="basic-icon-default-employment_contract_date_of_signing"/>
+                <span id="employment_contract_date_of_signing"
+                      class="input-group-text @error('employment_contract_date_of_signing') text-danger icon-border @enderror">
+                    <i class="bx bx-calendar"></i>
+                </span>
+                                <input type="text" name="employment_contract_date_of_signing"
+                                       value="{{ old('employment_contract_date_of_signing') }}" id="employment_contract_date_of_signing"
+                                       class="form-control flatpickr-date @error('employment_contract_date_of_signing') is-invalid @enderror"
+                                       placeholder="YYYY-MM-DD" aria-describedby="employment_contract_date_of_signing" required/>
                             </div>
-
                             @error('employment_contract_date_of_signing')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- Срок действия трудового договора -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-employment_contract_validity_period">employment_contract_validity_period</label>
+                            <label class="form-label" for="employment_contract_validity_period">Срок действия трудового
+                                договора
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-employment_contract_validity_period"
-                                  class="input-group-text @error('employment_contract_validity_period') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-employment_contract_validity_period"
+                <span id="employment_contract_validity_period"
+                      class="input-group-text @error('employment_contract_validity_period') text-danger icon-border @enderror">
+                    <i class="bx bx-bed"></i>
+                </span>
+                                <input type="text" id="employment_contract_validity_period"
                                        class="form-control @error('employment_contract_validity_period') is-invalid @enderror"
-                                       name="employment_contract_validity_period"
+                                       name="employment_contract_validity_period" required
                                        value="{{ old('employment_contract_validity_period') }}"
-                                       placeholder="Номер трудовой договор" aria-label="Номер трудовой договор"
-                                       aria-describedby="basic-icon-default-employment_contract_validity_period"/>
+                                       placeholder="Срок действия трудового договора"
+                                       aria-label="Срок действия трудового договора"
+                                       aria-describedby="employment_contract_validity_period"/>
                             </div>
-
                             @error('employment_contract_validity_period')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- Дата приказа об увольнении -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-dismissal_orders_number">Номер трудовой
-                                договор</label>
+                            <label class="form-label" for="dismissal_orders_date">Дата приказа об увольнении
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-dismissal_orders_number"
-                                  class="input-group-text @error('dismissal_orders_number') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-dismissal_orders_number"
-                                       class="form-control @error('dismissal_orders_number') is-invalid @enderror"
-                                       name="dismissal_orders_number"
-                                       value="{{ old('dismissal_orders_number') }}"
-                                       placeholder="Номер трудовой договор" aria-label="Номер трудовой договор"
-                                       aria-describedby="basic-icon-default-dismissal_orders_number"/>
-                            </div>
-
-                            @error('dismissal_orders_number')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-dismissal_orders_date">Дата подписание трудовога
-                                договора
-                                <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('dismissal_orders_date') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
+                <span id="dismissal_orders_date"
+                      class="input-group-text @error('dismissal_orders_date') text-danger icon-border @enderror">
+                    <i class="bx bx-calendar"></i>
+                </span>
                                 <input type="text" name="dismissal_orders_date"
-                                       value="{{ old('dismissal_orders_date') }}"
-                                       id="basic-icon-dismissal_orders_date"
+                                       value="{{ old('dismissal_orders_date') }}" id="dismissal_orders_date"
                                        class="form-control flatpickr-date @error('dismissal_orders_date') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2" required/>
+                                       placeholder="YYYY-MM-DD" aria-describedby="dismissal_orders_date" required/>
                             </div>
                             @error('dismissal_orders_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- Номер акта приема увольнения -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-dismissal_reception_number">Срок действия
-                                договора </label>
+                            <label class="form-label" for="dismissal_reception_number">Номер акта приема увольнения
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-dismissal_reception_number"
-                                  class="input-group-text @error('dismissal_reception_number') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-dismissal_reception_number"
+                <span id="dismissal_reception_number"
+                      class="input-group-text @error('dismissal_reception_number') text-danger icon-border @enderror">
+                    <i class="bx bx-bed"></i>
+                </span>
+                                <input type="text" id="dismissal_reception_number"
                                        class="form-control @error('dismissal_reception_number') is-invalid @enderror"
-                                       name="dismissal_reception_number"
-                                       value="{{ old('dismissal_reception_number') }}"
-                                       placeholder="Срок действия договора" aria-label="Срок действия договора"
-                                       aria-describedby="basic-icon-default-dismissal_reception_number"/>
+                                       name="dismissal_reception_number" value="{{ old('dismissal_reception_number') }}"
+                                       required placeholder="Номер акта приема увольнения"
+                                       aria-label="Номер акта приема увольнения"
+                                       aria-describedby="dismissal_reception_number"/>
                             </div>
-
                             @error('dismissal_reception_number')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- Номер приказа об увольнении -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-dismissal_reception_date">Дата уволнение
-                                <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="dismissal_orders_number">Номер приказа об увольнении
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('dismissal_reception_date') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
+                <span id="dismissal_orders_number"
+                      class="input-group-text @error('dismissal_orders_number') text-danger icon-border @enderror">
+                    <i class="bx bx-bed"></i>
+                </span>
+                                <input type="text" id="dismissal_orders_number"
+                                       class="form-control @error('dismissal_orders_number') is-invalid @enderror"
+                                       name="dismissal_orders_number" value="{{ old('dismissal_orders_number') }}"
+                                       required placeholder="Номер приказа об увольнении"
+                                       aria-label="Номер приказа об увольнении"
+                                       aria-describedby="dismissal_orders_number"/>
+                            </div>
+                            @error('dismissal_orders_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Дата увольнения -->
+                        <div class="col-12">
+                            <label class="form-label" for="dismissal_reception_date">Дата увольнения
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group input-group-merge">
+                <span id="dismissal_reception_date"
+                      class="input-group-text @error('dismissal_reception_date') text-danger icon-border @enderror">
+                    <i class="bx bx-calendar"></i>
+                </span>
                                 <input type="text" name="dismissal_reception_date"
-                                       value="{{ old('dismissal_reception_date') }}"
-                                       id="basic-icon-dismissal_reception_date"
+                                       value="{{ old('dismissal_reception_date') }}" id="dismissal_reception_date"
                                        class="form-control flatpickr-date @error('dismissal_reception_date') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2" required/>
+                                       placeholder="YYYY-MM-DD" aria-describedby="dismissal_reception_date" required/>
                             </div>
                             @error('dismissal_reception_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- Серия паспорта -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-passport_series">Серия паспорта </label>
+                            <label class="form-label" for="passport_series">Серия паспорта
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-passport_series"
-                                  class="input-group-text @error('passport_series') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-passport_series"
+                <span id="passport_series"
+                      class="input-group-text @error('passport_series') text-danger icon-border @enderror">
+                    <i class="bx bx-bed"></i>
+                </span>
+                                <input type="text" id="passport_series"
                                        class="form-control @error('passport_series') is-invalid @enderror"
-                                       name="passport_series"
-                                       value="{{ old('passport_series') }}"
-                                       placeholder="Серия паспорта" aria-label="Серия паспорта"
-                                       aria-describedby="basic-icon-default-passport_series"/>
+                                       name="passport_series" value="{{ old('passport_series') }}" required
+                                       placeholder="Серия паспорта"
+                                       aria-label="Серия паспорта" aria-describedby="passport_series"/>
                             </div>
-
                             @error('passport_series')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- ИНН -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-INN">ИНН</label>
+                            <label class="form-label" for="INN">ИНН
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-INN"
-                                  class="input-group-text @error('INN') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-INN"
-                                       class="form-control @error('passport_series') is-invalid @enderror"
-                                       name="INN"
-                                       value="{{ old('INN') }}"
-                                       placeholder="INN" aria-label="INN"
-                                       aria-describedby="basic-icon-default-INN"/>
+                <span id="INN" class="input-group-text @error('INN') text-danger icon-border @enderror">
+                    <i class="bx bx-bed"></i>
+                </span>
+                                <input type="text" id="INN" class="form-control @error('INN') is-invalid @enderror"
+                                       name="INN" value="{{ old('INN') }}"
+                                       placeholder="ИНН" aria-label="ИНН" required aria-describedby="INN"/>
                             </div>
-
                             @error('INN')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="col-12">
-                            <label class="form-label" for="basic-icon-default-SNILS">СНИЛС</label>
+                        <!-- СНИЛС -->
+                        <div class="col-sm-4">
+                            <label class="form-label" for="SNILS">СНИЛС
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-SNILS"
-                                  class="input-group-text @error('SNILS') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-SNILS"
-                                       class="form-control @error('passport_series') is-invalid @enderror"
-                                       name="SNILS"
-                                       value="{{ old('SNILS') }}"
-                                       placeholder="СНИЛС" aria-label="СНИЛС"
-                                       aria-describedby="basic-icon-default-SNILS"/>
+                <span id="SNILS" class="input-group-text @error('SNILS') text-danger icon-border @enderror">
+                    <i class="bx bx-bed"></i>
+                </span>
+                                <input type="text" id="SNILS" class="form-control @error('SNILS') is-invalid @enderror"
+                                       name="SNILS" value="{{ old('SNILS') }}"
+                                       placeholder="СНИЛС" aria-label="СНИЛС" required aria-describedby="SNILS"/>
                             </div>
-
                             @error('SNILS')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-
-                        <!-- Navigation -->
+                        <!-- Навигация -->
                         <div class="col-12 d-flex justify-content-between">
                             <button class="btn btn-primary btn-prev">
                                 <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад

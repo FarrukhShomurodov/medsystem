@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('patient_service_to_equipments_assignment', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_service_id')->constrained('patient_services')->cascadeOnDelete();
-            $table->foreignId('service_equipment_id')->constrained('service_equipment')->cascadeOnDelete();
+            $table->foreignId('service_equipment_id')->constrained('equipment')->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -13,7 +13,7 @@ class Analyze extends Model
         'patient_id',
         'examination_map_id',
         'laboratory_id',
-        'doctor_id',
+        'staff_id',
         'analysis_time',
         'expected_result_date',
         'medical_staff',
@@ -43,7 +43,7 @@ class Analyze extends Model
 
     public function doctor(): BelongsTo
     {
-        return $this->belongsTo(Doctor::class);
+        return $this->belongsTo(Staff::class);
     }
 
     public function equipments(): belongsToMany

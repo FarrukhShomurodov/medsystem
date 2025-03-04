@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Equipment;
 use App\Models\Institution;
 use App\Models\Medication;
 use App\Models\PatientService;
 use App\Models\Procedure;
-use App\Models\ServiceEquipment;
 use App\Models\ServiceMethod;
 use Illuminate\Support\Facades\DB;
 
@@ -40,7 +40,7 @@ class PatientServiceAssignService
             if (isset($validated['equipments'])) {
                 foreach ($validated['equipments'] as $key => $equipment) {
                     if (!is_numeric($equipment)) {
-                        $validated['equipments'][$key] = ServiceEquipment::query()->create(['name' => $equipment])->id;
+                        $validated['equipments'][$key] = Equipment::query()->create(['name' => $equipment])->id;
                     }
                 }
                 $service->equipments()->sync($validated['equipments']);
@@ -121,7 +121,7 @@ class PatientServiceAssignService
             if (isset($validated['equipments'])) {
                 foreach ($validated['equipments'] as $key => $equipment) {
                     if (!is_numeric($equipment)) {
-                        $validated['equipments'][$key] = ServiceEquipment::query()->create(['name' => $equipment])->id;
+                        $validated['equipments'][$key] = Equipment::query()->create(['name' => $equipment])->id;
                     }
                 }
                 $service->equipments()->sync($validated['equipments']);

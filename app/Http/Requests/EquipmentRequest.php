@@ -15,8 +15,8 @@ class EquipmentRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'last_inspection' => 'required|date',
-            'status' => ['required', Rule::in(Equipment::STATUS)],
+            'last_inspection' => 'nullable|date',
+            'status' => ['nullable', Rule::in(Equipment::STATUS)],
         ];
     }
 }

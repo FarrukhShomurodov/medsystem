@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Admin;
+use App\Models\StaffPosition;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,6 +14,10 @@ class DatabaseSeeder extends Seeder
         Admin::query()->create([
             'email' => 'medicals@gmail.com',
             'password' => Hash::make('medicals@gmail.com'),
+        ]);
+
+        StaffPosition::query()->create([
+            'name' => 'Доктор'
         ]);
     }
 }

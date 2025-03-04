@@ -17,7 +17,7 @@ class PatientServiceRequest extends FormRequest
             'service_id' => 'required',
             'patient_id' => 'required|int|exists:patients,id',
             'examination_map_id' => 'required|int|exists:patients,id',
-            'doctor_id' => 'nullable|int|exists:doctors,id',
+            'staff_id' => 'nullable|int|exists:staffs,id',
             'institution_id' => 'nullable|int|exists:institutions,id',
             'service_date' => 'required|date',
             'service_time' => 'nullable|date_format:H:i',

@@ -15,6 +15,7 @@ use App\Models\Patient;
 use App\Models\Procedure;
 use App\Models\Service;
 use App\Models\ServiceStaff;
+use App\Models\Staff;
 use App\Services\ExaminationService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -31,7 +32,7 @@ class ExaminationMapController
     public function index(): View
     {
         $maps = ExaminationMap::query()
-            ->select(['id', 'patient_id', 'institution_id', 'doctor_id'])
+            ->select(['id', 'patient_id', 'institution_id', 'staff_id'])
             ->with('patient')
             ->with('institution')
             ->with('doctor')
@@ -96,7 +97,7 @@ class ExaminationMapController
 
     public function create(): View
     {
-        $doctors = Doctor::query()->get();
+        $doctors = Staff::query()->where('position_id', 1)->get();
         $institutions = Institution::query()->get();
         $patients = Patient::query()->get();
         $laboratories = Laboratory::query()->get();
@@ -124,7 +125,7 @@ class ExaminationMapController
 
     public function edit(ExaminationMap $map): View
     {
-        $doctors = Doctor::query()->get();
+        $doctors = Staff::query()->where('position_id', 1)->get();
         $institutions = Institution::query()->get();
         $patients = Patient::query()->get();
         $laboratories = Laboratory::query()->get();

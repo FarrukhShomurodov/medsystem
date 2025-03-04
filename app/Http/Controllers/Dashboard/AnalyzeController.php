@@ -11,6 +11,7 @@ use App\Models\ExaminationMap;
 use App\Models\Laboratory;
 use App\Models\MedicalEquipment;
 use App\Models\Patient;
+use App\Models\Staff;
 use App\Services\AnalyzeService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -39,7 +40,7 @@ class AnalyzeController
     public function create(): View
     {
         $types = AnalyzeType::query()->get();
-        $doctors = Doctor::query()->get();
+        $doctors = Staff::query()->where('position_id', 1)->get();
         $laboratories = Laboratory::query()->get();
         $equipments = MedicalEquipment::query()->get();
         $methods = AnalyzeMethod::query()->get();
@@ -60,7 +61,7 @@ class AnalyzeController
     public function edit(Analyze $analyze): View
     {
         $types = AnalyzeType::query()->get();
-        $doctors = Doctor::query()->get();
+        $doctors = Staff::query()->where('position_id', 1)->get();
         $laboratories = Laboratory::query()->get();
         $equipments = MedicalEquipment::query()->get();
         $methods = AnalyzeMethod::query()->get();

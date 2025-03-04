@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('examination_maps', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('doctor_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('staff_id')->constrained()->cascadeOnDelete();
             $table->foreignId('institution_id')->constrained()->cascadeOnDelete();
             $table->date('admission_date');
             $table->date('discharge_date')->nullable();

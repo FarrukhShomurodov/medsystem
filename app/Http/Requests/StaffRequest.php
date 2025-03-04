@@ -43,7 +43,7 @@ class StaffRequest extends FormRequest
             'services' => 'required|array',
 
             'employment_contract_number' => 'required|string|max:255',
-            'employment_contract_date_of_signing' => 'required|string|max:255',
+            'employment_contract_date_of_signing' => 'required|date',
             'employment_contract_validity_period' => 'required|string|max:255',
             'dismissal_orders_number' => 'required|string|max:255',
             'dismissal_orders_date' => 'required|date',

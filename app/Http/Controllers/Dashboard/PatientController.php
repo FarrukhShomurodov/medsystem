@@ -11,6 +11,7 @@ use App\Models\Institution;
 use App\Models\MedicalDevice;
 use App\Models\Patient;
 use App\Models\Region;
+use App\Models\Staff;
 use App\Services\PatientService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -86,7 +87,7 @@ class PatientController
     {
         $regions = Region::query()->get();
         $cities = City::query()->get();
-        $doctors = Doctor::query()->get();
+        $doctors = Staff::query()->where('position_id', 1)->get();
         $institutions = Institution::query()->get();
         $allegories = Allegory::query()->get();
         $devices = MedicalDevice::query()->get();
@@ -107,7 +108,7 @@ class PatientController
     {
         $regions = Region::query()->get();
         $cities = City::query()->get();
-        $doctors = Doctor::query()->get();
+        $doctors = Staff::query()->where('position_id', 1)->get();
         $institutions = Institution::query()->get();
         $allegories = Allegory::query()->get();
         $devices = MedicalDevice::query()->get();
@@ -122,9 +123,9 @@ class PatientController
         $validated = $request->validated();
 
         if (
-            (!empty($validated['institution_id']) && empty($validated['doctor_id']) && empty($validated['admission_date'])) ||
-            (!empty($validated['doctor_id']) && empty($validated['institution_id']) && empty($validated['admission_date'])) ||
-            (!empty($validated['admission_date']) && empty($validated['institution_id']) && empty($validated['doctor_id']))
+            (!empty($validated['institution_id']) && empty($validated['staff_id']) && empty($validated['admission_date'])) ||
+            (!empty($validated['staff_id']) && empty($validated['institution_id']) && empty($validated['admission_date'])) ||
+            (!empty($validated['admission_date']) && empty($validated['institution_id']) && empty($validated['staff_id']))
         ) {
             return redirect()->back()->withErrors('Заполните все поля для добавления обращения или не заполняйте их вообще!');
         }
