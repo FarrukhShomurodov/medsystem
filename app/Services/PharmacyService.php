@@ -14,6 +14,10 @@ class PharmacyService
     {
         return DB::transaction(function () use ($validated) {
             $pharmacy = Pharmacy::query()->create($validated);
+            $validated['pharmacy_id'] = $pharmacy->id;
+
+            $pharmacy->license()->create($validated);
+            $pharmacy->support()->create($validated);
 
             return $pharmacy;
         }, 5);
@@ -26,6 +30,10 @@ class PharmacyService
     {
         return DB::transaction(function () use ($validated, $pharmacy) {
             $pharmacy->update(array_intersect_key($validated, array_flip($pharmacy->getFillable())));
+            $validated['pharmacy_id'] = $pharmacy->id;
+
+            $pharmacy->license()->updateOrCreate(['pharmacy_id' => $pharmacy->id], array_intersect_key($validated, array_flip($pharmacy->license->getFillable())));
+            $pharmacy->support()->updateOrCreate(['pharmacy_id' => $pharmacy->id], array_intersect_key($validated, array_flip($pharmacy->support->getFillable())));
 
             return $pharmacy;
         });

@@ -422,24 +422,24 @@
                         <div id="medication-details-template" style="display: none;">
                             <div class="medication-details">
                                 <h5>Медикамент: <span class="medication-name"></span></h5>
-                                <input type="hidden" name="medications[][id]" value="ID">
+                                <input type="hidden" name="medications[ID][id]" value="ID">
                                 <div class="form-group">
                                     <label>Количество <span class="text-danger">*</span></label>
                                     <input type="number" name="medications[ID][quantity]" class="form-control" >
                                 </div>
                                 <div class="form-group">
                                     <label>Срок годности <span class="text-danger">*</span></label>
-                                    <input type="date" name="medications[][expiration_date]" class="form-control"
+                                    <input type="date" name="medications[ID][expiration_date]" class="form-control"
                                            >
                                 </div>
                                 <div class="form-group">
                                     <label>Дата получения <span class="text-danger">*</span></label>
-                                    <input type="date" name="medications[][date_of_receipt]" class="form-control"
+                                    <input type="date" name="medications[ID][date_of_receipt]" class="form-control"
                                            >
                                 </div>
                                 <div class="form-group">
                                     <label>Номер партии <span class="text-danger">*</span></label>
-                                    <input type="text" name="medications[][batch_number]" class="form-control"
+                                    <input type="text" name="medications[ID][batch_number]" class="form-control"
                                            >
                                 </div>
                                 <hr>

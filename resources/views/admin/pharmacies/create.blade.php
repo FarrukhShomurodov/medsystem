@@ -30,6 +30,22 @@
                     <span class="bs-stepper-label">Основные данные</span>
                 </button>
             </div>
+
+            <div class="line"></div>
+            <div class="step" data-target="#license">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">2</span>
+                    <span class="bs-stepper-label">Лицензия и сертификация</span>
+                </button>
+            </div>
+
+            <div class="line"></div>
+            <div class="step" data-target="#support">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">3</span>
+                    <span class="bs-stepper-label">Службы поддержки</span>
+                </button>
+            </div>
         </div>
 
         <div class="bs-stepper-content">
@@ -156,6 +172,182 @@
                         <!-- Navigation -->
                         <div class="col-12 d-flex justify-content-between">
                             <button class="btn btn-label-secondary btn-prev" disabled>
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Лицензия и сертификация -->
+                <div id="license" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Лицензия и сертификация</h6>
+                    </div>
+                    <div class="row g-3">
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-license_number">Номер лицензии <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-company2"
+                                  class="input-group-text @error('license_number') text-danger icon-border @enderror"><i
+                                    class="bx bx-rename"></i></span>
+                                <input type="text" id="basic-icon-default-license_number"
+                                       class="form-control @error('license_number') is-invalid @enderror"
+                                       placeholder="Номер лицензии"
+                                       aria-label="Номер лицензии"
+                                       name="license_number"
+                                       value="{{ old('license_number') }}"
+                                       aria-describedby="basic-icon-default-company2"/>
+                            </div>
+                            @error('license_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-license_issue_date">Дата получения лицензии <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <span id="basic-icon-birth-date2"
+                                      class="input-group-text @error('license_issue_date') text-danger icon-border @enderror">
+                                    <i class="bx bx-calendar"></i>
+                                </span>
+                                <input type="text" name="license_issue_date" value="{{ old('license_issue_date') }}"
+                                       id="basic-icon-license_issue_date"
+                                       class="form-control flatpickr-date @error('license_issue_date') is-invalid @enderror"
+                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2" required/>
+                            </div>
+                            @error('license_issue_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-license_expiry_date">Срок действия лицензии <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <span id="basic-icon-birth-date2"
+                                      class="input-group-text @error('license_expiry_date') text-danger icon-border @enderror">
+                                    <i class="bx bx-calendar"></i>
+                                </span>
+                                <input type="text" name="license_expiry_date" value="{{ old('license_expiry_date') }}"
+                                       id="basic-icon-license_expiry_date"
+                                       class="form-control flatpickr-date @error('license_expiry_date') is-invalid @enderror"
+                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2" required/>
+                            </div>
+                            @error('license_expiry_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-default-quality_certificate_number">Номер лицензии
+                                на
+                                фармацевтическую деятельность <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-company2"
+                                  class="input-group-text @error('quality_certificate_number') text-danger icon-border @enderror"><i
+                                    class="bx bx-rename"></i></span>
+                                <input type="text" id="basic-icon-default-quality_certificate_number"
+                                       class="form-control @error('quality_certificate_number') is-invalid @enderror"
+                                       placeholder="Номер лицензии на фармацевтическую деятельность"
+                                       aria-label="Номер лицензии на фармацевтическую деятельность"
+                                       name="quality_certificate_number"
+                                       value="{{ old('quality_certificate_number') }}"
+                                       aria-describedby="basic-icon-default-company2"/>
+                            </div>
+                            @error('quality_certificate_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-default-compliance_standards">Соответствие
+                                нормативам и стандартам <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-company2"
+                                  class="input-group-text @error('compliance_standards') text-danger icon-border @enderror"><i
+                                    class="bx bx-rename"></i></span>
+                                <input type="text" id="basic-icon-default-compliance_standards"
+                                       class="form-control @error('compliance_standards') is-invalid @enderror"
+                                       placeholder="Соответствие нормативам и стандартам"
+                                       aria-label="Соответствие нормативам и стандартам"
+                                       name="compliance_standards"
+                                       value="{{ old('compliance_standards') }}"
+                                       aria-describedby="basic-icon-default-company2"/>
+                            </div>
+                            @error('compliance_standards')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-label-secondary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Службы поддержки и консультации -->
+                <div id="support" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Службы поддержки и консультации</h6>
+                    </div>
+                    <div class="row g-3">
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-default-consultation_phone">Телефон для
+                                консультаций <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-company2"
+                                  class="input-group-text @error('consultation_phone') text-danger icon-border @enderror"><i
+                                    class="bx bx-rename"></i></span>
+                                <input type="text" id="basic-icon-default-consultation_phone"
+                                       class="form-control @error('consultation_phone') is-invalid @enderror"
+                                       placeholder="Телефон для консультаций"
+                                       aria-label="Телефон для консультаций"
+                                       name="consultation_phone"
+                                       value="{{ old('consultation_phone') }}"
+                                       aria-describedby="basic-icon-default-company2"/>
+                            </div>
+                            @error('consultation_phone')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="type">Возможность получить консультацию <span
+                                    class="text-danger">*</span></label>
+                            <select id="type" name="medication_consultation_available"
+                                    class="form-control select2 @error('medication_consultation_available') is-invalid @enderror">
+                                <option value="1" @selected(old('medication_consultation_available') == '1')>
+                                    Да
+                                </option>
+
+                                <option value="0" @selected(old('medication_consultation_available') == '0')>
+                                    Нет
+                                </option>
+                            </select>
+                            @error('medication_consultation_available')
+                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-label-secondary btn-prev">
                                 <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
                             </button>
                             <button class="btn btn-primary btn-next">

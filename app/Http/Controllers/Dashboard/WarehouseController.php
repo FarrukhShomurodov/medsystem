@@ -27,7 +27,6 @@ class WarehouseController
             ->orderBy('id', 'desc')
             ->paginate(10);
 
-
         return view('admin.warehouses.index', compact('warehouses'));
     }
 

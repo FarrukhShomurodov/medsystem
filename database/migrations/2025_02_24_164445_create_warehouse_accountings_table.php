@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('warehouse_id')->constrained()->cascadeOnDelete();
             $table->foreignId('medication_id')->constrained()->cascadeOnDelete();
-            $table->string('quantity');
+            $table->integer('quantity');
             $table->date('expiration_date');
             $table->date('date_of_receipt');
             $table->string('batch_number');

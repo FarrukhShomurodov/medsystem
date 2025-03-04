@@ -257,14 +257,17 @@
         </li>
 
         <li class="menu-item {{ Request::is('dashboard/pharmacy/types*')
-            || Request::is('dashboard/pharmacy') || Request::is('dashboard/pharmacy/create') || Request::is('dashboard/pharmacy/edit/*') ? 'open' : '' }}"
+            || Request::is('dashboard/pharmacy') || Request::is('dashboard/pharmacy/create') || Request::is('dashboard/pharmacy/edit/*')
+            ||  Request::is('dashboard/transfers*')
+            ||  Request::is('dashboard/transfer-medications/*')
+            ||  Request::is('dashboard/pharmacy/medications/*') ? 'open' : '' }}"
             style="">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon bx bx-clinic"></i>
                 <div data-i18n="Аптека">Аптека</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {{ Request::is('dashboard/pharmacy') || Request::is('dashboard/pharmacy/create') || Request::is('dashboard/pharmacy/edit/*') ? 'active' : '' }}">
+                <li class="menu-item {{ Request::is('dashboard/pharmacy') || Request::is('dashboard/pharmacy/create') || Request::is('dashboard/pharmacy/edit/*') || Request::is('dashboard/pharmacy/medications/*') ? 'active' : '' }}">
                     <a href="{{route('pharmacies.index')}}" class="menu-link">
                         <div data-i18n="Список">Список</div>
                     </a>
@@ -272,6 +275,11 @@
                 <li class="menu-item {{ Request::is('dashboard/pharmacy/types*') ? 'active' : '' }}">
                     <a href="{{route('pharmacy.types.index')}}" class="menu-link">
                         <div data-i18n="Типы">Типы</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('dashboard/transfers*') ||  Request::is('dashboard/transfer-medications/*') ? 'active' : '' }}">
+                    <a href="{{route('transfers.index')}}" class="menu-link">
+                        <div data-i18n="Перевод препаратов">Перевод препаратов</div>
                     </a>
                 </li>
             </ul>

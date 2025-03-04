@@ -38,6 +38,7 @@ use App\Http\Controllers\Dashboard\SpecialtyController;
 use App\Http\Controllers\Dashboard\StaffController;
 use App\Http\Controllers\Dashboard\StaffPositionController;
 use App\Http\Controllers\Dashboard\SupplierController;
+use App\Http\Controllers\Dashboard\TransferController;
 use App\Http\Controllers\Dashboard\WarehouseController;
 use App\Http\Controllers\Dashboard\WarehouseTypeController;
 use Illuminate\Http\Request;
@@ -81,15 +82,21 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // warehouse
     Route::prefix('warehouses')->group(function () {
-        Route::resource('/', WarehouseController::class)->names('warehouses')->parameter('', 'warehouse');
-        Route::resource('/types', WarehouseTypeController::class)->names('warehouses.type');
+        Route::resource('/', WarehouseController::class)->names('warehouses')->parameter('', 'warehouse')->except('show');
+        Route::resource('/types', WarehouseTypeController::class)->names('warehouses.type')->except('show');
     });
 
     // pharmacy
     Route::prefix('pharmacy')->group(function () {
-        Route::resource('/', PharmacyController::class)->names('pharmacies')->parameter('', 'pharmacy');
-        Route::resource('/types', PharmacyTypeController::class)->names('pharmacy.types');
+        Route::resource('/', PharmacyController::class)->names('pharmacies')->parameter('', 'pharmacy')->except('show');
+        Route::resource('/types', PharmacyTypeController::class)->names('pharmacy.types')->except('show');
+        Route::get('medications/{pharmacy}', [PharmacyController::class, 'medications'])->name('pharmacy.medications');
+
     });
+
+    // transfers
+    Route::resource('transfers', TransferController::class);
+    Route::get('transfer-medications/{transfer}', [TransferController::class, 'medications'])->name('transfer.medications');
 
     // analyze
     Route::resource('analyzes', AnalyzeController::class);

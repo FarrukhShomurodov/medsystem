@@ -44,6 +44,7 @@
                     <th>#</th>
                     <th>Название</th>
                     <th>Тип</th>
+                    <th>Препараты</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -53,6 +54,11 @@
                         <td>{{ $pharmacy->id }}</td>
                         <td>{{ $pharmacy->name }}</td>
                         <td>{{ $pharmacy->type->name }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-icon"
+                                    onclick="location.href='{{ route('pharmacy.medications', $pharmacy->id) }}'"><i
+                                    class="bx bx-show"></i></button>
+                        </td>
                         <td>
                             <div class="d-inline-block text-nowrap">
                                 <button class="btn btn-sm btn-icon"

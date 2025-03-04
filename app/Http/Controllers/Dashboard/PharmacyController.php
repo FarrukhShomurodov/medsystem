@@ -28,6 +28,12 @@ class PharmacyController
         return view('admin.pharmacies.index', compact('pharmacies'));
     }
 
+    public function medications(Pharmacy $pharmacy): View
+    {
+        $medications = $pharmacy->medication;
+        return view('admin.pharmacies.medications', compact('medications'));
+    }
+
     public function create(): View
     {
         $types = PharmacyType::query()->get();
