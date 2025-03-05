@@ -12,14 +12,10 @@ use App\Http\Controllers\Dashboard\CityController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\DepartmentController;
 use App\Http\Controllers\Dashboard\EquipmentController;
-use App\Http\Controllers\Dashboard\DepartmentServiceController;
 use App\Http\Controllers\Dashboard\DepartmentTypeController;
-use App\Http\Controllers\Dashboard\DoctorController;
 use App\Http\Controllers\Dashboard\ExaminationMapController;
-use App\Http\Controllers\Dashboard\InstitutionController;
 use App\Http\Controllers\Dashboard\LaboratoryController;
 use App\Http\Controllers\Dashboard\MedicalDeviceController;
-use App\Http\Controllers\Dashboard\MedicalEquipmentController;
 use App\Http\Controllers\Dashboard\MedicalSupplyController;
 use App\Http\Controllers\Dashboard\MedicationController;
 use App\Http\Controllers\Dashboard\PatientController;
@@ -30,10 +26,8 @@ use App\Http\Controllers\Dashboard\ProcedureController;
 use App\Http\Controllers\Dashboard\RegionController;
 use App\Http\Controllers\Dashboard\ServiceCategoryController;
 use App\Http\Controllers\Dashboard\ServiceController;
-use App\Http\Controllers\Dashboard\ServiceEquipmentController;
 use App\Http\Controllers\Dashboard\ServiceMethodController;
 use App\Http\Controllers\Dashboard\ServiceStaffController;
-use App\Http\Controllers\Dashboard\ServiceStaffSpecialtyController;
 use App\Http\Controllers\Dashboard\SpecialtyController;
 use App\Http\Controllers\Dashboard\StaffController;
 use App\Http\Controllers\Dashboard\StaffPositionController;
@@ -55,12 +49,10 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::resource('admins', AdminController::class);
 
     Route::resource('specialties', SpecialtyController::class);
-    Route::resource('institutions', InstitutionController::class);
 
     // department
     Route::prefix('departments')->group(function () {
-        Route::resource('', DepartmentController::class)->names('departments')->parameter('', 'department');
-        Route::resource('/services', DepartmentServiceController::class)->names('departments.service');
+        Route::resource('', DepartmentController::class)->names('departments')->parameter('', 'department')->except('show');
         Route::resource('/types', DepartmentTypeController::class)->names('departments.type');
     });
 
@@ -117,7 +109,6 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         Route::resource('categories', ServiceCategoryController::class);
         Route::resource('procedures', ProcedureController::class);
         Route::resource('methods', ServiceMethodController::class)->names('service.methods');
-        Route::resource('staff-specialties', ServiceStaffSpecialtyController::class)->parameter('staff-specialties', 'specialty')->names('service.staff.specialties');
         Route::resource('staffs', ServiceStaffController::class)->names('service.staffs');
     });
 
@@ -135,9 +126,3 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::resource('patients', PatientController::class);
     Route::resource('maps', ExaminationMapController::class);
 });
-
-
-Route::post('test', function (Request $request) {
-
-    dd($request);
-})->name('test');

@@ -44,6 +44,6 @@ class TransferController
     public function store(TransferRequest $request): RedirectResponse
     {
         $this->transferService->store($request->validated());
-        return redirect()->route('transfers.create')->with('success', 'Перевод выполнен успешно');
+        return redirect()->route('transfers.index')->with('success', 'Перевод выполнен успешно');
     }
 }

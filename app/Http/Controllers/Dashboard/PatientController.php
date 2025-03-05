@@ -6,6 +6,7 @@ use App\Http\Requests\PatientRequest;
 use App\Models\Allegory;
 use App\Models\ChronicDisease;
 use App\Models\City;
+use App\Models\Department;
 use App\Models\Doctor;
 use App\Models\Institution;
 use App\Models\MedicalDevice;
@@ -87,8 +88,10 @@ class PatientController
     {
         $regions = Region::query()->get();
         $cities = City::query()->get();
-        $doctors = Staff::query()->where('position_id', 1)->get();
-        $institutions = Institution::query()->get();
+        $doctors = Staff::whereHas('professionalData', function ($query) {
+            $query->where('position_id', 1);
+        })->get();
+        $institutions = Department::query()->get();
         $allegories = Allegory::query()->get();
         $devices = MedicalDevice::query()->get();
         $diseases = ChronicDisease::query()->get();
@@ -108,8 +111,10 @@ class PatientController
     {
         $regions = Region::query()->get();
         $cities = City::query()->get();
-        $doctors = Staff::query()->where('position_id', 1)->get();
-        $institutions = Institution::query()->get();
+        $doctors = Staff::whereHas('professionalData', function ($query) {
+            $query->where('position_id', 1);
+        })->get();
+        $institutions = Department::query()->get();
         $allegories = Allegory::query()->get();
         $devices = MedicalDevice::query()->get();
         $diseases = ChronicDisease::query()->get();

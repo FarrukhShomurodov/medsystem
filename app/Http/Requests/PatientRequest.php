@@ -77,13 +77,13 @@ class PatientRequest extends FormRequest
         if ($this->method() == 'PUT') {
             $rules = array_merge($rules, [
                 'institution_id' => 'nullable',
-                'doctor_id' => 'nullable|int|exists:doctors,id',
+                'doctor_id' => 'nullable|int|exists:staff,id',
                 'admission_date' => 'nullable|date|date_format:Y-m-d',
             ]);
         } else if ($this->method() == 'POST') {
             $rules = array_merge($rules, [
                 'institution_id' => 'required',
-                'doctor_id' => 'required|int|exists:doctors,id',
+                'doctor_id' => 'required|int|exists:staff,id',
                 'admission_date' => 'required|date|date_format:Y-m-d',
             ]);
         }

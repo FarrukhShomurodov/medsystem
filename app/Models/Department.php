@@ -37,7 +37,7 @@ class Department extends Model
 
     public function services(): BelongsToMany
     {
-        return $this->belongsToMany(DepartmentService::class, 'department_service_assignment', 'department_id', 'department_service_id');
+        return $this->belongsToMany(Service::class, 'department_service_assignment', 'department_id', 'service_id');
     }
 
     public function relations(): BelongsToMany
@@ -47,7 +47,7 @@ class Department extends Model
 
     public function equipments(): BelongsToMany
     {
-        return $this->belongsToMany(DepartmentService::class, 'department_equipment_assignment', 'department_id', 'department_equipment_id');
+        return $this->belongsToMany(Equipment::class, 'department_equipment_assignment', 'department_id', 'equipment_id');
     }
 
     public function license(): HasOne

@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Allegory;
 use App\Models\ChronicDisease;
 use App\Models\City;
-use App\Models\Institution;
+use App\Models\Department;
 use App\Models\MedicalDevice;
 use App\Models\Patient;
 use App\Models\Region;
@@ -76,12 +76,12 @@ class PatientService
 
             // Examination Map
             if (!is_numeric($validated['institution_id'])) {
-                $validated['institution_id'] = Institution::query()->create(['name' => $validated['institution_id']])->id;
+                $validated['institution_id'] = Department::query()->create(['name' => $validated['institution_id']])->id;
             }
 
             $mapData = [
-                'institution_id' => $validated['institution_id'],
-                'doctor_id' => $validated['doctor_id'],
+                'department_id' => $validated['institution_id'],
+                'staff_id' => $validated['doctor_id'],
                 'admission_date' => $validated['admission_date'],
             ];
 
@@ -157,12 +157,12 @@ class PatientService
             // Examination Map
             if (isset($validated['institution_id']) && isset($validated['doctor_id']) && isset($validated['admission_date'])) {
                 if (!is_numeric($validated['institution_id'])) {
-                    $validated['institution_id'] = Institution::query()->create(['name' => $validated['institution_id']])->id;
+                    $validated['institution_id'] = Department::query()->create(['name' => $validated['institution_id']])->id;
                 }
 
                 $mapData = [
-                    'institution_id' => $validated['institution_id'],
-                    'doctor_id' => $validated['doctor_id'],
+                    'department_id' => $validated['institution_id'],
+                    'staff_id' => $validated['doctor_id'],
                     'admission_date' => $validated['admission_date'],
                 ];
 

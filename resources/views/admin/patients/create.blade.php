@@ -945,7 +945,7 @@
                                 <option value="" disabled>Выберите врача</option>
                                 @foreach($doctors as $doctor)
                                     <option
-                                        value="{{ $doctor->id }}" @selected($doctor->id == old('doctor_id'))>{{ $doctor->first_name }}</option>
+                                        value="{{ $doctor->id }}" @selected($doctor->id == old('doctor_id'))>{{ $doctor->name }}</option>
                                 @endforeach
                             </select>
                             @error('doctor_id')

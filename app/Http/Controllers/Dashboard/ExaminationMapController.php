@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Requests\ExaminationMapRequest;
 use App\Models\AnalyzeMethod;
 use App\Models\AnalyzeType;
+use App\Models\Department;
 use App\Models\Doctor;
+use App\Models\Equipment;
 use App\Models\ExaminationMap;
 use App\Models\Institution;
 use App\Models\Laboratory;
@@ -32,9 +34,9 @@ class ExaminationMapController
     public function index(): View
     {
         $maps = ExaminationMap::query()
-            ->select(['id', 'patient_id', 'institution_id', 'staff_id'])
+            ->select(['id', 'patient_id', 'department_id', 'staff_id'])
             ->with('patient')
-            ->with('institution')
+            ->with('department')
             ->with('doctor')
             ->orderBy('id', 'desc')
             ->paginate(10);
@@ -52,13 +54,13 @@ class ExaminationMapController
             ],
             'doctor' => [
                 'id' => $map->doctor->id,
-                'name' => $map->doctor->first_name . ' ' . $map->doctor->last_name . ' ' . $map->doctor->middle_name,
-                'speciality' => $map->doctor->specialty->name,
+                'name' => $map->doctor->name . ' ' . $map->doctor->last_name . ' ' . $map->doctor->middle_name,
+                'speciality' => $map->doctor->professionalData->name,
             ],
             'institution' => [
-                'name' => $map->institution->name,
-                'address' => $map->institution->address,
-                'contacts' => $map->institution->phone,
+                'name' => $map->department->name,
+                'address' => $map->department->address,
+                'contacts' => $map->department->phone,
             ],
             'admission' => [
                 'date' => $map->admission_date,
@@ -97,12 +99,14 @@ class ExaminationMapController
 
     public function create(): View
     {
-        $doctors = Staff::query()->where('position_id', 1)->get();
-        $institutions = Institution::query()->get();
+        $doctors = Staff::whereHas('professionalData', function ($query) {
+            $query->where('position_id', 1);
+        })->get();
+        $institutions = Department::query()->get();
         $patients = Patient::query()->get();
         $laboratories = Laboratory::query()->get();
         $types = AnalyzeType::query()->get();
-        $equipments = MedicalEquipment::query()->get();
+        $equipments = Equipment::query()->get();
         $methods = AnalyzeMethod::query()->get();
 
         //service
@@ -125,12 +129,14 @@ class ExaminationMapController
 
     public function edit(ExaminationMap $map): View
     {
-        $doctors = Staff::query()->where('position_id', 1)->get();
-        $institutions = Institution::query()->get();
+        $doctors = Staff::whereHas('professionalData', function ($query) {
+            $query->where('position_id', 1);
+        })->get();
+        $institutions = Department::query()->get();
         $patients = Patient::query()->get();
         $laboratories = Laboratory::query()->get();
         $types = AnalyzeType::query()->get();
-        $equipments = MedicalEquipment::query()->get();
+        $equipments = Equipment::query()->get();
         $methods = AnalyzeMethod::query()->get();
 
         //service

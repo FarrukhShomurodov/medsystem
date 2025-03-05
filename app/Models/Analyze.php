@@ -48,7 +48,7 @@ class Analyze extends Model
 
     public function equipments(): belongsToMany
     {
-        return $this->belongsToMany(MedicalEquipment::class, 'analyze_to_equipments_assignment', 'analyze_id', 'medical_equipment_id');
+        return $this->belongsToMany(Equipment::class, 'analyze_to_equipments_assignment', 'analyze_id', 'equipment_id');
     }
 
 

@@ -53,8 +53,8 @@
                     <tr>
                         <td>{{ $map->id }}</td>
                         <td>{{ $map->patient->first_name }}</td>
-                        <td>{{ $map->doctor->first_name }}</td>
-                        <td>{{ $map->institution->name }}</td>
+                        <td>{{ $map->doctor->name }}</td>
+                        <td>{{ $map->department->name }}</td>
 
                         <td>
                             <div class="d-inline-block text-nowrap">

@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('patient_service_to_staffs_assignment', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_service_id')->constrained('patient_services')->cascadeOnDelete();
-            $table->foreignId('service_staff_id')->constrained('service_staff')->cascadeOnDelete();
+            $table->foreignId('service_staff_id')->constrained('staff')->cascadeOnDelete();
             $table->timestamps();
         });
     }

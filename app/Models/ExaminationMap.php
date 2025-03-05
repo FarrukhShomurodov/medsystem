@@ -11,7 +11,7 @@ class ExaminationMap extends Model
     protected $fillable = [
         'patient_id',
         'staff_id',
-        'institution_id',
+        'department_id',
         'admission_date',
         'discharge_date',
         'admission_diagnosis_code',
@@ -26,12 +26,12 @@ class ExaminationMap extends Model
 
     public function doctor(): BelongsTo
     {
-        return $this->belongsTo(Staff::class);
+        return $this->belongsTo(Staff::class, 'staff_id');
     }
 
-    public function institution(): BelongsTo
+    public function department(): BelongsTo
     {
-        return $this->belongsTo(Institution::class);
+        return $this->belongsTo(Department::class);
     }
 
     public function patient(): BelongsTo

@@ -15,7 +15,7 @@ class Medication extends Model
         'country_of_manufacture',
         'registration_number',
         'registration_date',
-        'expiration_date',
+        'expiration_date'
     ];
 
     public function application(): HasOne

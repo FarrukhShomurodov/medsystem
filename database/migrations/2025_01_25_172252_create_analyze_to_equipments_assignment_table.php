@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('analyze_to_equipments_assignment', function (Blueprint $table) {
             $table->id();
             $table->foreignId('analyze_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('medical_equipment_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('equipment_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -177,14 +177,14 @@
                         <div class="col-12">
                             <label class="form-label" for="basic-icon-default-doctors">Лечащие врачи <span
                                     class="text-danger">*</span></label>
-                            <select id="basic-icon-default-doctors" name="doctor_id"
-                                    class="form-control select2 @error('doctor_id') is-invalid @enderror" required>
+                            <select id="basic-icon-default-doctors" name="staff_id"
+                                    class="form-control select2 @error('staff_id') is-invalid @enderror" required>
                                 @foreach($doctors as $doctor)
                                     <option
-                                        value="{{ $doctor->id }}" @selected($doctor->id == old('doctor_id'))>{{ $doctor->first_name }}</option>
+                                        value="{{ $doctor->id }}" @selected($doctor->id == old('staff_id'))>{{ $doctor->name }}</option>
                                 @endforeach
                             </select>
-                            @error('doctor_id')
+                            @error('staff_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

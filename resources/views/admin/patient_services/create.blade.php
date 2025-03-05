@@ -124,7 +124,7 @@
                                 <option value="" selected>Не выбрано</option>
                                 @foreach($doctors as $doctor)
                                     <option value="{{ $doctor->id }}" @selected(old('doctor_id') == $doctor->id)>
-                                        {{ $doctor->first_name }}
+                                        {{ $doctor->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -134,18 +134,18 @@
 
                         <!-- Institution -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="institution_id">Отделение</label>
-                            <select id="institution_id" name="institution_id"
-                                    class="form-control select2 @error('institution_id') is-invalid @enderror">
+                            <label class="form-label" for="department_id">Отделение</label>
+                            <select id="department_id" name="department_id"
+                                    class="form-control select2 @error('department_id') is-invalid @enderror">
                                 <option value="" selected>Не выбрано</option>
                                 @foreach($institutions as $institution)
                                     <option
-                                        value="{{ $institution->id }}" @selected(old('institution_id') == $institution->id)>
+                                        value="{{ $institution->id }}" @selected(old('department_id') == $institution->id)>
                                         {{ $institution->name }}
                                     </option>
                                 @endforeach
                             </select>
-                            @error('institution_id')
+                            @error('department_id')
                             <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
@@ -246,7 +246,7 @@
                                     required>
                                 @foreach($staffs as $staff)
                                     <option value="{{ $staff->id }}" @selected(in_array($staff->id, old('staffs', [])))>
-                                        {{ $staff->first_name }}
+                                        {{ $staff->name }}
                                     </option>
                                 @endforeach
                             </select>

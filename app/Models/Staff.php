@@ -38,4 +38,5 @@ class Staff extends Model
     {
         return $this->hasOne(StaffProfessionalData::class);
     }
+
 }

@@ -6,7 +6,7 @@ use App\Http\Requests\DepartmentRequest;
 use App\Models\Department;
 use App\Models\Equipment;
 use App\Models\DepartmentType;
-use App\Models\DepartmentService as Services;
+use App\Models\Service;
 use App\Services\DepartmentService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -33,7 +33,7 @@ class DepartmentController
     public function create(): View
     {
         $types = DepartmentType::query()->get();
-        $services = Services::query()->get();
+        $services = Service::query()->get();
         $equipments = Equipment::query()->get();
         $departments = Department::query()->get();
 
@@ -51,7 +51,7 @@ class DepartmentController
     public function edit(Department $department): View
     {
         $types = DepartmentType::query()->get();
-        $services = Services::query()->get();
+        $services = Service::query()->get();
         $equipments = Equipment::query()->get();
         $departments = Department::query()->get();
 

@@ -14,7 +14,7 @@ class ExaminationMapController
                 'id' => $map->id,
                 'patient_name' => $map->patient->first_name,
                 'admission_date' => $map->admission_date ,
-                'institution_name' => $map->institution->name,
+                'institution_name' => $map->department->name,
                 'diagnosis' => $map->admission_diagnosis_description,
             ];
         });

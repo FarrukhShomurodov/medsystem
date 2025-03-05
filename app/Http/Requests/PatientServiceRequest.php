@@ -16,9 +16,9 @@ class PatientServiceRequest extends FormRequest
         return [
             'service_id' => 'required',
             'patient_id' => 'required|int|exists:patients,id',
-            'examination_map_id' => 'required|int|exists:patients,id',
-            'staff_id' => 'nullable|int|exists:staffs,id',
-            'institution_id' => 'nullable|int|exists:institutions,id',
+            'examination_map_id' => 'required|int|exists:examination_maps,id',
+            'staff_id' => 'nullable|int|exists:staff,id',
+            'department_id' => 'nullable|int|exists:departments,id',
             'service_date' => 'required|date',
             'service_time' => 'nullable|date_format:H:i',
             'place' => ['required', Rule::in(PatientService::PLACE)],
@@ -35,7 +35,7 @@ class PatientServiceRequest extends FormRequest
             'methods' => 'nullable|array',
             'equipments' => 'nullable|array',
             'staffs' => 'required|array',
-            'staffs.*' => 'required|int|exists:service_staff,id',
+            'staffs.*' => 'required|int|exists:staff,id',
 
             'procedures' => 'nullable|array',
             'procedures.*' => 'required|string',

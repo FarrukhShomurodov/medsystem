@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Models\AnalyzeMethod;
 use App\Models\AnalyzeType;
+use App\Models\Equipment;
 use App\Models\Laboratory;
 use App\Models\Analyze;
-use App\Models\MedicalEquipment;
 use Illuminate\Support\Facades\DB;
 
 class AnalyzeService
@@ -44,7 +44,7 @@ class AnalyzeService
             //  Medical equipments
             foreach ($validated['equipments'] as $key => $equipment) {
                 if (!is_numeric($equipment)) {
-                    $validated['equipments'][$key] = MedicalEquipment::query()->create(['name' => $equipment])->id;
+                    $validated['equipments'][$key] = Equipment::query()->create(['name' => $equipment])->id;
                 }
             }
             $analyze->equipments()->sync($validated['equipments']);
@@ -88,7 +88,7 @@ class AnalyzeService
             //  Medical equipments
             foreach ($validated['equipments'] as $key => $equipment) {
                 if (!is_numeric($equipment)) {
-                    $validated['equipments'][$key] = MedicalEquipment::query()->create(['name' => $equipment])->id;
+                    $validated['equipments'][$key] = Equipment::query()->create(['name' => $equipment])->id;
                 }
             }
             $analyze->equipments()->sync($validated['equipments']);

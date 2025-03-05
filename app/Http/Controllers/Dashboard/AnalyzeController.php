@@ -6,10 +6,9 @@ use App\Http\Requests\AnalyzeRequest;
 use App\Models\Analyze;
 use App\Models\AnalyzeMethod;
 use App\Models\AnalyzeType;
-use App\Models\Doctor;
+use App\Models\Equipment;
 use App\Models\ExaminationMap;
 use App\Models\Laboratory;
-use App\Models\MedicalEquipment;
 use App\Models\Patient;
 use App\Models\Staff;
 use App\Services\AnalyzeService;
@@ -40,9 +39,11 @@ class AnalyzeController
     public function create(): View
     {
         $types = AnalyzeType::query()->get();
-        $doctors = Staff::query()->where('position_id', 1)->get();
+        $doctors = Staff::whereHas('professionalData', function ($query) {
+            $query->where('position_id', 1);
+        })->get();
         $laboratories = Laboratory::query()->get();
-        $equipments = MedicalEquipment::query()->get();
+        $equipments = Equipment::query()->get();
         $methods = AnalyzeMethod::query()->get();
         $patients = Patient::query()->get();
         $maps = ExaminationMap::query()->get();
@@ -61,9 +62,11 @@ class AnalyzeController
     public function edit(Analyze $analyze): View
     {
         $types = AnalyzeType::query()->get();
-        $doctors = Staff::query()->where('position_id', 1)->get();
+        $doctors = Staff::whereHas('professionalData', function ($query) {
+            $query->where('position_id', 1);
+        })->get();
         $laboratories = Laboratory::query()->get();
-        $equipments = MedicalEquipment::query()->get();
+        $equipments = Equipment::query()->get();
         $methods = AnalyzeMethod::query()->get();
         $patients = Patient::query()->get();
         $maps = $analyze->patient->examinationMaps;

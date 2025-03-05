@@ -31,12 +31,12 @@
                 <div id="medications-container">
                     <div class="medication-group">
                         <label>Препарат</label>
-                        <select name="medications[0][medication_id]" class="form-control">
+                        <select name="medications[0][medication_id]" class="form-control mb-3">
                             @foreach($medications as $medication)
                                 <option value="{{ $medication->id }}">{{ $medication->name }}</option>
                             @endforeach
                         </select>
-                        <input type="number" name="medications[0][quantity]" class="form-control" required>
+                        <input type="number" name="medications[0][quantity]" class="form-control mb-3"" placeholder="Кол-во" required>
                     </div>
                 </div>
 
