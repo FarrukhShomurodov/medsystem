@@ -15,7 +15,7 @@ class LaboratoryRequest extends FormRequest
             'name' => 'required|string|max:255',
             'address' => 'nullable|string|max:255',
             'phone' => 'nullable|string',
-            'email' => 'nullable|string|email|unique:institutions,email',
+            'email' => 'nullable|string|email|unique:laboratories,email',
         ];
     }
 }
