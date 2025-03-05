@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
             $table->foreignId('staff_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('department_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('department_id')->constrained('departments')->cascadeOnDelete();
             $table->date('admission_date');
             $table->date('discharge_date')->nullable();
             $table->string('admission_diagnosis_code')->nullable();
