@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('medications', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('release_form');
+            $table->enum('release_form', \App\Models\Medication::RELEASEFORM);
             $table->string('dosage');
             $table->foreignId('manufacturer_id')->constrained()->cascadeOnDelete();
             $table->string('registration_number');

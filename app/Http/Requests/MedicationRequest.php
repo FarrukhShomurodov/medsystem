@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Medication;
 use App\Models\MedicationPackaging;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,7 +17,7 @@ class MedicationRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'release_form' => 'required|string|max:255',
+            'release_form' => ['required', Rule::in(Medication::RELEASEFORM)],
             'dosage' => 'required|string|max:255',
 
             'manufacturer_id' => [

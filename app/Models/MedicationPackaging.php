@@ -15,5 +15,5 @@ class MedicationPackaging extends Model
         'packaging_date',
     ];
 
-    const TYPE = ['blister', 'bottle', 'tube'];
+    const TYPE = ["блистер", "флакон", "тюбик"];
 }

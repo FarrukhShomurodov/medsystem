@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Medication extends Model
 {
+
     protected $fillable = [
         'name',
         'release_form',
@@ -18,6 +19,42 @@ class Medication extends Model
         'expiration_date'
     ];
 
+    const RELEASEFORM = [
+        "Таблетка",
+        "Ампула",
+        "Жидкость",
+        "Сироп",
+        "Капсула",
+        "Порошок",
+        "Гранулы",
+        "Экстракт",
+        "Пастилка",
+        "Спрей",
+        "Раствор",
+        "Свечи ректальные",
+        "Мазь",
+        "Гель",
+        "Пакетик",
+        "Крем",
+        "Капли",
+        "Масло",
+        "Глазные капли",
+        "Свечи вагинальные",
+        "Ушные капли",
+        "Суспензия",
+        "Пластырь",
+        "Настойка",
+        "Паста",
+        "Флакон",
+        "Эластичный бинт",
+        "Шприц",
+        "Вата",
+        "Саше",
+        "Рулон",
+        "Бинт",
+        "Система",
+        "Бальзам"
+    ];
 
     public function manufacturer(): BelongsTo
     {

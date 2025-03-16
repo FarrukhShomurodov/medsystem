@@ -120,19 +120,20 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-release_form">Форма выпуска <span
+                            <label class="form-label" for="release_form">Форма выпуска<span
                                     class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-company2"
-                                  class="input-group-text @error('release_form') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
-                                <input type="text" id="basic-icon-default-release_form"
-                                       class="form-control @error('release_form') is-invalid @enderror"
-                                       placeholder="Форма выпуска" aria-label="Форма выпуска"
-                                       name="release_form"
-                                       value="{{ old('release_form', $medication->release_form) }}"
-                                       aria-describedby="basic-icon-default-company2" required/>
-                            </div>
+
+                            <select id="release_form" name="release_form"
+                                    class="form-control select2 @error('release_form') is-invalid @enderror"
+                                    required>
+                                @foreach(\App\Models\Medication::RELEASEFORM as $form)
+                                    <option
+                                        value="{{ $form }}" @selected($form == old('release_form', $medication->release_form))>
+                                        {{ $form }}
+                                    </option>
+                                @endforeach
+                            </select>
+
                             @error('release_form')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
