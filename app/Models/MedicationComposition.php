@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MedicationComposition extends Model
 {
@@ -14,4 +15,10 @@ class MedicationComposition extends Model
         'substance_dosage',
         'pharmacological_group',
     ];
+
+    public function medication(): BelongsTo
+    {
+        return $this->belongsTo(Medication::class);
+    }
+
 }

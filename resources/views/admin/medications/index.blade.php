@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Медицинская система | Препараты </title>
+    <title>Медицинская система | Препараты</title>
 @endsection
 
 @section('content')
@@ -33,10 +33,40 @@
 
     <div class="card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Препараты </h5>
-            <a href="{{ route('medications.create') }}" class="btn btn-primary "
-               style="margin-right: 22px;">Создать</a>
+            <h5 class="card-header">Препараты</h5>
+            <div>
+                <button class="btn btn-link collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#filtersCollapse">
+                    <i class="bx bx-filter-alt"></i> Фильтры
+                </button>
+                <a href="{{ route('medications.create') }}" class="btn btn-primary" style="margin-right: 22px;">Создать</a>
+            </div>
         </div>
+
+        <div id="filtersCollapse"
+             class="collapse @if(request('active_substance_name')) show @endif">
+            <div class="card-body">
+                <form method="GET" action="{{ route('medications.index') }}">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label for="active_substance_name" class="form-label">Активное вещество</label>
+                            <input type="text" name="active_substance_name" id="active_substance_name"
+                                   class="form-control" value="{{ request('active_substance_name') }}"
+                                   placeholder="Введите активное вещество">
+                        </div>
+
+                        <div class="col-6 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary">Применить</button>
+
+                            @if(request()->has('active_substance_name'))
+                                <a href="{{ route('medications.index') }}" class="btn btn-secondary ms-2">Сбросить</a>
+                            @endif
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="card-datatable table-responsive">
             <table class="datatables-users table border-top">
                 <thead>

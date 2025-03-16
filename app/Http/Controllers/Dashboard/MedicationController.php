@@ -8,6 +8,7 @@ use App\Models\Medication;
 use App\Models\Supplier;
 use App\Services\MedicationService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class MedicationController
@@ -19,11 +20,16 @@ class MedicationController
         $this->service = $service;
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
         $medications = Medication::query()
             ->select(['id', 'name'])
             ->orderBy('id', 'desc')
+            ->when($request->filled('active_substance_name'), function ($q) use ($request) {
+                $q->whereHas('composition', function ($q) use ($request) {
+                    $q->where('active_substance_name', $request->input('active_substance_name'));
+                });
+            })
             ->paginate(10);
 
         return view('admin.medications.index', compact('medications'));
