@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Medication extends Model
@@ -11,12 +12,17 @@ class Medication extends Model
         'name',
         'release_form',
         'dosage',
-        'manufacturer',
-        'country_of_manufacture',
+        'manufacturer_id',
         'registration_number',
         'registration_date',
         'expiration_date'
     ];
+
+
+    public function manufacturer(): BelongsTo
+    {
+        return $this->belongsTo(Manufacturer::class);
+    }
 
     public function application(): HasOne
     {

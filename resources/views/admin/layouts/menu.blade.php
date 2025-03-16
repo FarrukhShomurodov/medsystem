@@ -22,6 +22,15 @@
         {{--            </a>--}}
         {{--        </li>--}}
 
+        {{-- Производители --}}
+        <li class="menu-item {{ Request::is('dashboard/manufacturers*') ? 'active' : '' }}">
+            <a href="{{ route('manufacturers.index') }}" class="menu-link">
+                <i class="menu-icon bx bx-buildings"></i>
+                <div data-i18n="Производители">Производители</div>
+            </a>
+        </li>
+
+
         {{-- Поставшик --}}
         <li class="menu-item {{ Request::is('dashboard/suppliers*') ? 'active' : '' }}">
             <a href="{{ route('suppliers.index') }}" class="menu-link">

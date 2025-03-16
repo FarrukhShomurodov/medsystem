@@ -44,6 +44,7 @@
                     <th>#</th>
                     <th>Название</th>
                     <th>Номер телефона</th>
+                    <th>Производитель</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -53,6 +54,7 @@
                         <td>{{ $supplier->id }}</td>
                         <td>{{ $supplier->name }}</td>
                         <td>{{ $supplier->phone }}</td>
+                        <td>{{ implode(', ', $supplier->manufacturers->pluck('name')->toArray() ) }}</td>
 
                         <td>
                             <div class="d-inline-block text-nowrap">

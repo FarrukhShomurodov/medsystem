@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Requests\SupplierRequest;
+use App\Models\Manufacturer;
 use App\Models\Supplier;
 use App\Services\SupplierService;
 use Illuminate\Contracts\View\View;
@@ -29,7 +30,8 @@ class SupplierController
 
     public function create(): View
     {
-        return view('admin.suppliers.create');
+        $manufacturers = Manufacturer::query()->get();
+        return view('admin.suppliers.create', compact('manufacturers'));
     }
 
     public function store(SupplierRequest $request): RedirectResponse
@@ -42,7 +44,8 @@ class SupplierController
 
     public function edit(Supplier $supplier): View
     {
-        return view('admin.suppliers.edit', compact('supplier'));
+        $manufacturers = Manufacturer::query()->get();
+        return view('admin.suppliers.edit', compact('supplier', 'manufacturers'));
     }
 
     public function update(SupplierRequest $request, Supplier $supplier): RedirectResponse

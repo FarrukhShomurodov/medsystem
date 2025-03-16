@@ -15,6 +15,7 @@ use App\Http\Controllers\Dashboard\EquipmentController;
 use App\Http\Controllers\Dashboard\DepartmentTypeController;
 use App\Http\Controllers\Dashboard\ExaminationMapController;
 use App\Http\Controllers\Dashboard\LaboratoryController;
+use App\Http\Controllers\Dashboard\ManufacturerController;
 use App\Http\Controllers\Dashboard\MedicalDeviceController;
 use App\Http\Controllers\Dashboard\MedicalSupplyController;
 use App\Http\Controllers\Dashboard\MedicationController;
@@ -70,6 +71,8 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // suppliers
     Route::resource('suppliers', SupplierController::class);
+
+    Route::resource('manufacturers', ManufacturerController::class);
 
     // warehouse
     Route::prefix('warehouses')->group(function () {

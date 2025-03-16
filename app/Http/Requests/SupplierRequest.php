@@ -18,6 +18,8 @@ class SupplierRequest extends FormRequest
             'email' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'delivery_schedule' => 'required|string|max:255',
+            'manufacturers' => 'required|array',
+            'manufacturers.*' => 'required|int|exists:manufacturers,id',
         ];
     }
 }

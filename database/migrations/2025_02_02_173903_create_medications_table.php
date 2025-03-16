@@ -12,8 +12,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('release_form');
             $table->string('dosage');
-            $table->string('manufacturer');
-            $table->string('country_of_manufacture');
+            $table->foreignId('manufacturer_id')->constrained()->cascadeOnDelete();
             $table->string('registration_number');
             $table->date('registration_date');
             $table->date('expiration_date');

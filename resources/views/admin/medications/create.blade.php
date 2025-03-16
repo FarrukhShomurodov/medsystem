@@ -155,46 +155,27 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-manufacturer">Производитель <span
+                        <div class="col-sm-6">
+                            <label class="form-label" for="manufacturer">Производители<span
                                     class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-company2"
-                                  class="input-group-text @error('manufacturer') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
-                                <input type="text" id="basic-icon-default-manufacturer"
-                                       class="form-control @error('manufacturer') is-invalid @enderror"
-                                       placeholder="Производитель" aria-label="Производитель"
-                                       name="manufacturer"
-                                       value="{{ old('manufacturer') }}"
-                                       aria-describedby="basic-icon-default-company2" required/>
-                            </div>
-                            @error('manufacturer')
+
+                            <select id="manufacturer" name="manufacturer_id"
+                                    class="form-control select2 @error('manufacturer_id') is-invalid @enderror"
+                                    required>
+                                @foreach($manufacturers as $manufacturer)
+                                    <option
+                                        value="{{ $manufacturer->id }}" @selected($manufacturer->id == old('manufacturer_id'))>
+                                        {{ $manufacturer->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('manufacturer_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-country_of_manufacture">Страна
-                                производства <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-company2"
-                                  class="input-group-text @error('country_of_manufacture') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
-                                <input type="text" id="basic-icon-default-country_of_manufacture"
-                                       class="form-control @error('country_of_manufacture') is-invalid @enderror"
-                                       placeholder="Страна производства" aria-label="Страна производства"
-                                       name="country_of_manufacture"
-                                       value="{{ old('country_of_manufacture') }}"
-                                       aria-describedby="basic-icon-default-company2" required/>
-                            </div>
-                            @error('country_of_manufacture')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-registration_number">Регистрационный номер
                                 <span
                                     class="text-danger">*</span></label>

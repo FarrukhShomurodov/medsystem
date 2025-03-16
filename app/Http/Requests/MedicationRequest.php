@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\MedicationPackaging;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -17,8 +18,17 @@ class MedicationRequest extends FormRequest
             'name' => 'required|string|max:255',
             'release_form' => 'required|string|max:255',
             'dosage' => 'required|string|max:255',
-            'manufacturer' => 'required|string|max:255',
-            'country_of_manufacture' => 'required|string|max:255',
+
+            'manufacturer_id' => [
+                'required',
+                'int',
+                'exists:manufacturers,id',
+                Rule::exists('supplier_manufacturers')->where(function (Builder $query) {
+                    $query->where('supplier_id', $this->input('supplier_id'))
+                        ->where('manufacturer_id', $this->input('manufacturer_id'));
+                }),
+            ],
+
             'registration_number' => 'required|string|max:255',
             'registration_date' => 'required|date',
             'expiration_date' => 'required|date',

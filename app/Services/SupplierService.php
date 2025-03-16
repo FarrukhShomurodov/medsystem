@@ -11,7 +11,9 @@ class SupplierService
      */
     public function store(array $validated): Supplier
     {
-        return Supplier::query()->create($validated);
+        $supplier = Supplier::query()->create($validated);
+        $supplier->manufacturers()->sync($validated['manufacturers']);
+        return $supplier;
     }
 
     /**
@@ -20,6 +22,7 @@ class SupplierService
     public function update(Supplier $supplier, array $validated): Supplier
     {
         $supplier->update($validated);
+        $supplier->manufacturers()->sync($validated['manufacturers']);
         return $supplier->refresh();
     }
 

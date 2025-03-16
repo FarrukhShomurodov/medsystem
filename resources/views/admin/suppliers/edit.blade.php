@@ -146,6 +146,25 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    <div class="col-12 mb-3">
+                        <label class="form-label" for="manufacturers">Производители<span
+                                class="text-danger">*</span></label>
+
+                        <select id="manufacturers" name="manufacturers[]"
+                                class="form-control select2 @error('manufacturers') is-invalid @enderror" multiple required>
+                            @foreach($manufacturers as $manufacturer)
+                                <option
+                                    value="{{ $manufacturer->id }}" @selected(in_array($manufacturer->id, old('manufacturers', $supplier->manufacturers->pluck('id')->toArray())))>
+                                    {{ $manufacturer->name }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        @error('manufacturers')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
 
 
