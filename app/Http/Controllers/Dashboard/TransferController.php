@@ -28,11 +28,11 @@ class TransferController
 
     public function create(): View
     {
-        return view('admin.transfers.create', [
-            'warehouses' => Warehouse::all(),
-            'pharmacies' => Pharmacy::all(),
-            'medications' => Medication::all()
-        ]);
+        $warehouses = Warehouse::query()->get();
+        $pharmacies = Pharmacy::query()->get();
+        $medications = Medication::query()->get();
+
+        return view('admin.transfers.create', compact('warehouses', 'pharmacies', 'medications'));
     }
 
     public function medications(Transfer $transfer): View
