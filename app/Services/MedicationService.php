@@ -21,10 +21,10 @@ class MedicationService
             $medication->additionalData()->create($validated);
             $medication->riskAndSafety()->create($validated);
             $medication->composition()->create($validated);
-            $medication->packaging()->create($validated);
+//            $medication->packaging()->create($validated);
             $medication->storage()->create($validated);
             $medication->licenseAndCertification()->create($validated);
-            $medication->medicationCost()->create($validated);
+//            $medication->medicationCost()->create($validated);
 
             return $medication;
         });

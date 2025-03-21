@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->foreignId('warehouse_id')->constrained()->cascadeOnDelete();
             $table->string('phone');
             $table->string('email');
+            $table->string('address');
             $table->string('work_time');
             $table->string('head_name');
             $table->string('head_position');

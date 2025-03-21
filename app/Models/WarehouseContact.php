@@ -10,6 +10,7 @@ class WarehouseContact extends Model
         'warehouse_id',
         'phone',
         'email',
+        'address',
         'work_time',
         'head_name',
         'head_position',

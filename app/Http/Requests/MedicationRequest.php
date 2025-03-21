@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\Medication;
-use App\Models\MedicationPackaging;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -24,15 +23,14 @@ class MedicationRequest extends FormRequest
                 'required',
                 'int',
                 'exists:manufacturers,id',
-                Rule::exists('supplier_manufacturers')->where(function (Builder $query) {
-                    $query->where('supplier_id', $this->input('supplier_id'))
-                        ->where('manufacturer_id', $this->input('manufacturer_id'));
-                }),
+//                Rule::exists('supplier_manufacturers')->where(function (Builder $query) {
+//                    $query->where('supplier_id', $this->input('supplier_id'))
+//                        ->where('manufacturer_id', $this->input('manufacturer_id'));
+//                }),
             ],
 
             'registration_number' => 'required|string|max:255',
             'registration_date' => 'required|date',
-            'expiration_date' => 'required|date',
 
             //composition
             'active_substance_name' => 'required|string|max:255',
@@ -54,19 +52,6 @@ class MedicationRequest extends FormRequest
             'storage_temperature' => 'required|int',
             'storage_conditions' => 'required|string|max:255',
             'special_storage_conditions' => 'required|string|max:255',
-
-            //packaging
-            'packaging_type' => ['required', Rule::in(MedicationPackaging::TYPE)],
-            'quantity_per_package' => 'required|int',
-            'package_size' => 'required|int',
-            'batch_number' => 'required|string|max:255',
-            'packaging_date' => 'required|date',
-
-            //price
-            'retail_price' => 'required|string|max:255',
-            'wholesale_price' => 'required|string|max:255',
-            'supplier_id' => 'required|string|max:255',
-            'delivery_time' => 'required|string|max:255',
 
             //license
             'sales_license' => 'required|string|max:255',

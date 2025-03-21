@@ -21,12 +21,14 @@ class WarehouseService
             $warehouse->capacity()->create($validated);
 //            $warehouse->inventory()->create($validated);
             $warehouse->storageHandling()->create($validated);
-            $warehouse->transfer()->create($validated);
+//            $warehouse->transfer()->create($validated);
 
             foreach ($validated['medications'] as $index => $medication) {
                 if (is_int($index)) {
                     $medication['medication_id'] = $index;
-                    $warehouse->accounting()->create($medication);
+                    $accounting = $warehouse->accounting()->create($medication);
+                    $accounting->packaging()->create($medication);
+                    $accounting->medicationCost()->create($medication);
                 }
             }
 
@@ -46,16 +48,27 @@ class WarehouseService
             $warehouse->contact()->updateOrCreate(['warehouse_id' => $warehouse->id], array_intersect_key($validated, array_flip($warehouse->contact->getFillable())));
             $warehouse->capacity()->updateOrCreate(['warehouse_id' => $warehouse->id], array_intersect_key($validated, array_flip($warehouse->capacity->getFillable())));
             $warehouse->storageHandling()->updateOrCreate(['warehouse_id' => $warehouse->id], array_intersect_key($validated, array_flip($warehouse->storageHandling->getFillable())));
-            $warehouse->transfer()->updateOrCreate(['warehouse_id' => $warehouse->id], array_intersect_key($validated, array_flip($warehouse->transfer->getFillable())));
+//            $warehouse->transfer()->updateOrCreate(['warehouse_id' => $warehouse->id], array_intersect_key($validated, array_flip($warehouse->transfer->getFillable())));
 
             foreach ($validated['medications'] as $medicationId => $medication) {
                 if (is_array($medication) && isset($medication['id'])) {
-                    $warehouse->accounting()->updateOrCreate(
+                    $accounting = $warehouse->accounting()->updateOrCreate(
                         ['medication_id' => $medication['id']],
                         array_merge($medication, ['warehouse_id' => $warehouse->id])
                     );
+
+                    $accounting->packaging()->updateOrCreate(
+                        ['warehouse_accounting_id' => $accounting->id],
+                        $medication
+                    );
+
+                    $accounting->medicationCost()->updateOrCreate(
+                        ['warehouse_accounting_id' => $accounting->id],
+                        $medication
+                    );
                 }
             }
+
 
             return $warehouse;
         });

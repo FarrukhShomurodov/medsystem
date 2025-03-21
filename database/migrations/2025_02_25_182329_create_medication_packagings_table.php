@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('medication_packagings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('medication_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('warehouse_accounting_id')->constrained()->cascadeOnDelete();
             $table->enum('packaging_type', \App\Models\MedicationPackaging::TYPE);
             $table->integer('quantity_per_package');
             $table->integer('package_size');

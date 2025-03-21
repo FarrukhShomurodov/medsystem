@@ -15,7 +15,6 @@ return new class extends Migration {
             $table->foreignId('manufacturer_id')->constrained()->cascadeOnDelete();
             $table->string('registration_number');
             $table->date('registration_date');
-            $table->date('expiration_date');
             $table->timestamps();
         });
     }

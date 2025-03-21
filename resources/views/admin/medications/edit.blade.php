@@ -52,37 +52,23 @@
                 </button>
             </div>
             <div class="line"></div>
-            <div class="step" data-target="#packaging">
-                <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">5</span>
-                    <span class="bs-stepper-label">Упаковка</span>
-                </button>
-            </div>
-            <div class="line"></div>
-            <div class="step" data-target="#price">
-                <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">6</span>
-                    <span class="bs-stepper-label">Стоимость и поставки</span>
-                </button>
-            </div>
-            <div class="line"></div>
             <div class="step" data-target="#license">
                 <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">7</span>
+                    <span class="bs-stepper-circle">5</span>
                     <span class="bs-stepper-label">Лицензии и сертификация</span>
                 </button>
             </div>
             <div class="line"></div>
             <div class="step" data-target="#data">
                 <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">8</span>
+                    <span class="bs-stepper-circle">6</span>
                     <span class="bs-stepper-label">Прочие данные</span>
                 </button>
             </div>
             <div class="line"></div>
             <div class="step" data-target="#risk">
                 <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">9</span>
+                    <span class="bs-stepper-circle">7</span>
                     <span class="bs-stepper-label">Риск и безопасность</span>
                 </button>
             </div>
@@ -198,7 +184,7 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-6">
+                        <div class="col-12">
                             <label class="form-label" for="basic-icon-registration_date">Дата регистрации <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
@@ -213,25 +199,6 @@
                                        placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2" required/>
                             </div>
                             @error('registration_date')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-expiration_date">Срок годности <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('expiration_date') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
-                                <input type="text" name="expiration_date"
-                                       value="{{ old('expiration_date', $medication->expiration_date) }}"
-                                       id="basic-icon-expiration_date"
-                                       class="form-control flatpickr-date @error('expiration_date') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2" required/>
-                            </div>
-                            @error('expiration_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -592,220 +559,6 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-
-                        <!-- Navigation -->
-                        <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev">
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Упаковка -->
-                <div id="packaging" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">Упаковка</h6>
-                    </div>
-                    <div class="row g-3">
-                        <div class="col-sm-4">
-                            <label class="form-label" for="packaging_type">Тип упаковки <span
-                                    class="text-danger">*</span></label>
-                            <select id="packaging_type" name="packaging_type"
-                                    class="form-control select2 @error('packaging_type') is-invalid @enderror" required
-                            >
-                                @foreach(\App\Models\MedicationPackaging::TYPE as $type)
-                                    <option
-                                        value="{{ $type }}" @selected($type == old('packaging_type', $medication->packaging->packaging_type))>{{ $type }}</option>
-                                @endforeach
-                            </select>
-
-                            @error('packaging_type')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-quantity_per_package">Количество в
-                                упаковке</label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-quantity_per_package"
-                                  class="input-group-text @error('quantity_per_package') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-quantity_per_package"
-                                       class="form-control @error('quantity_per_package') is-invalid @enderror"
-                                       name="quantity_per_package"
-                                       value="{{ old('quantity_per_package', $medication->packaging->quantity_per_package) }}"
-                                       placeholder="Количество в упаковке"
-                                       aria-label="Количество в упаковке"
-                                       aria-describedby="basic-icon-default-quantity_per_package"/>
-                            </div>
-
-                            @error('quantity_per_package')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-package_size">Размер упаковки </label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-package_size"
-                                  class="input-group-text @error('package_size') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-package_size"
-                                       class="form-control @error('package_size') is-invalid @enderror"
-                                       name="package_size"
-                                       value="{{ old('package_size', $medication->packaging->package_size) }}"
-                                       placeholder="Размер упаковки"
-                                       aria-label="Размер упаковки"
-                                       aria-describedby="basic-icon-default-package_size"/>
-                            </div>
-
-                            @error('package_size')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-batch_number">Номер партии </label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-batch_number"
-                                  class="input-group-text @error('batch_number') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-batch_number"
-                                       class="form-control @error('batch_number') is-invalid @enderror"
-                                       name="batch_number"
-                                       value="{{ old('batch_number', $medication->packaging->batch_number) }}"
-                                       placeholder="Номер партии"
-                                       aria-label="Номер партии"
-                                       aria-describedby="basic-icon-default-batch_number"/>
-                            </div>
-
-                            @error('batch_number')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-packaging_date">Дата упаковки<span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('packaging_date') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
-                                <input type="text" name="packaging_date"
-                                       value="{{ old('packaging_date', $medication->packaging->packaging_date) }}"
-                                       id="basic-icon-packaging_date"
-                                       class="form-control flatpickr-date @error('packaging_date') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2" required/>
-                            </div>
-                            @error('packaging_date')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <!-- Navigation -->
-                        <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev">
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Стоимость и поставки -->
-                <div id="price" class="content">
-
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">Стоимость и поставки</h6>
-                    </div>
-                    <div class="row g-3">
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-retail_price">Розничная цена </label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-retail_price"
-                                  class="input-group-text @error('retail_price') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-retail_price"
-                                       class="form-control @error('retail_price') is-invalid @enderror"
-                                       name="retail_price"
-                                       value="{{ old('retail_price', $medication->medicationCost->retail_price) }}"
-                                       placeholder="Розничная цена"
-                                       aria-label="Розничная цена"
-                                       aria-describedby="basic-icon-default-retail_price"/>
-                            </div>
-
-                            @error('retail_price')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-wholesale_price">Закупочная цена </label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-wholesale_price"
-                                  class="input-group-text @error('wholesale_price') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-wholesale_price"
-                                       class="form-control @error('wholesale_price') is-invalid @enderror"
-                                       name="wholesale_price"
-                                       value="{{ old('wholesale_price', $medication->medicationCost->wholesale_price) }}"
-                                       placeholder="Закупочная цена"
-                                       aria-label="Закупочная цена"
-                                       aria-describedby="basic-icon-default-wholesale_price"/>
-                            </div>
-
-                            @error('wholesale_price')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="supplier">Поставщик <span
-                                    class="text-danger">*</span></label>
-
-                            <select id="supplier" name="supplier_id"
-                                    class="form-control select2 @error('supplier_id') is-invalid @enderror" required>
-                                @foreach($suppliers as $supplier)
-                                    <option
-                                        value="{{ $supplier->id }}" @selected($supplier->id == old('supplier_id', $medication->medicationCost->supplier_id))>
-                                        {{ $supplier->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                            @error('supplier_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-delivery_time">Сроки поставки </label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-delivery_time"
-                                  class="input-group-text @error('delivery_time') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-delivery_time"
-                                       class="form-control @error('delivery_time') is-invalid @enderror"
-                                       name="delivery_time"
-                                       value="{{ old('delivery_time', $medication->medicationCost->delivery_time) }}"
-                                       placeholder="Сроки поставки"
-                                       aria-label="Сроки поставки"
-                                       aria-describedby="basic-icon-default-delivery_time"/>
-                            </div>
-
-                            @error('delivery_time')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
 
                         <!-- Navigation -->
                         <div class="col-12 d-flex justify-content-between">

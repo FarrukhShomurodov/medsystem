@@ -9,11 +9,10 @@ return new class extends Migration {
     {
         Schema::create('medication_cost_and_supplies', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('medication_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('warehouse_accounting_id')->constrained()->cascadeOnDelete();
             $table->integer('retail_price');
             $table->integer('wholesale_price');
             $table->foreignId('supplier_id')->constrained()->cascadeOnDelete();
-            $table->string('delivery_time');
             $table->timestamps();
         });
     }

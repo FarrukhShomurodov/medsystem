@@ -41,10 +41,10 @@ class Warehouse extends Model
         return $this->hasOne(WarehouseStorageHandling::class);
     }
 
-    public function transfer(): HasOne
-    {
-        return $this->hasOne(WarehouseTransfers::class);
-    }
+//    public function transfer(): HasOne
+//    {
+//        return $this->hasOne(WarehouseTransfers::class);
+//    }
 
     public function type(): BelongsTo
     {

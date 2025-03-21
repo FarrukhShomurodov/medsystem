@@ -52,16 +52,9 @@
                 </button>
             </div>
             <div class="line"></div>
-            <div class="step" data-target="#ralations">
-                <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">5</span>
-                    <span class="bs-stepper-label">Приемка товара</span>
-                </button>
-            </div>
-            <div class="line"></div>
             <div class="step" data-target="#resources">
                 <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">6</span>
+                    <span class="bs-stepper-circle">5</span>
                     <span class="bs-stepper-label">Хранение</span>
                 </button>
             </div>
@@ -73,6 +66,7 @@
 
                 <!-- Основные данные -->
                 <div id="basic-data" class="content">
+
                     <div class="content-header mb-3">
                         <h6 class="mb-0">Основные данные</h6>
                     </div>
@@ -144,6 +138,7 @@
 
                 <!-- Контактная информация -->
                 <div id="contacts" class="content">
+
                     <div class="content-header mb-3">
                         <h6 class="mb-0">Контактная информация</h6>
                     </div>
@@ -289,6 +284,7 @@
 
                 <!-- Вместимость -->
                 <div id="employee_details" class="content">
+
                     <div class="content-header mb-3">
                         <h6 class="mb-0">Вместимость</h6>
                     </div>
@@ -398,7 +394,7 @@
                         <div class="col-sm-12">
                             <label class="form-label" for="medication">Медикаменты <span
                                     class="text-danger">*</span></label>
-                            <select id="medication" name="medication[]"
+                            <select id="medication" name=""
                                     class="form-control select2 @error('medication') is-invalid @enderror"
                                     multiple="multiple">
                                 @foreach($medications as $medication)
@@ -415,7 +411,6 @@
 
                         <!-- Контейнер для динамических полей -->
                         <div id="medication-details-container">
-                            <!-- Здесь будут добавляться поля для каждого выбранного медикамента -->
                         </div>
 
                         <!-- Шаблон для динамических полей (скрыт) -->
@@ -423,26 +418,126 @@
                             <div class="medication-details">
                                 <h5>Медикамент: <span class="medication-name"></span></h5>
                                 <input type="hidden" name="medications[ID][id]" value="ID">
-                                <div class="form-group">
-                                    <label>Количество <span class="text-danger">*</span></label>
-                                    <input type="number" name="medications[ID][quantity]" class="form-control" >
+
+                                <div class="form-group mb-3">
+                                    <label for="quantity_ID">Количество <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bx bx-plus"></i></span>
+                                        <input type="number" id="quantity_ID" name="medications[ID][quantity]"
+                                               class="form-control" placeholder="Введите количество">
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Срок годности <span class="text-danger">*</span></label>
-                                    <input type="date" name="medications[ID][expiration_date]" class="form-control"
-                                           >
+
+                                <div class="form-group mb-3">
+                                    <label for="expiration_date_ID">Срок годности <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bx bx-calendar"></i></span>
+                                        <input type="date" id="expiration_date_ID"
+                                               name="medications[ID][expiration_date]"
+                                               placeholder="YYYY-MM-DD"
+                                               class="form-control flatpickr-date">
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Дата получения <span class="text-danger">*</span></label>
-                                    <input type="date" name="medications[ID][date_of_receipt]" class="form-control"
-                                           >
+
+                                <div class="form-group mb-3">
+                                    <label for="date_of_receipt_ID">Дата получения <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bx bx-calendar-event"></i></span>
+                                        <input type="date" id="date_of_receipt_ID"
+                                               name="medications[ID][date_of_receipt]"
+                                               placeholder="YYYY-MM-DD"
+                                               class="form-control flatpickr-date">
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Номер партии <span class="text-danger">*</span></label>
-                                    <input type="text" name="medications[ID][batch_number]" class="form-control"
-                                           >
+
+                                <div class="form-group mb-3">
+                                    <label for="batch_number_ID">Номер партии <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bx bx-barcode"></i></span>
+                                        <input type="text" id="batch_number_ID" name="medications[ID][batch_number]"
+                                               class="form-control" placeholder="Введите номер партии">
+                                    </div>
                                 </div>
-                                <hr>
+
+                                <h6>Упаковка:</h6>
+
+                                <div class="form-group mb-3">
+                                    <label for="packaging_type_ID">Тип упаковки <span
+                                            class="text-danger">*</span></label>
+                                    <select id="packaging_type_ID" name="medications[ID][packaging_type]"
+                                            class="form-control select2type" required>
+                                        @foreach(\App\Models\MedicationPackaging::TYPE as $type)
+                                            <option value="{{ $type }}">{{ $type }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="quantity_per_package_ID">Количество в упаковке <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bx bx-box"></i></span>
+                                        <input type="number" id="quantity_per_package_ID"
+                                               name="medications[ID][quantity_per_package]" class="form-control"
+                                               placeholder="Введите количество в упаковке">
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="package_size_ID">Размер упаковки <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bx bx-expand"></i></span>
+                                        <input type="number" id="package_size_ID" name="medications[ID][package_size]"
+                                               placeholder="Введите размер упаковки"
+                                               class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="packaging_date_ID">Дата упаковки <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bx bx-calendar-check"></i></span>
+                                        <input type="text" id="packaging_date_ID" name="medications[ID][packaging_date]"
+                                               placeholder="YYYY-MM-DD"
+                                               class="form-control flatpickr-date" required>
+                                    </div>
+                                </div>
+
+                                <h6>Стоимость и поставки</h6>
+
+                                <div class="form-group mb-3">
+                                    <label for="retail_price_ID">Розничная цена </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bx bx-money"></i></span>
+                                        <input type="number" id="retail_price_ID" name="medications[ID][retail_price]"
+                                               class="form-control" placeholder="Розничная цена">
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="wholesale_price_ID">Закупочная цена </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bx bx-wallet"></i></span>
+                                        <input type="number" id="wholesale_price_ID"
+                                               name="medications[ID][wholesale_price]" class="form-control"
+                                               placeholder="Закупочная цена">
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="supplier_ID">Поставщик (должен совпадать с производителем препарата)
+                                        <span class="text-danger">*</span></label>
+                                    <select id="supplier_ID" name="medications[ID][supplier_id]"
+                                            class="form-control select2type" required>
+                                        @foreach($suppliers as $supplier)
+                                            <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
@@ -458,123 +553,9 @@
                     </div>
                 </div>
 
-                <!-- Приемка товара -->
-                <div id="ralations" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">Приемка товара</h6>
-                    </div>
-                    <div class="row g-3">
-
-                        <div class="col-sm-12">
-                            <label class="form-label" for="supplier_id">Поставшик <span
-                                    class="text-danger">*</span></label>
-                            <select id="supplier_id" name="supplier_id"
-                                    class="form-control select2 @error('supplier_id') is-invalid @enderror">
-                                @foreach($suppliers as $supplier)
-                                    <option
-                                        value="{{ $supplier->id }}" @selected($supplier->id == old('supplier_id'))>{{ $supplier->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('supplier_id')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-transport">Транспорт </label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-transport"
-                                  class="input-group-text @error('transport') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-transport"
-                                       class="form-control @error('transport') is-invalid @enderror"
-                                       name="transport"
-                                       value="{{ old('transport') }}"
-                                       placeholder="Транспорт" aria-label="Транспорт"
-                                       aria-describedby="basic-icon-default-transport"/>
-                            </div>
-
-                            @error('transport')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-invoices">Накладные </label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-invoices"
-                                  class="input-group-text @error('invoices') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-invoices"
-                                       class="form-control @error('invoices') is-invalid @enderror"
-                                       name="invoices"
-                                       value="{{ old('invoices') }}"
-                                       placeholder="Накладные" aria-label="Накладные"
-                                       aria-describedby="basic-icon-default-invoices"/>
-                            </div>
-
-                            @error('invoices')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-quality_certificates">Сертификаты
-                                качество </label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-quality_certificates"
-                                  class="input-group-text @error('quality_certificates') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-quality_certificates"
-                                       class="form-control @error('quality_certificates') is-invalid @enderror"
-                                       name="quality_certificates"
-                                       value="{{ old('quality_certificates') }}"
-                                       placeholder="Сертификаты качество" aria-label="Сертификаты качество"
-                                       aria-describedby="basic-icon-default-quality_certificates"/>
-                            </div>
-
-                            @error('quality_certificates')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-acceptance_certificates">Акты
-                                приемки </label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-acceptance_certificates"
-                                  class="input-group-text @error('acceptance_certificates') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-acceptance_certificates"
-                                       class="form-control @error('acceptance_certificates') is-invalid @enderror"
-                                       name="acceptance_certificates"
-                                       value="{{ old('acceptance_certificates') }}"
-                                       placeholder="Акты приемки" aria-label="Акты приемки"
-                                       aria-describedby="basic-icon-default-acceptance_certificates"/>
-                            </div>
-
-                            @error('acceptance_certificates')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-
-                        <!-- Navigation -->
-                        <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev">
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Хранение -->
                 <div id="resources" class="content">
+
                     <div class="content-header mb-3">
                         <h6 class="mb-0">Хранение</h6>
                     </div>
@@ -629,7 +610,8 @@
                                        class="form-control @error('light_protected') is-invalid @enderror"
                                        name="light_protected"
                                        value="{{ old('light_protected') }}"
-                                       placeholder="Защита от солнечных лучей" aria-label="Защита от солнечных лучей"
+                                       placeholder="Защита от солнечных лучей"
+                                       aria-label="Защита от солнечных лучей"
                                        aria-describedby="basic-icon-default-light_protected"/>
                             </div>
 
@@ -739,7 +721,8 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-special_zone">Специальная зона </label>
+                            <label class="form-label" for="basic-icon-default-special_zone">Специальная
+                                зона </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-special_zone"
                                   class="input-group-text @error('special_zone') text-danger icon-border @enderror"><i
@@ -794,32 +777,25 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
-            // Инициализация Select2
-            $('#medication').select2();
-
-            // Обработчик изменения выбора медикаментов
             $('#medication').on('change', function () {
                 const container = $('#medication-details-container');
-                const template = $('#medication-details-template').html(); // Получаем HTML шаблона
+                const template = $('#medication-details-template').html();
 
-                container.empty(); // Очищаем контейнер перед добавлением новых полей
+                container.empty();
 
-                // Перебираем выбранные медикаменты
                 $('#medication option:selected').each(function () {
                     const option = $(this);
                     const medicationId = option.val();
                     const medicationName = option.text();
 
-                    // Заменяем "ID" в шаблоне на реальный ID медикамента
-                    const newFields = $(template
-                        .replace(/ID/g, medicationId) // Заменяем все "ID" на medicationId
-                    ).css('display', 'block'); // Делаем видимым
+                    const newFields = $(template.replace(/ID/g, medicationId)).css('display', 'block');
 
-                    // Заполняем название медикамента
                     newFields.find('.medication-name').text(medicationName);
 
-                    // Добавляем в контейнер
                     container.append(newFields);
+
+                    $('.select2type').select2();
+                    $('.flatpickr-date').flatpickr({dateFormat: 'Y-m-d'});
                 });
             });
         });

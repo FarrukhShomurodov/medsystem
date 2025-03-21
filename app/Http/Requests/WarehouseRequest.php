@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\MedicationPackaging;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class WarehouseRequest extends FormRequest
 {
@@ -11,19 +13,36 @@ class WarehouseRequest extends FormRequest
      */
     public function rules(): array
     {
+        $medications = array_filter($this->medications, function ($item) {
+            return isset($item['id']) && $item['id'] !== 'ID' && !empty($item['quantity']);
+        });
+
+        $this->merge(['medications' => $medications]);
+
         return [
             'name' => 'required',
             'description' => 'required',
             'warehouse_type_id' => 'required',
             'address' => 'required',
 
-            //
+            // accounting -> medications
             'medications' => 'required|array',
-//            'medications.*.id' => 'required|exists:medications,id',
-//            'medications.*.quantity' => 'required|integer|min:1',
-//            'medications.*.expiration_date' => 'required|date',
-//            'medications.*.date_of_receipt' => 'required|date',
-//            'medications.*.batch_number' => 'required|string|max:255',
+            'medications.*.id' => 'required|exists:medications,id',
+            'medications.*.quantity' => 'required|integer|min:1',
+            'medications.*.expiration_date' => 'required|date',
+            'medications.*.date_of_receipt' => 'required|date',
+            'medications.*.batch_number' => 'required|string|max:255',
+
+            //packaging
+            'medications.*.packaging_type' => ['required', Rule::in(MedicationPackaging::TYPE)],
+            'medications.*.quantity_per_package' => 'required|int',
+            'medications.*.package_size' => 'required|int',
+            'medications.*.packaging_date' => 'required|date',
+
+            //price
+            'medications.*.retail_price' => 'required|string|max:255',
+            'medications.*.wholesale_price' => 'required|string|max:255',
+            'medications.*.supplier_id' => 'required|string|max:255',
 
 //            'date_of_last_inventory',
 //            'result',
@@ -56,11 +75,11 @@ class WarehouseRequest extends FormRequest
             'special_zone' => 'required',
             'label' => 'required',
 
-            'supplier_id' => 'required',
-            'transport' => 'required',
-            'invoices' => 'required',
-            'quality_certificates' => 'required',
-            'acceptance_certificates' => 'required',
+//            'supplier_id' => 'required',
+//            'transport' => 'required',
+//            'invoices' => 'required',
+//            'quality_certificates' => 'required',
+//            'acceptance_certificates' => 'required',
         ];
     }
 }

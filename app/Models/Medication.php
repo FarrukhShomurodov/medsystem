@@ -16,7 +16,6 @@ class Medication extends Model
         'manufacturer_id',
         'registration_number',
         'registration_date',
-        'expiration_date'
     ];
 
     const RELEASEFORM = [
@@ -81,11 +80,6 @@ class Medication extends Model
         return $this->hasOne(MedicationComposition::class);
     }
 
-    public function packaging(): HasOne
-    {
-        return $this->hasOne(MedicationPackaging::class);
-    }
-
     public function storage(): HasOne
     {
         return $this->hasOne(MedicationStorage::class);
@@ -94,10 +88,5 @@ class Medication extends Model
     public function licenseAndCertification(): HasOne
     {
         return $this->hasOne(MedicationLicenseAndCertification::class);
-    }
-
-    public function medicationCost(): HasOne
-    {
-        return $this->hasOne(MedicationCostAndSupply::class);
     }
 }

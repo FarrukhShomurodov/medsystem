@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class MedicationPackaging extends Model
 {
     protected $fillable = [
-        'medication_id',
+        'warehouse_accounting_id',
         'packaging_type',
         'quantity_per_package',
         'package_size',

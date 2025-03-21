@@ -3,18 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MedicationCostAndSupply extends Model
 {
     protected $fillable = [
-        'medication_id',
+        'warehouse_accounting_id',
         'retail_price',
         'wholesale_price',
         'supplier_id',
-        'delivery_time',
     ];
 
-    public function supplier()
+    public function supplier(): BelongsTo
     {
         return $this->belongsTo(Supplier::class);
     }
