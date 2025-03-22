@@ -6,10 +6,12 @@ use App\Http\Requests\WarehouseRequest;
 use App\Models\Medication;
 use App\Models\Supplier;
 use App\Models\Warehouse;
+use App\Models\WarehouseAccounting;
 use App\Models\WarehouseType;
 use App\Services\WarehouseService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class WarehouseController
 {
@@ -70,4 +72,20 @@ class WarehouseController
 
         return redirect()->route('warehouses.index')->with('success', 'Склад успешно удален!');
     }
+
+    public function medications(Request $request): View
+    {
+        $accountings = WarehouseAccounting::with('medication')
+            ->when($request->filled('warehouse_id'), function ($q) use ($request) {
+                $q->where('warehouse_id', $request->input('warehouse_id'));
+            })
+            ->with('packaging')
+            ->with('warehouse')
+            ->with('medicationCost')
+            ->orderBy('expiration_date', 'ASC')
+            ->paginate(30);
+
+        return view('admin.warehouses.medications', compact('accountings'));
+    }
+
 }

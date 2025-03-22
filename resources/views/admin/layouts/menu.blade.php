@@ -220,6 +220,7 @@
         </li>
 
         <li class="menu-item {{ Request::is('dashboard/warehouses/types*')
+            ||Request::is('dashboard/warehouses/medications*')
             || Request::is('dashboard/warehouses') || Request::is('dashboard/warehouses/create')
             || Request::is('dashboard/warehouses/*/edit') ? 'open' : '' }}"
             style="">
@@ -231,6 +232,11 @@
                 <li class="menu-item {{ Request::is('dashboard/warehouses') || Request::is('dashboard/warehouses/create') || Request::is('dashboard/warehouses/*/edit') ? 'active' : '' }}">
                     <a href="{{route('warehouses.index')}}" class="menu-link">
                         <div data-i18n="Список">Список</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('dashboard/warehouses/medications*') ? 'active' : '' }}">
+                    <a href="{{route('warehouses.medications')}}" class="menu-link">
+                        <div data-i18n="Препараты">Препараты</div>
                     </a>
                 </li>
                 <li class="menu-item {{ Request::is('dashboard/warehouses/types*') ? 'active' : '' }}">

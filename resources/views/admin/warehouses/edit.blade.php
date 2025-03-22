@@ -405,118 +405,148 @@
                                 @foreach($warehouse->accounting as $accounting)
                                     <div class="medication-details">
                                         <h5>Медикамент: {{ $accounting->medication->name }}</h5>
-                                        <input type="hidden" name="medications[{{ $accounting->medication_id }}][id]" value="{{ $accounting->medication_id }}">
+                                        <input type="hidden" name="medications[{{ $accounting->medication_id }}][id]"
+                                               value="{{ $accounting->medication_id }}">
 
                                         <div class="form-group mb-3">
-                                            <label for="quantity_{{ $accounting->medication_id }}">Количество <span class="text-danger">*</span></label>
+                                            <label for="quantity_{{ $accounting->medication_id }}">Количество <span
+                                                    class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="bx bx-plus"></i></span>
-                                                <input type="number" id="quantity_{{ $accounting->medication_id }}" name="medications[{{ $accounting->medication_id }}][quantity]"
-                                                       class="form-control" placeholder="Введите количество" value="{{ $accounting->quantity }}">
+                                                <input type="number" id="quantity_{{ $accounting->medication_id }}"
+                                                       name="medications[{{ $accounting->medication_id }}][quantity]"
+                                                       class="form-control" placeholder="Введите количество"
+                                                       value="{{ $accounting->quantity }}">
                                             </div>
                                         </div>
 
                                         <div class="form-group mb-3">
-                                            <label for="expiration_date_{{ $accounting->medication_id }}">Срок годности <span class="text-danger">*</span></label>
+                                            <label for="expiration_date_{{ $accounting->medication_id }}">Срок годности
+                                                <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="bx bx-calendar"></i></span>
                                                 <input type="date" id="expiration_date_{{ $accounting->medication_id }}"
                                                        name="medications[{{ $accounting->medication_id }}][expiration_date]"
-                                                       class="form-control flatpickr-date" value="{{ $accounting->expiration_date }}">
+                                                       class="form-control flatpickr-date"
+                                                       value="{{ $accounting->expiration_date }}">
                                             </div>
                                         </div>
 
                                         <div class="form-group mb-3">
-                                            <label for="date_of_receipt_{{ $accounting->medication_id }}">Дата получения <span class="text-danger">*</span></label>
+                                            <label for="date_of_receipt_{{ $accounting->medication_id }}">Дата получения
+                                                <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <span class="input-group-text"><i class="bx bx-calendar-event"></i></span>
+                                                <span class="input-group-text"><i
+                                                        class="bx bx-calendar-event"></i></span>
                                                 <input type="date" id="date_of_receipt_{{ $accounting->medication_id }}"
                                                        name="medications[{{ $accounting->medication_id }}][date_of_receipt]"
-                                                       class="form-control flatpickr-date" value="{{ $accounting->date_of_receipt }}">
+                                                       class="form-control flatpickr-date"
+                                                       value="{{ $accounting->date_of_receipt }}">
                                             </div>
                                         </div>
 
                                         <div class="form-group mb-3">
-                                            <label for="batch_number_{{ $accounting->medication_id }}">Номер партии <span class="text-danger">*</span></label>
+                                            <label for="batch_number_{{ $accounting->medication_id }}">Номер партии
+                                                <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="bx bx-barcode"></i></span>
                                                 <input type="text" id="batch_number_{{ $accounting->medication_id }}"
                                                        name="medications[{{ $accounting->medication_id }}][batch_number]"
-                                                       class="form-control" placeholder="Введите номер партии" value="{{ $accounting->batch_number }}">
+                                                       class="form-control" placeholder="Введите номер партии"
+                                                       value="{{ $accounting->batch_number }}">
                                             </div>
                                         </div>
 
                                         <h6>Упаковка:</h6>
 
                                         <div class="form-group mb-3">
-                                            <label for="packaging_type_{{ $accounting->medication_id }}">Тип упаковки <span class="text-danger">*</span></label>
-                                            <select id="packaging_type_{{ $accounting->medication_id }}" name="medications[{{ $accounting->medication_id }}][packaging_type]"
+                                            <label for="packaging_type_{{ $accounting->medication_id }}">Тип упаковки
+                                                <span class="text-danger">*</span></label>
+                                            <select id="packaging_type_{{ $accounting->medication_id }}"
+                                                    name="medications[{{ $accounting->medication_id }}][packaging_type]"
                                                     class="form-control select2" required>
                                                 @foreach(\App\Models\MedicationPackaging::TYPE as $type)
-                                                    <option value="{{ $type }}" {{ $type == $accounting->packaging->packaging_type ? 'selected' : '' }}>{{ $type }}</option>
+                                                    <option
+                                                        value="{{ $type }}" {{ $type == $accounting->packaging->packaging_type ? 'selected' : '' }}>{{ $type }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
 
                                         <div class="form-group mb-3">
-                                            <label for="quantity_per_package_{{ $accounting->medication_id }}">Количество в упаковке <span class="text-danger">*</span></label>
+                                            <label for="quantity_per_package_{{ $accounting->medication_id }}">Количество
+                                                в упаковке <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="bx bx-box"></i></span>
-                                                <input type="number" id="quantity_per_package_{{ $accounting->medication_id }}"
+                                                <input type="number"
+                                                       id="quantity_per_package_{{ $accounting->medication_id }}"
                                                        name="medications[{{ $accounting->medication_id }}][quantity_per_package]"
-                                                       class="form-control" placeholder="Введите количество в упаковке" value="{{ $accounting->packaging->quantity_per_package }}">
+                                                       class="form-control" placeholder="Введите количество в упаковке"
+                                                       value="{{ $accounting->packaging->quantity_per_package }}">
                                             </div>
                                         </div>
 
                                         <div class="form-group mb-3">
-                                            <label for="package_size_{{ $accounting->medication_id }}">Размер упаковки <span class="text-danger">*</span></label>
+                                            <label for="package_size_{{ $accounting->medication_id }}">Размер упаковки
+                                                <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="bx bx-expand"></i></span>
                                                 <input type="number" id="package_size_{{ $accounting->medication_id }}"
                                                        name="medications[{{ $accounting->medication_id }}][package_size]"
-                                                       class="form-control" placeholder="Введите размер упаковки" value="{{ $accounting->packaging->package_size }}">
+                                                       class="form-control" placeholder="Введите размер упаковки"
+                                                       value="{{ $accounting->packaging->package_size }}">
                                             </div>
                                         </div>
 
                                         <div class="form-group mb-3">
-                                            <label for="packaging_date_{{ $accounting->medication_id }}">Дата упаковки <span class="text-danger">*</span></label>
+                                            <label for="packaging_date_{{ $accounting->medication_id }}">Дата упаковки
+                                                <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <span class="input-group-text"><i class="bx bx-calendar-check"></i></span>
+                                                <span class="input-group-text"><i
+                                                        class="bx bx-calendar-check"></i></span>
                                                 <input type="date" id="packaging_date_{{ $accounting->medication_id }}"
                                                        name="medications[{{ $accounting->medication_id }}][packaging_date]"
-                                                       class="form-control flatpickr-date" required value="{{ $accounting->packaging->packaging_date }}">
+                                                       class="form-control flatpickr-date" required
+                                                       value="{{ $accounting->packaging->packaging_date }}">
                                             </div>
                                         </div>
 
                                         <h6>Стоимость и поставки</h6>
 
                                         <div class="form-group mb-3">
-                                            <label for="retail_price_{{ $accounting->medication_id }}">Розничная цена</label>
+                                            <label for="retail_price_{{ $accounting->medication_id }}">Розничная
+                                                цена</label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="bx bx-money"></i></span>
                                                 <input type="number" id="retail_price_{{ $accounting->medication_id }}"
                                                        name="medications[{{ $accounting->medication_id }}][retail_price]"
-                                                       class="form-control" placeholder="Розничная цена" value="{{ $accounting->medicationCost->retail_price }}">
+                                                       class="form-control" placeholder="Розничная цена"
+                                                       value="{{ $accounting->medicationCost->retail_price }}">
                                             </div>
                                         </div>
 
                                         <div class="form-group mb-3">
-                                            <label for="wholesale_price_{{ $accounting->medication_id }}">Закупочная цена</label>
+                                            <label for="wholesale_price_{{ $accounting->medication_id }}">Закупочная
+                                                цена</label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="bx bx-wallet"></i></span>
-                                                <input type="number" id="wholesale_price_{{ $accounting->medication_id }}"
+                                                <input type="number"
+                                                       id="wholesale_price_{{ $accounting->medication_id }}"
                                                        name="medications[{{ $accounting->medication_id }}][wholesale_price]"
-                                                       class="form-control" placeholder="Закупочная цена" value="{{ $accounting->medicationCost->wholesale_price }}">
+                                                       class="form-control" placeholder="Закупочная цена"
+                                                       value="{{ $accounting->medicationCost->wholesale_price }}">
                                             </div>
                                         </div>
 
                                         <div class="form-group mb-3">
-                                            <label for="supplier_{{ $accounting->medication_id }}">Поставщик (должен совпадать с производителем препарата)
+                                            <label for="supplier_{{ $accounting->medication_id }}">Поставщик (должен
+                                                совпадать с производителем препарата)
                                                 <span class="text-danger">*</span></label>
-                                            <select id="supplier_{{ $accounting->medication_id }}" name="medications[{{ $accounting->medication_id }}][supplier_id]"
+                                            <select id="supplier_{{ $accounting->medication_id }}"
+                                                    name="medications[{{ $accounting->medication_id }}][supplier_id]"
                                                     class="form-control select2" required>
                                                 @foreach($suppliers as $supplier)
-                                                    <option value="{{ $supplier->id }}" {{ $supplier->id == $accounting->medicationCost->supplier_id ? 'selected' : '' }}>{{ $supplier->name }}</option>
+                                                    <option
+                                                        value="{{ $supplier->id }}" {{ $supplier->id == $accounting->medicationCost->supplier_id ? 'selected' : '' }}>{{ $supplier->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -875,22 +905,25 @@
             $('#medication').on('change', function () {
                 const container = $('#medication-details-container');
                 const template = $('#medication-details-template').html();
-
-                container.empty();
+                let existsMedications = {{ $warehouse->accounting->pluck('medication_id') }};
 
                 $('#medication option:selected').each(function () {
                     const option = $(this);
                     const medicationId = option.val();
-                    const medicationName = option.text();
 
-                    const newFields = $(template.replace(/ID/g, medicationId)).css('display', 'block');
+                    if (!existsMedications.includes(medicationId)) {
+                        const medicationName = option.text();
 
-                    newFields.find('.medication-name').text(medicationName);
+                        const newFields = $(template.replace(/ID/g, medicationId)).css('display', 'block');
 
-                    container.append(newFields);
+                        newFields.find('.medication-name').text(medicationName);
+
+                        container.append(newFields);
+
+                        $('.flatpickr-date').flatpickr({dateFormat: 'Y-m-d'});
+                    }
 
                     $('.select2type').select2();
-                    $('.flatpickr-date').flatpickr({dateFormat: 'Y-m-d'});
                 });
             });
         });

@@ -78,6 +78,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::prefix('warehouses')->group(function () {
         Route::resource('/', WarehouseController::class)->names('warehouses')->parameter('', 'warehouse')->except('show');
         Route::resource('/types', WarehouseTypeController::class)->names('warehouses.type')->except('show');
+        Route::get('/medications', [WarehouseController::class, 'medications'])->name('warehouses.medications');
     });
 
     // pharmacy
