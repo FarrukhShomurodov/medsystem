@@ -43,7 +43,7 @@ class AnalyzeController
             $query->where('position_id', 1);
         })->get();
         $laboratories = Laboratory::query()->get();
-        $equipments = Equipment::query()->get();
+        $equipments = Equipment::query()->where('status', 'работает')->get();
         $methods = AnalyzeMethod::query()->get();
         $patients = Patient::query()->get();
         $maps = ExaminationMap::query()->get();
@@ -66,7 +66,7 @@ class AnalyzeController
             $query->where('position_id', 1);
         })->get();
         $laboratories = Laboratory::query()->get();
-        $equipments = Equipment::query()->get();
+        $equipments = Equipment::query()->where('status', 'работает')->get();
         $methods = AnalyzeMethod::query()->get();
         $patients = Patient::query()->get();
         $maps = $analyze->patient->examinationMaps;

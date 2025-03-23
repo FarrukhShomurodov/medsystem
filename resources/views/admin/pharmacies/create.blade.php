@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Медицинская система | Аптеки</title>
+    <title>Медицинская система | Создать аптеку</title>
 @endsection
 
 @section('content')
@@ -62,14 +62,13 @@
                             <label class="form-label" for="basic-icon-default-company">Название <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-company2"
-                                  class="input-group-text @error('name') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
+                                <span id="basic-icon-default-company2"
+                                      class="input-group-text @error('name') text-danger icon-border @enderror">
+                                    <i class="bx bx-building"></i>
+                                </span>
                                 <input type="text" id="basic-icon-default-company"
-                                       class="form-control @error('name') is-invalid @enderror"
-                                       placeholder="Название" aria-label="Название"
-                                       name="name"
-                                       value="{{ old('name') }}"
+                                       class="form-control @error('name') is-invalid @enderror" placeholder="Название"
+                                       aria-label="Название" name="name" value="{{ old('name') }}"
                                        aria-describedby="basic-icon-default-company2"/>
                             </div>
                             @error('name')
@@ -78,8 +77,7 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="type">Типы <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="type">Типы <span class="text-danger">*</span></label>
                             <select id="type" name="type_id"
                                     class="form-control select2 @error('type_id') is-invalid @enderror">
                                 @foreach($types as $type)
@@ -89,21 +87,22 @@
                                 @endforeach
                             </select>
                             @error('type_id')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-legal_address">Юридический адрес <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-company2"
-                                  class="input-group-text @error('legal_address') text-danger icon-border @enderror"><i
-                                    class="bx bx-legal_address"></i></span>
+                                <span id="basic-icon-default-company2"
+                                      class="input-group-text @error('legal_address') text-danger icon-border @enderror">
+                                    <i class="bx bx-map-pin"></i>
+                                </span>
                                 <input type="text" id="basic-icon-default-legal_address"
                                        class="form-control @error('legal_address') is-invalid @enderror"
                                        placeholder="Юридический адрес" aria-label="Юридический адрес"
-                                       name="legal_address"
-                                       value="{{ old('legal_address') }}"
+                                       name="legal_address" value="{{ old('legal_address') }}"
                                        aria-describedby="basic-icon-default-company2"/>
                             </div>
                             @error('legal_address')
@@ -111,19 +110,18 @@
                             @enderror
                         </div>
 
-
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-actual_address">Фактический адрес <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-company2"
-                                  class="input-group-text @error('actual_address') text-danger icon-border @enderror"><i
-                                    class="bx bx-actual_address"></i></span>
+                                <span id="basic-icon-default-company2"
+                                      class="input-group-text @error('actual_address') text-danger icon-border @enderror">
+                                    <i class="bx bx-map"></i>
+                                </span>
                                 <input type="text" id="basic-icon-default-actual_address"
                                        class="form-control @error('actual_address') is-invalid @enderror"
                                        placeholder="Фактический адрес" aria-label="Фактический адрес"
-                                       name="actual_address"
-                                       value="{{ old('actual_address') }}"
+                                       name="actual_address" value="{{ old('actual_address') }}"
                                        aria-describedby="basic-icon-default-company2"/>
                             </div>
                             @error('actual_address')
@@ -136,13 +134,13 @@
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
-                                  class="input-group-text @error('contact_phone') text-danger icon-border @enderror"><i
-                                    class="bx bx-contact_phone"></i></span>
+                                  class="input-group-text @error('contact_phone') text-danger icon-border @enderror">
+                                <i class="bx bx-phone"></i>
+                            </span>
                                 <input type="text" id="basic-icon-default-contact_phone"
                                        class="form-control @error('contact_phone') is-invalid @enderror"
                                        placeholder="Контактный телефон" aria-label="Контактный телефон"
-                                       name="contact_phone"
-                                       value="{{ old('contact_phone') }}"
+                                       name="contact_phone" value="{{ old('contact_phone') }}"
                                        aria-describedby="basic-icon-default-company2"/>
                             </div>
                             @error('contact_phone')
@@ -155,12 +153,12 @@
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
-                                  class="input-group-text @error('working_hours') text-danger icon-border @enderror"><i
-                                    class="bx bx-working_hours"></i></span>
+                                  class="input-group-text @error('working_hours') text-danger icon-border @enderror">
+                                <i class="bx bx-time"></i>
+                            </span>
                                 <input type="text" id="basic-icon-default-working_hours"
                                        class="form-control @error('working_hours') is-invalid @enderror"
-                                       placeholder="Режим работы" aria-label="Режим работы"
-                                       name="working_hours"
+                                       placeholder="Режим работы" aria-label="Режим работы" name="working_hours"
                                        value="{{ old('working_hours') }}"
                                        aria-describedby="basic-icon-default-company2"/>
                             </div>
@@ -187,14 +185,13 @@
                         <h6 class="mb-0">Лицензия и сертификация</h6>
                     </div>
                     <div class="row g-3">
-
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-license_number">Номер лицензии <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
                                   class="input-group-text @error('license_number') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
+                                    class="bx bx-id-card"></i></span>
                                 <input type="text" id="basic-icon-default-license_number"
                                        class="form-control @error('license_number') is-invalid @enderror"
                                        placeholder="Номер лицензии"
@@ -215,7 +212,7 @@
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-birth-date2"
                                       class="input-group-text @error('license_issue_date') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
+                                    <i class="bx bx-calendar-check"></i>
                                 </span>
                                 <input type="text" name="license_issue_date" value="{{ old('license_issue_date') }}"
                                        id="basic-icon-license_issue_date"
@@ -233,7 +230,7 @@
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-birth-date2"
                                       class="input-group-text @error('license_expiry_date') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
+                                    <i class="bx bx-calendar-x"></i>
                                 </span>
                                 <input type="text" name="license_expiry_date" value="{{ old('license_expiry_date') }}"
                                        id="basic-icon-license_expiry_date"
@@ -253,7 +250,7 @@
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
                                   class="input-group-text @error('quality_certificate_number') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
+                                    class="bx bx-capsule"></i></span>
                                 <input type="text" id="basic-icon-default-quality_certificate_number"
                                        class="form-control @error('quality_certificate_number') is-invalid @enderror"
                                        placeholder="Номер лицензии на фармацевтическую деятельность"
@@ -274,7 +271,7 @@
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
                                   class="input-group-text @error('compliance_standards') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
+                                    class="bx bx-certification"></i></span>
                                 <input type="text" id="basic-icon-default-compliance_standards"
                                        class="form-control @error('compliance_standards') is-invalid @enderror"
                                        placeholder="Соответствие нормативам и стандартам"
@@ -314,7 +311,7 @@
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
                                   class="input-group-text @error('consultation_phone') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
+                                    class="bx bx-phone"></i></span>
                                 <input type="text" id="basic-icon-default-consultation_phone"
                                        class="form-control @error('consultation_phone') is-invalid @enderror"
                                        placeholder="Телефон для консультаций"
@@ -347,12 +344,10 @@
 
                         <!-- Navigation -->
                         <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-label-secondary btn-prev">
+                            <button class="btn btn-primary btn-prev">
                                 <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
                             </button>
-                            <button class="btn btn-primary btn-next">
-                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
+                            <button type="submit" class="btn btn-success">Сохранить</button>
                         </div>
                     </div>
                 </div>

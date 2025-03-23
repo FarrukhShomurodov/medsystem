@@ -226,8 +226,9 @@
                                 вещества </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-active_substance_name"
-                                  class="input-group-text @error('active_substance_name') text-danger icon-border @enderror"><i
-                                    class="bx bx-phone"></i></span>
+                                  class="input-group-text @error('active_substance_name') text-danger icon-border @enderror">
+                                    <i class="bx bx-capsule"></i>
+                            </span>
                                 <input type="text" id="basic-icon-default-active_substance_name"
                                        class="form-control @error('active_substance_name') is-invalid @enderror"
                                        name="active_substance_name"
@@ -247,8 +248,9 @@
                                 активного вещества </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-active_substance_dosage"
-                                  class="input-group-text @error('active_substance_dosage') text-danger icon-border @enderror"><i
-                                    class="bx bx-phone"></i></span>
+                                  class="input-group-text @error('active_substance_dosage') text-danger icon-border @enderror">
+                                 <i class="bx bx-droplet"></i>
+                            </span>
                                 <input type="text" id="basic-icon-default-active_substance_dosage"
                                        class="form-control @error('active_substance_dosage') is-invalid @enderror"
                                        name="active_substance_dosage"
@@ -268,8 +270,9 @@
                                 Название ) </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-substance_name"
-                                  class="input-group-text @error('substance_name') text-danger icon-border @enderror"><i
-                                    class="bx bx-phone"></i></span>
+                                  class="input-group-text @error('substance_name') text-danger icon-border @enderror">
+                                 <i class="bx bx-list-check"></i>
+                            </span>
                                 <input type="text" id="basic-icon-default-substance_name"
                                        class="form-control @error('substance_name') is-invalid @enderror"
                                        name="substance_name"
@@ -286,12 +289,12 @@
 
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-substance_dosage">Вспомогательные вещества
-                                (
-                                Дозировка ) </label>
+                                ( Дозировка ) </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-substance_dosage"
-                                  class="input-group-text @error('substance_dosage') text-danger icon-border @enderror"><i
-                                    class="bx bx-phone"></i></span>
+                                  class="input-group-text @error('substance_dosage') text-danger icon-border @enderror">
+                                   <i class="bx bx-sort-alt-2"></i>
+                            </span>
                                 <input type="text" id="basic-icon-default-substance_dosage"
                                        class="form-control @error('substance_dosage') is-invalid @enderror"
                                        name="substance_dosage"
@@ -311,8 +314,9 @@
                                 группа </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-pharmacological_group"
-                                  class="input-group-text @error('pharmacological_group') text-danger icon-border @enderror"><i
-                                    class="bx bx-phone"></i></span>
+                                  class="input-group-text @error('pharmacological_group') text-danger icon-border @enderror">
+                                <i class="bx bx-first-aid"></i>
+                            </span>
                                 <input type="text" id="basic-icon-default-pharmacological_group"
                                        class="form-control @error('pharmacological_group') is-invalid @enderror"
                                        name="pharmacological_group"
@@ -351,9 +355,10 @@
                                 применению </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-indications"
-                                  class="input-group-text @error('indications') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-indications"
+                                  class="input-group-text @error('indications') text-danger icon-border @enderror">
+                                <i class="bx bx-pulse"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-indications"
                                        class="form-control @error('indications') is-invalid @enderror"
                                        name="indications"
                                        value="{{ old('indications', $medication->application->indications) }}"
@@ -370,9 +375,10 @@
                                 применения </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-administration_method"
-                                  class="input-group-text @error('administration_method') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-administration_method"
+                                  class="input-group-text @error('administration_method') text-danger icon-border @enderror">
+                                  <i class="bx bx-capsule"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-administration_method"
                                        class="form-control @error('administration_method') is-invalid @enderror"
                                        name="administration_method"
                                        value="{{ old('administration_method', $medication->application->administration_method) }}"
@@ -388,9 +394,10 @@
                             <label class="form-label" for="basic-icon-default-dosage_regimen">Режим дозирования </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-dosage_regimen"
-                                  class="input-group-text @error('dosage_regimen') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-dosage_regimen"
+                                  class="input-group-text @error('dosage_regimen') text-danger icon-border @enderror">
+                                      <i class="bx bx-time"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-dosage_regimen"
                                        class="form-control @error('dosage_regimen') is-invalid @enderror"
                                        name="dosage_regimen"
                                        value="{{ old('dosage_regimen',$medication->application->dosage_regimen) }}"
@@ -407,9 +414,10 @@
                                    for="basic-icon-default-contraindications">Противопоказания </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-contraindications"
-                                  class="input-group-text @error('contraindications') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-contraindications"
+                                  class="input-group-text @error('contraindications') text-danger icon-border @enderror">
+                                     <i class="bx bx-error"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-contraindications"
                                        class="form-control @error('contraindications') is-invalid @enderror"
                                        name="contraindications"
                                        value="{{ old('contraindications', $medication->application->contraindications) }}"
@@ -426,9 +434,10 @@
                                    for="basic-icon-default-usage_features">Особенности применения </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-usage_features"
-                                  class="input-group-text @error('usage_features') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-usage_features"
+                                  class="input-group-text @error('usage_features') text-danger icon-border @enderror">
+                                   <i class="bx bx-info-circle"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-usage_features"
                                        class="form-control @error('usage_features') is-invalid @enderror"
                                        name="usage_features"
                                        value="{{ old('usage_features', $medication->application->usage_features) }}"
@@ -445,9 +454,10 @@
                                    for="basic-icon-default-side_effects">Побочные эффекты </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-side_effects"
-                                  class="input-group-text @error('side_effects') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-side_effects"
+                                  class="input-group-text @error('side_effects') text-danger icon-border @enderror">
+                                                  <i class="bx bx-bug"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-side_effects"
                                        class="form-control @error('side_effects') is-invalid @enderror"
                                        name="side_effects"
                                        value="{{ old('side_effects', $medication->application->side_effects) }}"
@@ -465,9 +475,10 @@
                                 препаратами </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-drug_interactions"
-                                  class="input-group-text @error('drug_interactions') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-drug_interactions"
+                                  class="input-group-text @error('drug_interactions') text-danger icon-border @enderror">
+                                     <i class="bx bx-git-merge"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-drug_interactions"
                                        class="form-control @error('drug_interactions') is-invalid @enderror"
                                        name="drug_interactions"
                                        value="{{ old('drug_interactions', $medication->application->drug_interactions) }}"
@@ -502,8 +513,9 @@
                                 хранения </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-storage_temperature"
-                                  class="input-group-text @error('storage_temperature') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
+                                  class="input-group-text @error('storage_temperature') text-danger icon-border @enderror">
+                                  <i class='bx bxs-thermometer'></i>
+                            </span>
                                 <input type="number" id="basic-icon-default-storage_temperature"
                                        class="form-control @error('storage_temperature') is-invalid @enderror"
                                        name="storage_temperature"
@@ -523,8 +535,9 @@
                                 хранения </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-storage_conditions"
-                                  class="input-group-text @error('storage_conditions') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
+                                  class="input-group-text @error('storage_conditions') text-danger icon-border @enderror">
+                                  <i class="bx bx-archive"></i>
+                            </span>
                                 <input type="text" id="basic-icon-default-storage_conditions"
                                        class="form-control @error('storage_conditions') is-invalid @enderror"
                                        name="storage_conditions"
@@ -544,8 +557,9 @@
                                 условия хранения </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-special_storage_conditions"
-                                  class="input-group-text @error('special_storage_conditions') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
+                                  class="input-group-text @error('special_storage_conditions') text-danger icon-border @enderror">
+                                     <i class="bx bx-shield-quarter"></i>
+                            </span>
                                 <input type="text" id="basic-icon-default-special_storage_conditions"
                                        class="form-control @error('special_storage_conditions') is-invalid @enderror"
                                        name="special_storage_conditions"
@@ -578,90 +592,38 @@
                         <h6 class="mb-0">Лицензии и сертификация</h6>
                     </div>
                     <div class="row g-3">
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-sales_license">Лицензия на
-                                продажу </label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-sales_license"
-                                  class="input-group-text @error('sales_license') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-sales_license"
-                                       class="form-control @error('sales_license') is-invalid @enderror"
-                                       name="sales_license"
-                                       value="{{ old('sales_license', $medication->licenseAndCertification->sales_license) }}"
-                                       placeholder="Лицензия на продажу"
-                                       aria-label="Лицензия на продажу"
-                                       aria-describedby="basic-icon-default-sales_license"/>
+                        @php
+                            $license = $medication->licenseAndCertification ?? null;
+                        @endphp
+
+                        @foreach ([
+                            'sales_license' => 'Лицензия на продажу',
+                            'quality_certificate' => 'Сертификат качества',
+                            'clinical_trials' => 'Клинические исследования',
+                            'registration_documents' => 'Регистрационные документы'
+                        ] as $field => $label)
+                            <div class="col-sm-6">
+                                <label class="form-label" for="basic-icon-default-{{ $field }}">{{ $label }}</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="file" id="basic-icon-default-{{ $field }}"
+                                           class="form-control @error($field) is-invalid @enderror"
+                                           name="{{ $field }}"
+                                           aria-label="{{ $label }}"
+                                           aria-describedby="basic-icon-default-{{ $field }}"/>
+
+                                    @if ($license && $license->$field)
+                                        <a href="{{ asset('storage/' . $license->$field) }}" target="_blank"
+                                           class="btn btn-outline-primary">
+                                            <i class="bx bx-download"></i>Cкачать
+                                        </a>
+                                    @endif
+                                </div>
+
+                                @error($field)
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
-
-                            @error('sales_license')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-quality_certificate">Сертификат
-                                качества </label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-quality_certificate"
-                                  class="input-group-text @error('quality_certificate') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-quality_certificate"
-                                       class="form-control @error('quality_certificate') is-invalid @enderror"
-                                       name="quality_certificate"
-                                       value="{{ old('quality_certificate', $medication->licenseAndCertification->quality_certificate) }}"
-                                       placeholder="Сертификат качества"
-                                       aria-label="Сертификат качества"
-                                       aria-describedby="basic-icon-default-quality_certificate"/>
-                            </div>
-
-                            @error('quality_certificate')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-clinical_trials">Клинические
-                                исследования </label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-clinical_trials"
-                                  class="input-group-text @error('clinical_trials') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-clinical_trials"
-                                       class="form-control @error('clinical_trials') is-invalid @enderror"
-                                       name="clinical_trials"
-                                       value="{{ old('clinical_trials', $medication->licenseAndCertification->clinical_trials) }}"
-                                       placeholder="Клинические исследования"
-                                       aria-label="Клинические исследования"
-                                       aria-describedby="basic-icon-default-clinical_trials"/>
-                            </div>
-
-                            @error('clinical_trials')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-registration_documents">Регистрационные
-                                документы </label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-registration_documents"
-                                  class="input-group-text @error('registration_documents') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-registration_documents"
-                                       class="form-control @error('registration_documents') is-invalid @enderror"
-                                       name="registration_documents"
-                                       value="{{ old('registration_documents', $medication->licenseAndCertification->registration_documents) }}"
-                                       placeholder="Регистрационные документы"
-                                       aria-label="Регистрационные документы"
-                                       aria-describedby="basic-icon-default-registration_documents"/>
-                            </div>
-
-                            @error('registration_documents')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
+                        @endforeach
 
                         <!-- Navigation -->
                         <div class="col-12 d-flex justify-content-between">
@@ -672,6 +634,7 @@
                                 Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
                             </button>
                         </div>
+
                     </div>
                 </div>
 
@@ -686,9 +649,10 @@
                                 лицензии на производство </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-manufacturing_license_number"
-                                  class="input-group-text @error('manufacturing_license_number') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-manufacturing_license_number"
+                                  class="input-group-text @error('manufacturing_license_number') text-danger icon-border @enderror">
+                                                <i class="bx bx-file"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-manufacturing_license_number"
                                        class="form-control @error('manufacturing_license_number') is-invalid @enderror"
                                        name="manufacturing_license_number"
                                        value="{{ old('manufacturing_license_number', $medication->additionalData->manufacturing_license_number) }}"
@@ -707,9 +671,10 @@
                                 условия использования </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-additional_usage_conditions"
-                                  class="input-group-text @error('additional_usage_conditions') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-additional_usage_conditions"
+                                  class="input-group-text @error('additional_usage_conditions') text-danger icon-border @enderror">
+                                  <i class="bx bx-list-check"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-additional_usage_conditions"
                                        class="form-control @error('additional_usage_conditions') is-invalid @enderror"
                                        name="additional_usage_conditions"
                                        value="{{ old('additional_usage_conditions', $medication->additionalData->additional_usage_conditions) }}"
@@ -728,9 +693,10 @@
                                 рецепта </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-prescription_category"
-                                  class="input-group-text @error('prescription_category') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-prescription_category"
+                                  class="input-group-text @error('prescription_category') text-danger icon-border @enderror">
+                                 <i class='bx bx-category'></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-prescription_category"
                                        class="form-control @error('prescription_category') is-invalid @enderror"
                                        name="prescription_category"
                                        value="{{ old('prescription_category', $medication->additionalData->prescription_category) }}"
@@ -749,9 +715,10 @@
                                 особенности </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-specific_features"
-                                  class="input-group-text @error('specific_features') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-specific_features"
+                                  class="input-group-text @error('specific_features') text-danger icon-border @enderror">
+                                               <i class="bx bx-bulb"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-specific_features"
                                        class="form-control @error('registration_specific_featuresdocuments') is-invalid @enderror"
                                        name="specific_features"
                                        value="{{ old('specific_features', $medication->additionalData->specific_features) }}"
@@ -788,9 +755,10 @@
                             <label class="form-label" for="basic-icon-default-risk_assessment"> Оценка риска </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-risk_assessment"
-                                  class="input-group-text @error('manufacturisk_assessmentring_license_number') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-risk_assessment"
+                                  class="input-group-text @error('manufacturisk_assessmentring_license_number') text-danger icon-border @enderror">
+                                   <i class="bx bx-shield"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-risk_assessment"
                                        class="form-control @error('risk_assessment') is-invalid @enderror"
                                        name="risk_assessment"
                                        value="{{ old('risk_assessment', $medication->riskAndSafety->risk_assessment) }}"
@@ -808,9 +776,10 @@
                             <label class="form-label" for="basic-icon-default-warnings">Предупреждения </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-warnings"
-                                  class="input-group-text @error('warnings') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-warnings"
+                                  class="input-group-text @error('warnings') text-danger icon-border @enderror">
+                                      <i class="bx bx-error"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-warnings"
                                        class="form-control @error('warnings') is-invalid @enderror"
                                        name="warnings"
                                        value="{{ old('warnings', $medication->riskAndSafety->warnings) }}"
@@ -829,9 +798,10 @@
                                 использовании </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-safety_in_use"
-                                  class="input-group-text @error('safety_in_use') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-safety_in_use"
+                                  class="input-group-text @error('safety_in_use') text-danger icon-border @enderror">
+                                 <i class="bx bx-check-shield"></i>
+                            </span>
+                                <input type="text" id="basic-icon-default-safety_in_use"
                                        class="form-control @error('safety_in_use') is-invalid @enderror"
                                        name="safety_in_use"
                                        value="{{ old('safety_in_use', $medication->riskAndSafety->safety_in_use) }}"

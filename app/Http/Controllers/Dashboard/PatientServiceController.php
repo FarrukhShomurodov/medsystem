@@ -51,7 +51,7 @@ class PatientServiceController
         })->get();
         $institutions = Department::query()->get();
         $methods = ServiceMethod::query()->get();
-        $equipments = Equipment::query()->get();
+        $equipments = Equipment::query()->where('status', 'работает')->get();
         $staffs = Staff::query()->get();
         $procedures = Procedure::query()->get();
         $medications = Medication::query()->get();
@@ -76,7 +76,7 @@ class PatientServiceController
         })->get();
         $institutions = Department::query()->get();
         $methods = ServiceMethod::query()->get();
-        $equipments = Equipment::query()->get();
+        $equipments = Equipment::query()->where('status', 'работает')->get();
         $staffs = Staff::query()->get();
         $service->with('methods');
         $maps = $service->patient->examinationMaps;

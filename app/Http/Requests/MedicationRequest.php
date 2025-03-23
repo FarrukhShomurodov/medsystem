@@ -54,10 +54,10 @@ class MedicationRequest extends FormRequest
             'special_storage_conditions' => 'required|string|max:255',
 
             //license
-            'sales_license' => 'required|string|max:255',
-            'quality_certificate' => 'required|string|max:255',
-            'clinical_trials' => 'required|string|max:255',
-            'registration_documents' => 'required|string|max:255',
+            'sales_license' => 'nullable|file|mimes:pdf,jpg,png|max:2048',
+            'quality_certificate' => 'nullable|file|mimes:pdf,jpg,png|max:2048',
+            'clinical_trials' => 'nullable|file|mimes:pdf,jpg,png|max:2048',
+            'registration_documents' => 'nullable|file|mimes:pdf,jpg,png|max:2048',
 
             //data
             'manufacturing_license_number' => 'required|string|max:255',

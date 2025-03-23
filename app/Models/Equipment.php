@@ -12,5 +12,5 @@ class Equipment extends Model
         'status',
     ];
 
-    const STATUS = ['working', 'broken'];
+    const STATUS = ['работает', 'сломан'];
 }

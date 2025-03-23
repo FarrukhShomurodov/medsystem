@@ -198,9 +198,17 @@
                         <!-- Service Date -->
                         <div class="col-sm-4">
                             <label class="form-label" for="service_date">Дата услуги <span class="text-danger">*</span></label>
-                            <input type="text" name="service_date" id="service_date"
-                                   class="form-control flatpickr-date @error('service_date') is-invalid @enderror"
-                                   value="{{ old('service_date', $service->service_date) }}" required>
+                            <div class="input-group input-group-merge">
+                               <span id="basic-icon-birth-date2"
+                                     class="input-group-text @error('birth_date') text-danger icon-border @enderror">
+                                    <i class="bx bx-calendar"></i>
+                               </span>
+                                <input type="text" name="service_date" id="service_date"
+                                       class="form-control flatpickr-date @error('service_date') is-invalid @enderror"
+                                       placeholder="YYYY-MM-DD"
+                                       value="{{ old('service_date', $service->service_date) }}" required>
+                            </div>
+
                             @error('service_date')
                             <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
@@ -500,29 +508,50 @@
                         <!-- Insurance -->
                         <div class="col-sm-4">
                             <label class="form-label" for="insurance_company">Страховая компания</label>
-                            <input type="text" id="insurance_company" name="insurance_policy[company_name]"
-                                   class="form-control @error('insurance_policy.company_name') is-invalid @enderror"
-                                   value="{{ old('insurance_policy.company_name' , $service->insurance_policy['company_name']) }}">
+                            <div class="input-group input-group-merge">
+                                <span
+                                    class="input-group-text @error('insurance_policy.company_name') text-danger icon-border @enderror">
+                                    <i class="bx bx-building"></i>
+                                </span>
+                                <input type="text" id="insurance_company" name="insurance_policy[company_name]"
+                                       class="form-control @error('insurance_policy.company_name') is-invalid @enderror"
+                                       value="{{ old('insurance_policy.company_name', $service->insurance_policy['company_name']) }}">
+                            </div>
                             @error('insurance_policy.company_name')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-sm-4">
                             <label class="form-label" for="policy_number">Номер полиса</label>
-                            <input type="text" id="policy_number" name="insurance_policy[insurance_policy_number]"
-                                   class="form-control @error('insurance_policy.insurance_policy_number') is-invalid @enderror"
-                                   value="{{ old('insurance_policy.insurance_policy_number' , $service->insurance_policy['insurance_policy_number']) }}">
+                            <div class="input-group input-group-merge">
+                                <span
+                                    class="input-group-text @error('insurance_policy.insurance_policy_number') text-danger icon-border @enderror">
+                                    <i class="bx bx-id-card"></i>
+                                </span>
+                                <input type="text" id="policy_number" name="insurance_policy[insurance_policy_number]"
+                                       class="form-control @error('insurance_policy.insurance_policy_number') is-invalid @enderror"
+                                       value="{{ old('insurance_policy.insurance_policy_number', $service->insurance_policy['insurance_policy_number']) }}">
+                            </div>
                             @error('insurance_policy.insurance_policy_number')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-sm-4">
                             <label class="form-label" for="coverage">Процент покрытия</label>
-                            <input type="number" id="coverage" name="insurance_policy[percentage_of_coverage]"
-                                   class="form-control @error('insurance_policy.percentage_of_coverage') is-invalid @enderror"
-                                   value="{{ old('insurance_policy.percentage_of_coverage', $service->insurance_policy['percentage_of_coverage']) }}">
+                            <div class="input-group input-group-merge">
+                                <span
+                                    class="input-group-text @error('insurance_policy.percentage_of_coverage') text-danger icon-border @enderror">
+                                    <i class="bx bx-percent"></i>
+                                </span>
+                                <input type="number" id="coverage" name="insurance_policy[percentage_of_coverage]"
+                                       class="form-control @error('insurance_policy.percentage_of_coverage') is-invalid @enderror"
+                                       value="{{ old('insurance_policy.percentage_of_coverage', $service->insurance_policy['percentage_of_coverage']) }}">
+                            </div>
                             @error('insurance_policy.percentage_of_coverage')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <!-- Navigation -->

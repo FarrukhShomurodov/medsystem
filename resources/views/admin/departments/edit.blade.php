@@ -379,7 +379,7 @@
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-license_number"
                                   class="input-group-text @error('license_number') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
+                                    class="bx bx-id-card"></i></span>
                                 <input type="text" id="basic-icon-default-license_number"
                                        class="form-control @error('license_number') is-invalid @enderror"
                                        name="license_number"

@@ -139,6 +139,12 @@
                             @enderror
                         </div>
 
+                        @php
+                            $genderRu = [
+                                'male' => 'Мужчина',
+                                'female' => 'Женщина'
+                            ]
+                        @endphp
                         <div class="col-sm-6">
                             <label class="form-label" for="type">Пол <span
                                     class="text-danger">*</span></label>
@@ -147,7 +153,7 @@
                                 @foreach(\App\Models\Staff::GENDER as $gender)
                                     <option
                                         value="{{ $gender }}" @selected(old('gender', $staff->gender) == $gender)>
-                                        {{ $gender }}
+                                        {{ $genderRu[$gender] }}
                                     </option>
                                 @endforeach
                             </select>
@@ -259,7 +265,7 @@
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-emergency_contact_phone"
                                   class="input-group-text @error('emergency_contact_phone') text-danger icon-border @enderror"><i
-                                    class="bx bx-emergency_contact_phone"></i></span>
+                                    class="bx bx-phone"></i></span>
                                 <input type="text" id="basic-icon-default-emergency_contact_phone"
                                        class="form-control phone @error('emergency_contact_phone') is-invalid @enderror"
                                        name="emergency_contact_phone"
@@ -352,6 +358,12 @@
                             @enderror
                         </div>
 
+                        @php
+                            $categoryRu = [
+                                'first' => 'Первый',
+                                'second' => 'Второй'
+                            ]
+                        @endphp
                         <div class="col-sm-4">
                             <label class="form-label" for="category">Категория<span
                                     class="text-danger">*</span></label>
@@ -361,7 +373,7 @@
                                 @foreach(\App\Models\StaffProfessionalData::CATEGORY as $category)
                                     <option
                                         value="{{ $category }}" @selected($category == old('category', $staff->category))>
-                                        {{ $category }}
+                                        {{ $categoryRu[$category] }}
                                     </option>
                                 @endforeach
                             </select>
@@ -415,9 +427,9 @@
                             <label class="form-label" for="basic-icon-default-education_name">Название
                                 Образование </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-education_name"
-                                  class="input-group-text @error('education_name') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
+        <span class="input-group-text @error('education_name') text-danger icon-border @enderror">
+            <i class="bx bx-book"></i>
+        </span>
                                 <input type="text" id="basic-icon-default-education_name"
                                        class="form-control @error('education_name') is-invalid @enderror"
                                        name="education_name"
@@ -436,10 +448,9 @@
                                 <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('education_graduation_year') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
+                                       <span class="input-group-text @error('education_graduation_year') text-danger icon-border @enderror">
+            <i class="bx bx-calendar"></i>
+        </span>
                                 <input type="text" name="education_graduation_year"
                                        value="{{ old('education_graduation_year', $staff->professionalData->education_graduation_year) }}"
                                        id="basic-icon-education_graduation_year"
@@ -456,9 +467,9 @@
                             <label class="form-label"
                                    for="basic-icon-default-certificate_name">Название сертификата</label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-education_name"
-                                  class="input-group-text @error('certificate_name') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
+                                    <span class="input-group-text @error('certificate_name') text-danger icon-border @enderror">
+            <i class="bx bx-certification"></i>
+        </span>
                                 <input type="text" id="basic-icon-default-education_name"
                                        class="form-control @error('certificate_name') is-invalid @enderror"
                                        name="certificate_name"
@@ -476,9 +487,9 @@
                             <label class="form-label"
                                    for="basic-icon-default-certificate_number">Номер лицензии </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-education_name"
-                                  class="input-group-text @error('certificate_number') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
+        <span class="input-group-text @error('certificate_number') text-danger icon-border @enderror">
+            <i class="bx bx-id-card"></i>
+        </span>
                                 <input type="text" id="basic-icon-default-education_name"
                                        class="form-control @error('certificate_number') is-invalid @enderror"
                                        name="certificate_number"
@@ -497,10 +508,9 @@
                                 <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('certificate_issue_date') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
+        <span class="input-group-text @error('certificate_issue_date') text-danger icon-border @enderror">
+            <i class="bx bx-calendar"></i>
+        </span>
                                 <input type="text" name="certificate_issue_date"
                                        value="{{ old('certificate_issue_date', $staff->professionalData->certificate_issue_date) }}"
                                        id="basic-icon-certificate_issue_date"
@@ -517,10 +527,9 @@
                                 <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('certificate_validity_period') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
+           <span class="input-group-text @error('certificate_validity_period') text-danger icon-border @enderror">
+            <i class="bx bx-time-five"></i>
+        </span>
                                 <input type="text" name="certificate_validity_period"
                                        value="{{ old('certificate_validity_period', $staff->professionalData->certificate_validity_period) }}"
                                        id="basic-icon-certificate_validity_period"
@@ -550,206 +559,217 @@
                         <h6 class="mb-0">Документы</h6>
                     </div>
                     <div class="row g-3">
-                        <!-- license_number -->
-
+                        <!-- Номер трудового договора -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-employment_contract_number">employment_contract_number</label>
+                            <label class="form-label" for="employment_contract_number">Номер трудового договора
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-employment_contract_number"
-                                  class="input-group-text @error('employment_contract_number') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-employment_contract_number"
+                                <span id="employment_contract_number"
+                                      class="input-group-text @error('employment_contract_number') text-danger icon-border @enderror">
+                                    <i class="bx bx-file"></i>
+                                </span>
+                                <input type="text" id="employment_contract_number"
                                        class="form-control @error('employment_contract_number') is-invalid @enderror"
-                                       name="employment_contract_number"
-                                       value="{{ old('employment_contract_number', $staff->document->employment_contract_number) }}"
-                                       placeholder="Номер трудовой договор" aria-label="Номер трудовой договор"
-                                       aria-describedby="basic-icon-default-employment_contract_number"/>
+                                       name="employment_contract_number" value="{{ old('employment_contract_number', $staff->document->employment_contract_number) }}"
+                                       required placeholder="Номер трудового договора"
+                                       aria-label="Номер трудового договора"
+                                       aria-describedby="employment_contract_number"/>
                             </div>
-
                             @error('employment_contract_number')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- Дата подписания трудового договора -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-employment_contract_date_of_signing">employment_contract_date_of_signing</label>
+                            <label class="form-label" for="employment_contract_date_of_signing">Дата подписания
+                                трудового договора
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-employment_contract_date_of_signing"
-                                  class="input-group-text @error('employment_contract_date_of_signing') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-employment_contract_date_of_signing"
-                                       class="form-control @error('employment_contract_date_of_signing') is-invalid @enderror"
-                                       name="employment_contract_date_of_signing"
-                                       value="{{ old('employment_contract_date_of_signing',$staff->document->employment_contract_date_of_signing) }}"
-                                       placeholder="Номер трудовой договор" aria-label="Номер трудовой договор"
-                                       aria-describedby="basic-icon-default-employment_contract_date_of_signing"/>
+<span id="employment_contract_date_of_signing"
+      class="input-group-text @error('employment_contract_date_of_signing') text-danger icon-border @enderror">
+    <i class="bx bx-calendar"></i>
+</span>
+                                <input type="text" name="employment_contract_date_of_signing"
+                                       value="{{ old('employment_contract_date_of_signing', $staff->document->employment_contract_date_of_signing) }}"
+                                       id="employment_contract_date_of_signing"
+                                       class="form-control flatpickr-date @error('employment_contract_date_of_signing') is-invalid @enderror"
+                                       placeholder="YYYY-MM-DD" aria-describedby="employment_contract_date_of_signing"
+                                       required/>
                             </div>
-
                             @error('employment_contract_date_of_signing')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- Срок действия трудового договора -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-employment_contract_validity_period">employment_contract_validity_period</label>
+                            <label class="form-label" for="employment_contract_validity_period">Срок действия трудового
+                                договора
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-employment_contract_validity_period"
-                                  class="input-group-text @error('employment_contract_validity_period') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-employment_contract_validity_period"
+<span id="employment_contract_validity_period"
+      class="input-group-text @error('employment_contract_validity_period') text-danger icon-border @enderror">
+    <i class="bx bx-calendar"></i>
+</span>
+                                <input type="text" id="employment_contract_validity_period"
                                        class="form-control @error('employment_contract_validity_period') is-invalid @enderror"
-                                       name="employment_contract_validity_period"
+                                       name="employment_contract_validity_period" required
                                        value="{{ old('employment_contract_validity_period', $staff->document->employment_contract_validity_period) }}"
-                                       placeholder="Номер трудовой договор" aria-label="Номер трудовой договор"
-                                       aria-describedby="basic-icon-default-employment_contract_validity_period"/>
+                                       placeholder="Срок действия трудового договора"
+                                       aria-label="Срок действия трудового договора"
+                                       aria-describedby="employment_contract_validity_period"/>
                             </div>
-
                             @error('employment_contract_validity_period')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- Дата приказа об увольнении -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-dismissal_orders_number">Номер трудовой
-                                договор</label>
+                            <label class="form-label" for="dismissal_orders_date">Дата приказа об увольнении
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-dismissal_orders_number"
-                                  class="input-group-text @error('dismissal_orders_number') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-dismissal_orders_number"
-                                       class="form-control @error('dismissal_orders_number') is-invalid @enderror"
-                                       name="dismissal_orders_number"
-                                       value="{{ old('dismissal_orders_number', $staff->document->dismissal_orders_number) }}"
-                                       placeholder="Номер трудовой договор" aria-label="Номер трудовой договор"
-                                       aria-describedby="basic-icon-default-dismissal_orders_number"/>
-                            </div>
-
-                            @error('dismissal_orders_number')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-dismissal_orders_date">Дата подписание трудовога
-                                договора
-                                <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('dismissal_orders_date') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
+<span id="dismissal_orders_date"
+      class="input-group-text @error('dismissal_orders_date') text-danger icon-border @enderror">
+    <i class="bx bx-calendar"></i>
+</span>
                                 <input type="text" name="dismissal_orders_date"
-                                       value="{{ old('dismissal_orders_date', $staff->document->dismissal_orders_date) }}"
-                                       id="basic-icon-dismissal_orders_date"
+                                       value="{{ old('dismissal_orders_date',  $staff->document->dismissal_orders_date) }}" id="dismissal_orders_date"
                                        class="form-control flatpickr-date @error('dismissal_orders_date') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2" required/>
+                                       placeholder="YYYY-MM-DD" aria-describedby="dismissal_orders_date" required/>
                             </div>
                             @error('dismissal_orders_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- Номер акта приема увольнения -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-dismissal_reception_number">Срок действия
-                                договора </label>
+                            <label class="form-label" for="dismissal_reception_number">Номер акта приема увольнения
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-dismissal_reception_number"
-                                  class="input-group-text @error('dismissal_reception_number') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-dismissal_reception_number"
+<span id="dismissal_reception_number"
+      class="input-group-text @error('dismissal_reception_number') text-danger icon-border @enderror">
+    <i class="bx bx-file"></i>
+</span>
+                                <input type="text" id="dismissal_reception_number"
                                        class="form-control @error('dismissal_reception_number') is-invalid @enderror"
-                                       name="dismissal_reception_number"
-                                       value="{{ old('dismissal_reception_number', $staff->document->dismissal_reception_number) }}"
-                                       placeholder="Срок действия договора" aria-label="Срок действия договора"
-                                       aria-describedby="basic-icon-default-dismissal_reception_number"/>
+                                       name="dismissal_reception_number" value="{{ old('dismissal_reception_number', $staff->document->dismissal_reception_number) }}"
+                                       required placeholder="Номер акта приема увольнения"
+                                       aria-label="Номер акта приема увольнения"
+                                       aria-describedby="dismissal_reception_number"/>
                             </div>
-
                             @error('dismissal_reception_number')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- Номер приказа об увольнении -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-dismissal_reception_date">Дата уволнение
-                                <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="dismissal_orders_number">Номер приказа об увольнении
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('dismissal_reception_date') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
+<span id="dismissal_orders_number"
+      class="input-group-text @error('dismissal_orders_number') text-danger icon-border @enderror">
+    <i class="bx bx-file"></i>
+</span>
+                                <input type="text" id="dismissal_orders_number"
+                                       class="form-control @error('dismissal_orders_number') is-invalid @enderror"
+                                       name="dismissal_orders_number" value="{{ old('dismissal_orders_number', $staff->document->dismissal_orders_number) }}"
+                                       required placeholder="Номер приказа об увольнении"
+                                       aria-label="Номер приказа об увольнении"
+                                       aria-describedby="dismissal_orders_number"/>
+                            </div>
+                            @error('dismissal_orders_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Дата увольнения -->
+                        <div class="col-12">
+                            <label class="form-label" for="dismissal_reception_date">Дата увольнения
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group input-group-merge">
+<span id="dismissal_reception_date"
+      class="input-group-text @error('dismissal_reception_date') text-danger icon-border @enderror">
+    <i class="bx bx-calendar"></i>
+</span>
                                 <input type="text" name="dismissal_reception_date"
-                                       value="{{ old('dismissal_reception_date', $staff->document->dismissal_reception_date) }}"
-                                       id="basic-icon-dismissal_reception_date"
+                                       value="{{ old('dismissal_reception_date', $staff->document->dismissal_reception_date) }}" id="dismissal_reception_date"
                                        class="form-control flatpickr-date @error('dismissal_reception_date') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2" required/>
+                                       placeholder="YYYY-MM-DD" aria-describedby="dismissal_reception_date" required/>
                             </div>
                             @error('dismissal_reception_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- Серия паспорта -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-passport_series">Серия паспорта </label>
+                            <label class="form-label" for="passport_series">Серия паспорта
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-passport_series"
-                                  class="input-group-text @error('passport_series') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-passport_series"
-                                       class="form-control @error('passport_series') is-invalid @enderror"
-                                       name="passport_series"
-                                       value="{{ old('passport_series', $staff->document->passport_series) }}"
-                                       placeholder="Серия паспорта" aria-label="Серия паспорта"
-                                       aria-describedby="basic-icon-default-passport_series"/>
-                            </div>
+<span id="passport_series" class="input-group-text @error('passport_series') text-danger icon-border @enderror">
+    <i class="bx bx-id-card"></i>
+</span>
 
+                                <input type="text" id="passport_series"
+                                       class="form-control @error('passport_series') is-invalid @enderror"
+                                       name="passport_series" value="{{ old('passport_series', $staff->document->passport_series) }}" required
+                                       placeholder="Серия паспорта"
+                                       aria-label="Серия паспорта" aria-describedby="passport_series"/>
+                            </div>
                             @error('passport_series')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- ИНН -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-INN">ИНН</label>
+                            <label class="form-label" for="INN">ИНН
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-INN"
-                                  class="input-group-text @error('INN') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-INN"
-                                       class="form-control @error('passport_series') is-invalid @enderror"
-                                       name="INN"
-                                       value="{{ old('INN', $staff->document->INN) }}"
-                                       placeholder="INN" aria-label="INN"
-                                       aria-describedby="basic-icon-default-INN"/>
+<span id="INN" class="input-group-text @error('INN') text-danger icon-border @enderror">
+    <i class="bx bx-id-card"></i>
+</span>
+                                <input type="text" id="INN" class="form-control @error('INN') is-invalid @enderror"
+                                       name="INN" value="{{ old('INN', $staff->document->INN) }}"
+                                       placeholder="ИНН" aria-label="ИНН" required aria-describedby="INN"/>
                             </div>
-
                             @error('INN')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="col-12">
-                            <label class="form-label" for="basic-icon-default-SNILS">СНИЛС</label>
+                        <!-- СНИЛС -->
+                        <div class="col-sm-4">
+                            <label class="form-label" for="SNILS">СНИЛС
+                                <span class="text-danger">*</span>
+                            </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-SNILS"
-                                  class="input-group-text @error('SNILS') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="text" id="basic-icon-default-SNILS"
-                                       class="form-control @error('passport_series') is-invalid @enderror"
-                                       name="SNILS"
-                                       value="{{ old('SNILS', $staff->document->SNILS) }}"
-                                       placeholder="СНИЛС" aria-label="СНИЛС"
-                                       aria-describedby="basic-icon-default-SNILS"/>
+   <span id="SNILS" class="input-group-text @error('SNILS') text-danger icon-border @enderror">
+    <i class="bx bx-id-card"></i>
+</span>
+                                <input type="text" id="SNILS" class="form-control @error('SNILS') is-invalid @enderror"
+                                       name="SNILS" value="{{ old('SNILS', $staff->document->SNILS) }}"
+                                       placeholder="СНИЛС" aria-label="СНИЛС" required aria-describedby="SNILS"/>
                             </div>
-
                             @error('SNILS')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-
-                        <!-- Navigation -->
+                        <!-- Навигация -->
                         <div class="col-12 d-flex justify-content-between">
                             <button class="btn btn-primary btn-prev"><i
                                     class="bx bx-chevron-left bx-sm ms-sm-n2"></i>

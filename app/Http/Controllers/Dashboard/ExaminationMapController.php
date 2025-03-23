@@ -6,12 +6,9 @@ use App\Http\Requests\ExaminationMapRequest;
 use App\Models\AnalyzeMethod;
 use App\Models\AnalyzeType;
 use App\Models\Department;
-use App\Models\Doctor;
 use App\Models\Equipment;
 use App\Models\ExaminationMap;
-use App\Models\Institution;
 use App\Models\Laboratory;
-use App\Models\MedicalEquipment;
 use App\Models\Medication;
 use App\Models\Patient;
 use App\Models\Procedure;
@@ -106,7 +103,7 @@ class ExaminationMapController
         $patients = Patient::query()->get();
         $laboratories = Laboratory::query()->get();
         $types = AnalyzeType::query()->get();
-        $equipments = Equipment::query()->get();
+        $equipments = Equipment::query()->where('status', 'работает')->get();
         $methods = AnalyzeMethod::query()->get();
 
         //service
@@ -136,7 +133,7 @@ class ExaminationMapController
         $patients = Patient::query()->get();
         $laboratories = Laboratory::query()->get();
         $types = AnalyzeType::query()->get();
-        $equipments = Equipment::query()->get();
+        $equipments = Equipment::query()->where('status', 'работает')->get();
         $methods = AnalyzeMethod::query()->get();
 
         //service

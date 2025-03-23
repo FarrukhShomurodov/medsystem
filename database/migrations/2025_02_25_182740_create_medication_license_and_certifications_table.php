@@ -10,10 +10,10 @@ return new class extends Migration {
         Schema::create('medication_license_and_certifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('medication_id')->constrained()->cascadeOnDelete();
-            $table->string('sales_license');
-            $table->string('quality_certificate');
-            $table->string('clinical_trials');
-            $table->string('registration_documents');
+            $table->string('sales_license')->nullable();
+            $table->string('quality_certificate')->nullable();
+            $table->string('clinical_trials')->nullable();
+            $table->string('registration_documents')->nullable();
             $table->timestamps();
         });
     }

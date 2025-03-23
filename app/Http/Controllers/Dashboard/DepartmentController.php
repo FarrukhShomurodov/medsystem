@@ -34,7 +34,7 @@ class DepartmentController
     {
         $types = DepartmentType::query()->get();
         $services = Service::query()->get();
-        $equipments = Equipment::query()->get();
+        $equipments = Equipment::query()->where('status', 'работает')->get();
         $departments = Department::query()->get();
 
         return view('admin.departments.create', compact('types', 'services', 'departments', 'equipments'));
@@ -52,7 +52,7 @@ class DepartmentController
     {
         $types = DepartmentType::query()->get();
         $services = Service::query()->get();
-        $equipments = Equipment::query()->get();
+        $equipments = Equipment::query()->where('status', 'работает')->get();
         $departments = Department::query()->get();
 
         return view('admin.departments.edit', compact('department', 'types', 'services', 'departments', 'equipments'));

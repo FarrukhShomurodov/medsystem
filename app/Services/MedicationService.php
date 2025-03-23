@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Medication;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class MedicationService
 {
@@ -21,10 +22,15 @@ class MedicationService
             $medication->additionalData()->create($validated);
             $medication->riskAndSafety()->create($validated);
             $medication->composition()->create($validated);
-//            $medication->packaging()->create($validated);
             $medication->storage()->create($validated);
+
+            foreach (['sales_license', 'quality_certificate', 'clinical_trials', 'registration_documents'] as $fileField) {
+                if (!empty($validated[$fileField]) && $validated[$fileField] instanceof \Illuminate\Http\UploadedFile) {
+                    $validated[$fileField] = $validated[$fileField]->store('medical_licenses', 'public');
+                }
+            }
+
             $medication->licenseAndCertification()->create($validated);
-//            $medication->medicationCost()->create($validated);
 
             return $medication;
         });
@@ -52,17 +58,22 @@ class MedicationService
             $medication->composition()->update(
                 array_intersect_key($validated, array_flip($medication->composition->getFillable()))
             );
-            $medication->packaging()->update(
-                array_intersect_key($validated, array_flip($medication->packaging->getFillable()))
-            );
             $medication->storage()->update(
                 array_intersect_key($validated, array_flip($medication->storage->getFillable()))
             );
+
+            foreach (['sales_license', 'quality_certificate', 'clinical_trials', 'registration_documents'] as $fileField) {
+                if (!empty($validated[$fileField]) && $validated[$fileField] instanceof \Illuminate\Http\UploadedFile) {
+                    if ($medication->licenseAndCertification->$fileField) {
+                        Storage::disk('public')->delete($medication->licenseAndCertification->$fileField);
+                    }
+
+                    $validated[$fileField] = $validated[$fileField]->store('medical_licenses', 'public');
+                }
+            }
+
             $medication->licenseAndCertification()->update(
                 array_intersect_key($validated, array_flip($medication->licenseAndCertification->getFillable()))
-            );
-            $medication->medicationCost()->update(
-                array_intersect_key($validated, array_flip($medication->medicationCost->getFillable()))
             );
 
             return $medication;

@@ -28,7 +28,6 @@ class Staff extends Model
         return $this->hasOne(StaffDocument::class);
     }
 
-
     public function services(): BelongsToMany
     {
         return $this->belongsToMany(Service::class, 'staff_service_assignment', 'staff_id', 'staff_service_id');

@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->date('last_inspection')->nullable();
-            $table->enum('status', ['working', 'broken'])->nullable();
+            $table->enum('status', \App\Models\Equipment::STATUS)->nullable();
             $table->timestamps();
         });
     }

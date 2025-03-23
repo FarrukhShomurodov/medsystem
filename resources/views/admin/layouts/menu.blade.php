@@ -248,7 +248,7 @@
         </li>
 
         <li class="menu-item {{ Request::is('dashboard/pharmacy/types*')
-            || Request::is('dashboard/pharmacy') || Request::is('dashboard/pharmacy/create') || Request::is('dashboard/pharmacy/edit/*')
+            || Request::is('dashboard/pharmacy') || Request::is('dashboard/pharmacy/create') || Request::is('dashboard/pharmacy/*/edit')
             ||  Request::is('dashboard/transfers*')
             ||  Request::is('dashboard/transfer-medications/*')
             ||  Request::is('dashboard/pharmacy/medications/*') ? 'open' : '' }}"
@@ -258,7 +258,7 @@
                 <div data-i18n="Аптека">Аптека</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {{ Request::is('dashboard/pharmacy') || Request::is('dashboard/pharmacy/create') || Request::is('dashboard/pharmacy/edit/*') || Request::is('dashboard/pharmacy/medications/*') ? 'active' : '' }}">
+                <li class="menu-item {{ Request::is('dashboard/pharmacy') || Request::is('dashboard/pharmacy/create') || Request::is('dashboard/pharmacy/*/edit') || Request::is('dashboard/pharmacy/medications/*') ? 'active' : '' }}">
                     <a href="{{route('pharmacies.index')}}" class="menu-link">
                         <div data-i18n="Список">Список</div>
                     </a>

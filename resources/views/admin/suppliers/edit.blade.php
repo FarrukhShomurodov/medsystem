@@ -53,18 +53,16 @@
                     </div>
 
                     <div class="col-sm-4 mb-3">
-                        <label class="form-label" for="basic-icon-default-contract_terms">Условия контракта <span
-                                class="text-danger">*</span></label>
+                        <label class="form-label" for="basic-icon-default-contract_terms">Условия контракта</label>
                         <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-company2"
-                                  class="input-group-text @error('contract_terms') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
-                            <input type="text" id="basic-icon-default-contract_terms"
+                            <input type="file" id="basic-icon-default-contract_terms"
                                    class="form-control @error('contract_terms') is-invalid @enderror"
-                                   placeholder="Условия контракта" aria-label="Условия контракта"
                                    name="contract_terms"
-                                   value="{{ old('contract_terms', $supplier->contract_terms) }}"
-                                   aria-describedby="basic-icon-default-company2" required/>
+                                   required/>
+                            <a href="{{ asset('storage/' . $supplier->contract_terms) }}" target="_blank"
+                               class="btn btn-outline-primary">
+                                <i class="bx bx-download"></i>Cкачать
+                            </a>
                         </div>
                         @error('contract_terms')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -77,7 +75,7 @@
                         <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
                                   class="input-group-text @error('phone') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
+                                    class="bx bx-phone"></i></span>
                             <input type="text" id="basic-icon-default-phone"
                                    class="form-control @error('phone') is-invalid @enderror"
                                    placeholder="Телефон" aria-label="Телефон"
@@ -96,7 +94,7 @@
                         <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
                                   class="input-group-text @error('email') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
+                                    class="bx bx-envelope"></i></span>
                             <input type="text" id="basic-icon-default-email"
                                    class="form-control @error('email') is-invalid @enderror"
                                    placeholder="Email" aria-label="Email"
@@ -115,7 +113,7 @@
                         <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
                                   class="input-group-text @error('address') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
+                                    class="bx bx-map"></i></span>
                             <input type="text" id="basic-icon-default-address"
                                    class="form-control @error('address') is-invalid @enderror"
                                    placeholder="Адресс" aria-label="Адресс"
@@ -134,7 +132,7 @@
                         <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
                                   class="input-group-text @error('delivery_schedule') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
+                                    class="bx bx-calendar"></i></span>
                             <input type="text" id="basic-icon-default-delivery_schedule"
                                    class="form-control @error('delivery_schedule') is-invalid @enderror"
                                    placeholder="Рассписание" aria-label="Рассписание"
@@ -152,7 +150,8 @@
                                 class="text-danger">*</span></label>
 
                         <select id="manufacturers" name="manufacturers[]"
-                                class="form-control select2 @error('manufacturers') is-invalid @enderror" multiple required>
+                                class="form-control select2 @error('manufacturers') is-invalid @enderror" multiple
+                                required>
                             @foreach($manufacturers as $manufacturer)
                                 <option
                                     value="{{ $manufacturer->id }}" @selected(in_array($manufacturer->id, old('manufacturers', $supplier->manufacturers->pluck('id')->toArray())))>

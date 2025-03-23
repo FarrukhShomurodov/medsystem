@@ -292,9 +292,10 @@
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-total_volume">Общий объем </label>
                             <div class="input-group input-group-merge">
-                                <span id="basic-icon-default-total_volume"
-                                      class="input-group-text @error('total_volume') text-danger icon-border @enderror"><i
-                                        class="bx bx-bed"></i></span>
+                               <span id="basic-icon-default-total_volume"
+                                     class="input-group-text @error('total_volume') text-danger icon-border @enderror">
+                                    <i class="bx bx-box"></i>
+                                </span>
                                 <input type="number" id="basic-icon-default-total_volume"
                                        class="form-control @error('total_volume') is-invalid @enderror"
                                        name="total_volume"
@@ -311,8 +312,9 @@
                             <label class="form-label" for="basic-icon-default-occupied_volume">Занятый объем </label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-occupied_volume"
-                                      class="input-group-text @error('occupied_volume') text-danger icon-border @enderror"><i
-                                        class="bx bx-bed"></i></span>
+                                      class="input-group-text @error('occupied_volume') text-danger icon-border @enderror">
+                                    <i class="bx bx-package"></i>
+                                </span>
                                 <input type="number" id="basic-icon-default-occupied_volume"
                                        class="form-control @error('occupied_volume') is-invalid @enderror"
                                        name="occupied_volume"
@@ -330,8 +332,9 @@
                                 в процентах </label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-occupied_volume_percentage"
-                                      class="input-group-text @error('occupied_volume_percentage') text-danger icon-border @enderror"><i
-                                        class="bx bx-bed"></i></span>
+                                      class="input-group-text @error('occupied_volume_percentage') text-danger icon-border @enderror">
+                                    <i class="bx bx-pie-chart-alt-2"></i>
+                                </span>
                                 <input type="number" id="basic-icon-default-occupied_volume_percentage"
                                        class="form-control @error('occupied_volume_percentage') is-invalid @enderror"
                                        name="occupied_volume_percentage"
@@ -349,8 +352,9 @@
                                 вместимость </label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-max_capacity"
-                                      class="input-group-text @error('max_capacity') text-danger icon-border @enderror"><i
-                                        class="bx bx-bed"></i></span>
+                                      class="input-group-text @error('max_capacity') text-danger icon-border @enderror">
+                                    <i class="bx bx-layer"></i>
+                                </span>
                                 <input type="number" id="basic-icon-default-max_capacity"
                                        class="form-control @error('max_capacity') is-invalid @enderror"
                                        name="max_capacity"
@@ -403,7 +407,7 @@
                         <div id="medication-details-container">
                             <div id="medication-details-container">
                                 @foreach($warehouse->accounting as $accounting)
-                                    <div class="medication-details">
+                                    <div class="medication-details" data-id="{{ $accounting->medication_id }}">
                                         <h5>Медикамент: {{ $accounting->medication->name }}</h5>
                                         <input type="hidden" name="medications[{{ $accounting->medication_id }}][id]"
                                                value="{{ $accounting->medication_id }}">
@@ -557,6 +561,7 @@
 
                         <!-- Шаблон для динамических полей (скрыт) -->
                         <div id="medication-details-template" style="display: none;">
+
                             <div class="medication-details">
                                 <h5>Медикамент: <span class="medication-name"></span></h5>
                                 <input type="hidden" name="medications[ID][id]" value="ID">
@@ -707,7 +712,7 @@
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-temperature"
                                       class="input-group-text @error('temperature') text-danger icon-border @enderror"><i
-                                        class="bx bx-bed"></i></span>
+                                        class="bx bxs-thermometer"></i></span>
                                 <input type="number" id="basic-icon-default-temperature"
                                        class="form-control @error('temperature') is-invalid @enderror"
                                        name="temperature"
@@ -725,7 +730,7 @@
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-humidity"
                                       class="input-group-text @error('humidity') text-danger icon-border @enderror"><i
-                                        class="bx bx-bed"></i></span>
+                                        class="bx bx-water"></i></span>
                                 <input type="number" id="basic-icon-default-humidity"
                                        class="form-control @error('humidity') is-invalid @enderror"
                                        name="humidity"
@@ -744,7 +749,7 @@
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-light_protected"
                                       class="input-group-text @error('light_protected') text-danger icon-border @enderror"><i
-                                        class="bx bx-bed"></i></span>
+                                        class="bx bx-sun"></i></span>
                                 <input type="number" id="basic-icon-default-light_protected"
                                        class="form-control @error('light_protected') is-invalid @enderror"
                                        name="light_protected"
@@ -780,8 +785,9 @@
                             <label class="form-label" for="basic-icon-default-refrigeration">Охлаждение </label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-refrigeration"
-                                      class="input-group-text @error('refrigeration') text-danger icon-border @enderror"><i
-                                        class="bx bx-bed"></i></span>
+                                      class="input-group-text @error('refrigeration') text-danger icon-border @enderror">
+                                    <i class='bx bx-cloud-snow'></i>
+                                </span>
                                 <input type="number" id="basic-icon-default-refrigeration"
                                        class="form-control @error('refrigeration') is-invalid @enderror"
                                        name="refrigeration"
@@ -817,7 +823,7 @@
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-flammable"
                                       class="input-group-text @error('flammable') text-danger icon-border @enderror"><i
-                                        class="bx bx-bed"></i></span>
+                                        class="bx bxs-hot"></i></span>
                                 <input type="number" id="basic-icon-default-flammable"
                                        class="form-control @error('flammable') is-invalid @enderror"
                                        name="flammable"
@@ -836,7 +842,7 @@
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-shelf_location"
                                       class="input-group-text @error('shelf_location') text-danger icon-border @enderror"><i
-                                        class="bx bx-bed"></i></span>
+                                        class="bx bx-box"></i></span>
                                 <input type="number" id="basic-icon-default-shelf_location"
                                        class="form-control @error('shelf_location') is-invalid @enderror"
                                        name="shelf_location"
@@ -854,7 +860,7 @@
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-special_zone"
                                       class="input-group-text @error('special_zone') text-danger icon-border @enderror"><i
-                                        class="bx bx-bed"></i></span>
+                                        class="bx bx-map"></i></span>
                                 <input type="number" id="basic-icon-default-special_zone"
                                        class="form-control @error('special_zone') is-invalid @enderror"
                                        name="special_zone"
@@ -872,7 +878,7 @@
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-label"
                                       class="input-group-text @error('label') text-danger icon-border @enderror"><i
-                                        class="bx bx-bed"></i></span>
+                                        class="bx bx-tag"></i></span>
                                 <input type="number" id="basic-icon-default-label"
                                        class="form-control @error('label') is-invalid @enderror"
                                        name="label"
@@ -887,10 +893,11 @@
 
                         <!-- Navigation -->
                         <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev">
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            <button class="btn btn-primary btn-prev"><i
+                                    class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                <span class="d-sm-inline-block d-none">Назад</span>
                             </button>
-                            <button type="submit" class="btn btn-success">Сохранить</button>
+                            <button type="submit" class="btn btn-warning">Редактировать</button>
                         </div>
                     </div>
                 </div>
@@ -902,28 +909,34 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
+            // Удаление медикамента при снятии выбора
+            $('.select2').on('select2:unselect', function (e) {
+                let medicationId = e.params.data.id;
+                $(`#medication-details-container .medication-details[data-id="${medicationId}"]`).remove();
+            });
+
+            // Добавление медикамента
             $('#medication').on('change', function () {
                 const container = $('#medication-details-container');
                 const template = $('#medication-details-template').html();
-                let existsMedications = {{ $warehouse->accounting->pluck('medication_id') }};
 
                 $('#medication option:selected').each(function () {
                     const option = $(this);
                     const medicationId = option.val();
+                    const medicationName = option.text();
 
-                    if (!existsMedications.includes(medicationId)) {
-                        const medicationName = option.text();
-
+                    // Проверяем, существует ли уже этот медикамент в контейнере
+                    if (container.find(`.medication-details[data-id="${medicationId}"]`).length === 0) {
                         const newFields = $(template.replace(/ID/g, medicationId)).css('display', 'block');
 
+                        newFields.attr('data-id', medicationId); // Добавляем атрибут data-id для удобного поиска
                         newFields.find('.medication-name').text(medicationName);
-
                         container.append(newFields);
 
-                        $('.flatpickr-date').flatpickr({dateFormat: 'Y-m-d'});
+                        // Корректно инициализируем Select2 и flatpickr
+                        newFields.find('.select2type').select2();
+                        newFields.find('.flatpickr-date').flatpickr({dateFormat: 'Y-m-d'});
                     }
-
-                    $('.select2type').select2();
                 });
             });
         });
