@@ -45,21 +45,49 @@
         </div>
 
         <div id="filtersCollapse"
-             class="collapse @if(request('active_substance_name')) show @endif">
+             class="collapse @if(request('active_substance_name') || request('group_id') || request('manufacturer_id')) show @endif">
             <div class="card-body">
                 <form method="GET" action="{{ route('medications.index') }}">
                     <div class="row g-3">
-                        <div class="col-6">
+                        <div class="col-sm-4">
                             <label for="active_substance_name" class="form-label">Активное вещество</label>
                             <input type="text" name="active_substance_name" id="active_substance_name"
                                    class="form-control" value="{{ request('active_substance_name') }}"
                                    placeholder="Введите активное вещество">
                         </div>
 
-                        <div class="col-6 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary">Применить</button>
+                        <div class="col-sm-4">
+                            <label class="form-label" for="group">Группы</label>
+                            <select id="group" name="group_id"
+                                    class="form-control select2"
+                                    required>
+                                @foreach($groups as $group)
+                                    <option
+                                        value="{{ $group->id }}" @selected($group->id == old('group_id'))>
+                                        {{ $group->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                            @if(request()->has('active_substance_name'))
+                        <div class="col-sm-4">
+                            <label class="form-label" for="manufacturer">Производители</label>
+
+                            <select id="manufacturer" name="manufacturer_id"
+                                    class="form-control select2"
+                                    required>
+                                @foreach($manufacturers as $manufacturer)
+                                    <option
+                                        value="{{ $manufacturer->id }}" @selected($manufacturer->id == old('manufacturer_id'))>
+                                        {{ $manufacturer->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-sm-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary">Применить</button>
+                            @if(request()->has('active_substance_name') || request('group_id') || request('manufacturer_id'))
                                 <a href="{{ route('medications.index') }}" class="btn btn-secondary ms-2">Сбросить</a>
                             @endif
                         </div>

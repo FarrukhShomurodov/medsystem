@@ -31,9 +31,18 @@ class MedicationController
                     $q->where('active_substance_name', $request->input('active_substance_name'));
                 });
             })
+            ->when($request->filled('group_id'), function ($q) use ($request) {
+                $q->where('group_id', $request->input('group_id'));
+            })
+            ->when($request->filled('manufacturer_id'), function ($q) use ($request) {
+                $q->where('manufacturer_id', $request->input('manufacturer_id'));
+            })
             ->paginate(10);
 
-        return view('admin.medications.index', compact('medications'));
+        $manufacturers = Manufacturer::query()->get();
+        $groups = MedicationGroup::query()->get();
+
+        return view('admin.medications.index', compact('medications', 'manufacturers', 'groups'));
     }
 
     public function create(): View
