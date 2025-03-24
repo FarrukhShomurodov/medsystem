@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->enum('release_form', \App\Models\Medication::RELEASEFORM);
             $table->string('dosage');
             $table->foreignId('manufacturer_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('group_id')->constrained('medication_groups')->cascadeOnDelete();
             $table->string('registration_number');
             $table->date('registration_date');
             $table->timestamps();

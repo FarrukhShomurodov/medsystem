@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Requests\MedicationRequest;
 use App\Models\Manufacturer;
 use App\Models\Medication;
+use App\Models\MedicationGroup;
 use App\Models\Supplier;
 use App\Services\MedicationService;
 use Illuminate\Http\RedirectResponse;
@@ -23,7 +24,7 @@ class MedicationController
     public function index(Request $request): View
     {
         $medications = Medication::query()
-            ->select(['id', 'name'])
+            ->select(['id', 'name', 'release_form', 'dosage', 'manufacturer_id', 'group_id', 'registration_number'])
             ->orderBy('id', 'desc')
             ->when($request->filled('active_substance_name'), function ($q) use ($request) {
                 $q->whereHas('composition', function ($q) use ($request) {
@@ -39,7 +40,9 @@ class MedicationController
     {
         $suppliers = Supplier::query()->get();
         $manufacturers = Manufacturer::query()->get();
-        return view('admin.medications.create', compact('suppliers', 'manufacturers'));
+        $groups = MedicationGroup::query()->get();
+
+        return view('admin.medications.create', compact('suppliers', 'manufacturers', 'groups'));
     }
 
     public function store(MedicationRequest $request): RedirectResponse
@@ -54,7 +57,9 @@ class MedicationController
     {
         $suppliers = Supplier::query()->get();
         $manufacturers = Manufacturer::query()->get();
-        return view('admin.medications.edit', compact('medication', 'suppliers', 'manufacturers'));
+        $groups = MedicationGroup::query()->get();
+
+        return view('admin.medications.edit', compact('medication', 'suppliers', 'manufacturers', 'groups'));
     }
 
     public function update(MedicationRequest $request, Medication $medication): RedirectResponse

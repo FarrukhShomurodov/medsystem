@@ -55,7 +55,7 @@
                         <div class="input-group input-group-merge">
                             <span id="basic-icon-default-country_of_manufacture"
                                   class="input-group-text @error('country_of_manufacture') text-danger icon-border @enderror">
-                                <i class="bx bx-rename"></i>
+                                <i class="bx bx-world"></i>
                             </span>
                             <input type="text" id="basic-icon-default-country_of_manufacture"
                                    class="form-control @error('country_of_manufacture') is-invalid @enderror"

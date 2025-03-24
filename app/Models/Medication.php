@@ -14,6 +14,7 @@ class Medication extends Model
         'release_form',
         'dosage',
         'manufacturer_id',
+        'group_id',
         'registration_number',
         'registration_date',
     ];
@@ -58,6 +59,11 @@ class Medication extends Model
     public function manufacturer(): BelongsTo
     {
         return $this->belongsTo(Manufacturer::class);
+    }
+
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(MedicationGroup::class);
     }
 
     public function application(): HasOne

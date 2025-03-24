@@ -39,7 +39,8 @@
                         data-bs-target="#filtersCollapse">
                     <i class="bx bx-filter-alt"></i> Фильтры
                 </button>
-                <a href="{{ route('medications.create') }}" class="btn btn-primary" style="margin-right: 22px;">Создать</a>
+                <a href="{{ route('medications.create') }}" class="btn btn-primary"
+                   style="margin-right: 22px;">Создать</a>
             </div>
         </div>
 
@@ -73,6 +74,11 @@
                 <tr>
                     <th>#</th>
                     <th>Название</th>
+                    <th>Форма выпуска</th>
+                    <th>Дозировка</th>
+                    <th>Група</th>
+                    <th>Производител</th>
+                    <th>Регистрационный номер</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -81,6 +87,11 @@
                     <tr>
                         <td>{{ $medication->id }}</td>
                         <td>{{ $medication->name }}</td>
+                        <td>{{ $medication->release_form }}</td>
+                        <td>{{ $medication->dosage }}</td>
+                        <td>{{ $medication->manufacturer->name }}</td>
+                        <td>{{ $medication->group->name }}</td>
+                        <td>{{ $medication->registration_number }}</td>
 
                         <td>
                             <div class="d-inline-block text-nowrap">

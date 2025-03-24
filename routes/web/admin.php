@@ -19,6 +19,7 @@ use App\Http\Controllers\Dashboard\ManufacturerController;
 use App\Http\Controllers\Dashboard\MedicalDeviceController;
 use App\Http\Controllers\Dashboard\MedicalSupplyController;
 use App\Http\Controllers\Dashboard\MedicationController;
+use App\Http\Controllers\Dashboard\MedicationGroupController;
 use App\Http\Controllers\Dashboard\PatientController;
 use App\Http\Controllers\Dashboard\PatientServiceController;
 use App\Http\Controllers\Dashboard\PharmacyController;
@@ -104,7 +105,10 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::put('analyze-result/{analyze}', [AnalyzeResultController::class, 'update'])->name('analyze.result.update');
 
     // medications
-    Route::resource('medications', MedicationController::class);
+    Route::prefix('medication')->group(function () {
+        Route::resource('/', MedicationController::class)->names('medications')->parameter('','medication');
+        Route::resource('/groups', MedicationGroupController::class)->names('medication.groups');
+    });
 
     // services
     Route::prefix('services')->group(function () {

@@ -142,7 +142,27 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
+                            <label class="form-label" for="group">Группы<span
+                                    class="text-danger">*</span></label>
+
+                            <select id="group" name="group_id"
+                                    class="form-control select2 @error('group_id') is-invalid @enderror"
+                                    required>
+                                @foreach($groups as $group)
+                                    <option
+                                        value="{{ $group->id }}" @selected($group->id == old('group_id'))>
+                                        {{ $group->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('group_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
                             <label class="form-label" for="manufacturer">Производители<span
                                     class="text-danger">*</span></label>
 
@@ -162,7 +182,8 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-6">
+
+                        <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-registration_number">Регистрационный номер
                                 <span
                                     class="text-danger">*</span></label>
