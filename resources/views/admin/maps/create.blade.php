@@ -204,69 +204,6 @@
                     </div>
 
                     <div class="content-header mb-3 mt-3">
-                        <h6 class="mb-0">Выписка</h6>
-                    </div>
-
-                    <div class="row g-3">
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-discharge_date">Дата выписки</label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('discharge_date') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
-                                <input type="text" name="discharge_date" value="{{ old('discharge_date') }}"
-                                       id="basic-icon-discharge_date"
-                                       class="form-control flatpickr-date @error('discharge_date') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2"/>
-                            </div>
-                            @error('discharge_date')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-discharge_diagnosis_code">Код по
-                                МКБ-10</label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-default-first-name2"
-                                      class="input-group-text @error('discharge_diagnosis_code') text-danger icon-border @enderror">
-                                    <i class="bx bx-code"></i>
-                                </span>
-                                <input type="text" id="basic-icon-default-discharge_diagnosis_code"
-                                       class="form-control @error('discharge_diagnosis_code') is-invalid @enderror"
-                                       placeholder="код по МКБ-10 " aria-label="код по МКБ-10 "
-                                       name="discharge_diagnosis_code"
-                                       value="{{ old('discharge_diagnosis_code') }}"
-                                       aria-describedby="basic-icon-default-first-name2"/>
-                            </div>
-                            @error('discharge_diagnosis_code')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label class="form-label" for="basic-icon-default-discharge_diagnosis_description">Диагноз
-                                при выписке </label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-default-history2"
-                                      class="input-group-text @error('discharge_diagnosis_description') text-danger icon-border @enderror">
-                                    <i class="bx bx-notepad"></i>
-                                </span>
-                                <textarea id="basic-icon-default-discharge_diagnosis_description"
-                                          class="form-control @error('discharge_diagnosis_description') is-invalid @enderror"
-                                          placeholder="Диагноз при выписке"
-                                          aria-label="Диагноз при выписке"
-                                          name="discharge_diagnosis_description"
-                                          aria-describedby="basic-icon-default-history2">{{ old('discharge_diagnosis_description') }}</textarea>
-                            </div>
-                            @error('discharge_diagnosis_description')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="content-header mb-3 mt-3">
                         <h6 class="mb-0">Цель</h6>
                     </div>
 
