@@ -56,6 +56,9 @@
                         <td>
                             <div class="d-inline-block text-nowrap">
                                 <button class="btn btn-sm btn-icon"
+                                        onclick="location.href='{{ route('warehouses.show', $warehouse->id) }}'">
+                                    <i class="bx bx-show"></i></button>
+                                <button class="btn btn-sm btn-icon"
                                         onclick="location.href='{{ route('warehouses.edit', $warehouse->id) }}'"><i
                                         class="bx bx-edit"></i></button>
                                 <form action="{{ route('warehouses.destroy', $warehouse->id) }}" method="POST"

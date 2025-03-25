@@ -35,9 +35,9 @@ use App\Http\Controllers\Dashboard\StaffController;
 use App\Http\Controllers\Dashboard\StaffPositionController;
 use App\Http\Controllers\Dashboard\SupplierController;
 use App\Http\Controllers\Dashboard\TransferController;
+use App\Http\Controllers\Dashboard\WarehouseAccountingController;
 use App\Http\Controllers\Dashboard\WarehouseController;
 use App\Http\Controllers\Dashboard\WarehouseTypeController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('admin/login', [AdminAuthController::class, 'showLoginForm'])->name('dashboard.login');
@@ -77,9 +77,16 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // warehouse
     Route::prefix('warehouses')->group(function () {
-        Route::resource('/', WarehouseController::class)->names('warehouses')->parameter('', 'warehouse')->except('show');
-        Route::resource('/types', WarehouseTypeController::class)->names('warehouses.type')->except('show');
-        Route::get('/medications', [WarehouseController::class, 'medications'])->name('warehouses.medications');
+        Route::resource('list', WarehouseController::class)
+            ->names('warehouses')
+            ->parameter('list', 'warehouse');
+        Route::resource('types', WarehouseTypeController::class)
+            ->names('warehouses.type')
+            ->except('show');
+        Route::get('medications', [WarehouseController::class, 'medications'])
+            ->name('warehouses.medications');
+        Route::get('medication-show/{accounting}', [WarehouseAccountingController::class, 'show'])
+            ->name('warehouse.medication.show');
     });
 
     // pharmacy
@@ -106,7 +113,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // medications
     Route::prefix('medication')->group(function () {
-        Route::resource('/', MedicationController::class)->names('medications')->parameter('','medication');
+        Route::resource('/', MedicationController::class)->names('medications')->parameter('', 'medication');
         Route::resource('/groups', MedicationGroupController::class)->names('medication.groups');
     });
 

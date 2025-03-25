@@ -13,7 +13,6 @@ return new class extends Migration {
             $table->enum('packaging_type', \App\Models\MedicationPackaging::TYPE);
             $table->integer('quantity_per_package');
             $table->integer('package_size');
-            $table->string('batch_number');
             $table->date('packaging_date');
             $table->timestamps();
         });

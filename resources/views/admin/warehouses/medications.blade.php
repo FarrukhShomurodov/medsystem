@@ -24,6 +24,7 @@
                     <th>Срок годности</th>
                     <th>Дата получения</th>
                     <th>Номер партии</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -34,19 +35,26 @@
 
                         $rowClass = '';
                         if ($daysUntilExpiration <= 10 && $daysUntilExpiration > 0) {
-                            $rowClass = 'bg-warning text-white'; // Желтый цвет (скоро истекает)
+                            $rowClass = 'bg-warning text-white';
                         } elseif ($daysUntilExpiration <= 0) {
-                            $rowClass = 'bg-danger text-white'; // Красный цвет (уже просрочено)
+                            $rowClass = 'bg-danger text-white';
                         }
                     @endphp
                     <tr class="{{ $rowClass }}">
                         <td>{{ $accounting->id }}</td>
-                        <td>{{ $accounting->warehouse->name }}</td>
+                        <td>
+                            <a class="text-primary" href="{{ route('warehouses.show', $accounting->warehouse->id) }}">{{ $accounting->warehouse->name }}</a>
+                        </td>
                         <td>{{ $accounting->medication->name }}</td>
                         <td>{{ $accounting->quantity }}</td>
                         <td>{{ $accounting->expiration_date }}</td>
                         <td>{{ $accounting->date_of_receipt }}</td>
                         <td>{{ $accounting->batch_number }}</td>
+                        <td>
+                            <button class="btn btn-sm {{ $rowClass }} btn-icon"
+                                    onclick="location.href='{{ route('warehouse.medication.show', $accounting->id) }}'">
+                                <i class="bx bx-show"></i></button>
+                        </td>
                     </tr>
                 @endforeach
             </table>

@@ -90,7 +90,7 @@
                         <td>{{ $map->id }}</td>
                         <td>{{ $map->admission_date }}</td>
                         <td>{{ $map->department->name }}</td>
-                        <td>{{ $map->doctor->name}</td>
+                        <td>{{ $map->doctor->name }}</td>
                     </tr>
                 @endforeach
                 </tbody>

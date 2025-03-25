@@ -11,7 +11,6 @@ class MedicationPackaging extends Model
         'packaging_type',
         'quantity_per_package',
         'package_size',
-        'batch_number',
         'packaging_date',
     ];
 

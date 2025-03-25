@@ -32,6 +32,11 @@ class WarehouseController
         return view('admin.warehouses.index', compact('warehouses'));
     }
 
+    public function show(Warehouse $warehouse): View
+    {
+        return view('admin.warehouses.show', compact('warehouse'));
+    }
+
     public function create(): View
     {
         $types = WarehouseType::query()->get();
@@ -87,5 +92,4 @@ class WarehouseController
 
         return view('admin.warehouses.medications', compact('accountings'));
     }
-
 }
