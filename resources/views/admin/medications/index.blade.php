@@ -124,6 +124,9 @@
                         <td>
                             <div class="d-inline-block text-nowrap">
                                 <button class="btn btn-sm btn-icon"
+                                        onclick="location.href='{{ route('medications.show', $medication->id) }}'">
+                                    <i class="bx bx-show"></i></button>
+                                <button class="btn btn-sm btn-icon"
                                         onclick="location.href='{{ route('medications.edit', $medication->id) }}'"><i
                                         class="bx bx-edit"></i></button>
                                 <form action="{{ route('medications.destroy', $medication->id) }}" method="POST"

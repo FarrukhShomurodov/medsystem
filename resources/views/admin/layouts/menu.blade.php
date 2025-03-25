@@ -40,20 +40,20 @@
         </li>
 
         {{-- Препараты --}}
-        <li class="menu-item {{ Request::is('dashboard/medication') || Request::is('dashboard/medication/create') || Request::is('dashboard/medication/*/edit') || Request::is('dashboard/medication/groups*')  ? 'open' : '' }}">
+        <li class="menu-item {{ Request::is('dashboard/medication/list*') || Request::is('dashboard/medication/groups*')  ? 'open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon bx bx-capsule"></i>
                 <div data-i18n="Препараты">Препараты</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {{ Request::is('dashboard/medication') || Request::is('dashboard/medication/create') || Request::is('dashboard/medication/*/edit') ? 'active' : '' }}">
+                <li class="menu-item {{ Request::is('dashboard/medication/list*') ? 'active' : '' }}">
                     <a href="{{route('medications.index')}}" class="menu-link">
                         <div data-i18n="Список">Список</div>
                     </a>
                 </li>
                 <li class="menu-item {{ Request::is('dashboard/medication/groups*') ? 'active' : '' }}">
                     <a href="{{route('medication.groups.index')}}" class="menu-link">
-                        <div data-i18n="Типы">Типы</div>
+                        <div data-i18n="Группы">Группы</div>
                     </a>
                 </li>
             </ul>

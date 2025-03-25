@@ -45,6 +45,11 @@ class MedicationController
         return view('admin.medications.index', compact('medications', 'manufacturers', 'groups'));
     }
 
+    public function show(Medication $medication): View
+    {
+        return view('admin.medications.show', compact('medication'));
+    }
+
     public function create(): View
     {
         $suppliers = Supplier::query()->get();

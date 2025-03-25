@@ -113,7 +113,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // medications
     Route::prefix('medication')->group(function () {
-        Route::resource('/', MedicationController::class)->names('medications')->parameter('', 'medication');
+        Route::resource('/list', MedicationController::class)->names('medications')->parameter('list', 'medication');
         Route::resource('/groups', MedicationGroupController::class)->names('medication.groups');
     });
 
