@@ -34,8 +34,12 @@
     <div class="card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-header">Персонал </h5>
-            <a href="{{ route('staffs.create') }}" class="btn btn-primary "
-               style="margin-right: 22px;">Создать</a>
+            <div>
+                <a href="{{ route('staffs.attach.surveys.show') }}" class="btn btn-primary"
+                   style="margin-right: 22px;">Присвоение опросников</a>
+                <a href="{{ route('staffs.create') }}" class="btn btn-primary "
+                   style="margin-right: 22px;">Создать</a>
+            </div>
         </div>
         <div class="card-datatable table-responsive">
             <table class="datatables-users table border-top">

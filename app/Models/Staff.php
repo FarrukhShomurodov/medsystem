@@ -33,6 +33,11 @@ class Staff extends Model
         return $this->belongsToMany(Service::class, 'staff_service_assignment', 'staff_id', 'staff_service_id');
     }
 
+    public function surveys(): BelongsToMany
+    {
+        return $this->belongsToMany(Survey::class, 'staff_surveys', 'staff_id', 'survey_id');
+    }
+
     public function professionalData(): HasOne
     {
         return $this->hasOne(StaffProfessionalData::class);

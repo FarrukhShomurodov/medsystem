@@ -31,6 +31,20 @@ class StaffService
     }
 
     /**
+     * @param Staff $staff
+     * @param array $validated
+     * @return Staff
+     */
+    public function attachSurvey(array $validated)
+    {
+        $staff = Staff::find($validated['staff_id']);
+
+        $staff->surveys()->sync($validated['surveys'] ?? []);
+
+        return $staff;
+    }
+
+    /**
      * @param array<string, mixed> $validated
      */
     public function update(Staff $staff, array $validated)

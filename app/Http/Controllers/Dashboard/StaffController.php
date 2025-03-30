@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Requests\AttachSurveyRequest;
 use App\Http\Requests\StaffRequest;
 use App\Models\Department;
 use App\Models\Service;
 use App\Models\Specialty;
 use App\Models\Staff;
 use App\Models\StaffPosition;
+use App\Models\Survey;
 use App\Services\StaffService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -39,6 +41,22 @@ class StaffController
         $services = Service::query()->get();
 
         return view('admin.staffs.create', compact('specialties', 'positions', 'departments', 'services'));
+    }
+
+    public function attachSurveyShow(): View
+    {
+        $staffs = Staff::query()->get();
+        $surveys = Survey::query()->get();
+
+        return view('admin.staffs.attach_surveys', compact('staffs', 'surveys'));
+    }
+
+    public function attachSurvey(AttachSurveyRequest $request): RedirectResponse
+    {
+        $validated = $request->validated();
+        $this->service->attachSurvey((array)$validated);
+
+        return redirect()->route('staffs.index')->with('success', 'Опросники успешно присвоены!');
     }
 
     public function store(StaffRequest $request): RedirectResponse

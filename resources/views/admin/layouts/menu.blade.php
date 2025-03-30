@@ -129,13 +129,21 @@
             </ul>
         </li>
 
+        {{-- Опросники --}}
+        <li class="menu-item {{ Request::is('dashboard/surveys*') ? 'active' : '' }}">
+            <a href="{{ route('surveys.index') }}" class="menu-link">
+                <i class="menu-icon bx bx-list-check"></i>
+                <div data-i18n="Опросники">Опросники</div>
+            </a>
+        </li>
 
         {{-- Персонал --}}
         <li class="menu-item {{ Request::is('dashboard/staffs')
             || Request::is('dashboard/staffs/create')
             || Request::is('dashboard/staffs/edit/*')
             || Request::is('dashboard/staffs/positions*')
-            || Request::is('dashboard/specialties*')? 'open' : '' }}" style="">
+            || Request::is('dashboard/specialties*')
+            || Request::is('dashboard/attach_surveys') ? 'open' : '' }}" style="">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon  bx bx-user"></i>
                 <div data-i18n="Персонал">Персонал</div>

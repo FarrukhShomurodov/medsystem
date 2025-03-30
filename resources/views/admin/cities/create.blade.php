@@ -36,7 +36,7 @@
                     <div class="input-group input-group-merge">
                             <span id="basic-icon-default-name2"
                                   class="input-group-text @error('name') text-danger icon-border @enderror">
-                                <i class="bx bx-user"></i>
+                                <i class="bx bx-rename"></i>
                             </span>
                         <input type="text" id="basic-icon-default-name"
                                class="form-control @error('name') is-invalid @enderror"
