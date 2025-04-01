@@ -3,6 +3,8 @@
 use App\Http\Controllers\Dashboard\Api\ExaminationMapController;
 use App\Http\Controllers\Dashboard\Api\ImageController;
 use App\Http\Controllers\Dashboard\Api\StaffController;
+use App\Http\Controllers\Dashboard\Api\SurveyController;
+use App\Http\Controllers\Dashboard\Api\SurveyResponseController;
 use App\Http\Controllers\Dashboard\Api\TransferController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,3 +20,7 @@ Route::patch('/transfers/{transfer}/update-status', [TransferController::class, 
 
 // surveys
 Route::get('/surveys/{staff}', [StaffController::class, 'surveys']);
+Route::get('/surveys/{survey}/questions', [SurveyController::class, 'getQuestions']);
+
+// surveys response
+Route::get('/surveys-response/show/{response}', [SurveyResponseController::class, 'show']);

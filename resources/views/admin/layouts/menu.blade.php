@@ -202,7 +202,7 @@
             </a>
         </li>
 
-        <li class="menu-item {{ Request::is('dashboard/maps*') ? 'active' : '' }}">
+        <li class="menu-item {{ Request::is('dashboard/maps*') || Request::is('dashboard/survey-response*') ? 'active' : '' }}">
             <a href="{{ route('maps.index') }}" class="menu-link">
                 <i class="menu-icon bx bx-health"></i>
                 <div data-i18n="Карта обследования ">Карта обследования</div>

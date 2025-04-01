@@ -35,6 +35,7 @@ use App\Http\Controllers\Dashboard\StaffController;
 use App\Http\Controllers\Dashboard\StaffPositionController;
 use App\Http\Controllers\Dashboard\SupplierController;
 use App\Http\Controllers\Dashboard\SurveyController;
+use App\Http\Controllers\Dashboard\SurveyResponseController;
 use App\Http\Controllers\Dashboard\TransferController;
 use App\Http\Controllers\Dashboard\WarehouseAccountingController;
 use App\Http\Controllers\Dashboard\WarehouseController;
@@ -106,6 +107,11 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // surveys
     Route::resource('surveys', SurveyController::class)->names('surveys');
+
+
+    // surveys response
+    Route::get('survey-response/{map}', [SurveyResponseController::class, 'create'])->name('map.survey');
+    Route::post('survey-response', [SurveyResponseController::class, 'store'])->name('map.survey.store');
 
     // analyze
     Route::resource('analyzes', AnalyzeController::class);

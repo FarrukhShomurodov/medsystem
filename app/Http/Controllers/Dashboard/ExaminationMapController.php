@@ -139,7 +139,7 @@ class ExaminationMapController
         //service
         $procedures = Procedure::query()->get();
         $medications = Medication::query()->get();
-        $staffs = ServiceStaff::query()->get();
+        $staffs = Staff::query()->get();
         $services = Service::query()->get();
 
         return view('admin.maps.edit', compact('map', 'doctors', 'institutions', 'patients', 'laboratories', 'types', 'equipments', 'methods', 'procedures', 'medications', 'staffs',

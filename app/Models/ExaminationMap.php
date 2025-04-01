@@ -48,4 +48,10 @@ class ExaminationMap extends Model
     {
         return $this->hasMany(PatientService::class);
     }
+
+
+    public function surveyResponses(): HasMany
+    {
+        return $this->hasMany(SurveyResponses::class, 'examination_map_id');
+    }
 }

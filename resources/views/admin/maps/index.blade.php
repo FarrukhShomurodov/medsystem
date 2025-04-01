@@ -46,6 +46,7 @@
                     <th>Лечащие врач</th>
                     <th>Отделение, к которому прикреплен</th>
                     <th></th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -56,6 +57,9 @@
                         <td>{{ $map->doctor->name }}</td>
                         <td>{{ $map->department->name }}</td>
 
+                        <td>
+                            <a class="btn btn-sm btn-primary" href="{{ route('map.survey', $map->id) }}"><i class="bx bx-show me-1"></i> Опросник</a>
+                        </td>
                         <td>
                             <div class="d-inline-block text-nowrap">
                                 <button class="btn btn-sm btn-icon"

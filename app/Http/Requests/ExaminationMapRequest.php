@@ -18,7 +18,7 @@ class ExaminationMapRequest extends FormRequest
         $rules = [
             'patient_id' => 'required|int',
             'doctor_id' => 'required|int',
-            'institution_id' => 'required|int',
+            'department_id' => 'required|int',
             'admission_date' => 'required|date',
             'discharge_date' => 'nullable|date',
             'admission_diagnosis_code' => 'nullable|string|max:255',
@@ -29,8 +29,6 @@ class ExaminationMapRequest extends FormRequest
             'complaints' => 'nullable|string',
             'general_anamnesises' => 'nullable|string',
             'disease_history' => 'nullable|string',
-
-
         ];
 
 
@@ -61,7 +59,7 @@ class ExaminationMapRequest extends FormRequest
             'place' => ['nullable', Rule::in(PatientService::PLACE)],
             'service_status' => ['nullable', Rule::in(PatientService::STATUS)],
             'staffs' => 'nullable|array',
-            'staffs.*' => 'required|int|exists:service_staff,id',
+            'staffs.*' => 'required|int|exists:staff,id',
 
             'procedures' => 'nullable|array',
             'procedures.*' => 'required|string',

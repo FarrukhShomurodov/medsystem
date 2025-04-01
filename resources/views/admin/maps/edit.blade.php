@@ -100,7 +100,7 @@
                                 <option value="" disabled>Выберите врачей</option>
                                 @foreach($doctors as $doctor)
                                     <option
-                                        value="{{ $doctor->id }}" @selected($doctor->id == old('doctor_id',$map->doctor_id))>{{ $doctor->first_name }}</option>
+                                        value="{{ $doctor->id }}" @selected($doctor->id == old('doctor_id',$map->doctor_id))>{{ $doctor->name }}</option>
                                 @endforeach
                             </select>
                             @error('doctor_id')
@@ -111,16 +111,16 @@
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-department">Отделение, к которому
                                 прикреплен <span class="text-danger">*</span></label>
-                            <select id="basic-icon-default-department" name="institution_id"
-                                    class="form-control select2 @error('institution_id') is-invalid @enderror" multiple
+                            <select id="basic-icon-default-department" name="department_id"
+                                    class="form-control select2 @error('department_id') is-invalid @enderror"
                                     required>
                                 <option value="" disabled>Выберите отделение</option>
                                 @foreach($institutions as $institution)
                                     <option
-                                        value="{{ $institution->id }}" @selected($institution->id == old('institution_id', $map->institution_id))>{{ $institution->name }}</option>
+                                        value="{{ $institution->id }}" @selected($institution->id == old('department_id', $map->department_id))>{{ $institution->name }}</option>
                                 @endforeach
                             </select>
-                            @error('institution_id')
+                            @error('department_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
