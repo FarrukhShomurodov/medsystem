@@ -16,11 +16,16 @@ class Survey extends Model
 
     public function type(): BelongsTo
     {
-        return $this->belongsTo(SurveyType::class,'survey_type_id','id');
+        return $this->belongsTo(SurveyType::class, 'survey_type_id', 'id');
     }
 
     public function questions(): HasMany
     {
         return $this->hasMany(SurveyQuestion::class);
+    }
+
+    public function groups(): HasMany
+    {
+        return $this->hasMany(SurveyGroup::class);
     }
 }

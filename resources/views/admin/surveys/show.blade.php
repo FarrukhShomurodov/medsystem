@@ -17,30 +17,40 @@
         <div class="card-body">
             <p><strong>Тип:</strong> <span class="badge bg-info">{{ $survey->type->name }}</span></p>
 
-            @foreach($survey->questions as $question)
-                <div class="mb-3 border-bottom pb-2">
-                    <h6 class="mb-1">{{ $question->question }}</h6>
-                    <span class="badge bg-primary">
-                        @php
-                            $types = ['choice' => 'Список', 'boolean' => 'Да / Нет', 'text' => 'Текст'];
-                        @endphp
-                        {{ $types[$question->type] ?? 'Неизвестный тип' }}
-                    </span>
+            @php
+                $groupedQuestions = $survey->questions->groupBy('group.title');
+            @endphp
 
-                    @if($question->type === 'choice' && $question->options)
-                        <div class="mt-2">
-                            @foreach($question->options as $option)
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question_{{ $question['id'] }}"
-                                           id="option_{{ $loop->index }}" value="{{ $option['text'] }}">
-                                    <label class="form-check-label" for="option_{{ $loop->index }}">
-                                        {{ $option['text'] }} <small>(Бал: {{ $option['score'] }})</small>
-                                    </label>
-                                </div>
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
+            @foreach($groupedQuestions as $groupName => $questions)
+                @if($groupName !== "")
+                    <h5 class="mt-4 text-primary">{{ $groupName }}</h5>
+                @endif
+
+                @foreach($questions as $question)
+                    <div class="mb-3 border-bottom pb-2">
+                        <h6 class="mb-1">{{ $question->question }}</h6>
+                        <span class="badge bg-primary">
+                            @php
+                                $types = ['choice' => 'Список', 'boolean' => 'Да / Нет', 'text' => 'Текст'];
+                            @endphp
+                            {{ $types[$question->type] ?? 'Неизвестный тип' }}
+                        </span>
+
+                        @if($question->type === 'choice' && $question->options)
+                            <div class="mt-2">
+                                @foreach($question->options as $option)
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="question_{{ $question['id'] }}"
+                                               id="option_{{ $loop->index }}" value="{{ $option['text'] }}">
+                                        <label class="form-check-label" for="option_{{ $loop->index }}">
+                                            {{ $option['text'] }} <small>(Бал: {{ $option['score'] }})</small>
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
             @endforeach
 
             <a href="{{ route('surveys.index') }}" class="btn btn-secondary btn-sm">

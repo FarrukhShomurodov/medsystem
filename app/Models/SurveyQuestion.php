@@ -12,7 +12,7 @@ class SurveyQuestion extends Model
         'question',
         'type',
         'options',
-        'group',
+        'group_id',
     ];
 
     protected $casts = [
@@ -24,5 +24,10 @@ class SurveyQuestion extends Model
     public function survey(): BelongsTo
     {
         return $this->belongsTo(Survey::class);
+    }
+
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(SurveyGroup::class);
     }
 }

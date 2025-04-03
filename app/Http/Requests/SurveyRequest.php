@@ -23,8 +23,8 @@ class SurveyRequest extends FormRequest
             'questions.*.options' => 'nullable|array',
 
             'groups' => 'nullable|array',
-            'groups.*.name' => 'required|string|max:255',
-            'groups.*.questions' => 'required|array',
+            'groups.*.title' => 'required|string|max:255',
+            'groups.*.questions' => 'nullable|array',
             'groups.*.questions.*.question' => 'required|string|max:255',
             'groups.*.questions.*.type' => ['required', Rule::in(SurveyQuestion::TYPE)],
             'groups.*.questions.*.options' => 'nullable|array',

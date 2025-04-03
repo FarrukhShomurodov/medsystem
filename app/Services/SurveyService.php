@@ -21,14 +21,19 @@ class SurveyService
 
             $survey = Survey::query()->create($validated);
 
-            foreach ($validated['questions'] as $question) {
-                $survey->questions()->create($question);
+            foreach ($validated['groups'] ?? [] as $groupData) {
+                $group = $survey->groups()->create([
+                    'title' => $groupData['title'],
+                ]);
+
+                foreach ($groupData['questions'] ?? [] as $questionData) {
+                    $group->questions()->create($questionData + ['survey_id' => $survey->id]);
+                }
             }
 
-            foreach ($validated['groups'] ?? [] as $group) {
-                $groupModel = $survey->groups()->create(['name' => $group['name']]);
-                foreach ($group['questions'] as $question) {
-                    $groupModel->questions()->create($question);
+            foreach ($validated['questions'] as $questionData) {
+                if (!isset($questionData['group_id'])) {
+                    $survey->questions()->create($questionData);
                 }
             }
 
@@ -43,25 +48,25 @@ class SurveyService
      */
     public function update(Survey $survey, array $validated): Survey
     {
-        return DB::transaction(function () use ($survey, $validated) {
-            if (!is_numeric($validated['survey_type_id'])) {
-                $validated['survey_type_id'] = SurveyType::query()->create(['name' => $validated['survey_type_id']])->id;
-            }
-
+        return  DB::transaction(function () use ($survey, $validated) {
             $survey->update($validated);
 
-            $existingQuestionIds = collect($validated['questions'])->pluck('id')->filter();
-            $survey->questions()->whereNotIn('id', $existingQuestionIds)->delete();
+            $survey->groups()->delete();
+            $survey->questions()->whereNull('group_id')->delete();
 
-            foreach ($validated['questions'] as $question) {
-                if (isset($question['id'])) {
-                    $survey->questions()->where('id', $question['id'])->update($question);
-                } else {
-                    $survey->questions()->create($question);
+            foreach ($validated['groups'] ?? [] as $groupData) {
+                $group = $survey->groups()->create(['title' => $groupData['title']]);
+
+                foreach ($groupData['questions'] ?? [] as $questionData) {
+                    $group->questions()->create($questionData + ['survey_id' => $survey->id]);
                 }
             }
 
-            return $survey->refresh();
+            foreach ($validated['questions'] as $questionData) {
+                if (!isset($questionData['group_id'])) {
+                    $survey->questions()->create($questionData);
+                }
+            }
         });
     }
 

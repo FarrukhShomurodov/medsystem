@@ -88,44 +88,40 @@
             // Добавить обычный вопрос
             $("#add-question").click(function () {
                 let questionHtml = `
-            <div class="question-item border p-3 mb-3">
-                <button type="button" class="btn-close float-end remove-question"></button>
-                <div class="mb-2">
-                    <label class="form-label">Вопрос <span class="text-danger">*</span></label>
-                    <input type="text" name="questions[${questionIndex}][question]" class="form-control" required>
-                </div>
-                <div class="mb-2">
-                    <label class="form-label">Тип вопроса</label>
-                    <select name="questions[${questionIndex}][type]" class="form-control question-type" required>
-                        <option value="boolean">Да / Нет</option>
-                        <option value="choice">Список</option>
-                        <option value="text">Текст</option>
-                    </select>
-                </div>
-                <div class="options-container d-none">
-                    <label class="form-label">Опции</label>
-                    <div class="option-list"></div>
-                    <button type="button" class="btn btn-sm btn-outline-primary add-option">Добавить опцию</button>
-                </div>
+        <div class="question-item border p-3 mb-3">
+            <button type="button" class="btn-close float-end remove-question"></button>
+            <div class="mb-2">
+                <label class="form-label">Вопрос <span class="text-danger">*</span></label>
+                <input type="text" name="questions[${questionIndex}][question]" class="form-control" required>
             </div>
-        `;
+            <div class="mb-2">
+                <label class="form-label">Тип вопроса</label>
+                <select name="questions[${questionIndex}][type]" class="form-control question-type" required>
+                    <option value="boolean">Да / Нет</option>
+                    <option value="choice">Список</option>
+                    <option value="text">Текст</option>
+                </select>
+            </div>
+            <div class="options-container d-none">
+                <label class="form-label">Опции</label>
+                <div class="option-list"></div>
+                <button type="button" class="btn btn-sm btn-outline-primary add-option">Добавить опцию</button>
+            </div>
+        </div>`;
 
                 $("#questions-container").append(questionHtml);
-                $(".question-type").select2();
                 questionIndex++;
             });
 
             // Добавить группу вопросов
             $("#add-group").click(function () {
                 let groupHtml = `
-            <div class="question-group border p-3 mb-3">
-                <button type="button" class="btn-close float-end remove-group"></button>
-                <h5>Группа: <input type="text" name="groups[${groupIndex}][name]" class="form-control d-inline-block w-50" placeholder="Название группы" required></h5>
-                <button type="button" class="btn btn-sm btn-success add-group-question" data-group="${groupIndex}">Добавить вопрос в группу</button>
-                <div class="group-questions mt-3"></div>
-            </div>
-        `;
-
+        <div class="question-group border p-3 mb-3">
+            <button type="button" class="btn-close float-end remove-group"></button>
+            <h5>Группа: <input type="text" name="groups[${groupIndex}][title]" class="form-control d-inline-block w-50" required></h5>
+            <button type="button" class="btn btn-sm btn-success add-group-question" data-group="${groupIndex}">Добавить вопрос в группу</button>
+            <div class="group-questions mt-3"></div>
+        </div>`;
                 $("#questions-container").append(groupHtml);
                 groupIndex++;
             });
@@ -136,30 +132,28 @@
                 let groupContainer = $(this).siblings(".group-questions");
 
                 let questionHtml = `
-            <div class="question-item border p-3 mb-3">
-                <button type="button" class="btn-close float-end remove-question"></button>
-                <div class="mb-2">
-                    <label class="form-label">Вопрос <span class="text-danger">*</span></label>
-                    <input type="text" name="groups[${groupId}][questions][${questionIndex}][question]" class="form-control" required>
-                </div>
-                <div class="mb-2">
-                    <label class="form-label">Тип вопроса</label>
-                    <select name="groups[${groupId}][questions][${questionIndex}][type]" class="form-control question-type" required>
-                        <option value="boolean">Да / Нет</option>
-                        <option value="choice">Список</option>
-                        <option value="text">Текст</option>
-                    </select>
-                </div>
-                <div class="options-container d-none">
-                    <label class="form-label">Опции</label>
-                    <div class="option-list"></div>
-                    <button type="button" class="btn btn-sm btn-outline-primary add-option">Добавить опцию</button>
-                </div>
+        <div class="question-item border p-3 mb-3">
+            <button type="button" class="btn-close float-end remove-question"></button>
+            <div class="mb-2">
+                <label class="form-label">Вопрос <span class="text-danger">*</span></label>
+                <input type="text" name="groups[${groupId}][questions][${questionIndex}][question]" class="form-control" required>
             </div>
-        `;
+            <div class="mb-2">
+                <label class="form-label">Тип вопроса</label>
+                <select name="groups[${groupId}][questions][${questionIndex}][type]" class="form-control question-type" required>
+                    <option value="boolean">Да / Нет</option>
+                    <option value="choice">Список</option>
+                    <option value="text">Текст</option>
+                </select>
+            </div>
+            <div class="options-container d-none">
+                <label class="form-label">Опции</label>
+                <div class="option-list"></div>
+                <button type="button" class="btn btn-sm btn-outline-primary add-option">Добавить опцию</button>
+            </div>
+        </div>`;
 
                 groupContainer.append(questionHtml);
-                $(".question-type").select2();
                 questionIndex++;
             });
 
@@ -177,29 +171,25 @@
             $(document).on("change", ".question-type", function () {
                 let parent = $(this).closest(".question-item");
                 let optionsContainer = parent.find(".options-container");
-
                 if ($(this).val() === "choice") {
                     optionsContainer.removeClass("d-none");
                 } else {
-                    optionsContainer.addClass("d-none");
-                    optionsContainer.find(".option-list").empty();
+                    optionsContainer.addClass("d-none").find(".option-list").empty();
                 }
             });
 
             // Добавить опцию
             $(document).on("click", ".add-option", function () {
                 let optionsContainer = $(this).siblings(".option-list");
+                let questionId = $(this).closest(".question-item").find("input[name$='[question]']").attr("name").match(/\d+/g).join('_');
                 let index = optionsContainer.children().length;
 
                 let optionHtml = `
-            <div class="d-flex align-items-center mb-2 option-item">
-                <input type="text" name="questions[${questionIndex - 1}][options][${index}][text]"
-                       class="form-control me-2" placeholder="Опция" required>
-                <input type="number" name="questions[${questionIndex - 1}][options][${index}][score]"
-                       class="form-control option-score" placeholder="Баллы" min="0">
-                <button type="button" class="btn btn-sm btn-danger ms-1 remove-option">✖</button>
-            </div>
-        `;
+        <div class="d-flex align-items-center mb-2 option-item">
+            <input type="text" name="questions[${questionId}][options][${index}][text]" class="form-control me-2" placeholder="Опция" required>
+            <input type="number" name="questions[${questionId}][options][${index}][score]" class="form-control option-score" placeholder="Баллы" min="0">
+            <button type="button" class="btn btn-sm btn-danger ms-1 remove-option">✖</button>
+        </div>`;
 
                 optionsContainer.append(optionHtml);
             });
@@ -207,24 +197,6 @@
             // Удаление опции
             $(document).on("click", ".remove-option", function () {
                 $(this).closest(".option-item").remove();
-            });
-
-            // Перед отправкой формы собираем данные
-            $('form').submit(function () {
-                $('.question-item').each(function () {
-                    let options = [];
-                    $(this).find('.option-item').each(function () {
-                        let text = $(this).find('input[name$="[text]"]').val().trim();
-                        let score = $(this).find('input[name$="[score]"]').val().trim();
-                        if (text !== '') {
-                            options.push({ text: text, score: score ? parseInt(score) : 0 });
-                        }
-                    });
-
-                    if (options.length > 0) {
-                        $(this).find('input[name$="[options]"]').val(JSON.stringify(options));
-                    }
-                });
             });
         });
     </script>
