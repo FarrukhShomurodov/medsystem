@@ -25,6 +25,13 @@ class SurveyService
                 $survey->questions()->create($question);
             }
 
+            foreach ($validated['groups'] ?? [] as $group) {
+                $groupModel = $survey->groups()->create(['name' => $group['name']]);
+                foreach ($group['questions'] as $question) {
+                    $groupModel->questions()->create($question);
+                }
+            }
+
             return $survey;
         });
 

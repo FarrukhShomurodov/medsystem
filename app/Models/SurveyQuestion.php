@@ -12,6 +12,7 @@ class SurveyQuestion extends Model
         'question',
         'type',
         'options',
+        'group',
     ];
 
     protected $casts = [

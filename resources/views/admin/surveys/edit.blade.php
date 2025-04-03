@@ -95,22 +95,26 @@
                             <div class="options-container @if($question->type !== 'choice') d-none @endif">
                                 <div class="options-container">
                                     <label class="form-label">Опции</label>
-                                    <div class="option-list">
-                                        @foreach($question->options as $optionIndex => $option)
-                                            <div class="d-flex align-items-center mb-2 option-item">
-                                                <input type="text"
-                                                       name="questions[{{ $index }}][options][{{ $optionIndex }}][text]"
-                                                       value="{{ $option['text'] }}"
-                                                       class="form-control me-2" placeholder="Опция" required>
-                                                <input type="number"
-                                                       name="questions[{{ $index }}][options][{{ $optionIndex }}][score]"
-                                                       value="{{ $option['score'] }}"
-                                                       class="form-control option-score" placeholder="Баллы" min="0">
-                                                <button type="button" class="btn btn-sm btn-danger ms-1 remove-option">✖
-                                                </button>
-                                            </div>
-                                        @endforeach
-                                    </div>
+                                    @if($question->options)
+                                        <div class="option-list">
+                                            @foreach($question->options as $optionIndex => $option)
+                                                <div class="d-flex align-items-center mb-2 option-item">
+                                                    <input type="text"
+                                                           name="questions[{{ $index }}][options][{{ $optionIndex }}][text]"
+                                                           value="{{ $option['text'] }}"
+                                                           class="form-control me-2" placeholder="Опция" required>
+                                                    <input type="number"
+                                                           name="questions[{{ $index }}][options][{{ $optionIndex }}][score]"
+                                                           value="{{ $option['score'] }}"
+                                                           class="form-control option-score" placeholder="Баллы"
+                                                           min="0">
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-danger ms-1 remove-option">✖
+                                                    </button>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
 
                                     <button type="button" class="btn btn-sm btn-outline-primary add-option">Добавить
                                         опцию

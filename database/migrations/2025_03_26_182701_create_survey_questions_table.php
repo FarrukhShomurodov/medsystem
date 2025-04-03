@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('question');
             $table->enum('type', [SurveyQuestion::TYPE]);
             $table->json('options')->nullable();
+            $table->string('group')->nullable();
             $table->timestamps();
         });
     }
