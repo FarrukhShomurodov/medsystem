@@ -14,7 +14,6 @@ Route::delete('/delete/image/{folderName}/{fileName}', [ImageController::class, 
 // Examination maps
 Route::get('examination-map-by-patient/{patient}', [ExaminationMapController::class, 'mapByPatient']);
 
-
 // transfers
 Route::patch('/transfers/{transfer}/update-status', [TransferController::class, 'updateStatus']);
 

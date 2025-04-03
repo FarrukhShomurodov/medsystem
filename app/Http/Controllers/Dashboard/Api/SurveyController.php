@@ -9,6 +9,14 @@ class SurveyController
 {
     public function getQuestions(Survey $survey): JsonResponse
     {
-        return response()->json($survey->questions);
+        $groups = $survey->groups()->with('questions')->get();
+        $standaloneQuestions = $survey->questions()
+            ->whereNull('group_id')
+            ->get();
+
+        return response()->json([
+            'groups' => $groups,
+            'standalone_questions' => $standaloneQuestions
+        ]);
     }
 }

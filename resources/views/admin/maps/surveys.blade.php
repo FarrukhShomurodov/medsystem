@@ -243,8 +243,6 @@
 @endsection
 
 @section('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#survey-select').on('change', function () {
@@ -258,23 +256,78 @@
                 $.ajax({
                     url: `/api/surveys/${surveyId}/questions`,
                     type: 'GET',
-                    success: function (questions) {
-                        if (questions.length > 0) {
-                            questions.forEach((q, index) => {
-                                let questionHtml = `
-                            <div class="mb-3">
-                                <label class="form-label">${index + 1}. ${q.question} <span class="text-danger">*</span></label>
-                                ${getInputField(q, index)}
+                    success: function (data) {
+                        // Обрабатываем группы
+                        if (data.groups.length > 0) {
+                            data.groups.forEach(group => {
+                                let groupHtml = `
+                        <div class="card mb-4 border-primary">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0 text-white">${group.title}</h5>
                             </div>
-                        `;
-                                questionsContainer.append(questionHtml);
+                            <div class="card-body">
+                    `;
+                                group.questions.forEach((q, index) => {
+                                    groupHtml += generateQuestionHtml(q, index + 1);
+                                });
+                                groupHtml += '</div></div>';
+                                questionsContainer.append(groupHtml);
                             });
+                        }
 
-                            $('#submit-answers').show();
-                            $('#service-container').show();
-                        } else {
-                            questionsContainer.html('<p class="text-muted">Вопросов нет</p>');
-                            $('#submit-answers').hide();
+                        // Обрабатываем отдельные вопросы
+                        if (data.standalone_questions.length > 0) {
+                            let standaloneHtml = `
+                    <div class="card mb-4 border-secondary">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0 text-white">Общие вопросы</h5>
+                        </div>
+                        <div class="card-body">
+                `;
+                            data.standalone_questions.forEach((q, index) => {
+                                standaloneHtml += generateQuestionHtml(q, index + 1);
+                            });
+                            standaloneHtml += '</div></div>';
+                            questionsContainer.append(standaloneHtml);
+                        }
+
+                        function generateQuestionHtml(q, index) {
+                            return `
+                    <div class="mb-3 question-item">
+                        <label class="form-label fw-semibold">${index}. ${q.question}</label>
+                        ${getInputField(q, index)}
+                    </div>
+                `;
+                        }
+
+                        function getInputField(q) {
+                            if (q.type === 'choice') {
+                                return q.options.map(option => `
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="answers[${q.id}]"
+                                   value="${option.text}"
+                                   required>
+                            <label class="form-check-label">${option.text}</label>
+                        </div>
+                    `).join('');
+                            }
+                            if (q.type === 'boolean') {
+                                return `
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="answers[${q.id}]"
+                                   value="yes" required> Да
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="answers[${q.id}]"
+                                   value="no" required> Нет
+                        </div>
+                    `;
+                            }
+                            return `<input type="text" name="answers[${q.id}]"
+                             class="form-control" required>`;
                         }
                     },
                     error: function () {

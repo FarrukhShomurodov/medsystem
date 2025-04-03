@@ -68,60 +68,136 @@
                 <div class="mb-3">
                     <label class="form-label">Вопросы</label>
                     <button type="button" id="add-question" class="btn btn-success btn-sm ms-2">Добавить вопрос</button>
+                    <button type="button" id="add-group" class="btn btn-primary btn-sm ms-2">Создать группу</button>
                 </div>
 
                 <div id="questions-container">
-                    @foreach ($survey->questions as $index => $question)
-                        <div class="question-item border p-3 mb-3" data-id="{{ $question->id }}">
-                            <button type="button" class="btn-close float-end remove-question"></button>
-                            <input type="hidden" name="questions[{{ $index }}][id]" value="{{ $question->id }}">
 
-                            <div class="mb-2">
-                                <label class="form-label">Вопрос <span class="text-danger">*</span></label>
-                                <input type="text" name="questions[{{ $index }}][question]" class="form-control"
-                                       value="{{ old("questions.$index.question", $question->question) }}" required>
-                            </div>
-
-                            <div class="mb-2">
-                                <label class="form-label" for="form-label-{{$index}}">Тип вопроса</label>
-                                <select id="form-label-{{$index}}" name="questions[{{ $index }}][type]"
-                                        class="form-control question-type select2" required>
-                                    <option value="boolean" @selected($question->type == 'boolean')>Да / Нет</option>
-                                    <option value="choice" @selected($question->type == 'choice')>Список</option>
-                                    <option value="text" @selected($question->type == 'text')>Текст</option>
-                                </select>
-                            </div>
-
-                            <div class="options-container @if($question->type !== 'choice') d-none @endif">
-                                <div class="options-container">
-                                    <label class="form-label">Опции</label>
-                                    @if($question->options)
-                                        <div class="option-list">
-                                            @foreach($question->options as $optionIndex => $option)
-                                                <div class="d-flex align-items-center mb-2 option-item">
-                                                    <input type="text"
-                                                           name="questions[{{ $index }}][options][{{ $optionIndex }}][text]"
-                                                           value="{{ $option['text'] }}"
-                                                           class="form-control me-2" placeholder="Опция" required>
-                                                    <input type="number"
-                                                           name="questions[{{ $index }}][options][{{ $optionIndex }}][score]"
-                                                           value="{{ $option['score'] }}"
-                                                           class="form-control option-score" placeholder="Баллы"
-                                                           min="0">
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-danger ms-1 remove-option">✖
-                                                    </button>
-                                                </div>
-                                            @endforeach
+                    @foreach ($survey->groups as $groupIndex => $group)
+                        <div class="question-group border p-3 mb-3">
+                            <button type="button" class="btn-close float-end remove-group"></button>
+                            <h5>Группа: <input type="text" name="groups[{{ $groupIndex }}][title]"
+                                               class="form-control d-inline-block w-50"
+                                               value="{{ old("groups.$groupIndex.title", $group->title) }}" required>
+                            </h5>
+                            <button type="button" class="btn btn-sm btn-success add-group-question"
+                                    data-group="{{ $groupIndex }}">Добавить вопрос в группу
+                            </button>
+                            <div class="group-questions mt-3">
+                                @foreach ($group->questions as $questionIndex => $question)
+                                    <div class="question-item border p-3 mb-3">
+                                        <button type="button" class="btn-close float-end remove-question"></button>
+                                        <div class="mb-2">
+                                            <label class="form-label">Вопрос <span class="text-danger">*</span></label>
+                                            <input type="text"
+                                                   name="groups[{{ $groupIndex }}][questions][{{ $questionIndex }}][question]"
+                                                   class="form-control"
+                                                   value="{{ old("groups.$groupIndex.questions.$questionIndex.question", $question->question) }}"
+                                                   required>
                                         </div>
-                                    @endif
-
-                                    <button type="button" class="btn btn-sm btn-outline-primary add-option">Добавить
-                                        опцию
-                                    </button>
-                                </div>
+                                        <div class="mb-2">
+                                            <label class="form-label">Тип вопроса</label>
+                                            <select
+                                                name="groups[{{ $groupIndex }}][questions][{{ $questionIndex }}][type]"
+                                                class="form-control question-type" required>
+                                                <option value="boolean" @selected($question->type == 'boolean')>Да /
+                                                    Нет
+                                                </option>
+                                                <option value="choice" @selected($question->type == 'choice')>Список
+                                                </option>
+                                                <option value="text" @selected($question->type == 'text')>Текст</option>
+                                            </select>
+                                        </div>
+                                        @if($question->type === 'choice')
+                                            <div class="options-container">
+                                                <label class="form-label">Опции</label>
+                                                <div class="option-list">
+                                                    @if($question->options)
+                                                        @foreach ($question->options as $optionIndex => $option)
+                                                            <div class="d-flex align-items-center mb-2 option-item">
+                                                                <input type="text"
+                                                                       name="groups[{{ $groupIndex }}][questions][{{ $questionIndex }}][options][{{ $optionIndex }}][text]"
+                                                                       class="form-control me-2"
+                                                                       value="{{ old("groups.$groupIndex.questions.$questionIndex.options.$optionIndex.text", $option['text']) }}"
+                                                                       placeholder="Опция" required>
+                                                                <input type="number"
+                                                                       name="groups[{{ $groupIndex }}][questions][{{ $questionIndex }}][options][{{ $optionIndex }}][score]"
+                                                                       class="form-control option-score"
+                                                                       value="{{ old("groups.$groupIndex.questions.$questionIndex.options.$optionIndex.score", $option['score']) }}"
+                                                                       placeholder="Баллы" min="0">
+                                                                <button type="button"
+                                                                        class="btn btn-sm btn-danger ms-1 remove-option">
+                                                                    ✖
+                                                                </button>
+                                                            </div>
+                                                        @endforeach
+                                                    @endif
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-outline-primary add-option">
+                                                    Добавить опцию
+                                                </button>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
+                    @endforeach
+
+                    @foreach ($survey->questions as $index => $question)
+                        @if(is_null($question->group_id))
+                            <div class="question-item border p-3 mb-3" data-id="{{ $question->id }}">
+                                <button type="button" class="btn-close float-end remove-question"></button>
+                                <input type="hidden" name="questions[{{ $index }}][id]" value="{{ $question->id }}">
+
+                                <div class="mb-2">
+                                    <label class="form-label">Вопрос <span class="text-danger">*</span></label>
+                                    <input type="text" name="questions[{{ $index }}][question]" class="form-control"
+                                           value="{{ old("questions.$index.question", $question->question) }}" required>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="form-label" for="form-label-{{$index}}">Тип вопроса</label>
+                                    <select id="form-label-{{$index}}" name="questions[{{ $index }}][type]"
+                                            class="form-control question-type select2" required>
+                                        <option value="boolean" @selected($question->type == 'boolean')>Да / Нет
+                                        </option>
+                                        <option value="choice" @selected($question->type == 'choice')>Список</option>
+                                        <option value="text" @selected($question->type == 'text')>Текст</option>
+                                    </select>
+                                </div>
+
+                                <div class="options-container @if($question->type !== 'choice') d-none @endif">
+                                    <div class="options-container">
+                                        <label class="form-label">Опции</label>
+                                        <div class="option-list">
+                                            @if($question->options)
+                                                @foreach($question->options as $optionIndex => $option)
+                                                    <div class="d-flex align-items-center mb-2 option-item">
+                                                        <input type="text"
+                                                               name="questions[{{ $index }}][options][{{ $optionIndex }}][text]"
+                                                               value="{{ $option['text'] }}"
+                                                               class="form-control me-2" placeholder="Опция" required>
+                                                        <input type="number"
+                                                               name="questions[{{ $index }}][options][{{ $optionIndex }}][score]"
+                                                               value="{{ $option['score'] }}"
+                                                               class="form-control option-score" placeholder="Баллы"
+                                                               min="0">
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-danger ms-1 remove-option">✖
+                                                        </button>
+                                                    </div>
+                                                @endforeach
+                                            @endif
+                                        </div>
+
+                                        <button type="button" class="btn btn-sm btn-outline-primary add-option">Добавить
+                                            опцию
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     @endforeach
                 </div>
 
@@ -134,7 +210,8 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
-            let questionIndex = {{ count($survey->questions) }};
+            let questionIndex = $(".question-item").length;
+            let groupIndex = $(".question-group").length;
 
             $("#add-question").click(function () {
                 let questionHtml = `
@@ -152,17 +229,29 @@
                                 <option value="text">Текст</option>
                             </select>
                         </div>
-                         <div class="options-container d-none">
+                        <div class="options-container d-none">
                             <label class="form-label">Опции</label>
                             <div class="option-list"></div>
                             <button type="button" class="btn btn-sm btn-outline-primary add-option">Добавить опцию</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
 
                 $("#questions-container").append(questionHtml);
                 $(".question-type").select2();
                 questionIndex++;
+            });
+
+            // Добавить группу вопросов
+            $("#add-group").click(function () {
+                let groupHtml = `
+                    <div class="question-group border p-3 mb-3">
+                        <button type="button" class="btn-close float-end remove-group"></button>
+                        <h5>Группа: <input type="text" name="groups[${groupIndex}][title]" class="form-control d-inline-block w-50" required></h5>
+                        <button type="button" class="btn btn-sm btn-success add-group-question" data-group="${groupIndex}">Добавить вопрос в группу</button>
+                        <div class="group-questions mt-3"></div>
+                    </div>`;
+                $("#questions-container").append(groupHtml);
+                groupIndex++;
             });
 
             $(document).on("change", ".question-type", function () {
@@ -177,6 +266,57 @@
                 }
             });
 
+            // Добавить вопрос в группу
+            $(document).on("click", ".add-group-question", function () {
+                let groupId = $(this).data("group");
+                let groupContainer = $(this).siblings(".group-questions");
+
+                let questionHtml = `
+                    <div class="question-item border p-3 mb-3">
+                        <button type="button" class="btn-close float-end remove-question"></button>
+                        <div class="mb-2">
+                            <label class="form-label">Вопрос <span class="text-danger">*</span></label>
+                            <input type="text" name="groups[${groupId}][questions][${questionIndex}][question]" class="form-control" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Тип вопроса</label>
+                            <select name="groups[${groupId}][questions][${questionIndex}][type]" class="form-control question-type" required>
+                                <option value="boolean">Да / Нет</option>
+                                <option value="choice">Список</option>
+                                <option value="text">Текст</option>
+                            </select>
+                        </div>
+                        <div class="options-container d-none">
+                            <label class="form-label">Опции</label>
+                            <div class="option-list"></div>
+                            <button type="button" class="btn btn-sm btn-outline-primary add-option-to-group">Добавить опцию</button>
+                        </div>
+                    </div>`;
+
+                groupContainer.append(questionHtml);
+                $(".question-type").select2();
+                questionIndex++;
+            });
+
+
+            $('form').submit(function () {
+                $('.question-item').each(function () {
+                    let options = [];
+                    $(this).find('.option-item').each(function () {
+                        let text = $(this).find('input[name$="[text]"]').val().trim();
+                        let score = $(this).find('input[name$="[score]"]').val().trim();
+                        if (text !== '') {
+                            options.push({text: text, score: score ? parseInt(score) : 0});
+                        }
+                    });
+
+                    if (options.length > 0) {
+                        $(this).find('input[name$="[options]"]').val(JSON.stringify(options));
+                    }
+                });
+            });
+
+            // Добавить опцию
             $(document).on("click", ".add-option", function () {
                 let optionsContainer = $(this).siblings(".option-list");
                 let index = optionsContainer.children().length;
@@ -194,25 +334,36 @@
                 optionsContainer.append(optionHtml);
             });
 
-            $(document).on("click", ".remove-option", function () {
-                $(this).closest(".option-item").remove();
+            $(document).on("click", ".add-option-to-group", function () {
+                let optionsContainer = $(this).siblings(".option-list");
+                let index = optionsContainer.children().length;
+
+                let optionHtml = `
+                    <div class="d-flex align-items-center mb-2 option-item">
+                        <input type="text" name="groups[${groupIndex - 1}][questions][${questionIndex - 1}][options][${index}][text]"
+                               class="form-control me-2" placeholder="Опция" required>
+                        <input type="number" name="groups[${groupIndex - 1}][questions][${questionIndex - 1}][options][${index}][score]"
+                               class="form-control option-score" placeholder="Баллы" min="0">
+                        <button type="button" class="btn btn-sm btn-danger ms-1 remove-option">✖</button>
+                    </div>
+                `;
+
+                optionsContainer.append(optionHtml);
             });
 
-            $('form').submit(function () {
-                $('.question-item').each(function () {
-                    let options = [];
-                    $(this).find('.option-item').each(function () {
-                        let text = $(this).find('input[name$="[text]"]').val().trim();
-                        let score = $(this).find('input[name$="[score]"]').val().trim();
-                        if (text !== '') {
-                            options.push({text: text, score: score ? parseInt(score) : 0});
-                        }
-                    });
+            // Удаление вопроса
+            $(document).on("click", ".remove-question", function () {
+                $(this).closest(".question-item").remove();
+            });
 
-                    if (options.length > 0) {
-                        $(this).find('input[name$="[options]"]').val(JSON.stringify(options));
-                    }
-                });
+            // Удаление группы
+            $(document).on("click", ".remove-group", function () {
+                $(this).closest(".question-group").remove();
+            });
+
+            // Удаление опции
+            $(document).on("click", ".remove-option", function () {
+                $(this).closest(".option-item").remove();
             });
         });
     </script>

@@ -110,7 +110,11 @@
         </div>`;
 
                 $("#questions-container").append(questionHtml);
+                $(".question-type").select2();
+
                 questionIndex++;
+
+                console.log(questionIndex)
             });
 
             // Добавить группу вопросов
@@ -132,29 +136,32 @@
                 let groupContainer = $(this).siblings(".group-questions");
 
                 let questionHtml = `
-        <div class="question-item border p-3 mb-3">
-            <button type="button" class="btn-close float-end remove-question"></button>
-            <div class="mb-2">
-                <label class="form-label">Вопрос <span class="text-danger">*</span></label>
-                <input type="text" name="groups[${groupId}][questions][${questionIndex}][question]" class="form-control" required>
-            </div>
-            <div class="mb-2">
-                <label class="form-label">Тип вопроса</label>
-                <select name="groups[${groupId}][questions][${questionIndex}][type]" class="form-control question-type" required>
-                    <option value="boolean">Да / Нет</option>
-                    <option value="choice">Список</option>
-                    <option value="text">Текст</option>
-                </select>
-            </div>
-            <div class="options-container d-none">
-                <label class="form-label">Опции</label>
-                <div class="option-list"></div>
-                <button type="button" class="btn btn-sm btn-outline-primary add-option">Добавить опцию</button>
-            </div>
-        </div>`;
+                    <div class="question-item border p-3 mb-3">
+                        <button type="button" class="btn-close float-end remove-question"></button>
+                        <div class="mb-2">
+                            <label class="form-label">Вопрос <span class="text-danger">*</span></label>
+                            <input type="text" name="groups[${groupId}][questions][${questionIndex}][question]" class="form-control" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Тип вопроса</label>
+                            <select name="groups[${groupId}][questions][${questionIndex}][type]" class="form-control question-type" required>
+                                <option value="boolean">Да / Нет</option>
+                                <option value="choice">Список</option>
+                                <option value="text">Текст</option>
+                            </select>
+                        </div>
+                        <div class="options-container d-none">
+                            <label class="form-label">Опции</label>
+                            <div class="option-list"></div>
+                            <button type="button" class="btn btn-sm btn-outline-primary add-option-to-group">Добавить опцию</button>
+                        </div>
+                    </div>`;
 
                 groupContainer.append(questionHtml);
+                $(".question-type").select2();
                 questionIndex++;
+
+                console.log(questionIndex)
             });
 
             // Удаление вопроса
@@ -181,15 +188,34 @@
             // Добавить опцию
             $(document).on("click", ".add-option", function () {
                 let optionsContainer = $(this).siblings(".option-list");
-                let questionId = $(this).closest(".question-item").find("input[name$='[question]']").attr("name").match(/\d+/g).join('_');
                 let index = optionsContainer.children().length;
 
                 let optionHtml = `
-        <div class="d-flex align-items-center mb-2 option-item">
-            <input type="text" name="questions[${questionId}][options][${index}][text]" class="form-control me-2" placeholder="Опция" required>
-            <input type="number" name="questions[${questionId}][options][${index}][score]" class="form-control option-score" placeholder="Баллы" min="0">
-            <button type="button" class="btn btn-sm btn-danger ms-1 remove-option">✖</button>
-        </div>`;
+                    <div class="d-flex align-items-center mb-2 option-item">
+                        <input type="text" name="questions[${questionIndex - 1}][options][${index}][text]"
+                               class="form-control me-2" placeholder="Опция" required>
+                        <input type="number" name="questions[${questionIndex - 1}][options][${index}][score]"
+                               class="form-control option-score" placeholder="Баллы" min="0">
+                        <button type="button" class="btn btn-sm btn-danger ms-1 remove-option">✖</button>
+                    </div>
+                `;
+
+                optionsContainer.append(optionHtml);
+            });
+
+            $(document).on("click", ".add-option-to-group", function () {
+                let optionsContainer = $(this).siblings(".option-list");
+                let index = optionsContainer.children().length;
+
+                let optionHtml = `
+                    <div class="d-flex align-items-center mb-2 option-item">
+                        <input type="text" name="groups[${groupIndex - 1}][questions][${questionIndex - 1}][options][${index}][text]"
+                               class="form-control me-2" placeholder="Опция" required>
+                        <input type="number" name="groups[${groupIndex - 1}][questions][${questionIndex - 1}][options][${index}][score]"
+                               class="form-control option-score" placeholder="Баллы" min="0">
+                        <button type="button" class="btn btn-sm btn-danger ms-1 remove-option">✖</button>
+                    </div>
+                `;
 
                 optionsContainer.append(optionHtml);
             });
@@ -197,6 +223,23 @@
             // Удаление опции
             $(document).on("click", ".remove-option", function () {
                 $(this).closest(".option-item").remove();
+            });
+
+            $('form').submit(function () {
+                $('.question-item').each(function () {
+                    let options = [];
+                    $(this).find('.option-item').each(function () {
+                        let text = $(this).find('input[name$="[text]"]').val().trim();
+                        let score = $(this).find('input[name$="[score]"]').val().trim();
+                        if (text !== '') {
+                            options.push({text: text, score: score ? parseInt(score) : 0});
+                        }
+                    });
+
+                    if (options.length > 0) {
+                        $(this).find('input[name$="[options]"]').val(JSON.stringify(options));
+                    }
+                });
             });
         });
     </script>

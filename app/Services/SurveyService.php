@@ -67,6 +67,8 @@ class SurveyService
                     $survey->questions()->create($questionData);
                 }
             }
+
+            return $survey;
         });
     }
 
