@@ -329,6 +329,8 @@
                             return `<input type="text" name="answers[${q.id}]"
                              class="form-control" required>`;
                         }
+
+                        $('#service-container').show();
                     },
                     error: function () {
                         questionsContainer.html('<p class="text-danger">Ошибка загрузки вопросов</p>');

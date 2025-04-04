@@ -87,10 +87,12 @@
                 success: function (data) {
                     surveysSelect.html('');
 
+                    const selectedSurveys = surveysSelect.val() || [];
+
                     data.forEach(survey => {
-                        console.log(survey)
+                        const isSelected = selectedSurveys.includes(survey.id.toString());
                         surveysSelect.append(
-                            `<option value="${survey.id}" selected>${survey.title}</option>`
+                            `<option value="${survey.id}" ${isSelected ? 'selected' : ''}>${survey.title}</option>`
                         );
                     });
 
