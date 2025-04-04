@@ -85,17 +85,13 @@
                 url: `/api/surveys/${staff_id}`,
                 type: 'GET',
                 success: function (data) {
-                    surveysSelect.html('');
-
-                    const selectedSurveys = surveysSelect.val() || [];
-
                     data.forEach(survey => {
-                        const isSelected = selectedSurveys.includes(survey.id.toString());
-                        surveysSelect.append(
-                            `<option value="${survey.id}" ${isSelected ? 'selected' : ''}>${survey.title}</option>`
-                        );
-                    });
+                        const option = surveysSelect.find(`option[value="${survey.id}"]`);
 
+                        if (option.length) {
+                            option.prop('selected', true);
+                        }
+                    });
                     surveysSelect.trigger('change');
                 },
                 error: function () {
