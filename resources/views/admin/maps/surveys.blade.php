@@ -400,7 +400,7 @@
                     `;
                             });
 
-                            html += `<button class="btn btn-sm btn-primary mt-2" id="apply-selected-answers">Использовать выбранные</button>`;
+                            html += `<p class="btn btn-sm btn-primary mt-2" id="apply-selected-answers">Использовать выбранные</p>`;
                         } else {
                             html += '<p class="text-muted">Ответов нет</p>';
                         }
