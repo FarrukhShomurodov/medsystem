@@ -89,7 +89,7 @@
 
                     data.forEach(survey => {
                         console.log(survey)
-                        surveysSelect.html(
+                        surveysSelect.append(
                             `<option value="${survey.id}" selected>${survey.title}</option>`
                         );
                     });
