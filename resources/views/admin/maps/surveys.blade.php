@@ -46,7 +46,7 @@
                                 <p class="text-primary">{{ $response->survey->title }}</p>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-info view-response" data-id="{{ $response->id }}"
+                                <button type="button" class="btn btn-sm btn-info view-response" data-id="{{ $response->id }}"
                                         data-bs-toggle="modal" data-bs-target="#responseModal">
                                     Просмотр
                                 </button>
@@ -294,7 +294,7 @@
                         function generateQuestionHtml(q, index) {
                             return `
                     <div class="mb-3 question-item">
-                        <label class="form-label fw-semibold">${index}. ${q.question}</label>
+                        <label class="form-label fw-semibold" data-question="${q.id}" >${index}. ${q.question}</label>
                         ${getInputField(q, index)}
                     </div>
                 `;
@@ -421,6 +421,10 @@
 
                     let targetInput = $(`input[name="answers[${questionId}]"]`);
                     let targetRadio = $(`input[name="answers[${questionId}]"][value="${answer}"]`);
+
+                    let question = $(`label[data-question="${questionId}"]`);
+
+                    question.append('<small> (Ответ скопирован) </small>');
 
                     if (targetInput.length > 0) {
                         if (targetInput.attr('type') === 'radio') {
