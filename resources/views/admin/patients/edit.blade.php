@@ -936,6 +936,8 @@
                                     <th>Даты предыдущих посещений</th>
                                     <th>Отделение</th>
                                     <th>Врач</th>
+                                    <th></th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -943,8 +945,20 @@
                                     <tr>
                                         <td>{{ $map->id }}</td>
                                         <td>{{ $map->admission_date }}</td>
-                                        <td>{{ $map->institution->name }}</td>
-                                        <td>{{ $map->doctor->first_name }}</td>
+                                        <td>{{ $map->department->name }}</td>
+                                        <td>{{ $map->doctor->name }}</td>
+                                        <td>
+                                            <a class="btn btn-sm btn-primary" href="{{ route('map.survey', $map->id) }}"><i
+                                                    class="bx bx-show me-1"></i> Опросник</a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-sm btn-icon"
+                                               href="{{ route('maps.show', $map->id) }}"><i
+                                                    class="bx bx-show"></i></a>
+                                            <a class="btn btn-sm btn-icon"
+                                               href="{{ route('maps.edit', $map->id) }}"><i
+                                                    class="bx bx-edit"></i></a>
+                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -977,7 +991,7 @@
                                 <option value="" disabled>Выберите врача</option>
                                 @foreach($doctors as $doctor)
                                     <option
-                                        value="{{ $doctor->id }}" @selected($doctor->id == old('doctor_id'))>{{ $doctor->first_name }}</option>
+                                        value="{{ $doctor->id }}" @selected($doctor->id == old('doctor_id'))>{{ $doctor->name }}</option>
                                 @endforeach
                             </select>
                             @error('doctor_id')

@@ -6,8 +6,7 @@
 
 @section('content')
     <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('maps.index') }}">Карты обследования </a> /</span>Создать
+        <span class="text-muted fw-light">/</span>Создать
     </h6>
 
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
@@ -72,40 +71,42 @@
                         <h6 class="mb-0">Основные данные</h6>
                     </div>
                     <div class="row g-3">
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-patient">Пациент <span
-                                    class="text-danger">*</span></label>
-                            <select id="basic-icon-default-patient" name="patient_id"
-                                    class="form-control select2 @error('patient_id') is-invalid @enderror" required>
-                                <option value="" disabled>Выберите пациента</option>
-                                @foreach($patients as $patient)
-                                    <option
-                                        value="{{ $patient->id }}" @selected($patient->id == old('patient_id'))>{{ $patient->first_name }}
-                                        - {{  ($patient->id) }}</option>
-                                @endforeach
-                            </select>
-                            @error('patient_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        {{--                        <div class="col-sm-4">--}}
+                        {{--                            <label class="form-label" for="basic-icon-default-patient">Пациент <span--}}
+                        {{--                                    class="text-danger">*</span></label>--}}
+                        {{--                            <select id="basic-icon-default-patient" name="patient_id"--}}
+                        {{--                                    class="form-control select2 @error('patient_id') is-invalid @enderror" required>--}}
+                        {{--                                <option value="" disabled>Выберите пациента</option>--}}
+                        {{--                                @foreach($patients as $patient)--}}
+                        {{--                                    <option--}}
+                        {{--                                        value="{{ $patient->id }}" @selected($patient->id == old('patient_id'))>{{ $patient->first_name }}--}}
+                        {{--                                        - {{  ($patient->id) }}</option>--}}
+                        {{--                                @endforeach--}}
+                        {{--                            </select>--}}
+                        {{--                            @error('patient_id')--}}
+                        {{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+                        {{--                            @enderror--}}
+                        {{--                        </div>--}}
 
-                        <div class="col-sm-4">
+                        <input type="hidden" name="patient_id" value="{{ $patient->id }}">
+
+                        <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-doctors">Лечащие врачи <span
                                     class="text-danger">*</span></label>
-                            <select id="basic-icon-default-doctors" name="doctor_id"
-                                    class="form-control select2 @error('doctor_id') is-invalid @enderror" required>
+                            <select id="basic-icon-default-doctors" name="staff_id"
+                                    class="form-control select2 @error('staff_id') is-invalid @enderror" required>
                                 <option value="" disabled>Выберите врачей</option>
                                 @foreach($doctors as $doctor)
                                     <option
-                                        value="{{ $doctor->id }}" @selected($doctor->id == old('doctor_id'))>{{ $doctor->name }}</option>
+                                        value="{{ $doctor->id }}" @selected($doctor->id == old('staff_id'))>{{ $doctor->name }}</option>
                                 @endforeach
                             </select>
-                            @error('doctor_id')
+                            @error('staff_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-department">Отделение, к которому
                                 прикреплен <span class="text-danger">*</span></label>
                             <select id="basic-icon-default-department" name="department_id"
@@ -326,11 +327,9 @@
 
                     <div class="row g-3">
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-departments">Лаборатории <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-departments">Лаборатории </label>
                             <select id="basic-icon-default-departments" name="laboratory_id"
-                                    class="form-control select2 @error('laboratory_id') is-invalid @enderror"
-                                    required>
+                                    class="form-control select2 @error('laboratory_id') is-invalid @enderror">
                                 <option value="" disabled>Выберите лабораторию</option>
                                 @foreach($laboratories as $laboratory)
                                     <option
@@ -343,12 +342,10 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-types">Типы анализов <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-types">Типы анализов</label>
                             <select id="basic-icon-default-types" name="types[]"
                                     class="form-control select2 @error('types') is-invalid @enderror"
-                                    multiple
-                                    required>
+                                    multiple>
                                 <option value="" disabled>Выберите тип</option>
                                 @foreach($types as $type)
                                     <option
@@ -376,8 +373,7 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="flatpickr-datetime">Дата и время сдачи анализа <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="flatpickr-datetime">Дата и время сдачи анализа</label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-birth-date2"
                                       class="input-group-text @error('analysis_time') text-danger icon-border @enderror">
@@ -385,7 +381,6 @@
                                 </span>
                                 <input type="text" name="analysis_time" value="{{ old('analysis_time') }}"
                                        id="flatpickr-datetime"
-                                       required
                                        class="form-control flatpickr-date-time @error('analysis_time') is-invalid @enderror"
                                        placeholder="YYYY-MM-DD HH:MM" aria-describedby="basic-icon-birth-date2"/>
                             </div>
@@ -395,11 +390,9 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-methods">Метод исследования <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-methods">Метод исследования</label>
                             <select id="basic-icon-default-methods" name="methods[]"
-                                    class="form-control select2 @error('methods') is-invalid @enderror" multiple
-                                    required>
+                                    class="form-control select2 @error('methods') is-invalid @enderror" multiple>
                                 <option value="" disabled>Выберите метод</option>
                                 @foreach($methods as $method)
                                     <option
@@ -412,12 +405,10 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-equipments">Оборудование <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-equipments">Оборудование</label>
                             <select id="basic-icon-default-equipments" name="equipments[]"
                                     class="form-control select2 @error('equipments') is-invalid @enderror"
-                                    multiple
-                                    required>
+                                    multiple>
                                 <option value="" disabled>Выберите оборудования</option>
                                 @foreach($equipments as $equipment)
                                     <option

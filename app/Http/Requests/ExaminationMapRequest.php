@@ -17,7 +17,7 @@ class ExaminationMapRequest extends FormRequest
     {
         $rules = [
             'patient_id' => 'required|int',
-            'doctor_id' => 'required|int',
+            'staff_id' => 'required|int',
             'department_id' => 'required|int',
             'admission_date' => 'required|date',
             'discharge_date' => 'nullable|date',
@@ -29,28 +29,16 @@ class ExaminationMapRequest extends FormRequest
             'complaints' => 'nullable|string',
             'general_anamnesises' => 'nullable|string',
             'disease_history' => 'nullable|string',
+
+            // analyze
+            'laboratory_id' => 'nullable',
+            'types' => 'nullable|array',
+            'methods' => 'nullable|array',
+            'analysis_time' => 'nullable',
+            'medical_staff' => ['nullable', Rule::in(Analyze::MEDICAL_STAFF)],
+            'equipments' => 'nullable|array',
         ];
 
-
-        if ($this->method() == 'PUT') {
-            $rules = array_merge($rules, [
-                'laboratory_id' => 'nullable',
-                'types' => 'nullable|array',
-                'methods' => 'nullable|array',
-                'analysis_time' => 'nullable',
-                'medical_staff' => ['nullable', Rule::in(Analyze::MEDICAL_STAFF)],
-                'equipments' => 'nullable|array',
-            ]);
-        } else if ($this->method() == 'POST') {
-            $rules = array_merge($rules, [
-                'laboratory_id' => 'required',
-                'types' => 'required|array',
-                'methods' => 'required|array',
-                'analysis_time' => 'required',
-                'medical_staff' => ['nullable', Rule::in(Analyze::MEDICAL_STAFF)],
-                'equipments' => 'required|array',
-            ]);
-        }
 
 
         $rules = array_merge($rules, [
@@ -75,21 +63,21 @@ class ExaminationMapRequest extends FormRequest
             'medications' => 'nullable|array',
             'medications.*' => 'required|string',
             'dosages' => [
-                'required',
+                'nullable',
                 'array',
                 Rule::when($this->has('procedures'), [
                     'size:' . count($this->input('medications', []))
                 ])
             ],
-            'dosages.*' => 'required|string|max:50',
+            'dosages.*' => 'nullable|string|max:50',
             'admission_periods' => [
-                'required',
+                'nullable',
                 'array',
                 Rule::when($this->has('procedures'), [
                     'size:' . count($this->input('medications', []))
                 ])
             ],
-            'admission_periods.*' => 'required|string|max:100',
+            'admission_periods.*' => 'nullable|string|max:100',
             'medication_notes' => 'nullable|array',
             'medication_notes.*' => 'nullable|string|max:500',
         ]);

@@ -10,6 +10,26 @@
                                              href="{{ route('patients.index') }}">Пациент</a> /</span> {{ $patientDetails['basic_info']['full_name'] }}
     </h6>
 
+    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
+                    <i class="bx bx-error-circle fs-4 me-2"></i>
+                    {{ $error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endforeach
+        @endif
+
+        @if(session()->has('success'))
+            <div class="alert alert-solid-success alert-dismissible d-flex align-items-center" role="alert">
+                <i class="bx bx-check-circle fs-4 me-2"></i>
+                {{ session()->get('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+    </div>
+
     <div class="card">
         <div class="card-header">
             <h5>Общая информация</h5>
@@ -72,8 +92,10 @@
 
     <div class="card mt-3">
         <div class="card-datatable table-responsive col-12">
-            <div class="card-header">
-                <h5>История обращение</h5>
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-header">История обращение </h5>
+                <a href="{{ route('patient.map.create', $patientDetails['patient_id']) }}" class="btn btn-primary "
+                   style="margin-right: 22px;">Создать</a>
             </div>
             <table class="datatables-users table border-top">
                 <thead>
@@ -82,6 +104,8 @@
                     <th>Даты предыдущих посещений</th>
                     <th>Отделение</th>
                     <th>Врач</th>
+                    <th></th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -91,6 +115,27 @@
                         <td>{{ $map->admission_date }}</td>
                         <td>{{ $map->department->name }}</td>
                         <td>{{ $map->doctor->name }}</td>
+
+                        <td>
+                            <a class="btn btn-sm btn-primary" href="{{ route('map.survey', $map->id) }}"><i
+                                    class="bx bx-show me-1"></i> Опросник</a>
+                        </td>
+
+                        <td>
+                            <a class="btn btn-sm btn-icon"
+                               href="{{ route('maps.show', $map->id) }}"><i
+                                    class="bx bx-show"></i></a>
+                            <a class="btn btn-sm btn-icon"
+                               href="{{ route('maps.edit', $map->id) }}"><i
+                                    class="bx bx-edit"></i></a>
+                            <form action="{{ route('maps.destroy', $map->id) }}" method="POST"
+                                  style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                 @endforeach
                 </tbody>

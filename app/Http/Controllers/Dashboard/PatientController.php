@@ -79,6 +79,7 @@ class PatientController
             'history' => [
                 'maps' => $patient->examinationMaps,
             ],
+            'patient_id' => $patient->id
         ];
 
         return view('admin.patients.show', compact('patientDetails'));

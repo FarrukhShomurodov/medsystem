@@ -34,8 +34,6 @@
     <div class="card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-header">Карты обследования </h5>
-            <a href="{{ route('maps.create') }}" class="btn btn-primary "
-               style="margin-right: 22px;">Создать</a>
         </div>
         <div class="card-datatable table-responsive">
             <table class="datatables-users table border-top">

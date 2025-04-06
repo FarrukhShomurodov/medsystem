@@ -151,5 +151,8 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::resource('devices', MedicalDeviceController::class);
 
     Route::resource('patients', PatientController::class);
-    Route::resource('maps', ExaminationMapController::class);
+
+    Route::resource('maps', ExaminationMapController::class)->except(['index', 'create']);
+
+    Route::get('patient/map/create/{patient}', [ExaminationMapController::class, 'create'])->name('patient.map.create');
 });

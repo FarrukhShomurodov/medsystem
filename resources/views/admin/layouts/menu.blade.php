@@ -195,17 +195,10 @@
             </a>
         </li>
 
-        <li class="menu-item {{ Request::is('dashboard/patients*') ? 'active' : '' }}">
+        <li class="menu-item {{ Request::is('dashboard/patients*') || Request::is('dashboard/maps*') || Request::is('dashboard/survey-response*') ? 'active' : '' }}">
             <a href="{{ route('patients.index') }}" class="menu-link">
                 <i class="menu-icon bx bx-group"></i>
                 <div data-i18n="Пациенты">Пациенты</div>
-            </a>
-        </li>
-
-        <li class="menu-item {{ Request::is('dashboard/maps*') || Request::is('dashboard/survey-response*') ? 'active' : '' }}">
-            <a href="{{ route('maps.index') }}" class="menu-link">
-                <i class="menu-icon bx bx-health"></i>
-                <div data-i18n="Карта обследования ">Карта обследования</div>
             </a>
         </li>
 

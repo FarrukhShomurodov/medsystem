@@ -6,8 +6,7 @@
 
 @section('content')
     <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('maps.index') }}">Карта обследования</a> /</span>Опросники
+        <span class="text-muted fw-light">/</span>Опросники
     </h6>
 
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">

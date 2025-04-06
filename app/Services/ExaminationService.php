@@ -23,46 +23,52 @@ class ExaminationService
     public function store(array $validated): ExaminationMap
     {
         $map = DB::transaction(function () use ($validated) {
-            if (!is_numeric($validated['institution_id'])) {
-                $validated['institution_id'] = Institution::query()->create(['name' => $validated['institution_id']])->id;
+            if (!is_numeric($validated['department_id'])) {
+                $validated['department_id'] = Institution::query()->create(['name' => $validated['department_id']])->id;
             }
 
             $map = ExaminationMap::query()->create($validated);
 
             $patient = $map->patient;
 
-            $analyzeData = [
-                'patient_id' => $patient->id,
-                'doctor_id' => $validated['doctor_id'],
-                'examination_map_id' => $map->id,
-                'laboratory_id' => $validated['laboratory_id'],
-                'types' => $validated['types'],
-                'methods' => $validated['methods'],
-                'analysis_time' => $validated['analysis_time'],
-                'medical_staff' => $validated['medical_staff'],
-                'equipments' => $validated['equipments'],
-                'status' => 'assigned',
-            ];
+            if (isset($validated['laboratory_id'])) {
+                $analyzeData = [
+                    'patient_id' => $patient->id,
+                    'doctor_id' => $validated['doctor_id'],
+                    'examination_map_id' => $map->id,
+                    'laboratory_id' => $validated['laboratory_id'],
+                    'types' => $validated['types'],
+                    'methods' => $validated['methods'],
+                    'analysis_time' => $validated['analysis_time'],
+                    'medical_staff' => $validated['medical_staff'],
+                    'equipments' => $validated['equipments'],
+                    'status' => 'assigned',
+                ];
 
-            $this->service->store($analyzeData);
+                $this->service->store($analyzeData);
+            }
 
-            $serviceData = [
-                'service_id' => $validated['service_id'],
-                'patient_id' => $patient->id,
-                'examination_map_id' => $map->id,
-                'service_date' => $validated['service_date'],
-                'place' => $validated['place'],
-                'status' => $validated['service_status'],
-                'staffs' => $validated['staffs'],
-                'procedures' => $validated['procedures'],
-                'procedure_dates' => $validated['procedure_dates'],
-                'medications' => $validated['medications'],
-                'dosages' => $validated['dosages'],
-                'admission_periods' => $validated['admission_periods'],
-                'medication_notes' => $validated['medication_notes'],
-            ];
 
-            $this->patientService->store($serviceData);
+            if (isset($validated['service_id'])) {
+                $serviceData = [
+                    'service_id' => $validated['service_id'],
+                    'patient_id' => $patient->id,
+                    'examination_map_id' => $map->id,
+                    'service_date' => $validated['service_date'],
+                    'place' => $validated['place'],
+                    'status' => $validated['service_status'],
+                    'staffs' => $validated['staffs'],
+                    'procedures' => $validated['procedures'],
+                    'procedure_dates' => $validated['procedure_dates'],
+                    'medications' => $validated['medications'],
+                    'dosages' => $validated['dosages'],
+                    'admission_periods' => $validated['admission_periods'],
+                    'medication_notes' => $validated['medication_notes'],
+                ];
+
+                $this->patientService->store($serviceData);
+            }
+
 
             return $map;
         });
@@ -77,8 +83,8 @@ class ExaminationService
     {
         return DB::transaction(function () use ($validated, $map) {
 
-            if (!is_numeric($validated['institution_id'])) {
-                $validated['institution_id'] = Institution::query()->create(['name' => $validated['institution_id']])->id;
+            if (!is_numeric($validated['department_id'])) {
+                $validated['department_id'] = Institution::query()->create(['name' => $validated['department_id']])->id;
             }
 
             $map->update($validated);

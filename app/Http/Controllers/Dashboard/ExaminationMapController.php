@@ -94,13 +94,13 @@ class ExaminationMapController
     }
 
 
-    public function create(): View
+    public function create(Patient $patient): View
     {
         $doctors = Staff::whereHas('professionalData', function ($query) {
             $query->where('position_id', 1);
         })->get();
+
         $institutions = Department::query()->get();
-        $patients = Patient::query()->get();
         $laboratories = Laboratory::query()->get();
         $types = AnalyzeType::query()->get();
         $equipments = Equipment::query()->where('status', 'работает')->get();
@@ -112,7 +112,7 @@ class ExaminationMapController
         $staffs = Staff::query()->get();
         $services = Service::query()->get();
 
-        return view('admin.maps.create', compact('doctors', 'institutions', 'patients', 'laboratories', 'types', 'equipments', 'methods', 'procedures', 'medications', 'staffs',
+        return view('admin.maps.create', compact('doctors', 'institutions', 'patient', 'laboratories', 'types', 'equipments', 'methods', 'procedures', 'medications', 'staffs',
             'services'));
     }
 
@@ -121,7 +121,7 @@ class ExaminationMapController
         $validated = $request->validated();
         $this->service->store((array)$validated);
 
-        return redirect()->route('maps.index')->with('success', 'Карта обследования успешно добавлена!');
+        return redirect()->route('patients.show', $validated['patient_id'])->with('success', 'Карта обследования успешно добавлена!');
     }
 
     public function edit(ExaminationMap $map): View
@@ -160,10 +160,9 @@ class ExaminationMapController
             return redirect()->back()->withErrors('Заполните все обязательные поля, кроме медицинского персонала, или не заполняйте их вообще!');
         }
 
-
         $this->service->update($map, (array)$validated);
 
-        return redirect()->route('maps.index')->with('success', 'Карта обследования  успешно обновлена!');
+        return redirect()->route('patients.show', $validated['patient_id'])->with('success', 'Карта обследования  успешно обновлена!');
     }
 
     public function destroy(ExaminationMap $map): RedirectResponse

@@ -6,8 +6,7 @@
 
 @section('content')
     <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('maps.index') }}">Карты обследования </a> /</span>Редактировать
+        <span class="text-muted fw-light">/</span>Редактировать
     </h6>
 
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
@@ -75,40 +74,42 @@
                     </div>
                     <div class="row g-3">
 
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-patient">Пациен <span
-                                    class="text-danger">*</span></label>
-                            <select id="basic-icon-default-patient" name="patient_id"
-                                    class="form-control select2 @error('patient_id') is-invalid @enderror" required>
-                                <option value="" disabled>Выберите пациента</option>
-                                @foreach($patients as $patient)
-                                    <option
-                                        value="{{ $patient->id }}" @selected($patient->id == old('patient_id', $map->patient_id))>{{ $patient->first_name}}
-                                        - {{  ($patient->id) }} </option>
-                                @endforeach
-                            </select>
-                            @error('patient_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        {{--                        <div class="col-sm-4">--}}
+                        {{--                            <label class="form-label" for="basic-icon-default-patient">Пациен <span--}}
+                        {{--                                    class="text-danger">*</span></label>--}}
+                        {{--                            <select id="basic-icon-default-patient" name="patient_id"--}}
+                        {{--                                    class="form-control select2 @error('patient_id') is-invalid @enderror" required>--}}
+                        {{--                                <option value="" disabled>Выберите пациента</option>--}}
+                        {{--                                @foreach($patients as $patient)--}}
+                        {{--                                    <option--}}
+                        {{--                                        value="{{ $patient->id }}" @selected($patient->id == old('patient_id', $map->patient_id))>{{ $patient->first_name}}--}}
+                        {{--                                        - {{  ($patient->id) }} </option>--}}
+                        {{--                                @endforeach--}}
+                        {{--                            </select>--}}
+                        {{--                            @error('patient_id')--}}
+                        {{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+                        {{--                            @enderror--}}
+                        {{--                        </div>--}}
 
-                        <div class="col-sm-4">
+                        <input type="hidden" name="patient_id" value="{{$map->patient_id}}">
+
+                        <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-doctors">Лечащие врачи <span
                                     class="text-danger">*</span></label>
-                            <select id="basic-icon-default-doctors" name="doctor_id"
-                                    class="form-control select2 @error('doctor_id') is-invalid @enderror" required>
+                            <select id="basic-icon-default-doctors" name="staff_id"
+                                    class="form-control select2 @error('staff_id') is-invalid @enderror" required>
                                 <option value="" disabled>Выберите врачей</option>
                                 @foreach($doctors as $doctor)
                                     <option
-                                        value="{{ $doctor->id }}" @selected($doctor->id == old('doctor_id',$map->doctor_id))>{{ $doctor->name }}</option>
+                                        value="{{ $doctor->id }}" @selected($doctor->id == old('staff_id',$map->staff_id))>{{ $doctor->name }}</option>
                                 @endforeach
                             </select>
-                            @error('doctor_id')
+                            @error('staff_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-department">Отделение, к которому
                                 прикреплен <span class="text-danger">*</span></label>
                             <select id="basic-icon-default-department" name="department_id"
