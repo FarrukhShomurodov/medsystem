@@ -22,9 +22,7 @@ class PatientRequest extends FormRequest
             'gender' => ['required', Rule::in(['male', 'female'])],
             'citizenship' => 'required|string|max:255',
             'passport_series' => 'required|string|max:255',
-            'passport_number' => 'required|string|max:255',
-            'passport_issue_date' => 'required|date|date_format:Y-m-d',
-            'passport_issued_by' => 'required|string|max:255',
+            'passport_validity_period' => 'required|date|date_format:Y-m-d',
 
             // Контактная информация
             'phone' => 'required|string|max:255',

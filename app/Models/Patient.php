@@ -24,9 +24,7 @@ class Patient extends Model
         'gender',
         'citizenship',
         'passport_series',
-        'passport_number',
-        'passport_issue_date',
-        'passport_issued_by',
+        'passport_validity_period',
 
         // Контактная информация
         'phone',

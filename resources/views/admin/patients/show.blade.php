@@ -61,7 +61,7 @@
         </div>
         <div class="card-body">
             <p><strong>Номер полиса:</strong> {{ $patientDetails['insurance_info']['policy_number'] }}</p>
-            <p><strong>Компания:</strong> {{ $patientDetails['insurance_info']['company'] }}</p>
+            <p><strong>Компания:</strong> {{ $patientDetafils['insurance_info']['company'] }}</p>
             <p><strong>Тип:</strong> {{ $patientDetails['insurance_info']['type'] }}</p>
             <p><strong>Срок действия:</strong> {{ $patientDetails['insurance_info']['expiry_date'] }}</p>
         </div>

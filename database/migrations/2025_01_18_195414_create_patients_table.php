@@ -18,9 +18,7 @@ return new class extends Migration {
             $table->enum('gender', ['male', 'female']);
             $table->string('citizenship');
             $table->string('passport_series');
-            $table->string('passport_number');
-            $table->date('passport_issue_date');
-            $table->string('passport_issued_by');
+            $table->date('passport_validity_period');
 
             // Контактная информация
             $table->string('phone');

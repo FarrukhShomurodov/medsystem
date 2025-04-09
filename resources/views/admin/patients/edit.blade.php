@@ -185,7 +185,7 @@
                                 <input type="text" id="basic-icon-citizenship"
                                        class="form-control @error('citizenship') is-invalid @enderror"
                                        placeholder="Гражданство" aria-label="Гражданство" name="citizenship"
-                                       value="{{ old('citizenship',$patient->citizenship) }}"
+                                       value="{{ old('citizenship', $patient->citizenship) }}"
                                        aria-describedby="basic-icon-passport-series2" required/>
                             </div>
                             @error('citizenship')
@@ -213,59 +213,22 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-passport-number">Номер паспорта <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-passport-number2"
-                                      class="input-group-text @error('passport_number') text-danger icon-border @enderror">
-                                    <i class="bx bx-key"></i>
-                                </span>
-                                <input type="text" id="basic-icon-passport-number"
-                                       class="form-control @error('passport_number') is-invalid @enderror"
-                                       placeholder="Номер паспорта" aria-label="Номер паспорта" name="passport_number"
-                                       value="{{ old('passport_number',$patient->passport_number) }}"
-                                       aria-describedby="basic-icon-passport-number2" required/>
-                            </div>
-                            @error('passport_number')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
 
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-passport-issue-date">Дата выдачи <span
+                            <label class="form-label" for="basic-icon-passport-issue-date">Срок действия <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-passport-issue-date2"
-                                      class="input-group-text @error('passport_issue_date') text-danger icon-border @enderror">
+                                      class="input-group-text @error('passport_validity_period') text-danger icon-border @enderror">
                                     <i class="bx bx-calendar"></i>
                                 </span>
-                                <input type="text" name="passport_issue_date" id="basic-icon-passport-issue-date"
-                                       value="{{ old('passport_issue_date',$patient->passport_issue_date) }}"
-                                       class="form-control flatpickr-date @error('passport_issue_date') is-invalid @enderror"
+                                <input type="text" name="passport_validity_period" id="basic-icon-passport-issue-date"
+                                       value="{{ old('passport_validity_period',$patient->passport_validity_period) }}"
+                                       class="form-control flatpickr-date @error('passport_validity_period') is-invalid @enderror"
                                        placeholder="YYYY-MM-DD" aria-describedby="basic-icon-passport-issue-date2"
                                        required/>
                             </div>
-                            @error('passport_issue_date')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-passport-issuer">Кем выдан <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-passport-issuer2"
-                                      class="input-group-text @error('passport_issued_by') text-danger icon-border @enderror">
-                                    <i class="bx bx-building"></i>
-                                </span>
-                                <input type="text" id="basic-icon-passport-issuer"
-                                       class="form-control @error('passport_issued_by') is-invalid @enderror"
-                                       placeholder="Кем выдан" aria-label="Кем выдан" name="passport_issued_by"
-                                       value="{{ old('passport_issued_by',$patient->passport_issued_by) }}"
-                                       aria-describedby="basic-icon-passport-issuer2" required/>
-                            </div>
-                            @error('passport_issued_by')
+                            @error('passport_validity_period')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -463,8 +426,9 @@
                     </div>
 
                     {{-- Адрес регистрации (если отличается от проживания) --}}
-                    <div class="content-header mb-3 mt-3">
+                    <div class="content-header mb-3 mt-3 d-flex justify-content-between align-items-center">
                         <h6 class="mb-0">Адрес регистрации (если отличается от проживания)</h6>
+                        <span id="copy_address" class="btn btn-sm btn-primary">Тот же</span>
                     </div>
                     <div class="row g-3">
                         <div class="col-sm-6">
@@ -570,14 +534,103 @@
                             @enderror
                         </div>
 
+                    </div>
+
+                    <div class="content-header mb-3 mt-3">
+                        <h6 class="mb-0">Экстренные контакты</h6>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-default-first-name">ФИО контактного лица <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <span id="basic-icon-default-first-name2"
+                                      class="input-group-text @error('emergency_contact_full_name') text-danger icon-border @enderror">
+                                    <i class="bx bx-user"></i>
+                                </span>
+                                <input type="text" id="basic-icon-default-first-name"
+                                       class="form-control @error('emergency_contact_full_name') is-invalid @enderror"
+                                       placeholder="ФИО контактного лица" aria-label="ФИО контактного лица"
+                                       name="emergency_contact_full_name"
+                                       value="{{ old('emergency_contact_full_name',$patient->emergency_contact_full_name) }}"
+                                       aria-describedby="basic-icon-default-first-name2" required/>
+                            </div>
+                            @error('emergency_contact_full_name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-default-last-name">Связь с пациентом (родственник,
+                                друг...) <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <span id="basic-icon-default-last-name2"
+                                      class="input-group-text @error('emergency_contact_relation') text-danger icon-border @enderror">
+                                    <i class="bx bx-user-circle"></i>
+                                </span>
+                                <input type="text" id="basic-icon-default-last-name"
+                                       class="form-control @error('emergency_contact_relation') is-invalid @enderror"
+                                       placeholder="Связь с пациентом (родственник, друг...)"
+                                       aria-label="Связь с пациентом (родственник, друг...)"
+                                       name="emergency_contact_relation"
+                                       value="{{ old('emergency_contact_relation',$patient->emergency_contact_relation) }}"
+                                       aria-describedby="basic-icon-default-last-name2"
+                                       required/>
+                            </div>
+                            @error('emergency_contact_relation')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-default-phone_emerge">Телефон <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <span id="basic-icon-default-phone2"
+                                      class="input-group-text @error('emergency_contact_phone') text-danger icon-border @enderror">
+                                    <i class="bx bx-phone"></i>
+                                </span>
+                                <input type="text" id="basic-icon-default-phone_emerge"
+                                       class="form-control phone @error('emergency_contact_phone') is-invalid @enderror"
+                                       name="emergency_contact_phone"
+                                       value="{{ old('emergency_contact_phone',$patient->emergency_contact_phone) }}"
+                                       placeholder="+ 998 (XX) XXX XX XX"
+                                       aria-label="+ 998 (XX) XXX XX XX" aria-describedby="basic-icon-default-phone2"
+                                       required/>
+                            </div>
+                            @error('emergency_contact_phone')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="basic-icon-default-address">Адрес</label>
+                            <div class="input-group input-group-merge">
+                                <span id="basic-icon-default-address2"
+                                      class="input-group-text @error('emergency_contact_address') text-danger icon-border @enderror">
+                                    <i class="bx bx-map"></i>
+                                </span>
+                                <input type="text" id="basic-icon-default-address"
+                                       class="form-control @error('emergency_contact_address') is-invalid @enderror"
+                                       placeholder="Адрес" aria-label="Адрес" name="emergency_contact_address"
+                                       value="{{ old('emergency_contact_address',$patient->emergency_contact_address) }}"
+                                       aria-describedby="basic-icon-default-address2"/>
+                            </div>
+                            @error('emergency_contact_address')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <div class="col-12 d-flex justify-content-between">
                             <button class="btn btn-primary btn-prev">
                                 <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                 <span class="d-sm-inline-block d-none">Назад</span>
                             </button>
-                            <button class="btn btn-primary btn-next"><span class="d-sm-inline-block d-none">Далее</span>
-                                <i
-                                    class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
+                            <button class="btn btn-primary btn-next">
+                                <span class="d-sm-inline-block d-none">Далее</span>
+                                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -660,107 +713,6 @@
                                        aria-describedby="basic-icon-default-insurance-date2"/>
                             </div>
                             @error('insurance_expiry_date')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev">
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                <span class="d-sm-inline-block d-none">Назад</span>
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                <span class="d-sm-inline-block d-none">Далее</span>
-                                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Экстренные контакты --}}
-                <div id="emergency-contacts" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">Экстренные контакты</h6>
-                    </div>
-                    <div class="row g-3">
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-first-name">ФИО контактного лица <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-default-first-name2"
-                                      class="input-group-text @error('emergency_contact_full_name') text-danger icon-border @enderror">
-                                    <i class="bx bx-user"></i>
-                                </span>
-                                <input type="text" id="basic-icon-default-first-name"
-                                       class="form-control @error('emergency_contact_full_name') is-invalid @enderror"
-                                       placeholder="ФИО контактного лица" aria-label="ФИО контактного лица"
-                                       name="emergency_contact_full_name"
-                                       value="{{ old('emergency_contact_full_name',$patient->emergency_contact_full_name) }}"
-                                       aria-describedby="basic-icon-default-first-name2" required/>
-                            </div>
-                            @error('emergency_contact_full_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-last-name">Связь с пациентом (родственник,
-                                друг...) <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-default-last-name2"
-                                      class="input-group-text @error('emergency_contact_relation') text-danger icon-border @enderror">
-                                    <i class="bx bx-user-circle"></i>
-                                </span>
-                                <input type="text" id="basic-icon-default-last-name"
-                                       class="form-control @error('emergency_contact_relation') is-invalid @enderror"
-                                       placeholder="Связь с пациентом (родственник, друг...)"
-                                       aria-label="Связь с пациентом (родственник, друг...)"
-                                       name="emergency_contact_relation"
-                                       value="{{ old('emergency_contact_relation',$patient->emergency_contact_relation) }}"
-                                       aria-describedby="basic-icon-default-last-name2"
-                                       required/>
-                            </div>
-                            @error('emergency_contact_relation')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-phone_emerge">Телефон <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-default-phone2"
-                                      class="input-group-text @error('emergency_contact_phone') text-danger icon-border @enderror">
-                                    <i class="bx bx-phone"></i>
-                                </span>
-                                <input type="text" id="basic-icon-default-phone_emerge"
-                                       class="form-control phone @error('emergency_contact_phone') is-invalid @enderror"
-                                       name="emergency_contact_phone"
-                                       value="{{ old('emergency_contact_phone',$patient->emergency_contact_phone) }}"
-                                       placeholder="+ 998 (XX) XXX XX XX"
-                                       aria-label="+ 998 (XX) XXX XX XX" aria-describedby="basic-icon-default-phone2"
-                                       required/>
-                            </div>
-                            @error('emergency_contact_phone')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-address">Адрес</label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-default-address2"
-                                      class="input-group-text @error('emergency_contact_address') text-danger icon-border @enderror">
-                                    <i class="bx bx-map"></i>
-                                </span>
-                                <input type="text" id="basic-icon-default-address"
-                                       class="form-control @error('emergency_contact_address') is-invalid @enderror"
-                                       placeholder="Адрес" aria-label="Адрес" name="emergency_contact_address"
-                                       value="{{ old('emergency_contact_address',$patient->emergency_contact_address) }}"
-                                       aria-describedby="basic-icon-default-address2"/>
-                            </div>
-                            @error('emergency_contact_address')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -948,7 +900,8 @@
                                         <td>{{ $map->department->name }}</td>
                                         <td>{{ $map->doctor->name }}</td>
                                         <td>
-                                            <a class="btn btn-sm btn-primary" href="{{ route('map.survey', $map->id) }}"><i
+                                            <a class="btn btn-sm btn-primary"
+                                               href="{{ route('map.survey', $map->id) }}"><i
                                                     class="bx bx-show me-1"></i> Опросник</a>
                                         </td>
                                         <td>
@@ -1030,27 +983,21 @@
 @endsection
 
 @section('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script>
         $(document).ready(function () {
-            const phoneInput = $('.phone');
+            $('#copy_address').on('click', function () {
+                // Копируем значения из обычных inputов
+                $('#basic-icon-default-street_res').val($('#basic-icon-default-street').val());
+                $('#basic-icon-default-house_res').val($('#basic-icon-default-house').val());
+                $('#basic-icon-default-apartment_res').val($('#basic-icon-default-apartment').val());
+                $('#basic-icon-default-postcode_res').val($('#basic-icon-default-postcode').val());
 
-            phoneInput.on('focus', function () {
-                if (!$(this).val().startsWith('+ 998')) {
-                    $(this).val('+ 998 ');
-                }
-            });
+                // Копируем значения из select'ов с Select2
+                const regionVal = $('#basic-icon-default-region').val();
+                const cityVal = $('#basic-icon-default-city').val();
 
-            phoneInput.mask('+ 998 (00) 000 00 00', {
-                placeholder: '+ 998 (__) ___ __ __',
-                clearIfNotMatch: true
-            });
-
-            phoneInput.on('blur', function () {
-                if ($(this).val() === '+ 998 ') {
-                    $(this).val('');
-                }
+                $('#basic-icon-default-region2').val(regionVal).trigger('change');
+                $('#basic-icon-default-city2').val(cityVal).trigger('change');
             });
         })
     </script>
