@@ -71,7 +71,7 @@
                 <div data-i18n="Услуги">Услуги</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {{Request::is('dashboard/services') || Request::is('dashboard/services/create') || Request::is('dashboard/services/edit')? 'active' : '' }}">
+                <li class="menu-item {{Request::is('dashboard/services') || Request::is('dashboard/services/create') || Request::is('dashboard/services/*/edit')? 'active' : '' }}">
                     <a href="{{route('services.index')}}" class="menu-link">
                         <div data-i18n="Список">Список</div>
                     </a>

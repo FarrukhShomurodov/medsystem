@@ -44,7 +44,7 @@ class PatientServiceController
 
     public function create(): View
     {
-        $services = Service::query()->get();
+        $services = Service::query()->where('is_active', true)->get();
         $patients = Patient::query()->get();
         $doctors = Staff::whereHas('professionalData', function ($query) {
             $query->where('position_id', 1);
@@ -69,7 +69,7 @@ class PatientServiceController
 
     public function edit(PatientService $service): View
     {
-        $maintanances = Service::query()->get();
+        $maintanances = Service::query()->where('is_active', true)->get();
         $patients = Patient::query()->with('examinationMaps')->get();
         $doctors = Staff::whereHas('professionalData', function ($query) {
             $query->where('position_id', 1);

@@ -33,7 +33,7 @@ class DepartmentController
     public function create(): View
     {
         $types = DepartmentType::query()->get();
-        $services = Service::query()->get();
+        $services = Service::query()->where('is_active', true)->get();
         $equipments = Equipment::query()->where('status', 'работает')->get();
         $departments = Department::query()->get();
 
@@ -51,7 +51,7 @@ class DepartmentController
     public function edit(Department $department): View
     {
         $types = DepartmentType::query()->get();
-        $services = Service::query()->get();
+        $services = Service::query()->where('is_active', true)->get();
         $equipments = Equipment::query()->where('status', 'работает')->get();
         $departments = Department::query()->get();
 

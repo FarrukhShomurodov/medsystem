@@ -12,10 +12,12 @@ class Service extends Model
         'description',
         'code',
         'price',
+        'price_vat',
         'discount',
         'currency',
-        'duration',
+//        'duration',
         'service_category_id',
+        'is_active',
     ];
 
     public function category(): BelongsTo

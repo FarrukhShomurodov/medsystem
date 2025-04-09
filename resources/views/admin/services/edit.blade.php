@@ -25,11 +25,21 @@
     <div class="card shadow-sm mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Редактировать</h5>
+
+            <label class="switch" style="margin-right: 40px">
+                <input type="checkbox" class="switch-input" name="is_active" @if($service->is_active) checked @endif>
+                <span class="switch-toggle-slider">
+                    <span class="switch-on"></span>
+                    <span class="switch-off"></span>
+                </span>
+            </label>
         </div>
         <div class="card-body">
             <form action="{{ route('services.update', $service->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('put')
+
+                <input type="number" class="is_active" name="is_active" hidden="">
 
                 <div class="row">
                     <div class="col-md-4 mb-3">
@@ -125,21 +135,40 @@
                         @enderror
                     </div>
 
+{{--                    <div class="col-md-4 mb-3">--}}
+{{--                        <label class="form-label" for="basic-icon-default-duration">Длительность оказания--}}
+{{--                            услуги </label>--}}
+{{--                        <div class="input-group input-group-merge">--}}
+{{--                            <span id="basic-icon-default-middle-name2"--}}
+{{--                                  class="input-group-text @error('duration') text-danger icon-border @enderror">--}}
+{{--                                <i class="bx bx-time"></i>--}}
+{{--                            </span>--}}
+{{--                            <input type="text" id="basic-icon-default-duration"--}}
+{{--                                   class="form-control @error('duration') is-invalid @enderror"--}}
+{{--                                   placeholder="Длительность оказания услуги" aria-label="duration" name="duration"--}}
+{{--                                   value="{{ old('duration', $service->duration) }}"--}}
+{{--                                   aria-describedby="basic-icon-default-middle-name2"/>--}}
+{{--                        </div>--}}
+{{--                        @error('duration')--}}
+{{--                        <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                        @enderror--}}
+{{--                    </div>--}}
+
                     <div class="col-md-4 mb-3">
-                        <label class="form-label" for="basic-icon-default-duration">Длительность оказания
-                            услуги </label>
+                        <label class="form-label" for="basic-icon-default-price_vat">12% НДС <span
+                                class="text-danger">*</span></label>
                         <div class="input-group input-group-merge">
                             <span id="basic-icon-default-middle-name2"
-                                  class="input-group-text @error('duration') text-danger icon-border @enderror">
-                                <i class="bx bx-time"></i>
+                                  class="input-group-text @error('price_vat') text-danger icon-border @enderror">
+                                <i class="bx bx-dollar"></i>
                             </span>
-                            <input type="text" id="basic-icon-default-duration"
-                                   class="form-control @error('duration') is-invalid @enderror"
-                                   placeholder="Длительность оказания услуги" aria-label="duration" name="duration"
-                                   value="{{ old('duration', $service->duration) }}"
-                                   aria-describedby="basic-icon-default-middle-name2"/>
+                            <input type="number" id="basic-icon-default-price_vat"
+                                   class="form-control @error('price_vat') is-invalid @enderror"
+                                   placeholder="12% НДС" aria-label="price_vat" name="price_vat"
+                                   required
+                                   value="{{ old('price_vat', round($service->price_vat)) }}" aria-describedby="basic-icon-default-middle-name2"/>
                         </div>
-                        @error('duration')
+                        @error('price')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -187,4 +216,21 @@
             </form>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        $(document).ready(function () {
+            @if($service->is_active)
+                $('.is_active').val(1);
+            @else
+                $('.is_active').val(0);
+            @endif
+
+            $('.switch-input').on('change', function () {
+                let isActive = $(this).is(':checked') ? 1 : 0;
+                $('.is_active').val(isActive);
+            });
+        });
+    </script>
 @endsection

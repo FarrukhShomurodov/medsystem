@@ -38,7 +38,7 @@ class StaffController
         $positions = StaffPosition::query()->get();
         $specialties = Specialty::query()->get();
         $departments = Department::query()->get();
-        $services = Service::query()->get();
+        $services = Service::query()->where('is_active', true)->get();
 
         return view('admin.staffs.create', compact('specialties', 'positions', 'departments', 'services'));
     }
@@ -72,7 +72,7 @@ class StaffController
         $positions = StaffPosition::query()->get();
         $specialties = Specialty::query()->get();
         $departments = Department::query()->get();
-        $services = Service::query()->get();
+        $services = Service::query()->where('is_active', true)->get();
 
         return view('admin.staffs.edit', compact('staff', 'specialties', 'positions', 'departments', 'services'));
     }

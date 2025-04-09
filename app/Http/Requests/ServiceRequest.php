@@ -17,10 +17,12 @@ class ServiceRequest extends FormRequest
             'description' => 'nullable|string|max:255',
             'code' => 'nullable|string|max:255',
             'price' => 'required|int',
+            'price_vat' => 'required|int',
             'discount' => 'nullable|int',
             'currency' => 'nullable|string|max:255',
-            'duration' => 'nullable|string|max:255',
+//            'duration' => 'nullable|string|max:255',
             'service_category_id' => 'required',
+            'is_active' => 'required|bool',
         ];
     }
 }

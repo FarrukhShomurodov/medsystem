@@ -13,10 +13,12 @@ return new class extends Migration {
             $table->string('description')->nullable();
             $table->string('code')->nullable();
             $table->decimal('price');
+            $table->decimal('price_vat');
             $table->integer('discount')->nullable();
             $table->string('currency')->nullable();
-            $table->string('duration')->nullable();
+//            $table->string('duration')->nullable();
             $table->foreignId('service_category_id')->constrained()->cascadeOnDelete();
+            $table->boolean('is_active')->default(1);
             $table->timestamps();
         });
     }

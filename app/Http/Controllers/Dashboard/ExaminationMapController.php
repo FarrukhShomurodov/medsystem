@@ -110,7 +110,7 @@ class ExaminationMapController
         $procedures = Procedure::query()->get();
         $medications = Medication::query()->get();
         $staffs = Staff::query()->get();
-        $services = Service::query()->get();
+        $services = Service::query()->where('is_active', true)->get();
 
         return view('admin.maps.create', compact('doctors', 'institutions', 'patient', 'laboratories', 'types', 'equipments', 'methods', 'procedures', 'medications', 'staffs',
             'services'));
@@ -140,7 +140,7 @@ class ExaminationMapController
         $procedures = Procedure::query()->get();
         $medications = Medication::query()->get();
         $staffs = Staff::query()->get();
-        $services = Service::query()->get();
+        $services = Service::query()->where('is_active', true)->get();
 
         return view('admin.maps.edit', compact('map', 'doctors', 'institutions', 'patients', 'laboratories', 'types', 'equipments', 'methods', 'procedures', 'medications', 'staffs',
             'services'));
