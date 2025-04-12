@@ -61,7 +61,7 @@
         </div>
         <div class="card-body">
             <p><strong>Номер полиса:</strong> {{ $patientDetails['insurance_info']['policy_number'] }}</p>
-            <p><strong>Компания:</strong> {{ $patientDetafils['insurance_info']['company'] }}</p>
+            <p><strong>Компания:</strong> {{ $patientDetails['insurance_info']['company'] }}</p>
             <p><strong>Тип:</strong> {{ $patientDetails['insurance_info']['type'] }}</p>
             <p><strong>Срок действия:</strong> {{ $patientDetails['insurance_info']['expiry_date'] }}</p>
         </div>
@@ -94,8 +94,13 @@
         <div class="card-datatable table-responsive col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="card-header">История обращение </h5>
-                <a href="{{ route('patient.map.create', $patientDetails['patient_id']) }}" class="btn btn-primary "
-                   style="margin-right: 22px;">Создать</a>
+
+                @if($patientDetails['history']['map_is_active'])
+                    <a href="{{ route('patient.map.create', $patientDetails['patient_id']) }}" class="btn btn-primary "
+                       style="margin-right: 22px;">Создать</a>
+                @endif
+
+
             </div>
             <table class="datatables-users table border-top">
                 <thead>
@@ -104,6 +109,7 @@
                     <th>Даты предыдущих посещений</th>
                     <th>Отделение</th>
                     <th>Врач</th>
+                    <th></th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -122,19 +128,30 @@
                         </td>
 
                         <td>
+                            @if($map->is_active)
+                                <p class="badge bg-label-success">Активна</p>
+                            @else
+                                <p class="badge bg-label-warning">Не активна</p>
+                            @endif
+                        </td>
+
+                        <td>
                             <a class="btn btn-sm btn-icon"
                                href="{{ route('maps.show', $map->id) }}"><i
                                     class="bx bx-show"></i></a>
-                            <a class="btn btn-sm btn-icon"
-                               href="{{ route('maps.edit', $map->id) }}"><i
-                                    class="bx bx-edit"></i></a>
-                            <form action="{{ route('maps.destroy', $map->id) }}" method="POST"
-                                  style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
-                                </button>
-                            </form>
+
+                            @if($map->is_active)
+                                <a class="btn btn-sm btn-icon"
+                                   href="{{ route('maps.edit', $map->id) }}"><i
+                                        class="bx bx-edit"></i></a>
+                                <form action="{{ route('maps.destroy', $map->id) }}" method="POST"
+                                      style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
+                                    </button>
+                                </form>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

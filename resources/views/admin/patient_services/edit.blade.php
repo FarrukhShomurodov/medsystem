@@ -7,7 +7,7 @@
 @section('content')
     <h6 class="py-3 breadcrumb-wrapper mb-4">
         <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('patient.services.index.index') }}">Услуги </a> /</span>Редактировать
+                                             href="{{ route('patient.services.index') }}">Услуги </a> /</span>Редактировать
     </h6>
 
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
@@ -113,7 +113,7 @@
                             <select id="service_id" name="service_id"
                                     class="form-control select2 @error('service_id') is-invalid @enderror" required>
                                 <option value="" disabled selected>Выберите услугу</option>
-                                @foreach($maintanances as $maintanance)
+                                @foreach($maintenances as $maintanance)
                                     <option
                                         value="{{ $maintanance->id }}" @selected(old('service_id', $service->service_id) == $maintanance->id)>
                                         {{ $maintanance->name }}
@@ -124,42 +124,8 @@
                             <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
-                        <!-- Doctor -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="doctor_id">Лечащий врач</label>
-                            <select id="doctor_id" name="doctor_id"
-                                    class="form-control select2 @error('doctor_id') is-invalid @enderror">
-                                <option value="" selected>Не выбрано</option>
-                                @foreach($doctors as $doctor)
-                                    <option
-                                        value="{{ $doctor->id }}" @selected(old('doctor_id', $service->doctor_id) == $doctor->id)>
-                                        {{ $doctor->first_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('doctor_id')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <!-- Institution -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="institution_id">Отделение</label>
-                            <select id="institution_id" name="institution_id"
-                                    class="form-control select2 @error('institution_id') is-invalid @enderror">
-                                <option value="" selected>Не выбрано</option>
-                                @foreach($institutions as $institution)
-                                    <option
-                                        value="{{ $institution->id }}" @selected(old('institution_id', $service->institution_id) == $institution->id)>
-                                        {{ $institution->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('institution_id')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
                         <!-- Place -->
-                        <div class="col-sm-4">
+                        <div class="col-sm-12">
                             <label class="form-label" for="place">Место оказания <span
                                     class="text-danger">*</span></label>
                             <select id="place" name="place"
@@ -267,7 +233,7 @@
                                 @foreach($staffs as $staff)
                                     <option
                                         value="{{ $staff->id }}" @selected(in_array($staff->id, old('staffs', $service->staffs->pluck('id')->toArray())))>
-                                        {{ $staff->first_name }}
+                                        {{ $staff->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -472,87 +438,182 @@
                     </div>
                     <div class="row g-3">
                         <!-- Payment Status -->
-                        <div class="col-sm-6">
-                            <label class="form-label" for="payment_status">Статус оплаты</label>
-                            <select id="payment_status" name="payment[status]"
-                                    class="form-control select2 @error('payment.status') is-invalid @enderror">
-                                <option value="" selected>Не выбрано</option>
-                                @foreach(\App\Models\PatientService::PAYMENT_STATUS as $status)
-                                    <option
-                                        value="{{ $status }}" @selected(old('payment.status', $service->payment['status']) == $status)>
-                                        {{ $status }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('payment.status')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
+                        @if(isset($service->payment['status']))
+                            <div class="col-sm-6">
+                                <label class="form-label" for="payment_status">Статус оплаты</label>
+                                <select id="payment_status" name="payment[status]"
+                                        class="form-control select2 @error('payment.status') is-invalid @enderror">
+                                    <option value="" selected>Не выбрано</option>
+                                    @foreach(\App\Models\PatientService::PAYMENT_STATUS as $status)
+                                        <option
+                                            value="{{ $status }}" @selected(old('payment.status', $service->payment['status']) == $status)>
+                                            {{ $status }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('payment.status')
+                                <div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                        @else
+                            <div class="col-sm-6">
+                                <label class="form-label" for="payment_status">Статус оплаты</label>
+                                <select id="payment_status" name="payment[status]"
+                                        class="form-control select2 @error('payment.status') is-invalid @enderror">
+                                    <option value="" selected>Не выбрано</option>
+                                    @foreach(\App\Models\PatientService::PAYMENT_STATUS as $status)
+                                        <option
+                                            value="{{ $status }}" @selected(old('payment.status') == $status)>
+                                            {{ $status }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('payment.status')
+                                <div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                        @endif
 
-                        <!-- Payment Method -->
-                        <div class="col-sm-6">
-                            <label class="form-label" for="payment_method">Метод оплаты</label>
-                            <select id="payment_method" name="payment[method]"
-                                    class="form-control select2 @error('payment.method') is-invalid @enderror">
-                                <option value="" selected>Не выбрано</option>
-                                @foreach(\App\Models\PatientService::PAYMENT_METHOD as $method)
-                                    <option
-                                        value="{{ $method }}" @selected(old('payment.method', $service->payment['method']) == $method)>
-                                        {{ $method }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('payment.method')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
+                        @if(isset($service->payment['method']))
+                            <!-- Payment Method -->
+                            <div class="col-sm-6">
+                                <label class="form-label" for="payment_method">Метод оплаты</label>
+                                <select id="payment_method" name="payment[method]"
+                                        class="form-control select2 @error('payment.method') is-invalid @enderror">
+                                    <option value="" selected>Не выбрано</option>
+                                    @foreach(\App\Models\PatientService::PAYMENT_METHOD as $method)
+                                        <option
+                                            value="{{ $method }}" @selected(old('payment.method', $service->payment['method']) == $method)>
+                                            {{ $method }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('payment.method')
+                                <div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                        @else
+                            <!-- Payment Method -->
+                            <div class="col-sm-6">
+                                <label class="form-label" for="payment_method">Метод оплаты</label>
+                                <select id="payment_method" name="payment[method]"
+                                        class="form-control select2 @error('payment.method') is-invalid @enderror">
+                                    <option value="" selected>Не выбрано</option>
+                                    @foreach(\App\Models\PatientService::PAYMENT_METHOD as $method)
+                                        <option
+                                            value="{{ $method }}" @selected(old('payment.method') == $method)>
+                                            {{ $method }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('payment.method')
+                                <div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                        @endif
 
-                        <!-- Insurance -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="insurance_company">Страховая компания</label>
-                            <div class="input-group input-group-merge">
+                        @if(isset($service->insurance_policy['company_name']))
+                            <!-- Insurance -->
+                            <div class="col-sm-4">
+                                <label class="form-label" for="insurance_company">Страховая компания</label>
+                                <div class="input-group input-group-merge">
                                 <span
                                     class="input-group-text @error('insurance_policy.company_name') text-danger icon-border @enderror">
                                     <i class="bx bx-building"></i>
                                 </span>
-                                <input type="text" id="insurance_company" name="insurance_policy[company_name]"
-                                       class="form-control @error('insurance_policy.company_name') is-invalid @enderror"
-                                       value="{{ old('insurance_policy.company_name', $service->insurance_policy['company_name']) }}">
+                                    <input type="text" id="insurance_company" name="insurance_policy[company_name]"
+                                           class="form-control @error('insurance_policy.company_name') is-invalid @enderror"
+                                           value="{{ old('insurance_policy.company_name', $service->insurance_policy['company_name']) }}">
+                                </div>
+                                @error('insurance_policy.company_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
-                            @error('insurance_policy.company_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        @else
+                            <!-- Insurance -->
+                            <div class="col-sm-4">
+                                <label class="form-label" for="insurance_company">Страховая компания</label>
+                                <div class="input-group input-group-merge">
+                                <span
+                                    class="input-group-text @error('insurance_policy.company_name') text-danger icon-border @enderror">
+                                    <i class="bx bx-building"></i>
+                                </span>
+                                    <input type="text" id="insurance_company" name="insurance_policy[company_name]"
+                                           class="form-control @error('insurance_policy.company_name') is-invalid @enderror"
+                                           value="{{ old('insurance_policy.company_name') }}">
+                                </div>
+                                @error('insurance_policy.company_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
 
-                        <div class="col-sm-4">
-                            <label class="form-label" for="policy_number">Номер полиса</label>
-                            <div class="input-group input-group-merge">
+                        @if(isset($service->insurance_policy['insurance_policy_number']))
+                            <div class="col-sm-4">
+                                <label class="form-label" for="policy_number">Номер полиса</label>
+                                <div class="input-group input-group-merge">
                                 <span
                                     class="input-group-text @error('insurance_policy.insurance_policy_number') text-danger icon-border @enderror">
                                     <i class="bx bx-id-card"></i>
                                 </span>
-                                <input type="text" id="policy_number" name="insurance_policy[insurance_policy_number]"
-                                       class="form-control @error('insurance_policy.insurance_policy_number') is-invalid @enderror"
-                                       value="{{ old('insurance_policy.insurance_policy_number', $service->insurance_policy['insurance_policy_number']) }}">
+                                    <input type="text" id="policy_number"
+                                           name="insurance_policy[insurance_policy_number]"
+                                           class="form-control @error('insurance_policy.insurance_policy_number') is-invalid @enderror"
+                                           value="{{ old('insurance_policy.insurance_policy_number', $service->insurance_policy['insurance_policy_number']) }}">
+                                </div>
+                                @error('insurance_policy.insurance_policy_number')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
-                            @error('insurance_policy.insurance_policy_number')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        @else
+                            <div class="col-sm-4">
+                                <label class="form-label" for="policy_number">Номер полиса</label>
+                                <div class="input-group input-group-merge">
+                                <span
+                                    class="input-group-text @error('insurance_policy.insurance_policy_number') text-danger icon-border @enderror">
+                                    <i class="bx bx-id-card"></i>
+                                </span>
+                                    <input type="text" id="policy_number"
+                                           name="insurance_policy[insurance_policy_number]"
+                                           class="form-control @error('insurance_policy.insurance_policy_number') is-invalid @enderror"
+                                           value="{{ old('insurance_policy.insurance_policy_number') }}">
+                                </div>
+                                @error('insurance_policy.insurance_policy_number')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
 
-                        <div class="col-sm-4">
-                            <label class="form-label" for="coverage">Процент покрытия</label>
-                            <div class="input-group input-group-merge">
+                        @if(isset($service->insurance_policy['insurance_policy_number']))
+                            <div class="col-sm-4">
+                                <label class="form-label" for="coverage">Процент покрытия</label>
+                                <div class="input-group input-group-merge">
                                 <span
                                     class="input-group-text @error('insurance_policy.percentage_of_coverage') text-danger icon-border @enderror">
                                     <i class="bx bx-percent"></i>
                                 </span>
-                                <input type="number" id="coverage" name="insurance_policy[percentage_of_coverage]"
-                                       class="form-control @error('insurance_policy.percentage_of_coverage') is-invalid @enderror"
-                                       value="{{ old('insurance_policy.percentage_of_coverage', $service->insurance_policy['percentage_of_coverage']) }}">
+                                    <input type="number" id="coverage" name="insurance_policy[percentage_of_coverage]"
+                                           class="form-control @error('insurance_policy.percentage_of_coverage') is-invalid @enderror"
+                                           value="{{ old('insurance_policy.percentage_of_coverage', $service->insurance_policy['percentage_of_coverage']) }}">
+                                </div>
+                                @error('insurance_policy.percentage_of_coverage')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
-                            @error('insurance_policy.percentage_of_coverage')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        @else
+                            <div class="col-sm-4">
+                                <label class="form-label" for="coverage">Процент покрытия</label>
+                                <div class="input-group input-group-merge">
+                                <span
+                                    class="input-group-text @error('insurance_policy.percentage_of_coverage') text-danger icon-border @enderror">
+                                    <i class="bx bx-percent"></i>
+                                </span>
+                                    <input type="number" id="coverage" name="insurance_policy[percentage_of_coverage]"
+                                           class="form-control @error('insurance_policy.percentage_of_coverage') is-invalid @enderror"
+                                           value="{{ old('insurance_policy.percentage_of_coverage') }}">
+                                </div>
+                                @error('insurance_policy.percentage_of_coverage')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
+
 
                         <!-- Navigation -->
                         <div class="col-12 d-flex justify-content-between">

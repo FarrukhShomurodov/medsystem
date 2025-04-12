@@ -17,8 +17,6 @@ class PatientService extends Model
         'service_id',
         'patient_id',
         'examination_map_id',
-        'staff_id',
-        'department_id',
         'service_date',
         'service_time',
         'place',
@@ -107,7 +105,7 @@ class PatientService extends Model
 
     public function staffs(): belongsToMany
     {
-        return $this->belongsToMany(ServiceStaff::class, 'patient_service_to_staffs_assignment', 'patient_service_id', 'service_staff_id');
+        return $this->belongsToMany(Staff::class, 'patient_service_to_staffs_assignment', 'patient_service_id', 'service_staff_id');
     }
 
     public function procedures(): BelongsToMany

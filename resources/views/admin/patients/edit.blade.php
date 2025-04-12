@@ -46,13 +46,6 @@
                 </button>
             </div>
             <div class="line"></div>
-            <div class="step" data-target="#emergency-contacts">
-                <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">4</span>
-                    <span class="bs-stepper-label">Экстренные контакты</span>
-                </button>
-            </div>
-            <div class="line"></div>
             <div class="step" data-target="#medical-info">
                 <button type="button" class="step-trigger">
                     <span class="bs-stepper-circle">5</span>
@@ -66,13 +59,6 @@
                     <span class="bs-stepper-label">История обращений</span>
                 </button>
             </div>
-            {{--            <div class="line"></div>--}}
-            {{--            <div class="step" data-target="#other">--}}
-            {{--                <button type="button" class="step-trigger">--}}
-            {{--                    <span class="bs-stepper-circle">7</span>--}}
-            {{--                    <span class="bs-stepper-label">Прочее</span>--}}
-            {{--                </button>--}}
-            {{--            </div>--}}
         </div>
 
         <div class="bs-stepper-content">

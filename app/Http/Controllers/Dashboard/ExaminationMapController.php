@@ -13,8 +13,8 @@ use App\Models\Medication;
 use App\Models\Patient;
 use App\Models\Procedure;
 use App\Models\Service;
-use App\Models\ServiceStaff;
 use App\Models\Staff;
+use App\Models\Survey;
 use App\Services\ExaminationService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -86,6 +86,7 @@ class ExaminationMapController
                         'results' => $analyze->results,
                     ];
                 }),
+                'services' => $map->services,
             ],
             'created_at' => $map->created_at->format('d.m.Y'),
         ];
@@ -140,15 +141,17 @@ class ExaminationMapController
         $procedures = Procedure::query()->get();
         $medications = Medication::query()->get();
         $staffs = Staff::query()->get();
+        $surveys = Survey::query()->get();
         $services = Service::query()->where('is_active', true)->get();
 
-        return view('admin.maps.edit', compact('map', 'doctors', 'institutions', 'patients', 'laboratories', 'types', 'equipments', 'methods', 'procedures', 'medications', 'staffs',
+        return view('admin.maps.edit', compact('map', 'doctors', 'surveys', 'institutions', 'patients', 'laboratories', 'types', 'equipments', 'methods', 'procedures', 'medications', 'staffs',
             'services'));
     }
 
     public function update(ExaminationMapRequest $request, ExaminationMap $map): RedirectResponse
     {
         $validated = $request->validated();
+
 
         $requiredFields = ['laboratory_id', 'types', 'methods', 'analysis_time', 'equipments'];
 

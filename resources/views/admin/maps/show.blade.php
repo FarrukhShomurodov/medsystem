@@ -6,8 +6,7 @@
 
 @section('content')
     <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('maps.index') }}">Карты</a> /</span> {{ $mapDetails['patient']['full_name'] }}
+        <span class="text-muted fw-light">/</span> {{ $mapDetails['patient']['full_name'] }}
     </h6>
 
     <div class="card">
@@ -91,11 +90,59 @@
                             </tbody>
                         </table>
                     @else
-                        Нет данных
+                        <div class="card-body">
+                            <p>Нет данных</p>
+                        </div>
                     @endif
                 @endforeach
             @else
-                <p>Данные обследований отсутствуют.</p>
+                <div class="card-body">
+                    <p>Данные обследований отсутствуют.</p>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-datatable table-responsive col-12">
+            <div class="card-header">
+                <h5>Услуги</h5>
+            </div>
+            @if($mapDetails['examinations']['services']->isNotEmpty())
+                <table class="datatables-users table border-top">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Услуга</th>
+                        <th>Дата услуги</th>
+                        <th>Время услуги</th>
+                        <th>Место оказания</th>
+                        <th>Результаты</th>
+                        <th>Статус</th>
+                        <th>Статус оплаты</th>
+                        <th>Страховая компания</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($mapDetails['examinations']['services'] as $service)
+                        <tr>
+                            <td>{{ $service->id }}</td>
+                            <td>{{ $service->service->name }}</td>
+                            <td>{{ $service->service_date }}</td>
+                            <td>{{ $service->service_time }}</td>
+                            <td>{{ $service->place }}</td>
+                            <td>{{ $service->result }}</td>
+                            <td> {!! $service->getStatusBadge() !!} </td>
+                            <td>{{ $service->payment }}</td>
+                            <td>{{ $service->insurance_policy }}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            @else
+                <div class="card-body">
+                    <p>Данные услуги отсутствуют.</p>
+                </div>
             @endif
         </div>
     </div>

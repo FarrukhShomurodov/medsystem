@@ -69,7 +69,7 @@ class PatientServiceController
 
     public function edit(PatientService $service): View
     {
-        $maintanances = Service::query()->where('is_active', true)->get();
+        $maintenances = Service::query()->where('is_active', true)->get();
         $patients = Patient::query()->with('examinationMaps')->get();
         $doctors = Staff::whereHas('professionalData', function ($query) {
             $query->where('position_id', 1);
@@ -83,7 +83,7 @@ class PatientServiceController
         $procedures = Procedure::query()->get();
         $medications = Medication::query()->get();
 
-        return view('admin.patient_services.edit', compact('maintanances', 'patients', 'doctors', 'institutions', 'methods', 'equipments', 'staffs', 'service', 'maps', 'procedures', 'medications'));
+        return view('admin.patient_services.edit', compact('maintenances', 'patients', 'doctors', 'institutions', 'methods', 'equipments', 'staffs', 'service', 'maps', 'procedures', 'medications'));
     }
 
     public function update(PatientServiceRequest $request, PatientService $service): RedirectResponse

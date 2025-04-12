@@ -32,14 +32,39 @@ class ExaminationMapRequest extends FormRequest
 
             // analyze
             'laboratory_id' => 'nullable',
-            'types' => 'nullable|array',
-            'methods' => 'nullable|array',
-            'analysis_time' => 'nullable',
-            'medical_staff' => ['nullable', Rule::in(Analyze::MEDICAL_STAFF)],
-            'equipments' => 'nullable|array',
         ];
 
+        // analyze
+        if ($this->laboratory_id) {
+            $rules = array_merge($rules, [
+                'types' => 'required|array',
+                'methods' => 'required|array',
+                'analysis_time' => 'required',
+                'medical_staff' => ['required', Rule::in(Analyze::MEDICAL_STAFF)],
+                'equipments' => 'required|array',
+            ]);
+        } else {
+            $rules = array_merge($rules, [
+                'types' => 'nullable|array',
+                'methods' => 'nullable|array',
+                'analysis_time' => 'nullable',
+                'medical_staff' => ['nullable', Rule::in(Analyze::MEDICAL_STAFF)],
+                'equipments' => 'nullable|array',
+            ]);
+        }
 
+        // surveys
+        if ($this->survey_id) {
+            $rules = array_merge($rules, [
+                'survey_id' => 'required|int|exists:surveys,id',
+                'answers' => 'required|array',
+            ]);
+        } else {
+            $rules = array_merge($rules, [
+                'survey_id' => 'nullable|int|exists:surveys,id',
+                'answers' => 'nullable|array',
+            ]);
+        }
 
         $rules = array_merge($rules, [
             'service_id' => 'nullable|exists:services,id',

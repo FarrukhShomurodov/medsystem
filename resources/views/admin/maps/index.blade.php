@@ -56,23 +56,26 @@
                         <td>{{ $map->department->name }}</td>
 
                         <td>
-                            <a class="btn btn-sm btn-primary" href="{{ route('map.survey', $map->id) }}"><i class="bx bx-show me-1"></i> Опросник</a>
+                            <a class="btn btn-sm btn-primary" href="{{ route('map.survey', $map->id) }}"><i
+                                    class="bx bx-show me-1"></i> Опросник</a>
                         </td>
                         <td>
                             <div class="d-inline-block text-nowrap">
                                 <button class="btn btn-sm btn-icon"
                                         onclick="location.href='{{ route('maps.show', $map->id) }}'"><i
                                         class="bx bx-show"></i></button>
-                                <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('maps.edit', $map->id) }}'"><i
-                                        class="bx bx-edit"></i></button>
-                                <form action="{{ route('maps.destroy', $map->id) }}" method="POST"
-                                      style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
-                                    </button>
-                                </form>
+                                @if($map->is_active)
+                                    <button class="btn btn-sm btn-icon"
+                                            onclick="location.href='{{ route('maps.edit', $map->id) }}'"><i
+                                            class="bx bx-edit"></i></button>
+                                    <form action="{{ route('maps.destroy', $map->id) }}" method="POST"
+                                          style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </td>
                     </tr>

@@ -60,7 +60,7 @@
         </li>
 
         {{-- Услуги --}}
-        <li class="menu-item {{ Request::is('dashboard/services*') ||  Request::is('dashboard/services/categories*')
+        <li class="menu-item {{ Request::is('dashboard/services/list*') ||  Request::is('dashboard/services/categories*')
             || Request::is('dashboard/services/procedures*')
             || Request::is('dashboard/services/methods*') || Request::is('dashboard/services/equipments*')
             || Request::is('dashboard/services/staff-specialties*') || Request::is('dashboard/services/staffs*')
@@ -71,7 +71,7 @@
                 <div data-i18n="Услуги">Услуги</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {{Request::is('dashboard/services') || Request::is('dashboard/services/create') || Request::is('dashboard/services/*/edit')? 'active' : '' }}">
+                <li class="menu-item {{Request::is('dashboard/services/list*') ? 'active' : '' }}">
                     <a href="{{route('services.index')}}" class="menu-link">
                         <div data-i18n="Список">Список</div>
                     </a>
@@ -209,7 +209,7 @@
                 <div data-i18n="Анализы">Анализы</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {{ Request::is('dashboard/analyzes*') ? 'active' : '' }}">
+                <li class="menu-item {{ Request::is('dashboard/analyzes*') || Request::is('dashboard/analyze-result*') ? 'active' : '' }}">
                     <a href="{{route('analyzes.index')}}" class="menu-link">
                         <div data-i18n="Список">Список</div>
                     </a>

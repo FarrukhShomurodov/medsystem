@@ -46,7 +46,7 @@ class AnalyzeController
         $equipments = Equipment::query()->where('status', 'работает')->get();
         $methods = AnalyzeMethod::query()->get();
         $patients = Patient::query()->get();
-        $maps = ExaminationMap::query()->get();
+        $maps = ExaminationMap::query()->where('is_active', 1)->get();
 
         return view('admin.analyzes.create', compact('doctors', 'types', 'patients', 'laboratories', 'equipments', 'maps', 'methods'));
     }

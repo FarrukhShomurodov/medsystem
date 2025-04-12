@@ -294,7 +294,8 @@
                     <div class="row g-3">
                         <!-- total_beds -->
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-total_beds">Количество коек </label>
+                            <label class="form-label" for="basic-icon-default-total_beds">Количество коек <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-total_beds"
                                   class="input-group-text @error('total_beds') text-danger icon-border @enderror"><i
@@ -314,7 +315,8 @@
 
                         <!-- occupied_beds -->
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-occupied_beds">Занятые койки </label>
+                            <label class="form-label" for="basic-icon-default-occupied_beds">Занятые койки <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-occupied_beds"
                                   class="input-group-text @error('occupied_beds') text-danger icon-border @enderror"><i
@@ -372,7 +374,8 @@
                     <div class="row g-3">
                         <!-- license_number -->
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-license_number">Номер лицензии </label>
+                            <label class="form-label" for="basic-icon-default-license_number">Номер лицензии <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-license_number"
                                   class="input-group-text @error('license_number') text-danger icon-border @enderror"><i

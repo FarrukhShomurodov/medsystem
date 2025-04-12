@@ -17,8 +17,6 @@ class PatientServiceRequest extends FormRequest
             'service_id' => 'required',
             'patient_id' => 'required|int|exists:patients,id',
             'examination_map_id' => 'required|int|exists:examination_maps,id',
-            'staff_id' => 'nullable|int|exists:staff,id',
-            'department_id' => 'nullable|int|exists:departments,id',
             'service_date' => 'required|date',
             'service_time' => 'nullable|date_format:H:i',
             'place' => ['required', Rule::in(PatientService::PLACE)],
@@ -38,7 +36,7 @@ class PatientServiceRequest extends FormRequest
             'staffs.*' => 'required|int|exists:staff,id',
 
             'procedures' => 'nullable|array',
-            'procedures.*' => 'required|string',
+            'procedures.*' => 'nullable|string',
             'procedure_dates' => [
                 'nullable',
                 'array',
@@ -49,23 +47,23 @@ class PatientServiceRequest extends FormRequest
             'procedure_dates.*' => 'date',
 
             'medications' => 'nullable|array',
-            'medications.*' => 'required|string',
+            'medications.*' => 'nullable|string',
             'dosages' => [
-                'required',
+                'nullable',
                 'array',
                 Rule::when($this->has('procedures'), [
                     'size:' . count($this->input('medications', []))
                 ])
             ],
-            'dosages.*' => 'required|string|max:50',
+            'dosages.*' => 'nullable|string|max:50',
             'admission_periods' => [
-                'required',
+                'nullable',
                 'array',
                 Rule::when($this->has('procedures'), [
                     'size:' . count($this->input('medications', []))
                 ])
             ],
-            'admission_periods.*' => 'required|string|max:100',
+            'admission_periods.*' => 'nullable|string|max:100',
             'medication_notes' => 'nullable|array',
             'medication_notes.*' => 'nullable|string|max:500',
         ];

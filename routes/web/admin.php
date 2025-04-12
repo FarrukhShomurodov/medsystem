@@ -29,7 +29,6 @@ use App\Http\Controllers\Dashboard\RegionController;
 use App\Http\Controllers\Dashboard\ServiceCategoryController;
 use App\Http\Controllers\Dashboard\ServiceController;
 use App\Http\Controllers\Dashboard\ServiceMethodController;
-use App\Http\Controllers\Dashboard\ServiceStaffController;
 use App\Http\Controllers\Dashboard\SpecialtyController;
 use App\Http\Controllers\Dashboard\StaffController;
 use App\Http\Controllers\Dashboard\StaffPositionController;
@@ -40,6 +39,7 @@ use App\Http\Controllers\Dashboard\TransferController;
 use App\Http\Controllers\Dashboard\WarehouseAccountingController;
 use App\Http\Controllers\Dashboard\WarehouseController;
 use App\Http\Controllers\Dashboard\WarehouseTypeController;
+use App\Http\Middleware\ExaminationMapIsActive;
 use Illuminate\Support\Facades\Route;
 
 Route::get('admin/login', [AdminAuthController::class, 'showLoginForm'])->name('dashboard.login');
@@ -131,17 +131,15 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // services
     Route::prefix('services')->group(function () {
-        Route::resource('', ServiceController::class)->names('services')->parameter('', 'service')->except('show');
+        Route::resource('list', ServiceController::class)->names('services')->parameter('list', 'service')->except('show');
         Route::resource('assign-patient', PatientServiceController::class)->names('patient.services')->parameter('assign-patient', 'service');
         Route::resource('categories', ServiceCategoryController::class);
         Route::resource('procedures', ProcedureController::class);
         Route::resource('methods', ServiceMethodController::class)->names('service.methods');
-        Route::resource('staffs', ServiceStaffController::class)->names('service.staffs');
     });
 
     Route::resource('laboratories', LaboratoryController::class);
     Route::resource('methods', AnalyzeMethodController::class);
-//    Route::resource('equipments', MedicalEquipmentController::class);
     Route::resource('types', AnalyzeTypeController::class);
 
     Route::resource('regions', RegionController::class);
@@ -152,7 +150,9 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     Route::resource('patients', PatientController::class);
 
-    Route::resource('maps', ExaminationMapController::class)->except(['index', 'create']);
+    Route::resource('maps', ExaminationMapController::class)
+        ->except(['index', 'create'])
+        ->middleware(ExaminationMapIsActive::class);
 
     Route::get('patient/map/create/{patient}', [ExaminationMapController::class, 'create'])->name('patient.map.create');
 });

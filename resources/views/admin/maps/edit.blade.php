@@ -34,7 +34,7 @@
             <div class="step" data-target="#contact-info">
                 <button type="button" class="step-trigger">
                     <span class="bs-stepper-circle">2</span>
-                    <span class="bs-stepper-label">Госпитализация</span>
+                    <span class="bs-stepper-label">Госпитализация / Выписка</span>
                 </button>
             </div>
             <div class="line"></div>
@@ -53,9 +53,17 @@
             </div>
 
             <div class="line"></div>
-            <div class="step" data-target="#service">
+            <div class="step" data-target="#survey">
                 <button type="button" class="step-trigger">
                     <span class="bs-stepper-circle">4</span>
+                    <span class="bs-stepper-label">Опросники</span>
+                </button>
+            </div>
+
+            <div class="line"></div>
+            <div class="step" data-target="#service">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">5</span>
                     <span class="bs-stepper-label">Услуги</span>
                 </button>
             </div>
@@ -394,47 +402,46 @@
                         <h6 class="mb-0">Анализ</h6>
                     </div>
 
-                    <div>
-                        <div class="content-header mb-3">
-                            <h6 class="mb-0">История анализа</h6>
-                        </div>
-                        @foreach($map->analyze as $analyze)
-                            @if($analyze->results->isNotEmpty())
-                                <table class="datatables-users table border-top">
-                                    <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Тип анализа</th>
-                                        <th>Единица измерения</th>
-                                        <th>Значение</th>
-                                        <th>Референсный диапазон</th>
-                                        <th>Комментарий</th>
-                                        <th>Дата</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($analyze->results as $result)
+                    @if($map->analyze->isNotEmpty())
+                        <div>
+                            <div class="content-header mb-3">
+                                <h6 class="mb-0">История анализа</h6>
+                            </div>
+                            @foreach($map->analyze as $analyze)
+                                @if($analyze->results->isNotEmpty())
+                                    <table class="datatables-users table border-top">
+                                        <thead>
                                         <tr>
-                                            <td>{{ $result->id }}</td>
-                                            <td>{{ $result->type->name }}</td>
-                                            <td>{{ $result->unit }}</td>
-                                            <td>{{ $result->value }}</td>
-                                            <td>{{ $result->reference_range }}</td>
-                                            <td>{{ $result->comment }}</td>
-                                            <td>{{ $analyze->created_at->format('d.m.Y') }}</td>
+                                            <th>ID</th>
+                                            <th>Тип анализа</th>
+                                            <th>Единица измерения</th>
+                                            <th>Значение</th>
+                                            <th>Референсный диапазон</th>
+                                            <th>Комментарий</th>
+                                            <th>Дата</th>
                                         </tr>
-                                    @endforeach
+                                        </thead>
+                                        <tbody>
+                                        @foreach($analyze->results as $result)
+                                            <tr>
+                                                <td>{{ $result->id }}</td>
+                                                <td>{{ $result->type->name }}</td>
+                                                <td>{{ $result->unit }}</td>
+                                                <td>{{ $result->value }}</td>
+                                                <td>{{ $result->reference_range }}</td>
+                                                <td>{{ $result->comment }}</td>
+                                                <td>{{ $analyze->created_at->format('d.m.Y') }}</td>
+                                            </tr>
+                                        @endforeach
 
-                                    </tbody>
-                                </table>
-                            @endif
-                        @endforeach
-                    </div>
+                                        </tbody>
+                                    </table>
+                                @endif
+                            @endforeach
+                        </div>
+                    @endif
 
                     <div class="row g-3">
-                        <div class="content-header mb-3 mt-3">
-                            <h6 class="mb-0">Назначить анализ</h6>
-                        </div>
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-departments">Лаборатории</label>
                             <select id="basic-icon-default-departments" name="laboratory_id"
@@ -540,12 +547,52 @@
                             </button>
                         </div>
                     </div>
+
                 </div>
 
+                {{-- Услуги --}}
                 <div id="service" class="content">
                     <div class="content-header mb-3">
                         <h6 class="mb-0">Услуги</h6>
                     </div>
+
+                    @if($map->services->isNotEmpty())
+                        <div>
+                            <div class="content-header mb-3">
+                                <h6 class="mb-0">История услуг</h6>
+                            </div>
+                            <table class="datatables-users table border-top">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Услуга</th>
+                                    <th>Дата услуги</th>
+                                    <th>Время услуги</th>
+                                    <th>Место оказания</th>
+                                    <th>Результаты</th>
+                                    <th>Статус</th>
+                                    <th>Статус оплаты</th>
+                                    <th>Страховая компания</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($map->services as $service)
+                                    <tr>
+                                        <td>{{ $service->id }}</td>
+                                        <td>{{ $service->service->name }}</td>
+                                        <td>{{ $service->service_date }}</td>
+                                        <td>{{ $service->service_time }}</td>
+                                        <td>{{ $service->place }}</td>
+                                        <td>{{ $service->result }}</td>
+                                        <td> {!! $service->getStatusBadge() !!} </td>
+                                        <td>{{ $service->payment }}</td>
+                                        <td>{{ $service->insurance_policy }}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
 
                     <div class="row g-3">
                         {{-- status --}}
@@ -598,7 +645,7 @@
                                     class="form-control select2 @error('staffs') is-invalid @enderror" multiple>
                                 @foreach($staffs as $staff)
                                     <option value="{{ $staff->id }}" @selected(in_array($staff->id, old('staffs', [])))>
-                                        {{ $staff->first_name }}
+                                        {{ $staff->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -680,6 +727,92 @@
 
 
                         <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-label-secondary btn-prev" disabled>
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                <span class="d-sm-inline-block d-none">Назад</span>
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                <span class="d-sm-inline-block d-none me-sm-1">Далее</span>
+                                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Опросники --}}
+                <div id="survey" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Опросники</h6>
+                    </div>
+
+                    <div class="row g-3">
+                        <table class="datatables-users table border-top">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Опросник</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($map->surveyResponses->sortByDesc('id')->take(5) as $response)
+                                <tr>
+                                    <td>{{$response->id}}</td>
+                                    <td>
+                                        <p class="text-primary">{{ $response->survey->title }}</p>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-info view-response"
+                                                data-id="{{ $response->id }}"
+                                                data-bs-toggle="modal" data-bs-target="#responseModal">
+                                            Просмотр
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+
+                        <!-- Модальное окно -->
+                        <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="responseModalLabel">Ответы опросника</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="response-content">
+                                            <p class="text-muted">Загрузка...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 mt-3">
+                            <div class="col-12">
+                                <label class="form-label" for="survey-select">Опросники </label>
+                                <select id="survey-select" name="survey_id"
+                                        class="form-control select2 @error('survey_id') is-invalid @enderror">
+                                    <option value="" disabled selected>Выберите опросник</option>
+                                    @foreach($surveys as $survey)
+                                        <option
+                                            value="{{ $survey->id }}" @selected($survey->id == old('survey_id'))>{{ $survey->title }}</option>
+                                    @endforeach
+                                </select>
+                                @error('survey_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- Question container --}}
+                            <div id="questions-container" class="mt-3"></div>
+                        </div>
+
+                        <div class="col-12 d-flex justify-content-between">
                             <button class="btn btn-primary btn-prev"><i
                                     class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                 <span class="d-sm-inline-block d-none">Назад</span>
@@ -694,29 +827,8 @@
 @endsection
 
 @section('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script>
         $(document).ready(function () {
-            const phoneInput = $('.phone');
-
-            phoneInput.on('focus', function () {
-                if (!$(this).val().startsWith('+ 998')) {
-                    $(this).val('+ 998 ');
-                }
-            });
-
-            phoneInput.mask('+ 998 (00) 000 00 00', {
-                placeholder: '+ 998 (__) ___ __ __',
-                clearIfNotMatch: true
-            });
-
-            phoneInput.on('blur', function () {
-                if ($(this).val() === '+ 998 ') {
-                    $(this).val('');
-                }
-            });
-
             // procedures
             const container = document.getElementById('procedures-container');
             const template = document.getElementById('procedure-template');
@@ -781,6 +893,213 @@
             // Удаление строки
             $(containerMedicaments).on('click', '.btn-remove-medication', function () {
                 $(this).closest('.medication-row').remove();
+            });
+
+            // опросники
+            $('#survey-select').on('change', function () {
+                let surveyId = $(this).val();
+                let questionsContainer = $('#questions-container');
+
+                questionsContainer.html('');
+
+                if (!surveyId) return;
+
+                $.ajax({
+                    url: `/api/surveys/${surveyId}/questions`,
+                    type: 'GET',
+                    success: function (data) {
+                        questionsContainer.append('<button type="button" class="mb-3 btn btn-sm btn-warning" id="clear_survey">Очистить</button>');
+
+                        // Обрабатываем группы
+                        if (data.groups.length > 0) {
+                            data.groups.forEach(group => {
+                                let groupHtml = `
+                        <div class="card mb-4 border-primary">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0 text-white">${group.title}</h5>
+                            </div>
+                            <div class="card-body">
+                    `;
+                                group.questions.forEach((q, index) => {
+                                    groupHtml += generateQuestionHtml(q, index + 1);
+                                });
+                                groupHtml += '</div></div>';
+                                questionsContainer.append(groupHtml);
+                            });
+                        }
+
+                        // Обрабатываем отдельные вопросы
+                        if (data.standalone_questions.length > 0) {
+                            let standaloneHtml = `
+                    <div class="card mb-4 border-secondary">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0 text-white">Общие вопросы</h5>
+                        </div>
+                        <div class="card-body">
+                `;
+                            data.standalone_questions.forEach((q, index) => {
+                                standaloneHtml += generateQuestionHtml(q, index + 1);
+                            });
+                            standaloneHtml += '</div></div>';
+                            questionsContainer.append(standaloneHtml);
+                        }
+
+                        function generateQuestionHtml(q, index) {
+                            return `
+                    <div class="mb-3 question-item">
+                        <label class="form-label fw-semibold" data-question="${q.id}" >${index}. ${q.question}</label>
+                        ${getInputField(q, index)}
+                    </div>
+                `;
+                        }
+
+                        function getInputField(q) {
+                            if (q.type === 'choice') {
+                                return q.options.map(option => `
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="answers[${q.id}]"
+                                   value="${option.text}"
+                                   required>
+                            <label class="form-check-label">${option.text}</label>
+                        </div>
+                    `).join('');
+                            }
+                            if (q.type === 'boolean') {
+                                return `
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="answers[${q.id}]"
+                                   value="yes" required> Да
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="answers[${q.id}]"
+                                   value="no" required> Нет
+                        </div>
+                    `;
+                            }
+                            return `<input type="text" name="answers[${q.id}]"
+                             class="form-control" required>`;
+                        }
+
+                        $('#service-container').show();
+                    },
+                    error: function () {
+                        questionsContainer.html('<p class="text-danger">Ошибка загрузки вопросов</p>');
+                    }
+                });
+            });
+
+            $(document).on('click', '#clear_survey', function () {
+                $('#questions-container').html('');
+                $('#survey-select').val('').trigger('change');
+            });
+
+            function getInputField(q, index) {
+                console.log("OPTIONS RAW:", q.options); // Отладка
+
+                let options = q.options;
+
+                if (q.type === 'choice') {
+                    return options.map(option => `
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="answers[${q.id}]" value="${option.text}" required>
+                            <label class="form-check-label">${option.text}</label>
+                        </div>
+                    `).join('');
+                }
+                if (q.type === 'boolean') {
+                    return `
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="answers[${q.id}]" value="yes" required> Да
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="answers[${q.id}]" value="no" required> Нет
+                        </div>
+                    `;
+                }
+                return `<input type="text" name="answers[${q.id}]" class="form-control" required>`;
+            }
+
+
+            // Функция загрузки ответов в модальное окно
+            $('.view-response').on('click', function () {
+                let responseId = $(this).data('id');
+                let modalBody = $('#response-content');
+
+                modalBody.html('<p class="text-muted">Загрузка...</p>');
+
+                $.ajax({
+                    url: `/api/surveys-response/show/${responseId}`,
+                    type: 'GET',
+                    success: function (response) {
+                        console.log(response);
+
+                        let html = `<h6 class="text-primary">${response.survey.title}</h6>`;
+
+                        if (response.answers.length > 0) {
+                            response.answers.forEach((answer, index) => {
+                                let localizedAnswer = answer.answer;
+
+                                if (localizedAnswer.toLowerCase() === 'yes') localizedAnswer = 'Да';
+                                if (localizedAnswer.toLowerCase() === 'no') localizedAnswer = 'Нет';
+
+                                html += `
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input select-answer"
+                                   data-question-id="${answer.question.id}"
+                                   data-answer="${answer.answer}">
+                            <label class="form-check-label">
+                                <strong>${index + 1}. ${answer.question.question}</strong>
+                                <br>Ответ: <span class="text-success">${localizedAnswer}</span>
+                            </label>
+                        </div>
+                    `;
+                            });
+
+                            html += `<p class="btn btn-sm btn-primary mt-2" id="apply-selected-answers">Использовать выбранные</p>`;
+                        } else {
+                            html += '<p class="text-muted">Ответов нет</p>';
+                        }
+
+                        modalBody.html(html);
+                    },
+                    error: function () {
+                        modalBody.html('<p class="text-danger">Ошибка загрузки данных</p>');
+                    }
+                });
+            });
+
+            // Обработчик для кнопки "Использовать выбранные"
+            $(document).on('click', '#apply-selected-answers', function () {
+                $('.select-answer:checked').each(function () {
+                    let questionId = $(this).data('question-id');
+                    let answer = $(this).data('answer');
+
+                    let targetInput = $(`input[name="answers[${questionId}]"]`);
+                    let targetRadio = $(`input[name="answers[${questionId}]"][value="${answer}"]`);
+
+                    let question = $(`label[data-question="${questionId}"]`);
+
+                    question.append('<small> (Ответ скопирован) </small>');
+
+                    if (targetInput.length > 0) {
+                        if (targetInput.attr('type') === 'radio') {
+                            if (targetRadio.length > 0) {
+                                targetRadio.prop('checked', true);
+                            } else {
+                                alert(`Ответ "${answer}" не найден среди вариантов.`);
+                            }
+                        } else {
+                            targetInput.val(answer);
+                        }
+                    } else {
+                        alert(`Вопрос с ID ${questionId} не найден.`);
+                    }
+                });
+
+                $('#responseModal').modal('hide');
             });
         })
     </script>

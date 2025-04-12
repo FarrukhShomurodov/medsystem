@@ -10,11 +10,13 @@ class ExaminationService
 {
     private AnalyzeService $service;
     private PatientServiceAssignService $patientService;
+    private SurveyResponseService $surveyResponseService;
 
-    public function __construct(AnalyzeService $service, PatientServiceAssignService $patientService)
+    public function __construct(AnalyzeService $service, PatientServiceAssignService $patientService, SurveyResponseService $surveyResponseService)
     {
         $this->service = $service;
         $this->patientService = $patientService;
+        $this->surveyResponseService = $surveyResponseService;
     }
 
     /**
@@ -34,7 +36,7 @@ class ExaminationService
             if (isset($validated['laboratory_id'])) {
                 $analyzeData = [
                     'patient_id' => $patient->id,
-                    'doctor_id' => $validated['doctor_id'],
+                    'staff_id' => $validated['staff_id'],
                     'examination_map_id' => $map->id,
                     'laboratory_id' => $validated['laboratory_id'],
                     'types' => $validated['types'],
@@ -58,13 +60,19 @@ class ExaminationService
                     'place' => $validated['place'],
                     'status' => $validated['service_status'],
                     'staffs' => $validated['staffs'],
-                    'procedures' => $validated['procedures'],
-                    'procedure_dates' => $validated['procedure_dates'],
-                    'medications' => $validated['medications'],
-                    'dosages' => $validated['dosages'],
-                    'admission_periods' => $validated['admission_periods'],
-                    'medication_notes' => $validated['medication_notes'],
                 ];
+
+                if (isset($validated['procedures'])) {
+                    $serviceData['procedures'] = $validated['procedures'];
+                    $serviceData['procedure_dates'] = $validated['procedure_dates'];
+                }
+
+                if (isset($validated['medications'])) {
+                    $serviceData['medications'] = $validated['medications'];
+                    $serviceData['dosages'] = $validated['dosages'];
+                    $serviceData['admission_periods'] = $validated['admission_periods'];
+                    $serviceData['medication_notes'] = $validated['medication_notes'];
+                }
 
                 $this->patientService->store($serviceData);
             }
@@ -89,18 +97,12 @@ class ExaminationService
 
             $map->update($validated);
 
-            $requiredFields = ['laboratory_id', 'types', 'methods', 'analysis_time', 'equipments'];
+            $patient = $map->patient;
 
-            $anyFieldFilled = collect($requiredFields)->contains(fn($field) => !empty($validated[$field]));
-
-            $allFieldsFilled = collect($requiredFields)->every(fn($field) => !empty($validated[$field]));
-
-            if ($anyFieldFilled && !$allFieldsFilled) {
-                $patient = $map->patient;
-
+            if (isset($validated['laboratory_id'])) {
                 $analyzeData = [
                     'patient_id' => $patient->id,
-                    'doctor_id' => $validated['doctor_id'],
+                    'staff_id' => $validated['staff_id'],
                     'examination_map_id' => $map->id,
                     'laboratory_id' => $validated['laboratory_id'],
                     'types' => $validated['types'],
@@ -112,6 +114,49 @@ class ExaminationService
                 ];
 
                 $this->service->store($analyzeData);
+            }
+
+            if (isset($validated['service_id'])) {
+                $serviceData = [
+                    'service_id' => $validated['service_id'],
+                    'patient_id' => $patient->id,
+                    'examination_map_id' => $map->id,
+                    'service_date' => $validated['service_date'],
+                    'place' => $validated['place'],
+                    'status' => $validated['service_status'],
+                    'staffs' => $validated['staffs']
+                ];
+
+                if (isset($validated['procedures'])) {
+                    $serviceData['procedures'] = $validated['procedures'];
+                    $serviceData['procedure_dates'] = $validated['procedure_dates'];
+                }
+
+                if (isset($validated['medications'])) {
+                    $serviceData['medications'] = $validated['medications'];
+                    $serviceData['dosages'] = $validated['dosages'];
+                    $serviceData['admission_periods'] = $validated['admission_periods'];
+                    $serviceData['medication_notes'] = $validated['medication_notes'];
+                }
+
+                $this->patientService->store($serviceData);
+            }
+
+
+            if (isset($validated['discharge_date']) && $validated['discharge_date']) {
+                $map->update([
+                    'is_active' => false
+                ]);
+            }
+
+            if (isset($validated['survey_id'])) {
+                $analyzeData = [
+                    'survey_id' => $validated['survey_id'],
+                    'answers' => $validated['answers'],
+                    'examination_map_id' => $map->id,
+                ];
+
+                $this->surveyResponseService->store($analyzeData);
             }
 
             return $map;

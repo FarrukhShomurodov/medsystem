@@ -330,7 +330,7 @@
                             <label class="form-label" for="basic-icon-default-departments">Лаборатории </label>
                             <select id="basic-icon-default-departments" name="laboratory_id"
                                     class="form-control select2 @error('laboratory_id') is-invalid @enderror">
-                                <option value="" disabled>Выберите лабораторию</option>
+                                <option value="" selected disabled>Выберите лабораторию</option>
                                 @foreach($laboratories as $laboratory)
                                     <option
                                         value="{{ $laboratory->id }}" @selected($laboratory->id == old('laboratory_id'))>{{ $laboratory->name }}</option>

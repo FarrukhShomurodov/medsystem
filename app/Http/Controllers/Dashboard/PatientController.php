@@ -74,10 +74,10 @@ class PatientController
                 'devices' => $patient->devices,
                 'diseases' => $patient->diseases,
                 'doctors' => $patient->doctors,
-                'examination_maps' => $patient->examinationMaps,
             ],
             'history' => [
-                'maps' => $patient->examinationMaps,
+                'maps' => $patient->examinationMaps()->orderBy('id', 'desc')->get(),
+                'map_is_active' => $patient->examinationMaps()->where('is_active', 1)->count() > 1 ? false : true,
             ],
             'patient_id' => $patient->id
         ];

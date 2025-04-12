@@ -12,8 +12,6 @@ return new class extends Migration {
             $table->foreignId('service_id')->constrained()->cascadeOnDelete();
             $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
             $table->foreignId('examination_map_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('staff_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->foreignId('department_id')->nullable()->constrained()->cascadeOnDelete();
             $table->date('service_date');
             $table->time('service_time')->nullable();
             $table->enum('place', ['institution', 'cabinet'])->nullable();

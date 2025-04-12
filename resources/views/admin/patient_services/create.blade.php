@@ -116,41 +116,8 @@
                             <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
-                        <!-- Doctor -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="doctor_id">Лечащий врач</label>
-                            <select id="doctor_id" name="doctor_id"
-                                    class="form-control select2 @error('doctor_id') is-invalid @enderror">
-                                <option value="" selected>Не выбрано</option>
-                                @foreach($doctors as $doctor)
-                                    <option value="{{ $doctor->id }}" @selected(old('doctor_id') == $doctor->id)>
-                                        {{ $doctor->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('doctor_id')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <!-- Institution -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="department_id">Отделение</label>
-                            <select id="department_id" name="department_id"
-                                    class="form-control select2 @error('department_id') is-invalid @enderror">
-                                <option value="" selected>Не выбрано</option>
-                                @foreach($institutions as $institution)
-                                    <option
-                                        value="{{ $institution->id }}" @selected(old('department_id') == $institution->id)>
-                                        {{ $institution->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('department_id')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
                         <!-- Place -->
-                        <div class="col-sm-4">
+                        <div class="col-sm-12">
                             <label class="form-label" for="place">Место оказания <span
                                     class="text-danger">*</span></label>
                             <select id="place" name="place"
@@ -429,7 +396,8 @@
                                 @endforeach
                             </select>
                             @error('payment.method')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <!-- Insurance -->
