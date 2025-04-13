@@ -18,7 +18,10 @@
             <p><strong>Название:</strong> {{ $warehouse->name }}</p>
             <p><strong>Тип:</strong> {{ $warehouse->description }}</p>
             <p><strong>Описание:</strong> {{ $warehouse->type->name }}</p>
-            <p><strong>Медикаменты :</strong> <a href="{{ route('warehouses.medications', ['warehouse_id' => $warehouse->id ]) }}">Смотреть</a></p>
+            <p><strong>Медикаменты :</strong> <a
+                    href="{{ route('warehouses.medications', ['warehouse_id' => $warehouse->id ]) }}">Смотреть</a></p>
+            <p><strong>Расходные материалы :</strong> <a
+                    href="{{ route('warehouses.supplies', ['supply_id' => $warehouse->id ]) }}">Смотреть</a></p>
         </div>
     </div>
 

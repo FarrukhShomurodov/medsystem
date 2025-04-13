@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Requests\WarehouseRequest;
+use App\Models\MedicalSupply;
 use App\Models\Medication;
 use App\Models\Supplier;
 use App\Models\Warehouse;
@@ -42,8 +43,9 @@ class WarehouseController
         $types = WarehouseType::query()->get();
         $medications = Medication::query()->get();
         $suppliers = Supplier::query()->get();
+        $supplies = MedicalSupply::query()->get();
 
-        return view('admin.warehouses.create', compact('types', 'medications', 'suppliers'));
+        return view('admin.warehouses.create', compact('types', 'medications', 'suppliers', 'supplies'));
     }
 
     public function store(WarehouseRequest $request): RedirectResponse
@@ -59,8 +61,9 @@ class WarehouseController
         $types = WarehouseType::query()->get();
         $medications = Medication::query()->get();
         $suppliers = Supplier::query()->get();
+        $supplies = MedicalSupply::query()->get();
 
-        return view('admin.warehouses.edit', compact('warehouse', 'types', 'medications', 'suppliers'));
+        return view('admin.warehouses.edit', compact('warehouse', 'types', 'medications', 'suppliers', 'supplies'));
     }
 
     public function update(WarehouseRequest $request, Warehouse $warehouse): RedirectResponse
@@ -91,5 +94,20 @@ class WarehouseController
             ->paginate(30);
 
         return view('admin.warehouses.medications', compact('accountings'));
+    }
+
+    public function supplies(Request $request): View
+    {
+        $supplies = MedicalSupply::with(['warehouse' => function ($q) {
+            $q->withPivot('quantity');
+        }])
+            ->when($request->filled('warehouse_id'), function ($q) use ($request) {
+                $q->whereHas('warehouse', function ($query) use ($request) {
+                    $query->where('warehouses.id', $request->input('warehouse_id'));
+                });
+            })
+            ->paginate(30);
+
+        return view('admin.warehouses.supplies', compact('supplies'));
     }
 }

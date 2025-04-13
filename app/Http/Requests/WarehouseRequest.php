@@ -19,6 +19,12 @@ class WarehouseRequest extends FormRequest
 
         $this->merge(['medications' => $medications]);
 
+        $supplies = array_filter($this->supplies, function ($item) {
+            return isset($item['id']) && $item['id'] !== 'ID' && !empty($item['quantity']);
+        });
+
+        $this->merge(['supplies' => $supplies]);
+
         return [
             'name' => 'required',
             'description' => 'required',
@@ -33,6 +39,11 @@ class WarehouseRequest extends FormRequest
             'medications.*.date_of_receipt' => 'required|date',
             'medications.*.batch_number' => 'required|string|max:255',
 
+            'supplies' => 'required|array',
+            'supplies.*.id' => 'required|int',
+            'supplies.*.quantity' => 'required|int',
+
+
             //packaging
             'medications.*.packaging_type' => ['required', Rule::in(MedicationPackaging::TYPE)],
             'medications.*.quantity_per_package' => 'required|int',
@@ -43,9 +54,6 @@ class WarehouseRequest extends FormRequest
             'medications.*.retail_price' => 'required|string|max:255',
             'medications.*.wholesale_price' => 'required|string|max:255',
             'medications.*.supplier_id' => 'required|string|max:255',
-
-//            'date_of_last_inventory',
-//            'result',
 
             'total_volume' => 'required',
             'occupied_volume' => 'required',
@@ -74,12 +82,6 @@ class WarehouseRequest extends FormRequest
             'shelf_location' => 'required',
             'special_zone' => 'required',
             'label' => 'required',
-
-//            'supplier_id' => 'required',
-//            'transport' => 'required',
-//            'invoices' => 'required',
-//            'quality_certificates' => 'required',
-//            'acceptance_certificates' => 'required',
         ];
     }
 }

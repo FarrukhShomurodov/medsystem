@@ -19,9 +19,7 @@ class WarehouseService
             // Создание связанных записей
             $warehouse->contact()->create($validated);
             $warehouse->capacity()->create($validated);
-//            $warehouse->inventory()->create($validated);
             $warehouse->storageHandling()->create($validated);
-//            $warehouse->transfer()->create($validated);
 
             foreach ($validated['medications'] as $index => $medication) {
                 if (is_int($index)) {
@@ -31,6 +29,8 @@ class WarehouseService
                     $accounting->medicationCost()->create($medication);
                 }
             }
+
+            $warehouse->medicalSupplies()->sync($validated['supplies']);
 
             return $warehouse;
         }, 5);
@@ -48,7 +48,6 @@ class WarehouseService
             $warehouse->contact()->updateOrCreate(['warehouse_id' => $warehouse->id], array_intersect_key($validated, array_flip($warehouse->contact->getFillable())));
             $warehouse->capacity()->updateOrCreate(['warehouse_id' => $warehouse->id], array_intersect_key($validated, array_flip($warehouse->capacity->getFillable())));
             $warehouse->storageHandling()->updateOrCreate(['warehouse_id' => $warehouse->id], array_intersect_key($validated, array_flip($warehouse->storageHandling->getFillable())));
-//            $warehouse->transfer()->updateOrCreate(['warehouse_id' => $warehouse->id], array_intersect_key($validated, array_flip($warehouse->transfer->getFillable())));
 
             foreach ($validated['medications'] as $medicationId => $medication) {
                 if (is_array($medication) && isset($medication['id'])) {
@@ -69,6 +68,7 @@ class WarehouseService
                 }
             }
 
+            $warehouse->medicalSupplies()->sync($validated['supplies']);
 
             return $warehouse;
         });

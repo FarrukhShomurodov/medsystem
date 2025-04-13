@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -41,13 +42,13 @@ class Warehouse extends Model
         return $this->hasOne(WarehouseStorageHandling::class);
     }
 
-//    public function transfer(): HasOne
-//    {
-//        return $this->hasOne(WarehouseTransfers::class);
-//    }
-
     public function type(): BelongsTo
     {
         return $this->belongsTo(WarehouseType::class, 'warehouse_type_id', 'id');
+    }
+
+    public function medicalSupplies(): BelongsToMany
+    {
+        return $this->belongsToMany(MedicalSupply::class, 'warehouse_medical_supplies', 'warehouse_id', 'supply_id')->withPivot('quantity');
     }
 }

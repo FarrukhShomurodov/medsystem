@@ -87,10 +87,12 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         Route::resource('types', WarehouseTypeController::class)
             ->names('warehouses.type')
             ->except('show');
-        Route::get('medications', [WarehouseController::class, 'medications'])
-            ->name('warehouses.medications');
-        Route::get('medication-show/{accounting}', [WarehouseAccountingController::class, 'show'])
-            ->name('warehouse.medication.show');
+
+        Route::get('medications', [WarehouseController::class, 'medications'])->name('warehouses.medications');
+
+        Route::get('medication-show/{accounting}', [WarehouseAccountingController::class, 'show'])->name('warehouse.medication.show');
+
+        Route::get('supplies', [WarehouseController::class, 'supplies'])->name('warehouses.supplies');
     });
 
     // pharmacy

@@ -52,9 +52,16 @@
                 </button>
             </div>
             <div class="line"></div>
-            <div class="step" data-target="#resources">
+            <div class="step" data-target="#supplies">
                 <button type="button" class="step-trigger">
                     <span class="bs-stepper-circle">5</span>
+                    <span class="bs-stepper-label">Рас. Материалы</span>
+                </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#resources">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">6</span>
                     <span class="bs-stepper-label">Хранение</span>
                 </button>
             </div>
@@ -331,7 +338,8 @@
 
                         <!-- occupied_volume_percentage -->
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-occupied_volume_percentage">Занятый объем в процентах</label>
+                            <label class="form-label" for="basic-icon-default-occupied_volume_percentage">Занятый объем
+                                в процентах</label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-occupied_volume_percentage"
                                       class="input-group-text @error('occupied_volume_percentage') text-danger icon-border @enderror">
@@ -351,7 +359,8 @@
 
                         <!-- max_capacity -->
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-max_capacity">Максимальная вместимость</label>
+                            <label class="form-label" for="basic-icon-default-max_capacity">Максимальная
+                                вместимость</label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-max_capacity"
                                       class="input-group-text @error('max_capacity') text-danger icon-border @enderror">
@@ -551,6 +560,64 @@
                     </div>
                 </div>
 
+                <!-- Расходные Материалы -->
+                <div id="supplies" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">Расходные Материалы</h6>
+                    </div>
+                    <div class="row g-3">
+                        <!-- Расходные Материалы -->
+                        <div class="col-sm-12">
+                            <label class="form-label" for="supply">Расходные Материалы <span
+                                    class="text-danger">*</span></label>
+                            <select id="supply" name=""
+                                    class="form-control select2 @error('supplies') is-invalid @enderror"
+                                    multiple="multiple">
+                                @foreach($supplies as $supply)
+                                    <option
+                                        value="{{ $supply->id }}" @selected(in_array($supply->id, old('medications',[])))>{{ $supply->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('supplies')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <!-- Контейнер для динамических полей -->
+                        <div id="supply-details-container">
+                        </div>
+
+                        <!-- Шаблон для динамических полей (скрыт) -->
+                        <div id="supply-details-template" style="display: none;">
+                            <div class="supply-details">
+                                <h5>Расходные Материал: <span class="supply-name"></span></h5>
+                                <input type="hidden" name="supplies[ID][id]" value="ID">
+
+                                <div class="form-group mb-3">
+                                    <label for="quantity_ID">Количество <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bx bx-plus"></i></span>
+                                        <input type="number" id="quantity_ID" name="supplies[ID][quantity]"
+                                               class="form-control" placeholder="Введите количество">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Навигация -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Хранение -->
                 <div id="resources" class="content">
 
@@ -699,7 +766,8 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-shelf_location">Расположение на полке</label>
+                            <label class="form-label" for="basic-icon-default-shelf_location">Расположение на
+                                полке</label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-shelf_location"
                                   class="input-group-text @error('shelf_location') text-danger icon-border @enderror"><i
@@ -775,7 +843,7 @@
     <script>
         $(document).ready(function () {
             // Удаление медикамента при снятии выбора
-            $('.select2').on('select2:unselect', function (e) {
+            $('#medication').on('select2:unselect', function (e) {
                 let medicationId = e.params.data.id;
                 $(`#medication-details-container .medication-details[data-id="${medicationId}"]`).remove();
             });
@@ -800,7 +868,34 @@
 
                         // Корректно инициализируем Select2 и flatpickr
                         newFields.find('.select2type').select2();
-                        newFields.find('.flatpickr-date').flatpickr({ dateFormat: 'Y-m-d' });
+                        newFields.find('.flatpickr-date').flatpickr({dateFormat: 'Y-m-d'});
+                    }
+                });
+            });
+
+            // Удаление медикамента при снятии выбора
+            $('#supply').on('select2:unselect', function (e) {
+                let supplyId = e.params.data.id;
+                $(`#supply-details-container .supply-details[data-id="${supplyId}"]`).remove();
+            });
+
+            // Добавление медикамента
+            $('#supply').on('change', function () {
+                const container = $('#supply-details-container');
+                const template = $('#supply-details-template').html();
+
+                $('#supply option:selected').each(function () {
+                    const option = $(this);
+                    const supplyId = option.val();
+                    const supplyName = option.text();
+
+                    // Проверяем, существует ли уже этот медикамент в контейнере
+                    if (container.find(`.supply-details[data-id="${supplyId}"]`).length === 0) {
+                        const newFields = $(template.replace(/ID/g, supplyId)).css('display', 'block');
+
+                        newFields.attr('data-id', supplyId);
+                        newFields.find('.supply-name').text(supplyName);
+                        container.append(newFields);
                     }
                 });
             });

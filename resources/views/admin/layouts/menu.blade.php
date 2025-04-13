@@ -235,7 +235,8 @@
         <li class="menu-item {{ Request::is('dashboard/warehouses/types*')
             ||Request::is('dashboard/warehouses/medications*')
             || Request::is('dashboard/warehouses/list*')
-            || Request::is('dashboard/warehouses/medication-show/*') ? 'open' : '' }}"
+            || Request::is('dashboard/warehouses/medication-show/*')
+            || Request::is('dashboard/warehouses/supplies*') ? 'open' : '' }}"
             style="">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon bx bx-store"></i>
@@ -250,6 +251,11 @@
                 <li class="menu-item {{ Request::is('dashboard/warehouses/medications*') || Request::is('dashboard/warehouses/medication-show/*') ? 'active' : '' }}">
                     <a href="{{ route('warehouses.medications' )}}" class="menu-link">
                         <div data-i18n="Препараты">Препараты</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('dashboard/warehouses/supplies*') ? 'active' : '' }}">
+                    <a href="{{ route('warehouses.supplies' )}}" class="menu-link">
+                        <div data-i18n="Расходные материалы">Расходные материалы</div>
                     </a>
                 </li>
                 <li class="menu-item {{ Request::is('dashboard/warehouses/types*') ? 'active' : '' }}">
