@@ -15,6 +15,7 @@ use App\Models\Staff;
 use App\Services\PatientServiceAssignService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Carbon;
 
 class PatientServiceController
 {
@@ -46,13 +47,28 @@ class PatientServiceController
     {
         $services = Service::query()->where('is_active', true)->get();
         $patients = Patient::query()->get();
+
+        $today = Carbon::parse($date ?? now());
         $doctors = Staff::whereHas('professionalData', function ($query) {
             $query->where('position_id', 1);
-        })->get();
+        })->with(['absence' => function ($query) {
+            $query->latest()->limit(1);
+        }])->get()->filter(function ($staff) use ($today) {
+            $absence = $staff->absence->first();
+            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
+            return !$isAbsent;
+        });
+
         $institutions = Department::query()->get();
         $methods = ServiceMethod::query()->get();
         $equipments = Equipment::query()->where('status', 'работает')->get();
-        $staffs = Staff::query()->get();
+        $staffs = Staff::with(['absence' => function ($query) {
+            $query->latest()->limit(1);
+        }])->get()->filter(function ($staff) use ($today) {
+            $absence = $staff->absence->first();
+            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
+            return !$isAbsent;
+        });
         $procedures = Procedure::query()->get();
         $medications = Medication::query()->get();
 
@@ -71,13 +87,28 @@ class PatientServiceController
     {
         $maintenances = Service::query()->where('is_active', true)->get();
         $patients = Patient::query()->with('examinationMaps')->get();
+
+        $today = Carbon::parse($date ?? now());
         $doctors = Staff::whereHas('professionalData', function ($query) {
             $query->where('position_id', 1);
-        })->get();
+        })->with(['absence' => function ($query) {
+            $query->latest()->limit(1);
+        }])->get()->filter(function ($staff) use ($today) {
+            $absence = $staff->absence->first();
+            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
+            return !$isAbsent;
+        });
+
         $institutions = Department::query()->get();
         $methods = ServiceMethod::query()->get();
         $equipments = Equipment::query()->where('status', 'работает')->get();
-        $staffs = Staff::query()->get();
+        $staffs = Staff::with(['absence' => function ($query) {
+            $query->latest()->limit(1);
+        }])->get()->filter(function ($staff) use ($today) {
+            $absence = $staff->absence->first();
+            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
+            return !$isAbsent;
+        });
         $service->with('methods');
         $maps = $service->patient->examinationMaps;
         $procedures = Procedure::query()->get();

@@ -20,6 +20,7 @@ class StaffService
             $staff->contact()->create($validated);
             $staff->document()->create($validated);
             $staff->professionalData()->create($validated);
+            $staff->schedule()->create($validated);
 
             // Синхронизация услуг
             if (!empty($validated['services'])) {
@@ -64,6 +65,19 @@ class StaffService
             $staff->professionalData()->update(
                 array_intersect_key($validated, array_flip($staff->professionalData->getFillable()))
             );
+
+            $staff->schedule()->update(
+                array_intersect_key($validated, array_flip($staff->schedule->getFillable()))
+            );
+
+            $absenceFill = [
+                'start_date' => $validated['absence_start_date'],
+                'end_date' => $validated['absence_end_date'],
+                'reason' => $validated['absence_reason'],
+                'description' => $validated['absence_description'],
+            ];
+
+            $staff->absence()->create($absenceFill);
 
             // Синхронизация услуг
             if (!empty($validated['services'])) {

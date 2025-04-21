@@ -95,11 +95,10 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="card-header">История обращение </h5>
 
-                @if($patientDetails['history']['map_is_active'])
-                    <a href="{{ route('patient.map.create', $patientDetails['patient_id']) }}" class="btn btn-primary "
-                       style="margin-right: 22px;">Создать</a>
-                @endif
 
+                <button onclick="window.location.href='{{ route('patient.map.create', $patientDetails['patient_id']) }}'" class="btn btn-primary "
+                   @disabled(!$patientDetails['history']['map_is_active'])
+                   style="margin-right: 22px;">Создать</button>
 
             </div>
             <table class="datatables-users table border-top">
@@ -129,9 +128,9 @@
 
                         <td>
                             @if($map->is_active)
-                                <p class="badge bg-label-success">Активна</p>
+                                <p class="badge bg-label-success mb-0">Активна</p>
                             @else
-                                <p class="badge bg-label-warning">Не активна</p>
+                                <p class="badge bg-label-warning mb-0">Не активна</p>
                             @endif
                         </td>
 

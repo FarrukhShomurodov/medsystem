@@ -241,7 +241,8 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-active_substance_name">Название активного
-                                вещества </label>
+                                вещества <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-active_substance_name"
                                       class="input-group-text @error('active_substance_name') text-danger icon-border @enderror">
@@ -253,6 +254,7 @@
                                        value="{{ old('active_substance_name') }}"
                                        placeholder="Название активного вещества"
                                        aria-label="Название активного вещества"
+                                       required
                                        aria-describedby="basic-icon-default-active_substance_name"/>
                             </div>
                             @error('active_substance_name')
@@ -262,7 +264,8 @@
 
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-active_substance_dosage">Дозировка
-                                активного вещества </label>
+                                активного вещества <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-active_substance_dosage"
                                       class="input-group-text @error('active_substance_dosage') text-danger icon-border @enderror">
@@ -274,6 +277,7 @@
                                        value="{{ old('active_substance_dosage') }}"
                                        placeholder="Дозировка активного вещества"
                                        aria-label="Дозировка активного вещества"
+                                       required
                                        aria-describedby="basic-icon-default-active_substance_dosage"/>
                             </div>
                             @error('active_substance_dosage')
@@ -283,7 +287,8 @@
 
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-substance_name">Вспомогательные вещества
-                                (Название) </label>
+                                (Название) <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-substance_name"
                                       class="input-group-text @error('substance_name') text-danger icon-border @enderror">
@@ -295,6 +300,7 @@
                                        value="{{ old('substance_name') }}"
                                        placeholder="Вспомогательные вещества (Название)"
                                        aria-label="Вспомогательные вещества (Название)"
+                                       required
                                        aria-describedby="basic-icon-default-substance_name"/>
                             </div>
                             @error('substance_name')
@@ -304,7 +310,8 @@
 
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-substance_dosage">Вспомогательные вещества
-                                (Дозировка) </label>
+                                (Дозировка) <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-substance_dosage"
                                       class="input-group-text @error('substance_dosage') text-danger icon-border @enderror">
@@ -316,6 +323,7 @@
                                        value="{{ old('substance_dosage') }}"
                                        placeholder="Вспомогательные вещества (Дозировка)"
                                        aria-label="Вспомогательные вещества (Дозировка)"
+                                       required
                                        aria-describedby="basic-icon-default-substance_dosage"/>
                             </div>
                             @error('substance_dosage')
@@ -325,7 +333,8 @@
 
                         <div class="col-sm-12">
                             <label class="form-label" for="basic-icon-default-pharmacological_group">Фармакологическая
-                                группа </label>
+                                группа <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-pharmacological_group"
                                       class="input-group-text @error('pharmacological_group') text-danger icon-border @enderror">
@@ -337,6 +346,7 @@
                                        value="{{ old('pharmacological_group') }}"
                                        placeholder="Фармакологическая группа"
                                        aria-label="Фармакологическая группа"
+                                       required
                                        aria-describedby="basic-icon-default-pharmacological_group"/>
                             </div>
                             @error('pharmacological_group')
@@ -365,7 +375,8 @@
                     <div class="row g-3">
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-indications">Показания к
-                                применению </label>
+                                применению <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-indications"
                                       class="input-group-text @error('indications') text-danger icon-border @enderror">
@@ -375,6 +386,7 @@
                                        class="form-control @error('indications') is-invalid @enderror"
                                        name="indications"
                                        value="{{ old('indications') }}"
+                                       required
                                        placeholder="Показания к применению"/>
                             </div>
                             @error('indications')
@@ -384,7 +396,8 @@
 
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-administration_method">Способ
-                                применения </label>
+                                применения <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-administration_method"
                                       class="input-group-text @error('administration_method') text-danger icon-border @enderror">
@@ -394,6 +407,7 @@
                                        class="form-control @error('administration_method') is-invalid @enderror"
                                        name="administration_method"
                                        value="{{ old('administration_method') }}"
+                                       required
                                        placeholder="Способ применения"/>
                             </div>
                             @error('administration_method')
@@ -402,7 +416,8 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-dosage_regimen">Режим дозирования </label>
+                            <label class="form-label" for="basic-icon-default-dosage_regimen">Режим дозирования <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-dosage_regimen"
                                       class="input-group-text @error('dosage_regimen') text-danger icon-border @enderror">
@@ -412,6 +427,7 @@
                                        class="form-control @error('dosage_regimen') is-invalid @enderror"
                                        name="dosage_regimen"
                                        value="{{ old('dosage_regimen') }}"
+                                       required
                                        placeholder="Режим дозирования"/>
                             </div>
                             @error('dosage_regimen')
@@ -421,7 +437,8 @@
 
                         <div class="col-sm-4">
                             <label class="form-label"
-                                   for="basic-icon-default-contraindications">Противопоказания </label>
+                                   for="basic-icon-default-contraindications">Противопоказания <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-contraindications"
                                       class="input-group-text @error('contraindications') text-danger icon-border @enderror">
@@ -431,6 +448,7 @@
                                        class="form-control @error('contraindications') is-invalid @enderror"
                                        name="contraindications"
                                        value="{{ old('contraindications') }}"
+                                       required
                                        placeholder="Противопоказания"/>
                             </div>
                             @error('contraindications')
@@ -440,7 +458,8 @@
 
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-usage_features">Особенности
-                                применения </label>
+                                применения <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-usage_features"
                                       class="input-group-text @error('usage_features') text-danger icon-border @enderror">
@@ -449,6 +468,7 @@
                                 <input type="text" id="basic-icon-default-usage_features"
                                        class="form-control @error('usage_features') is-invalid @enderror"
                                        name="usage_features"
+                                       required
                                        value="{{ old('usage_features') }}"
                                        placeholder="Особенности применения"/>
                             </div>
@@ -458,7 +478,8 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-side_effects">Побочные эффекты </label>
+                            <label class="form-label" for="basic-icon-default-side_effects">Побочные эффекты <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-side_effects"
                                       class="input-group-text @error('side_effects') text-danger icon-border @enderror">
@@ -468,6 +489,7 @@
                                        class="form-control @error('side_effects') is-invalid @enderror"
                                        name="side_effects"
                                        value="{{ old('side_effects') }}"
+                                       required
                                        placeholder="Побочные эффекты"/>
                             </div>
                             @error('side_effects')
@@ -477,7 +499,8 @@
 
                         <div class="col-12">
                             <label class="form-label" for="basic-icon-default-drug_interactions">Взаимодействие с
-                                другими препаратами </label>
+                                другими препаратами <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-drug_interactions"
                                       class="input-group-text @error('drug_interactions') text-danger icon-border @enderror">
@@ -487,6 +510,7 @@
                                        class="form-control @error('drug_interactions') is-invalid @enderror"
                                        name="drug_interactions"
                                        value="{{ old('drug_interactions') }}"
+                                       required
                                        placeholder="Взаимодействие с другими препаратами"/>
                             </div>
                             @error('drug_interactions')
@@ -514,7 +538,8 @@
                     <div class="row g-3">
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-storage_temperature">Температурный режим
-                                хранения </label>
+                                хранения <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-storage_temperature"
                                       class="input-group-text @error('storage_temperature') text-danger icon-border @enderror">
@@ -523,6 +548,7 @@
                                 <input type="number" id="basic-icon-default-storage_temperature"
                                        class="form-control @error('storage_temperature') is-invalid @enderror"
                                        name="storage_temperature"
+                                       required
                                        value="{{ old('storage_temperature') }}"
                                        placeholder="Температурный режим хранения"/>
                             </div>
@@ -533,7 +559,8 @@
 
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-storage_conditions">Условия
-                                хранения </label>
+                                хранения <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-storage_conditions"
                                       class="input-group-text @error('storage_conditions') text-danger icon-border @enderror">
@@ -542,6 +569,7 @@
                                 <input type="text" id="basic-icon-default-storage_conditions"
                                        class="form-control @error('storage_conditions') is-invalid @enderror"
                                        name="storage_conditions"
+                                       required
                                        value="{{ old('storage_conditions') }}"
                                        placeholder="Условия хранения"/>
                             </div>
@@ -552,7 +580,8 @@
 
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-special_storage_conditions">Специальные
-                                условия хранения </label>
+                                условия хранения <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-special_storage_conditions"
                                       class="input-group-text @error('special_storage_conditions') text-danger icon-border @enderror">
@@ -561,6 +590,7 @@
                                 <input type="text" id="basic-icon-default-special_storage_conditions"
                                        class="form-control @error('special_storage_conditions') is-invalid @enderror"
                                        name="special_storage_conditions"
+                                       required
                                        value="{{ old('special_storage_conditions') }}"
                                        placeholder="Специальные условия хранения"/>
                             </div>
@@ -680,7 +710,8 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-manufacturing_license_number"> Номер
-                                лицензии на производство </label>
+                                лицензии на производство <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-manufacturing_license_number"
                                       class="input-group-text @error('manufacturing_license_number') text-danger icon-border @enderror">
@@ -689,6 +720,7 @@
                                 <input type="text" id="basic-icon-default-manufacturing_license_number"
                                        class="form-control @error('manufacturing_license_number') is-invalid @enderror"
                                        name="manufacturing_license_number"
+                                       required
                                        value="{{ old('manufacturing_license_number') }}"
                                        placeholder="Номер лицензии на производство"/>
                             </div>
@@ -699,7 +731,8 @@
 
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-additional_usage_conditions">Дополнительные
-                                условия использования </label>
+                                условия использования <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-additional_usage_conditions"
                                       class="input-group-text @error('additional_usage_conditions') text-danger icon-border @enderror">
@@ -708,6 +741,7 @@
                                 <input type="text" id="basic-icon-default-additional_usage_conditions"
                                        class="form-control @error('additional_usage_conditions') is-invalid @enderror"
                                        name="additional_usage_conditions"
+                                       required
                                        value="{{ old('additional_usage_conditions') }}"
                                        placeholder="Дополнительные условия использования"/>
                             </div>
@@ -718,7 +752,8 @@
 
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-prescription_category">Категория
-                                рецепта </label>
+                                рецепта <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-prescription_category"
                                       class="input-group-text @error('prescription_category') text-danger icon-border @enderror">
@@ -727,6 +762,7 @@
                                 <input type="text" id="basic-icon-default-prescription_category"
                                        class="form-control @error('prescription_category') is-invalid @enderror"
                                        name="prescription_category"
+                                       required
                                        value="{{ old('prescription_category') }}"
                                        placeholder="Категория рецепта"/>
                             </div>
@@ -737,7 +773,8 @@
 
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-specific_features">Индивидуальные
-                                особенности </label>
+                                особенности <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-specific_features"
                                       class="input-group-text @error('specific_features') text-danger icon-border @enderror">
@@ -746,6 +783,7 @@
                                 <input type="text" id="basic-icon-default-specific_features"
                                        class="form-control @error('specific_features') is-invalid @enderror"
                                        name="specific_features"
+                                       required
                                        value="{{ old('specific_features') }}"
                                        placeholder="Индивидуальные особенности"/>
                             </div>
@@ -774,7 +812,8 @@
                     </div>
                     <div class="row g-3">
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-risk_assessment"> Оценка риска </label>
+                            <label class="form-label" for="basic-icon-default-risk_assessment"> Оценка риска <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-risk_assessment"
                                       class="input-group-text @error('risk_assessment') text-danger icon-border @enderror">
@@ -783,6 +822,7 @@
                                 <input type="text" id="basic-icon-default-risk_assessment"
                                        class="form-control @error('risk_assessment') is-invalid @enderror"
                                        name="risk_assessment"
+                                       required
                                        value="{{ old('risk_assessment') }}"
                                        placeholder="Оценка риска"/>
                             </div>
@@ -792,7 +832,8 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-warnings">Предупреждения </label>
+                            <label class="form-label" for="basic-icon-default-warnings">Предупреждения <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-warnings"
                                       class="input-group-text @error('warnings') text-danger icon-border @enderror">
@@ -801,6 +842,7 @@
                                 <input type="text" id="basic-icon-default-warnings"
                                        class="form-control @error('warnings') is-invalid @enderror"
                                        name="warnings"
+                                       required
                                        value="{{ old('warnings') }}"
                                        placeholder="Предупреждения"/>
                             </div>
@@ -811,7 +853,8 @@
 
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-safety_in_use">Безопасность в
-                                использовании </label>
+                                использовании <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-safety_in_use"
                                       class="input-group-text @error('safety_in_use') text-danger icon-border @enderror">
@@ -820,6 +863,7 @@
                                 <input type="text" id="basic-icon-default-safety_in_use"
                                        class="form-control @error('safety_in_use') is-invalid @enderror"
                                        name="safety_in_use"
+                                       required
                                        value="{{ old('safety_in_use') }}"
                                        placeholder="Безопасность в использовании"/>
                             </div>

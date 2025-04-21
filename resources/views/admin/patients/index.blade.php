@@ -34,9 +34,71 @@
     <div class="card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-header">Пациенты </h5>
-            <a href="{{ route('patients.create') }}" class="btn btn-primary "
-               style="margin-right: 22px;">Создать</a>
+            <div>
+                <button class="btn btn-link collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#filtersCollapse">
+                    <i class="bx bx-filter-alt"></i> Фильтры
+                </button>
+                <a href="{{ route('patients.create') }}" class="btn btn-primary "
+                   style="margin-right: 22px;">Создать</a>
+            </div>
         </div>
+
+        <div id="filtersCollapse"
+             class="collapse @if(request('department_id') || request('birth_date') || request('staff_id') || request('full_name')) show @endif">
+            <div class="card-body">
+                <form method="GET" action="{{ route('patients.index') }}">
+                    <div class="row g-3">
+                        <div class="col-md-3 form-group">
+                            <label class="form-label" for="full_name">ФИО</label>
+                            <div class="input-group input-group-merge">
+                                <input type="text" name="full_name" value="{{ request("full_name") }}"
+                                       id="full_name"
+                                       class="form-control"
+                                       placeholder="ФИО"/>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 form-group">
+                            <label class="form-label" for="basic-icon-birth-date">Дата рождения </label>
+                            <div class="input-group input-group-merge">
+                                    <span id="basic-icon-birth-date2" class="input-group-text"><i
+                                            class="bx bx-calendar"></i></span>
+                                <input type="text" name="birth_date" value="{{ request("birth_date") }}"
+                                       id="basic-icon-birth-date"
+                                       class="form-control flatpickr-date"
+                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2"/>
+                            </div>
+                        </div>
+
+                        @php
+                            $filters = [
+                                ['id' => 'department', 'label' => 'Отделения', 'items' => $departments],
+                                ['id' => 'staff', 'label' => 'Врач', 'items' => $staffs],
+                            ];
+                        @endphp
+
+                        @foreach($filters as $filter)
+                            <div class="col-md-3 form-group">
+                                <label for="{{ $filter['id'] }}">{{ $filter['label'] }}</label>
+                                <select id="{{ $filter['id'] }}" name="{{ $filter['id'] }}_id"
+                                        class="form-control select2">
+                                    <option value="">Все</option>
+                                    @foreach($filter['items'] as $item)
+                                        <option value="{{ $item->id }}"
+                                            @selected(request("{$filter['id']}_id") == $item->id)>
+                                            {{ $item->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endforeach
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Применить фильтр</button>
+                </form>
+            </div>
+        </div>
+
         <div class="card-datatable table-responsive">
             <table class="datatables-users table border-top">
                 <thead>
@@ -44,6 +106,7 @@
                     <th>#</th>
                     <th>Имя</th>
                     <th>Фамилия</th>
+                    <th>Отчество</th>
                     <th>Дата рождения</th>
                     <th>Пол</th>
                     <th>Гражданство</th>
@@ -57,6 +120,7 @@
                         <td>{{ $patient->id }}</td>
                         <td>{{ $patient->first_name }}</td>
                         <td>{{ $patient->last_name }}</td>
+                        <td>{{ $patient->middle_name }}</td>
                         <td>{{ $patient->birth_date }}</td>
                         <td>{{ $patient->gender }}</td>
                         <td>{{ $patient->citizenship }}</td>

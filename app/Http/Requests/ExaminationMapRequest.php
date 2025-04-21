@@ -29,6 +29,7 @@ class ExaminationMapRequest extends FormRequest
             'complaints' => 'nullable|string',
             'general_anamnesises' => 'nullable|string',
             'disease_history' => 'nullable|string',
+            'is_outpatient' => 'sometimes|boolean',
 
             // analyze
             'laboratory_id' => 'nullable',

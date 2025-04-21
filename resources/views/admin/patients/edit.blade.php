@@ -908,19 +908,24 @@
                             <h6 class="mb-0">Новая обращение</h6>
                         </div>
 
-                        <div>
-                            <label class="form-label" for="basic-icon-default-visit-dates">Дата посещения </label>
-                            <div class="input-group input-group-merge">
-                                <input type="date" id="basic-icon-default-visit-dates"
-                                       class="form-control flatpickr-date @error('admission_date') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD" name="admission_date"
-                                       value="{{ old('admission_date') }}"
-                                       aria-describedby="basic-icon-default-visit-dates2"/>
-                            </div>
-                            @error('admission_date')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+{{--                        <div>--}}
+{{--                            <label class="form-label" for="basic-icon-default-visit-dates">Дата посещения </label>--}}
+{{--                            <div class="input-group input-group-merge">--}}
+{{--                                <input type="date" id="basic-icon-default-visit-dates"--}}
+{{--                                       class="form-control flatpickr-date @error('admission_date') is-invalid @enderror"--}}
+{{--                                       placeholder="YYYY-MM-DD" name="admission_date"--}}
+{{--                                       value="{{ old('admission_date') }}"--}}
+{{--                                       aria-describedby="basic-icon-default-visit-dates2"/>--}}
+{{--                            </div>--}}
+{{--                            @error('admission_date')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
+                        <input type="hidden"
+                               placeholder="YYYY-MM-DD" name="admission_date"
+                               value="{{ now()->format('Y-m-d')  }}"
+                               required
+                               aria-describedby="basic-icon-default-visit-dates2"/>
 
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-doctors">Лечащий врач</label>

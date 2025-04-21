@@ -22,8 +22,8 @@
             <p><strong>Лечащий врач:</strong> {{ $mapDetails['doctor']['name'] }}
                 ({{ $mapDetails['doctor']['speciality'] }})</p>
             <p><strong>Учреждение:</strong> {{ $mapDetails['institution']['name'] }}</p>
-            <p><strong>Адрес:</strong> {{ $mapDetails['institution']['address'] }}</p>
-            <p><strong>Контакты:</strong> {{ $mapDetails['institution']['contacts'] }}</p>
+
+            <p><strong>Форма лечения:</strong> {{ $mapDetails['is_outpatient'] ? 'Амбулаторно' : 'Стационарно'}}</p>
         </div>
     </div>
 
@@ -146,4 +146,108 @@
             @endif
         </div>
     </div>
+
+    <div class="card mt-3">
+        <div class="card-datatable table-responsive col-12">
+            <div class="card-header">
+                <h5>Опросники</h5>
+            </div>
+            @if($mapDetails['examinations']['surveyResponses']->isNotEmpty())
+                <table class="datatables-users table border-top">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Опросник</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($mapDetails['examinations']['surveyResponses']->sortByDesc('id')->take(5) as $response)
+                        <tr>
+                            <td>{{$response->id}}</td>
+                            <td>
+                                <p class="text-primary">{{ $response->survey->title }}</p>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-info view-response"
+                                        data-id="{{ $response->id }}"
+                                        data-bs-toggle="modal" data-bs-target="#responseModal">
+                                    Просмотр
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+
+                <!-- Модальное окно -->
+                <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="responseModalLabel">Ответы опросника</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="response-content">
+                                    <p class="text-muted">Загрузка...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="card-body">
+                    <p>Данные опросника отсутствуют.</p>
+                </div>
+            @endif
+        </div>
+    </div>
+@endsection
+@section('scripts')
+    <script>
+        $('.view-response').on('click', function () {
+            let responseId = $(this).data('id');
+            let modalBody = $('#response-content');
+
+            modalBody.html('<p class="text-muted">Загрузка...</p>');
+
+            $.ajax({
+                url: `/api/surveys-response/show/${responseId}`,
+                type: 'GET',
+                success: function (response) {
+                    console.log(response);
+
+                    let html = `<h6 class="text-primary">${response.survey.title}</h6>`;
+
+                    if (response.answers.length > 0) {
+                        response.answers.forEach((answer, index) => {
+                            let localizedAnswer = answer.answer;
+
+                            if (localizedAnswer.toLowerCase() === 'yes') localizedAnswer = 'Да';
+                            if (localizedAnswer.toLowerCase() === 'no') localizedAnswer = 'Нет';
+
+                            html += `
+                        <div class="mb-3 form-check">
+                            <label class="form-check-label">
+                                <strong>${index + 1}. ${answer.question.question}</strong>
+                                <br>Ответ: <span class="text-success">${localizedAnswer}</span>
+                            </label>
+                        </div>
+                    `;
+                        });
+                    } else {
+                        html += '<p class="text-muted">Ответов нет</p>';
+                    }
+
+                    modalBody.html(html);
+                },
+                error: function () {
+                    modalBody.html('<p class="text-danger">Ошибка загрузки данных</p>');
+                }
+            });
+        });
+    </script>
 @endsection

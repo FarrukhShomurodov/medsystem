@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Staff extends Model
@@ -43,4 +44,13 @@ class Staff extends Model
         return $this->hasOne(StaffProfessionalData::class);
     }
 
+    public function schedule(): HasOne
+    {
+        return $this->hasOne(StaffSchedule::class);
+    }
+
+    public function absence(): HasMany
+    {
+        return $this->hasMany(StaffAbsence::class);
+    }
 }

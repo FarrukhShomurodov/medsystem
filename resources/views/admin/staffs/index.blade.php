@@ -48,6 +48,7 @@
                     <th>#</th>
                     <th>Имя</th>
                     <th>Фамилия</th>
+                    <th>Статус</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -57,6 +58,14 @@
                         <td>{{ $staff->id }}</td>
                         <td>{{ $staff->name }}</td>
                         <td>{{ $staff->last_name }}</td>
+                        <td>
+                            @if (\App\Models\StaffAbsence::isAbsent($staff->id))
+                                <span class="badge bg-danger">Не работает</span>
+                            @else
+                                <span class="badge bg-success">На работе</span>
+                            @endif
+
+                        </td>
                         <td>
                             <div class="d-inline-block text-nowrap">
                                 <button class="btn btn-sm btn-icon"

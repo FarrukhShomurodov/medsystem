@@ -156,5 +156,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         ->except(['index', 'create'])
         ->middleware(ExaminationMapIsActive::class);
 
-    Route::get('patient/map/create/{patient}', [ExaminationMapController::class, 'create'])->name('patient.map.create');
+    Route::get('patient/map/create/{patient}', [ExaminationMapController::class, 'create'])
+        ->name('patient.map.create')
+        ->middleware(ExaminationMapIsActive::class);;
 });

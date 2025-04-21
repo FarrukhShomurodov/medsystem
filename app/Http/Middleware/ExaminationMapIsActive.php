@@ -15,9 +15,14 @@ class ExaminationMapIsActive
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->route()->action['as'] == 'patient.map.create' && $request->patient->examinationMaps()->where('is_active', 1)->count() >= 1) {
+            return redirect()->back()->withErrors(['Завершить работу с активной картой пациента!']);
+        }
+
         if ($request->route()->action['as'] == 'maps.show' || is_null($request->map)) {
             return $next($request);
         }
+
 
         return !$request->map->is_active ? redirect()->back()->withErrors(['Карта не активна!']) : $next($request);
     }

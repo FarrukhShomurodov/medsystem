@@ -345,35 +345,61 @@
                             <div id="medications-container">
                                 @foreach($service->medications as $index => $medication)
                                     <div class="row mb-2 medication-row">
-                                        <div class="col-sm-3">
-                                            <select name="medications[]" class="form-control medication-select"
+                                        <div class="col-sm-4">
+                                            <select name="medications[]" class="form-control medication-select select2"
                                                     required>
-                                                <option value="{{ $medication->id }}"
-                                                        selected>{{ $medication->name }}</option>
+                                                @foreach($medications as $medicaton)
+                                                    <option value="{{ $medicaton->id }}" @selected($medicaton->id == $medication->id)>{{ $medicaton->name }}</option>
+                                                @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-sm-2">
-                                            <input type="text"
-                                                   name="dosages[]"
+                                        <div class="col-sm-4">
+                                            <input type="text" name="dosages[]"
                                                    class="form-control"
+                                                   value="{{$medication->pivot->dosage}}"
                                                    placeholder="Дозировка"
-                                                   value="{{ old('dosages.'.$index, $medication->pivot->dosage) }}"
                                                    required>
                                         </div>
-                                        <div class="col-sm-2">
-                                            <input type="text"
-                                                   name="admission_periods[]"
+                                        <div class="col-sm-4">
+                                            <input type="text" name="medication_notes[]"
                                                    class="form-control"
-                                                   placeholder="Период приёма"
-                                                   value="{{ old('admission_periods.'.$index, $medication->pivot->admission_period) }}"
-                                                   required>
+                                                   value="{{$medication->pivot->notes}}"
+                                                   placeholder="Примечания"></input>
                                         </div>
+
+                                        <div class="col-12 mb-3 mt-3">
+                                            <label class="form-label fw-semibold">Период приёма</label>
+                                            <div class="admission-period-wrapper border rounded p-2">
+                                                <div class="d-flex align-items-center gap-2 mb-2">
+                                                    <select class="form-select w-auto admission-hour">
+                                                        @for($h = 0; $h < 24; $h++)
+                                                            <option
+                                                                value="{{ sprintf('%02d', $h) }}">{{ sprintf('%02d', $h) }}</option>
+                                                        @endfor
+                                                    </select>
+                                                    <span>:</span>
+                                                    <select class="form-select w-auto admission-minute">
+                                                        @for($m = 0; $m < 60; $m += 5)
+                                                            <option
+                                                                value="{{ sprintf('%02d', $m) }}">{{ sprintf('%02d', $m) }}</option>
+                                                        @endfor
+                                                    </select>
+                                                    <button type="button"
+                                                            class="btn btn-outline-success btn-add-time"
+                                                            title="Добавить время">
+                                                        <i class="fas fa-clock"></i>
+                                                    </button>
+                                                </div>
+
+                                                <div class="admission-times-list d-flex flex-wrap gap-2"></div>
+
+                                                <input type="hidden" name="admission_periods[]" class="admission-hidden-input"
+                                                       value="{{ $medication->pivot->admission_period }}"
+                                                       data-times="{{ $medication->pivot->admission_period }}">
+                                            </div>
+                                        </div>
+
                                         <div class="col-sm-3">
-            <textarea name="medication_notes[]"
-                      class="form-control"
-                      placeholder="Примечания">{{ old('medication_notes.'.$index, $medication->pivot->notes) }}</textarea>
-                                        </div>
-                                        <div class="col-sm-2">
                                             <button type="button" class="btn btn-danger btn-remove-medication">
                                                 <i class="fas fa-trash"></i>
                                             </button>
@@ -388,28 +414,56 @@
 
                             <template id="medication-template">
                                 <div class="row mb-2 medication-row">
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-4">
                                         <select name="medications[]" class="form-control medication-select"
-                                                required></select>
+                                                required>
+                                            <option selected disabled>Выберите медикамент</option>
+                                        </select>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-4">
                                         <input type="text" name="dosages[]"
                                                class="form-control"
                                                placeholder="Дозировка"
                                                required>
                                     </div>
-                                    <div class="col-sm-2">
-                                        <input type="text" name="admission_periods[]"
+                                    <div class="col-sm-4">
+                                        <input type="text" name="medication_notes[]"
                                                class="form-control"
-                                               placeholder="Период приёма"
-                                               required>
+                                               placeholder="Примечания"></input>
                                     </div>
+
+
+                                    <div class="col-12 mb-3 mt-3">
+                                        <label class="form-label fw-semibold">Период приёма</label>
+                                        <div class="admission-period-wrapper border rounded p-2">
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <select class="form-select w-auto admission-hour">
+                                                    @for($h = 0; $h < 24; $h++)
+                                                        <option
+                                                            value="{{ sprintf('%02d', $h) }}">{{ sprintf('%02d', $h) }}</option>
+                                                    @endfor
+                                                </select>
+                                                <span>:</span>
+                                                <select class="form-select w-auto admission-minute">
+                                                    @for($m = 0; $m < 60; $m += 5)
+                                                        <option
+                                                            value="{{ sprintf('%02d', $m) }}">{{ sprintf('%02d', $m) }}</option>
+                                                    @endfor
+                                                </select>
+                                                <button type="button" class="btn btn-outline-success btn-add-time"
+                                                        title="Добавить время">
+                                                    <i class="fas fa-clock"></i>
+                                                </button>
+                                            </div>
+
+                                            <div class="admission-times-list d-flex flex-wrap gap-2"></div>
+
+                                            <input type="hidden" name="admission_periods[]"
+                                                   class="admission-hidden-input">
+                                        </div>
+                                    </div>
+
                                     <div class="col-sm-3">
-                <textarea name="medication_notes[]"
-                          class="form-control"
-                          placeholder="Примечания"></textarea>
-                                    </div>
-                                    <div class="col-sm-2">
                                         <button type="button" class="btn btn-danger btn-remove-medication">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -706,6 +760,69 @@
             const containerMedicaments = document.getElementById('medications-container');
             const templateMedicaments = document.getElementById('medication-template');
 
+            $('.medication-select').each(function () {
+                initMedicationSelect(this);
+            });
+
+            $('.admission-hidden-input').each(function () {
+                const $input = $(this);
+                const $wrapper = $input.closest('.admission-period-wrapper');
+                const $list = $wrapper.find('.admission-times-list');
+
+                const times = ($input.data('times') || '').split(',');
+                times.forEach(function (time) {
+                    if (!time) return;
+                    const $chip = $(`
+                <span class="badge bg-secondary d-flex align-items-center gap-1" data-time="${time}">
+                    ${time}
+                    <button type="button" class="btn-close btn-close-white btn-sm ms-1" aria-label="Удалить"></button>
+                </span>
+            `);
+                    $list.append($chip);
+                });
+            });
+
+            $(containerMedicaments).on('click', '.btn-add-time', function () {
+                const $wrapper = $(this).closest('.admission-period-wrapper');
+                const hour = $wrapper.find('.admission-hour').val();
+                const minute = $wrapper.find('.admission-minute').val();
+                const time = `${hour}:${minute}`;
+
+                const $timesList = $wrapper.find('.admission-times-list');
+
+                // Если уже есть такое время — не добавлять
+                if ($timesList.find(`[data-time="${time}"]`).length > 0) return;
+
+                const $chip = $(`
+                    <span class="badge bg-secondary d-flex align-items-center gap-1" data-time="${time}">
+                        ${time}
+                        <button type="button" class="btn-close btn-close-white btn-sm ms-1" aria-label="Удалить"></button>
+                    </span>
+                `);
+
+                $timesList.append($chip);
+
+                updateHiddenAdmissionInput($wrapper);
+            });
+
+            // Удаление времени
+            $(containerMedicaments).on('click', '.admission-times-list .btn-close', function () {
+                const $wrapper = $(this).closest('.admission-period-wrapper');
+                $(this).closest('[data-time]').remove();
+                updateHiddenAdmissionInput($wrapper);
+            });
+
+            // Обновление скрытого input
+            function updateHiddenAdmissionInput($wrapper) {
+                const times = [];
+                $wrapper.find('.admission-times-list [data-time]').each(function () {
+                    times.push($(this).data('time'));
+                });
+
+                $wrapper.find('.admission-hidden-input').val(times.join(','));
+            }
+
+
             function initMedicationSelect(element) {
                 $(element).select2({
                     tags: true,
@@ -714,9 +831,35 @@
                     createTag: function (params) {
                         return {
                             id: params.term,
-                            text: params.term
+                            text: params.term + ' (новый)'
                         };
                     }
+                });
+
+                bindMedicationChange(element);
+            }
+
+
+            function bindMedicationChange(select) {
+                $(select).on('select2:select', function (e) {
+                    const selectedId = e.params.data.id;
+                    const $row = $(this).closest('.medication-row');
+                    const $dosageInput = $row.find('input[name="dosages[]"]');
+
+                    // Если это не число, значит пользователь ввёл новый медикамент
+                    if (isNaN(selectedId)) {
+                        $dosageInput.val('');
+                        return;
+                    }
+
+                    fetch(`/api/medication/show/${selectedId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            $dosageInput.val(data.dosage ?? '');
+                        })
+                        .catch(() => {
+                            $dosageInput.val('');
+                        });
                 });
             }
 
@@ -732,6 +875,7 @@
             $(containerMedicaments).on('click', '.btn-remove-medication', function () {
                 $(this).closest('.medication-row').remove();
             });
+
         });
     </script>
 @endsection

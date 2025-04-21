@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Медицинская система | Просмотр опросника</title>
+    <title>Медицинская система | Просмотр мед. документа</title>
 @endsection
 
 @section('content')
     <h6 class="py-3 breadcrumb-wrapper mb-4">
         <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('surveys.index') }}">Опросники </a> /</span>Просмотр
+                                             href="{{ route('surveys.index') }}">Мед. документы </a> /</span>Просмотр
     </h6>
 
     <div class="card shadow-sm mb-4">

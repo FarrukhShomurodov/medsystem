@@ -10,6 +10,23 @@ use Illuminate\Validation\Rule;
 class StaffRequest extends FormRequest
 {
     /**
+     * Asence
+     * @param $validator
+     * @return void
+     */
+    public function withValidator($validator): void
+    {
+        $validator->sometimes([
+            'absence_start_date',
+            'absence_end_date',
+            'absence_reason',
+            'absence_description',
+        ], 'required', function ($input) {
+            return $input->absence_start_date || $input->absence_end_date || $input->absence_reason || $input->absence_description;
+        });
+    }
+
+    /**
      * @return array<string>
      */
     public function rules(): array
@@ -52,6 +69,14 @@ class StaffRequest extends FormRequest
             'passport_series' => 'required|string|max:255',
             'INN' => 'required|string|max:255',
             'SNILS' => 'required|string|max:255',
+
+            // schedule
+            'day_start' => 'required|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
+            'day_end' => 'required|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
+            'start_time' => 'required',
+            'end_time' => 'required|after:start_time',
+            'reception_start' => 'required',
+            'reception_end' => 'required|after:reception_start'
         ];
     }
 }

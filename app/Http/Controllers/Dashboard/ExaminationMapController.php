@@ -18,6 +18,7 @@ use App\Models\Survey;
 use App\Services\ExaminationService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Carbon;
 
 class ExaminationMapController
 {
@@ -45,6 +46,7 @@ class ExaminationMapController
     {
         $mapDetails = [
             'id' => $map->id,
+            'is_outpatient' => $map->is_outpatient,
             'patient' => [
                 'id' => $map->patient->id,
                 'full_name' => $map->patient->first_name . ' ' . $map->patient->last_name . ' ' . $map->patient->middle_name,
@@ -56,8 +58,6 @@ class ExaminationMapController
             ],
             'institution' => [
                 'name' => $map->department->name,
-                'address' => $map->department->address,
-                'contacts' => $map->department->phone,
             ],
             'admission' => [
                 'date' => $map->admission_date,
@@ -87,6 +87,7 @@ class ExaminationMapController
                     ];
                 }),
                 'services' => $map->services,
+                'surveyResponses' => $map->surveyResponses,
             ],
             'created_at' => $map->created_at->format('d.m.Y'),
         ];
@@ -97,9 +98,16 @@ class ExaminationMapController
 
     public function create(Patient $patient): View
     {
+        $today = Carbon::parse($date ?? now());
         $doctors = Staff::whereHas('professionalData', function ($query) {
             $query->where('position_id', 1);
-        })->get();
+        })->with(['absence' => function ($query) {
+            $query->latest()->limit(1);
+        }])->get()->filter(function ($staff) use ($today) {
+            $absence = $staff->absence->first();
+            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
+            return !$isAbsent;
+        });
 
         $institutions = Department::query()->get();
         $laboratories = Laboratory::query()->get();
@@ -110,7 +118,15 @@ class ExaminationMapController
         //service
         $procedures = Procedure::query()->get();
         $medications = Medication::query()->get();
-        $staffs = Staff::query()->get();
+
+        $staffs = Staff::with(['absence' => function ($query) {
+            $query->latest()->limit(1);
+        }])->get()->filter(function ($staff) use ($today) {
+            $absence = $staff->absence->first();
+            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
+            return !$isAbsent;
+        });
+
         $services = Service::query()->where('is_active', true)->get();
 
         return view('admin.maps.create', compact('doctors', 'institutions', 'patient', 'laboratories', 'types', 'equipments', 'methods', 'procedures', 'medications', 'staffs',
@@ -127,9 +143,18 @@ class ExaminationMapController
 
     public function edit(ExaminationMap $map): View
     {
+        $today = Carbon::parse($date ?? now());
+
         $doctors = Staff::whereHas('professionalData', function ($query) {
             $query->where('position_id', 1);
-        })->get();
+        })->with(['absence' => function ($query) {
+            $query->latest()->limit(1);
+        }])->get()->filter(function ($staff) use ($today) {
+            $absence = $staff->absence->first();
+            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
+            return !$isAbsent;
+        });
+
         $institutions = Department::query()->get();
         $patients = Patient::query()->get();
         $laboratories = Laboratory::query()->get();
@@ -140,7 +165,15 @@ class ExaminationMapController
         //service
         $procedures = Procedure::query()->get();
         $medications = Medication::query()->get();
-        $staffs = Staff::query()->get();
+
+        $staffs = Staff::with(['absence' => function ($query) {
+            $query->latest()->limit(1);
+        }])->get()->filter(function ($staff) use ($today) {
+            $absence = $staff->absence->first();
+            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
+            return !$isAbsent;
+        });
+
         $surveys = Survey::query()->get();
         $services = Service::query()->where('is_active', true)->get();
 

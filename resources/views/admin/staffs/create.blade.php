@@ -51,6 +51,13 @@
                     <span class="bs-stepper-label">Документы</span>
                 </button>
             </div>
+            <div class="line"></div>
+            <div class="step" data-target="#schedule">
+                <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle">5</span>
+                    <span class="bs-stepper-label">График работы</span>
+                </button>
+            </div>
         </div>
 
         <div class="bs-stepper-content">
@@ -773,6 +780,106 @@
                                        placeholder="СНИЛС" aria-label="СНИЛС" required aria-describedby="SNILS"/>
                             </div>
                             @error('SNILS')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Навигация -->
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
+                            </button>
+                            <button class="btn btn-primary btn-next">
+                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- График работы -->
+                <div id="schedule" class="content">
+                    <div class="content-header mb-3">
+                        <h6 class="mb-0">График работы</h6>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label" for="day_start">С каких дней: <span
+                                    class="text-danger">*</span></label>
+
+                            <select id="day_start" name="day_start"
+                                    class="form-control select2 @error('day_start') is-invalid @enderror" required>
+                                @foreach(\App\Models\StaffSchedule::DAY_START as $day)
+                                    <option
+                                        value="{{ $day }}" @selected($day == old('day_start'))>
+                                        {{ \App\Models\StaffSchedule::getDayOfWeekLabel($day) }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('day_start')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="day_end">По какой день: <span
+                                    class="text-danger">*</span></label>
+
+                            <select id="day_end" name="day_end"
+                                    class="form-control select2 @error('day_end') is-invalid @enderror" required>
+                                @foreach(\App\Models\StaffSchedule::DAY_END as $day)
+                                    <option
+                                        value="{{ $day }}" @selected($day == old('day_end'))>
+                                        {{ \App\Models\StaffSchedule::getDayOfWeekLabel($day) }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('day_end')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="start_time">Время начала смены: <span
+                                    class="text-danger">*</span></label>
+                            <input id="start_time" type="time" name="start_time"
+                                   class="form-control @error('start_time') is-invalid @enderror" required
+                                   value="{{ old('start_time') }}">
+                            @error('start_time')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="end_time">Время окончания смены: <span
+                                    class="text-danger">*</span></label>
+                            <input id="end_time" type="time" name="end_time"
+                                   class="form-control @error('end_time') is-invalid @enderror" required
+                                   value="{{ old('end_time') }}">
+                            @error('end_time')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="reception_start">Начало приёма: <span
+                                    class="text-danger">*</span></label>
+                            <input id="reception_start" type="time" name="reception_start"
+                                   class="form-control @error('reception_start') is-invalid @enderror"
+                                   value="{{ old('reception_start') }}" required>
+                            @error('reception_start')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="reception_end">Окончание приёма: <span
+                                    class="text-danger">*</span></label>
+                            <input id="reception_end" type="time" name="reception_end"
+                                   class="form-control @error('reception_end') is-invalid @enderror"
+                                   value="{{ old('reception_end') }}" required>
+                            @error('reception_end')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

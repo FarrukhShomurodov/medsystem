@@ -7,8 +7,6 @@ use App\Models\Allegory;
 use App\Models\ChronicDisease;
 use App\Models\City;
 use App\Models\Department;
-use App\Models\Doctor;
-use App\Models\Institution;
 use App\Models\MedicalDevice;
 use App\Models\Patient;
 use App\Models\Region;
@@ -16,6 +14,8 @@ use App\Models\Staff;
 use App\Services\PatientService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class PatientController
 {
@@ -26,14 +26,45 @@ class PatientController
         $this->service = $service;
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
+        $departments = Department::query()->select(['id', 'name'])->get();
+
+        $today = Carbon::parse($date ?? now());
+        $staffs = Staff::whereHas('professionalData', function ($query) {
+            $query->where('position_id', 1);
+        })->with(['absence' => function ($query) {
+            $query->latest()->limit(1);
+        }])->get()->filter(function ($staff) use ($today) {
+            $absence = $staff->absence->first();
+            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
+            return !$isAbsent;
+        });
+
+
         $patients = Patient::query()
-            ->select(['id', 'first_name', 'last_name', 'birth_date', 'gender', 'citizenship', 'passport_series'])
+            ->select(['id', 'first_name', 'last_name', 'middle_name', 'birth_date', 'gender', 'citizenship', 'passport_series'])
             ->orderBy('id', 'desc')
+            ->when($request->filled('full_name'), function ($query) use ($request) {
+                $term = $request->input('full_name');
+                $query->where(\DB::raw("CONCAT_WS(' ', first_name, last_name, middle_name)"), 'ILIKE', '%' . $term . '%');
+            })
+            ->when($request->filled('birth_date'), function ($query) use ($request) {
+                $query->where('birth_date', '>=', $request->input('birth_date'));
+            })
+            ->when($request->filled('department_id'), function ($query) use ($request) {
+                $query->whereHas('examinationMaps', function ($q) use ($request) {
+                    $q->where('is_active', true)->where('department_id', $request->input('department_id'));
+                });
+            })
+            ->when($request->filled('staff_id'), function ($query) use ($request) {
+                $query->whereHas('examinationMaps', function ($q) use ($request) {
+                    $q->where('is_active', true)->where('staff_id', $request->input('staff_id'));
+                });
+            })
             ->paginate(10);
 
-        return view('admin.patients.index', compact('patients'));
+        return view('admin.patients.index', compact('patients', 'departments', 'staffs'));
     }
 
     public function show(Patient $patient): View
@@ -77,7 +108,7 @@ class PatientController
             ],
             'history' => [
                 'maps' => $patient->examinationMaps()->orderBy('id', 'desc')->get(),
-                'map_is_active' => $patient->examinationMaps()->where('is_active', 1)->count() > 1 ? false : true,
+                'map_is_active' => $patient->examinationMaps()->where('is_active', 1)->count() >= 1 ? false : true,
             ],
             'patient_id' => $patient->id
         ];
@@ -89,9 +120,18 @@ class PatientController
     {
         $regions = Region::query()->get();
         $cities = City::query()->get();
+
+        $today = Carbon::parse($date ?? now());
         $doctors = Staff::whereHas('professionalData', function ($query) {
             $query->where('position_id', 1);
-        })->get();
+        })->with(['absence' => function ($query) {
+            $query->latest()->limit(1);
+        }])->get()->filter(function ($staff) use ($today) {
+            $absence = $staff->absence->first();
+            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
+            return !$isAbsent;
+        });
+
         $institutions = Department::query()->get();
         $allegories = Allegory::query()->get();
         $devices = MedicalDevice::query()->get();
@@ -112,9 +152,18 @@ class PatientController
     {
         $regions = Region::query()->get();
         $cities = City::query()->get();
+
+        $today = Carbon::parse($date ?? now());
         $doctors = Staff::whereHas('professionalData', function ($query) {
             $query->where('position_id', 1);
-        })->get();
+        })->with(['absence' => function ($query) {
+            $query->latest()->limit(1);
+        }])->get()->filter(function ($staff) use ($today) {
+            $absence = $staff->absence->first();
+            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
+            return !$isAbsent;
+        });
+
         $institutions = Department::query()->get();
         $allegories = Allegory::query()->get();
         $devices = MedicalDevice::query()->get();

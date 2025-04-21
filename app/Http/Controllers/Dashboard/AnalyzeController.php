@@ -14,6 +14,7 @@ use App\Models\Staff;
 use App\Services\AnalyzeService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Carbon;
 
 class AnalyzeController
 {
@@ -39,9 +40,16 @@ class AnalyzeController
     public function create(): View
     {
         $types = AnalyzeType::query()->get();
+        $today = Carbon::parse($date ?? now());
         $doctors = Staff::whereHas('professionalData', function ($query) {
             $query->where('position_id', 1);
-        })->get();
+        })->with(['absence' => function ($query) {
+            $query->latest()->limit(1);
+        }])->get()->filter(function ($staff) use ($today) {
+            $absence = $staff->absence->first();
+            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
+            return !$isAbsent;
+        });
         $laboratories = Laboratory::query()->get();
         $equipments = Equipment::query()->where('status', 'работает')->get();
         $methods = AnalyzeMethod::query()->get();
@@ -62,9 +70,16 @@ class AnalyzeController
     public function edit(Analyze $analyze): View
     {
         $types = AnalyzeType::query()->get();
+        $today = Carbon::parse($date ?? now());
         $doctors = Staff::whereHas('professionalData', function ($query) {
             $query->where('position_id', 1);
-        })->get();
+        })->with(['absence' => function ($query) {
+            $query->latest()->limit(1);
+        }])->get()->filter(function ($staff) use ($today) {
+            $absence = $staff->absence->first();
+            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
+            return !$isAbsent;
+        });
         $laboratories = Laboratory::query()->get();
         $equipments = Equipment::query()->where('status', 'работает')->get();
         $methods = AnalyzeMethod::query()->get();

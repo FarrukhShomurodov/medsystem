@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Медицинская система | Редактировать опросник</title>
+    <title>Медицинская система | Редактировать мед. документ</title>
 @endsection
 
 @section('content')
     <h6 class="py-3 breadcrumb-wrapper mb-4">
         <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('surveys.index') }}">Опросники</a> /</span>Редактировать
+                                             href="{{ route('surveys.index') }}">Мед. документы</a> /</span>Редактировать
     </h6>
 
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
@@ -26,11 +26,13 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Редактировать</h5>
         </div>
+
         <div class="card-body">
             <form action="{{ route('surveys.update', $survey->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
+                {{-- Тип --}}
                 <div class="mb-3">
                     <label class="form-label" for="survey_type">Тип <span class="text-danger">*</span></label>
                     <select name="survey_type_id"
@@ -49,12 +51,13 @@
                     @enderror
                 </div>
 
+                {{-- Заголовок --}}
                 <div class="mb-3">
                     <label class="form-label" for="title">Заголовок <span class="text-danger">*</span></label>
                     <div class="input-group input-group-merge">
-                        <span id="title" class="input-group-text @error('title') text-danger icon-border @enderror">
-                            <i class="bx bx-rename"></i>
-                        </span>
+                    <span id="title" class="input-group-text @error('title') text-danger icon-border @enderror">
+                        <i class="bx bx-rename"></i>
+                    </span>
                         <input type="text" id="title"
                                class="form-control @error('title') is-invalid @enderror"
                                placeholder="Заголовок" name="title"
@@ -65,143 +68,79 @@
                     @enderror
                 </div>
 
+                {{-- Кнопки добавления --}}
                 <div class="mb-3">
                     <label class="form-label">Вопросы</label>
                     <button type="button" id="add-question" class="btn btn-success btn-sm ms-2">Добавить вопрос</button>
                     <button type="button" id="add-group" class="btn btn-primary btn-sm ms-2">Создать группу</button>
                 </div>
 
-                <div id="questions-container">
-
-                    @foreach ($survey->groups as $groupIndex => $group)
-                        <div class="question-group border p-3 mb-3">
-                            <button type="button" class="btn-close float-end remove-group"></button>
-                            <h5>Группа: <input type="text" name="groups[{{ $groupIndex }}][title]"
-                                               class="form-control d-inline-block w-50"
-                                               value="{{ old("groups.$groupIndex.title", $group->title) }}" required>
-                            </h5>
-                            <button type="button" class="btn btn-sm btn-success add-group-question"
-                                    data-group="{{ $groupIndex }}">Добавить вопрос в группу
+                {{-- Вкладки --}}
+                <ul class="nav nav-tabs mt-4" id="questionTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="general-tab" data-bs-toggle="tab"
+                                data-bs-target="#general-content" type="button" role="tab"
+                                aria-controls="general-content" aria-selected="true">
+                            Общие вопросы
+                        </button>
+                    </li>
+                    @foreach($survey->groups->sortBy('id') as $groupIndex => $group)
+                        <li class="nav-item position-relative" role="presentation" id="tab-wrapper-{{ $groupIndex }}">
+                            <button class="nav-link pe-5" id="tab-{{ $groupIndex }}" data-bs-toggle="tab"
+                                    data-bs-target="#group-content-{{ $groupIndex }}" type="button" role="tab"
+                                    aria-controls="group-content-{{ $groupIndex }}" aria-selected="false">
+                                {{ $group->title ?? "Группа $groupIndex" }}
                             </button>
-                            <div class="group-questions mt-3">
-                                @foreach ($group->questions as $questionIndex => $question)
-                                    <div class="question-item border p-3 mb-3">
-                                        <button type="button" class="btn-close float-end remove-question"></button>
-                                        <div class="mb-2">
-                                            <label class="form-label">Вопрос <span class="text-danger">*</span></label>
-                                            <input type="text"
-                                                   name="groups[{{ $groupIndex }}][questions][{{ $questionIndex }}][question]"
-                                                   class="form-control"
-                                                   value="{{ old("groups.$groupIndex.questions.$questionIndex.question", $question->question) }}"
-                                                   required>
-                                        </div>
-                                        <div class="mb-2">
-                                            <label class="form-label">Тип вопроса</label>
-                                            <select
-                                                name="groups[{{ $groupIndex }}][questions][{{ $questionIndex }}][type]"
-                                                class="form-control question-type" required>
-                                                <option value="boolean" @selected($question->type == 'boolean')>Да /
-                                                    Нет
-                                                </option>
-                                                <option value="choice" @selected($question->type == 'choice')>Список
-                                                </option>
-                                                <option value="text" @selected($question->type == 'text')>Текст</option>
-                                            </select>
-                                        </div>
-                                        @if($question->type === 'choice')
-                                            <div class="options-container">
-                                                <label class="form-label">Опции</label>
-                                                <div class="option-list">
-                                                    @if($question->options)
-                                                        @foreach ($question->options as $optionIndex => $option)
-                                                            <div class="d-flex align-items-center mb-2 option-item">
-                                                                <input type="text"
-                                                                       name="groups[{{ $groupIndex }}][questions][{{ $questionIndex }}][options][{{ $optionIndex }}][text]"
-                                                                       class="form-control me-2"
-                                                                       value="{{ old("groups.$groupIndex.questions.$questionIndex.options.$optionIndex.text", $option['text']) }}"
-                                                                       placeholder="Опция" required>
-                                                                <input type="number"
-                                                                       name="groups[{{ $groupIndex }}][questions][{{ $questionIndex }}][options][{{ $optionIndex }}][score]"
-                                                                       class="form-control option-score"
-                                                                       value="{{ old("groups.$groupIndex.questions.$questionIndex.options.$optionIndex.score", $option['score']) }}"
-                                                                       placeholder="Баллы" min="0">
-                                                                <button type="button"
-                                                                        class="btn btn-sm btn-danger ms-1 remove-option">
-                                                                    ✖
-                                                                </button>
-                                                            </div>
-                                                        @endforeach
-                                                    @endif
-                                                </div>
-                                                <button type="button" class="btn btn-sm btn-outline-primary add-option">
-                                                    Добавить опцию
-                                                </button>
-                                            </div>
-                                        @endif
-                                    </div>
-                                @endforeach
+
+                            <button type="button"
+                                    class="btn-close position-absolute top-50 translate-middle-y end-0 me-2 remove-group-tab"
+                                    data-tab-id="tab-{{ $groupIndex }}" data-content-id="group-content-{{ $groupIndex }}"
+                                    aria-label="Удалить"></button>
+                        </li>
+                    @endforeach
+                </ul>
+
+                {{-- Контент вкладки --}}
+                <div class="tab-content border border-top-0 p-3" id="questionTabContent">
+                    {{-- Общие вопросы --}}
+                    <div class="tab-pane fade show active" id="general-content" role="tabpanel"
+                         aria-labelledby="general-tab">
+                        <div id="general-questions" class="mt-3">
+                            @foreach ($survey->questions as $index => $question)
+                                @if(is_null($question->group_id))
+                                    @include('admin.surveys._question', [
+                                        'question' => $question,
+                                        'prefix' => "questions[$index]"
+                                    ])
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Вопросы по группам --}}
+                    @foreach ($survey->groups->sortBy('id') as $groupIndex => $group)
+                        <div class="tab-pane fade" id="group-content-{{ $groupIndex }}" role="tabpanel" aria-labelledby="tab-{{ $groupIndex }}">
+                            <div class="tab-questions-container mt-3" data-group="{{$group->title}}">
+                                <h5>Группа:
+                                    <input type="text" name="groups[{{ $groupIndex }}][title]"
+                                           class="form-control d-inline-block w-50"
+                                           value="{{ old("groups.$groupIndex.title", $group->title) }}" required>
+                                </h5>
+                                <div class="group-questions mt-3">
+                                    @foreach ($group->questions as $questionIndex => $question)
+                                        @include('admin.surveys._question', [
+                                            'question' => $question,
+                                            'prefix' => "groups[$groupIndex][questions][$questionIndex]",
+                                            'groupIndex' => $groupIndex
+                                        ])
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     @endforeach
-
-                    @foreach ($survey->questions as $index => $question)
-                        @if(is_null($question->group_id))
-                            <div class="question-item border p-3 mb-3" data-id="{{ $question->id }}">
-                                <button type="button" class="btn-close float-end remove-question"></button>
-                                <input type="hidden" name="questions[{{ $index }}][id]" value="{{ $question->id }}">
-
-                                <div class="mb-2">
-                                    <label class="form-label">Вопрос <span class="text-danger">*</span></label>
-                                    <input type="text" name="questions[{{ $index }}][question]" class="form-control"
-                                           value="{{ old("questions.$index.question", $question->question) }}" required>
-                                </div>
-
-                                <div class="mb-2">
-                                    <label class="form-label" for="form-label-{{$index}}">Тип вопроса</label>
-                                    <select id="form-label-{{$index}}" name="questions[{{ $index }}][type]"
-                                            class="form-control question-type select2" required>
-                                        <option value="boolean" @selected($question->type == 'boolean')>Да / Нет
-                                        </option>
-                                        <option value="choice" @selected($question->type == 'choice')>Список</option>
-                                        <option value="text" @selected($question->type == 'text')>Текст</option>
-                                    </select>
-                                </div>
-
-                                <div class="options-container @if($question->type !== 'choice') d-none @endif">
-                                    <div class="options-container">
-                                        <label class="form-label">Опции</label>
-                                        <div class="option-list">
-                                            @if($question->options)
-                                                @foreach($question->options as $optionIndex => $option)
-                                                    <div class="d-flex align-items-center mb-2 option-item">
-                                                        <input type="text"
-                                                               name="questions[{{ $index }}][options][{{ $optionIndex }}][text]"
-                                                               value="{{ $option['text'] }}"
-                                                               class="form-control me-2" placeholder="Опция" required>
-                                                        <input type="number"
-                                                               name="questions[{{ $index }}][options][{{ $optionIndex }}][score]"
-                                                               value="{{ $option['score'] }}"
-                                                               class="form-control option-score" placeholder="Баллы"
-                                                               min="0">
-                                                        <button type="button"
-                                                                class="btn btn-sm btn-danger ms-1 remove-option">✖
-                                                        </button>
-                                                    </div>
-                                                @endforeach
-                                            @endif
-                                        </div>
-
-                                        <button type="button" class="btn btn-sm btn-outline-primary add-option">Добавить
-                                            опцию
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    @endforeach
                 </div>
 
-                <button type="submit" class="btn btn btn-warning mt-3">Редактировать</button>
+                <button type="submit" class="btn btn-warning mt-3">Редактировать</button>
             </form>
         </div>
     </div>
@@ -210,54 +149,117 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
-            let questionIndex = $(".question-item").length;
-            let groupIndex = $(".question-group").length;
+            let groupIndex = {{ count($survey->groups) }};
+            let questionIndex = {{ count($survey->questions) }};
 
+            // Добавить группу
+            $("#add-group").click(function () {
+                let groupTitle = prompt("Введите название группы:");
+                if (!groupTitle) return;
+
+                let groupKey = groupTitle.replace(/\s+/g, '_').toLowerCase(); // Безопасный ключ
+                let tabId = `tab-${groupKey}`;
+                let contentId = `tab-content-${groupKey}`;
+
+                // Не создаём дубликат, если уже есть
+                if ($(`#${tabId}`).length > 0) {
+                    $(`#${tabId}`).tab("show");
+                    return;
+                }
+
+                // Вкладка
+                $("#questionTabs").append(`
+                    <li class="nav-item position-relative" role="presentation" id="tab-wrapper-${groupKey}">
+                        <button class="nav-link pe-5" id="${tabId}" data-bs-toggle="tab" data-bs-target="#${contentId}"
+                                type="button" role="tab" aria-controls="${contentId}" aria-selected="false">
+                            ${groupTitle}
+                        </button>
+                        <button type="button" class="btn-close position-absolute top-50 translate-middle-y end-0 me-2 remove-group-tab"
+                                data-tab-id="${tabId}" data-content-id="${contentId}" aria-label="Удалить"></button>
+                        <input type="hidden" name="groups[${groupIndex}][title]" value="${groupTitle}" required>
+                    </li>
+            `);
+
+                // Контент
+                $("#questionTabContent").append(`
+                <div class="tab-pane fade" id="${contentId}" role="tabpanel" aria-labelledby="${tabId}">
+                    <div class="tab-questions-container mt-3" data-group="${groupKey}"></div>
+                </div>
+            `);
+
+                // Активируем вкладку
+                $(`#${tabId}`).tab("show");
+
+                groupIndex++;
+            });
+
+            // Добавить обычный вопрос
             $("#add-question").click(function () {
-                let questionHtml = `
-                    <div class="question-item border p-3 mb-3">
-                        <button type="button" class="btn-close float-end remove-question"></button>
-                        <div class="mb-2">
-                            <label class="form-label">Вопрос <span class="text-danger">*</span></label>
-                            <input type="text" name="questions[${questionIndex}][question]" class="form-control" required>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">Тип вопроса</label>
-                            <select name="questions[${questionIndex}][type]" class="form-control question-type" required>
-                                <option value="boolean">Да / Нет</option>
-                                <option value="choice">Список</option>
-                                <option value="text">Текст</option>
-                            </select>
-                        </div>
-                        <div class="options-container d-none">
-                            <label class="form-label">Опции</label>
-                            <div class="option-list"></div>
-                            <button type="button" class="btn btn-sm btn-outline-primary add-option">Добавить опцию</button>
-                        </div>
-                    </div>`;
+                const activePane = $(".tab-pane.active");
+                const groupKey = activePane.find(".tab-questions-container").data("group") || "general";
 
-                $("#questions-container").append(questionHtml);
+                let questionContainer = activePane.find(".tab-questions-container");
+                if (questionContainer.length === 0) {
+                    // Для вкладки "Общие вопросы"
+                    questionContainer = $("#general-questions");
+                }
+
+                let groupIdx = getGroupIndex(groupKey);
+
+                const questionHtml = `
+                <div class="question-item border p-3 mb-3">
+                    <button type="button" class="btn-close float-end remove-question"></button>
+                    <div class="mb-2">
+                        <label class="form-label">Вопрос <span class="text-danger">*</span></label>
+                        <input type="text" name="${groupKey === 'general'
+                    ? `questions[${questionIndex}][question]`
+                    : `groups[${groupIdx}][questions][${questionIndex}][question]`}" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Тип вопроса</label>
+                        <select name="${groupKey === 'general'
+                    ? `questions[${questionIndex}][type]`
+                    : `groups[${groupIdx}][questions][${questionIndex}][type]`}" class="form-control question-type" required>
+                            <option value="boolean">Да / Нет</option>
+                            <option value="choice">Список</option>
+                            <option value="text">Текст</option>
+                        </select>
+                    </div>
+                    <div class="options-container d-none">
+                        <label class="form-label">Опции</label>
+                        <div class="option-list"></div>
+                        <button type="button" class="btn btn-sm btn-outline-primary add-option">Добавить опцию</button>
+                    </div>
+                </div>
+            `;
+
+                questionContainer.append(questionHtml);
                 $(".question-type").select2();
                 questionIndex++;
             });
 
-            // Добавить группу вопросов
-            $("#add-group").click(function () {
-                let groupHtml = `
-                    <div class="question-group border p-3 mb-3">
-                        <button type="button" class="btn-close float-end remove-group"></button>
-                        <h5>Группа: <input type="text" name="groups[${groupIndex}][title]" class="form-control d-inline-block w-50" required></h5>
-                        <button type="button" class="btn btn-sm btn-success add-group-question" data-group="${groupIndex}">Добавить вопрос в группу</button>
-                        <div class="group-questions mt-3"></div>
-                    </div>`;
-                $("#questions-container").append(groupHtml);
-                groupIndex++;
+            // Удаление вкладки
+            $(document).on("click", ".remove-group-tab", function () {
+                let tabId = $(this).data("tab-id");
+                let contentId = $(this).data("content-id");
+
+                // Удаляем вкладку и контент
+                $(`#${tabId}`).closest("li").remove();
+                $(`#${contentId}`).remove();
+
+                // Активируем первую вкладку
+                $("#questionTabs button:first").tab("show");
             });
 
+            // Удаление вопроса
+            $(document).on("click", ".remove-question", function () {
+                $(this).closest(".question-item").remove();
+            });
+
+            // Показать/скрыть опции
             $(document).on("change", ".question-type", function () {
                 let parent = $(this).closest(".question-item");
                 let optionsContainer = parent.find(".options-container");
-
                 if ($(this).val() === "choice") {
                     optionsContainer.removeClass("d-none");
                 } else {
@@ -266,39 +268,47 @@
                 }
             });
 
-            // Добавить вопрос в группу
-            $(document).on("click", ".add-group-question", function () {
-                let groupId = $(this).data("group");
-                let groupContainer = $(this).siblings(".group-questions");
+            // Добавить опцию
+            $(document).on("click", ".add-option", function () {
+                let questionItem = $(this).closest(".question-item");
+                let optionsContainer = questionItem.find(".option-list");
+                let index = optionsContainer.children().length;
 
-                let questionHtml = `
-                    <div class="question-item border p-3 mb-3">
-                        <button type="button" class="btn-close float-end remove-question"></button>
-                        <div class="mb-2">
-                            <label class="form-label">Вопрос <span class="text-danger">*</span></label>
-                            <input type="text" name="groups[${groupId}][questions][${questionIndex}][question]" class="form-control" required>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">Тип вопроса</label>
-                            <select name="groups[${groupId}][questions][${questionIndex}][type]" class="form-control question-type" required>
-                                <option value="boolean">Да / Нет</option>
-                                <option value="choice">Список</option>
-                                <option value="text">Текст</option>
-                            </select>
-                        </div>
-                        <div class="options-container d-none">
-                            <label class="form-label">Опции</label>
-                            <div class="option-list"></div>
-                            <button type="button" class="btn btn-sm btn-outline-primary add-option-to-group">Добавить опцию</button>
-                        </div>
-                    </div>`;
+                // Определяем группу
+                let groupKey = questionItem.closest(".tab-pane").find(".tab-questions-container").data("group") || "general";
 
-                groupContainer.append(questionHtml);
-                $(".question-type").select2();
-                questionIndex++;
+                // Индекс группы
+                let groupIdx = getGroupIndex(groupKey);
+
+                // Определяем индекс вопроса
+                let qNameInput = questionItem.find('input[name$="[question]"]');
+                let nameAttr = qNameInput.attr("name");
+                let qIndexMatch = nameAttr.match(/\[(\d+)]\[question]/);
+                let qIndex = qIndexMatch ? qIndexMatch[1] : 0;
+
+                let optionHtml = `
+                    <div class="d-flex align-items-center mb-2 option-item">
+                        <input type="text" name="${groupKey === 'general'
+                    ? `questions[${qIndex}][options][${index}][text]`
+                    : `groups[${groupIdx}][questions][${qIndex}][options][${index}][text]`}"
+                               class="form-control me-2" placeholder="Опция" required>
+                        <input type="number" name="${groupKey === 'general'
+                    ? `questions[${qIndex}][options][${index}][score]`
+                    : `groups[${groupIdx}][questions][${qIndex}][options][${index}][score]`}"
+                               class="form-control option-score" placeholder="Баллы" min="0">
+                        <button type="button" class="btn btn-sm btn-danger ms-1 remove-option">✖</button>
+                    </div>
+                `;
+
+                optionsContainer.append(optionHtml);
             });
 
+            // Удаление опции
+            $(document).on("click", ".remove-option", function () {
+                $(this).closest(".option-item").remove();
+            });
 
+            // Отправка формы
             $('form').submit(function () {
                 $('.question-item').each(function () {
                     let options = [];
@@ -316,55 +326,17 @@
                 });
             });
 
-            // Добавить опцию
-            $(document).on("click", ".add-option", function () {
-                let optionsContainer = $(this).siblings(".option-list");
-                let index = optionsContainer.children().length;
+            function getGroupIndex(groupKey) {
+                let index = -1;
 
-                let optionHtml = `
-                    <div class="d-flex align-items-center mb-2 option-item">
-                        <input type="text" name="questions[${questionIndex - 1}][options][${index}][text]"
-                               class="form-control me-2" placeholder="Опция" required>
-                        <input type="number" name="questions[${questionIndex - 1}][options][${index}][score]"
-                               class="form-control option-score" placeholder="Баллы" min="0">
-                        <button type="button" class="btn btn-sm btn-danger ms-1 remove-option">✖</button>
-                    </div>
-                `;
+                $(".tab-questions-container").each(function (i) {
+                    if ($(this).data("group") === groupKey) {
+                        index = i;
+                    }
+                });
 
-                optionsContainer.append(optionHtml);
-            });
-
-            $(document).on("click", ".add-option-to-group", function () {
-                let optionsContainer = $(this).siblings(".option-list");
-                let index = optionsContainer.children().length;
-
-                let optionHtml = `
-                    <div class="d-flex align-items-center mb-2 option-item">
-                        <input type="text" name="groups[${groupIndex - 1}][questions][${questionIndex - 1}][options][${index}][text]"
-                               class="form-control me-2" placeholder="Опция" required>
-                        <input type="number" name="groups[${groupIndex - 1}][questions][${questionIndex - 1}][options][${index}][score]"
-                               class="form-control option-score" placeholder="Баллы" min="0">
-                        <button type="button" class="btn btn-sm btn-danger ms-1 remove-option">✖</button>
-                    </div>
-                `;
-
-                optionsContainer.append(optionHtml);
-            });
-
-            // Удаление вопроса
-            $(document).on("click", ".remove-question", function () {
-                $(this).closest(".question-item").remove();
-            });
-
-            // Удаление группы
-            $(document).on("click", ".remove-group", function () {
-                $(this).closest(".question-group").remove();
-            });
-
-            // Удаление опции
-            $(document).on("click", ".remove-option", function () {
-                $(this).closest(".option-item").remove();
-            });
+                return index;
+            }
         });
     </script>
 @endsection

@@ -15,6 +15,9 @@
     display: none;
 }
 
+.tab-content{
+    border-radius: 0px !important;
+}
 .app-brand-logo.demo {
     -ms-flex-align: center;
     align-items: center;

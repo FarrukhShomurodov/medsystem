@@ -23,6 +23,7 @@ return new class extends Migration {
             $table->longText('general_anamnesises')->nullable();
             $table->longText('disease_history')->nullable();
             $table->boolean('is_active')->default(1);
+            $table->boolean('is_outpatient')->default(0);
             $table->timestamps();
         });
     }

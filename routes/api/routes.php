@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Dashboard\Api\ExaminationMapController;
 use App\Http\Controllers\Dashboard\Api\ImageController;
+use App\Http\Controllers\Dashboard\Api\MedicationController;
 use App\Http\Controllers\Dashboard\Api\StaffController;
 use App\Http\Controllers\Dashboard\Api\SurveyController;
 use App\Http\Controllers\Dashboard\Api\SurveyResponseController;
@@ -23,3 +24,6 @@ Route::get('/surveys/{survey}/questions', [SurveyController::class, 'getQuestion
 
 // surveys response
 Route::get('/surveys-response/show/{response}', [SurveyResponseController::class, 'show']);
+
+// medication
+Route::get('/medication/show/{medication}', [MedicationController::class, 'show']);

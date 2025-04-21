@@ -15,7 +15,7 @@ class SurveyService
     {
 
         $survey = DB::transaction(function () use ($validated) {
-            if (!is_numeric($validated['survey_type_id'])) {
+            if (!is_int($validated['survey_type_id'])) {
                 $validated['survey_type_id'] = SurveyType::query()->create(['name' => $validated['survey_type_id']])->id;
             }
 
