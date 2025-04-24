@@ -798,90 +798,63 @@
 
                 <!-- График работы -->
                 <div id="schedule" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">График работы</h6>
-                    </div>
                     <div class="row g-3">
-                        <div class="col-sm-6">
-                            <label class="form-label" for="day_start">С каких дней: <span
-                                    class="text-danger">*</span></label>
+                        <div id="weekly-schedule">
+                            @foreach(\App\Models\DayOfWeek::query()->get() as $i => $day)
+                                <div class="days-schedule mb-4">
+                                    <h5>{{ $day->name }}</h5>
 
-                            <select id="day_start" name="day_start"
-                                    class="form-control select2 @error('day_start') is-invalid @enderror" required>
-                                @foreach(\App\Models\StaffSchedule::DAY_START as $day)
-                                    <option
-                                        value="{{ $day }}" @selected($day == old('day_start'))>
-                                        {{ \App\Models\StaffSchedule::getDayOfWeekLabel($day) }}
-                                    </option>
-                                @endforeach
-                            </select>
+                                    <input type="hidden" name="days[{{ $i }}][id]" value="{{ $day->id }}">
+                                    <!-- Переключатель -->
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input day-toggle" type="checkbox"
+                                               id="toggle-{{ $day->id }}" checked>
+                                        <label class="form-check-label" for="toggle-{{ $day->id }}">Рабочий день</label>
+                                    </div>
 
-                            @error('day_start')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                                    <!-- График работы -->
+                                    <h6 class="px-2 py-1 bg-light border-start border-4 border-primary">График
+                                        работы</h6>
+                                    <div class="time-ranges working-schedule" data-index="{{ $i }}">
+                                        <div class="time-range row g-2" data-range-index="0">
+                                            <div class="col-md-5">
+                                                <label class="form-label">Начало</label>
+                                                <input type="time" name="days[{{ $i }}][work][0][start_time]"
+                                                       class="form-control start-time" value="08:00">
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label class="form-label">Конец</label>
+                                                <input type="time" name="days[{{ $i }}][work][0][end_time]"
+                                                       class="form-control end-time" value="12:00">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-primary add-range mt-2" data-index="{{ $i }}"
+                                            data-type="work">Добавить рабочий интервал
+                                    </button>
 
-                        <div class="col-sm-6">
-                            <label class="form-label" for="day_end">По какой день: <span
-                                    class="text-danger">*</span></label>
-
-                            <select id="day_end" name="day_end"
-                                    class="form-control select2 @error('day_end') is-invalid @enderror" required>
-                                @foreach(\App\Models\StaffSchedule::DAY_END as $day)
-                                    <option
-                                        value="{{ $day }}" @selected($day == old('day_end'))>
-                                        {{ \App\Models\StaffSchedule::getDayOfWeekLabel($day) }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                            @error('day_end')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="start_time">Время начала смены: <span
-                                    class="text-danger">*</span></label>
-                            <input id="start_time" type="time" name="start_time"
-                                   class="form-control @error('start_time') is-invalid @enderror" required
-                                   value="{{ old('start_time') }}">
-                            @error('start_time')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="end_time">Время окончания смены: <span
-                                    class="text-danger">*</span></label>
-                            <input id="end_time" type="time" name="end_time"
-                                   class="form-control @error('end_time') is-invalid @enderror" required
-                                   value="{{ old('end_time') }}">
-                            @error('end_time')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="reception_start">Начало приёма: <span
-                                    class="text-danger">*</span></label>
-                            <input id="reception_start" type="time" name="reception_start"
-                                   class="form-control @error('reception_start') is-invalid @enderror"
-                                   value="{{ old('reception_start') }}" required>
-                            @error('reception_start')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="reception_end">Окончание приёма: <span
-                                    class="text-danger">*</span></label>
-                            <input id="reception_end" type="time" name="reception_end"
-                                   class="form-control @error('reception_end') is-invalid @enderror"
-                                   value="{{ old('reception_end') }}" required>
-                            @error('reception_end')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                    <!-- График приема -->
+                                    <h6 class="px-2 py-1 bg-light border-start border-4 border-success mt-4">График
+                                        приёма</h6>
+                                    <div class="time-ranges reception-schedule" data-index="{{ $i }}">
+                                        <div class="time-range row g-2" data-range-index="0">
+                                            <div class="col-md-5">
+                                                <label class="form-label">Начало</label>
+                                                <input type="time" name="days[{{ $i }}][reception][0][start_time]"
+                                                       class="form-control start-time" value="13:00">
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label class="form-label">Конец</label>
+                                                <input type="time" name="days[{{ $i }}][reception][0][end_time]"
+                                                       class="form-control end-time" value="17:00">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-primary add-range-reception mt-2"
+                                            data-index="{{ $i }}" data-type="reception">Добавить интервал приёма
+                                    </button>
+                                </div>
+                            @endforeach
                         </div>
 
                         <!-- Навигация -->
@@ -901,9 +874,100 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
-            // Initialize Flatpickr
             flatpickr('.flatpickr-date', {dateFormat: 'Y-m-d'});
-            flatpickr('.flatpickr-time', {enableTime: true, noCalendar: true, time_24hr: true});
+
+            // Добавление временного интервала (График работы)
+            $('.add-range').each(function () {
+                $(this).on('click', function () {
+                    const index = $(this).data('index'); // Получаем индекс дня
+                    const $container = $(this).closest('.days-schedule').find('.working-schedule');
+                    const rangeIndex = $container.find('.time-range').length; // Количество интервалов в день
+
+                    // Дублируем первый интервал
+                    const $template = $container.find('.time-range').first().clone();
+
+                    // Устанавливаем новые значения
+                    $template.find('.start-time').val('08:00');
+                    $template.find('.end-time').val('12:00');
+
+                    // Обновляем атрибуты name с уникальными индексами
+                    $template.find('.start-time').attr('name', `days[${index}][work][${rangeIndex}][start_time]`);
+                    $template.find('.end-time').attr('name', `days[${index}][work][${rangeIndex}][end_time]`);
+
+                    // Если кнопки удаления нет — добавляем
+                    if ($template.find('.remove-range').length === 0) {
+                        $template.append(`
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-outline-danger remove-range">×</button>
+                    </div>
+                `);
+                    }
+
+                    // Обработчик удаления интервала
+                    $template.find('.remove-range').on('click', function () {
+                        $(this).closest('.time-range').remove();
+                    });
+
+                    // Вставляем новый интервал
+                    $container.append($template);
+                });
+            });
+
+            // Добавление интервала приёма (График приёма)
+            $('.add-range-reception').each(function () {
+                $(this).on('click', function () {
+                    const index = $(this).data('index'); // Получаем индекс дня
+                    const $container = $(this).closest('.days-schedule').find('.reception-schedule');
+                    const rangeIndex = $container.find('.time-range').length; // Количество интервалов в день
+
+                    // Дублируем первый интервал
+                    const $template = $container.find('.time-range').first().clone();
+
+                    // Устанавливаем новые значения
+                    $template.find('.start-time').val('13:00');
+                    $template.find('.end-time').val('17:00');
+
+                    // Обновляем атрибуты name с уникальными индексами
+                    $template.find('.start-time').attr('name', `days[${index}][reception][${rangeIndex}][start_time]`);
+                    $template.find('.end-time').attr('name', `days[${index}][reception][${rangeIndex}][end_time]`);
+
+                    // Если кнопки удаления нет — добавляем
+                    if ($template.find('.remove-range').length === 0) {
+                        $template.append(`
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-outline-danger remove-range">×</button>
+                    </div>
+                `);
+                    }
+
+                    // Обработчик удаления интервала
+                    $template.find('.remove-range').on('click', function () {
+                        $(this).closest('.time-range').remove();
+                    });
+
+                    // Вставляем новый интервал
+                    $container.append($template);
+                });
+            });
+
+            // Удаление временного интервала
+            $('.remove-range').each(function () {
+                $(this).on('click', function () {
+                    $(this).closest('.time-range').remove();
+                });
+            });
+
+            // Переключение рабочего дня
+            $('.day-toggle').on('change', function () {
+                const isChecked = $(this).is(':checked');
+                const $schedule = $(this).closest('.days-schedule');
+
+                // Визуальное затемнение блока (через класс)
+                $schedule.toggleClass('disabled-day', !isChecked);
+
+                // Отключаем все инпуты и кнопки, кроме самого переключателя
+                $schedule.find('input, button').not(this).prop('disabled', !isChecked);
+            });
         });
     </script>
 @endsection

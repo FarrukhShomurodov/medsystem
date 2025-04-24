@@ -11,12 +11,10 @@ return new class extends Migration {
         Schema::create('staff_schedules', function (Blueprint $table) {
             $table->id();
             $table->foreignId('staff_id')->constrained()->cascadeOnDelete();
-            $table->enum('day_start', StaffSchedule::DAY_START);
-            $table->enum('day_end', StaffSchedule::DAY_END);
+            $table->foreignId('day_of_week_id')->constrained()->cascadeOnDelete();
+            $table->enum('type', StaffSchedule::TYPE);
             $table->time('start_time');
             $table->time('end_time');
-            $table->time('reception_start');
-            $table->time('reception_end');
             $table->timestamps();
         });
     }

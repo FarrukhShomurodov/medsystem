@@ -43,22 +43,6 @@ class StaffController
         return view('admin.staffs.create', compact('specialties', 'positions', 'departments', 'services'));
     }
 
-    public function attachSurveyShow(): View
-    {
-        $staffs = Staff::query()->get();
-        $surveys = Survey::query()->get();
-
-        return view('admin.staffs.attach_surveys', compact('staffs', 'surveys'));
-    }
-
-    public function attachSurvey(AttachSurveyRequest $request): RedirectResponse
-    {
-        $validated = $request->validated();
-        $this->service->attachSurvey((array)$validated);
-
-        return redirect()->route('staffs.index')->with('success', 'Опросники успешно присвоены!');
-    }
-
     public function store(StaffRequest $request): RedirectResponse
     {
         $validated = $request->validated();
@@ -73,8 +57,9 @@ class StaffController
         $specialties = Specialty::query()->get();
         $departments = Department::query()->get();
         $services = Service::query()->where('is_active', true)->get();
+        $surveys = Survey::query()->get();
 
-        return view('admin.staffs.edit', compact('staff', 'specialties', 'positions', 'departments', 'services'));
+        return view('admin.staffs.edit', compact('staff', 'specialties', 'positions', 'departments', 'services', 'surveys'));
     }
 
     public function update(StaffRequest $request, Staff $staff): RedirectResponse

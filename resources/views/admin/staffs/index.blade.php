@@ -34,12 +34,8 @@
     <div class="card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-header">Персонал </h5>
-            <div>
-                <a href="{{ route('staffs.attach.surveys.show') }}" class="btn btn-primary"
-                   style="margin-right: 22px;">Присвоение опросников</a>
-                <a href="{{ route('staffs.create') }}" class="btn btn-primary "
-                   style="margin-right: 22px;">Создать</a>
-            </div>
+            <a href="{{ route('staffs.create') }}" class="btn btn-primary "
+               style="margin-right: 22px;">Создать</a>
         </div>
         <div class="card-datatable table-responsive">
             <table class="datatables-users table border-top">
@@ -59,12 +55,14 @@
                         <td>{{ $staff->name }}</td>
                         <td>{{ $staff->last_name }}</td>
                         <td>
-                            @if (\App\Models\StaffAbsence::isAbsent($staff->id))
-                                <span class="badge bg-danger">Не работает</span>
-                            @else
+                            @php
+                                $isWorking = $staff->isWorkingToday(now());
+                            @endphp
+                            @if ($isWorking)
                                 <span class="badge bg-success">На работе</span>
+                            @else
+                                <span class="badge bg-danger">Не работает</span>
                             @endif
-
                         </td>
                         <td>
                             <div class="d-inline-block text-nowrap">

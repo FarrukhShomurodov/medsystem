@@ -15,6 +15,8 @@ class ExaminationMapRequest extends FormRequest
      */
     public function rules(): array
     {
+//        dd($this->request);
+
         $rules = [
             'patient_id' => 'required|int',
             'staff_id' => 'required|int',
@@ -106,6 +108,9 @@ class ExaminationMapRequest extends FormRequest
             'admission_periods.*' => 'nullable|string|max:100',
             'medication_notes' => 'nullable|array',
             'medication_notes.*' => 'nullable|string|max:500',
+
+            'compatible_medications' => 'nullable',
+            'compatible_dosages' => 'nullable',
         ]);
 
 

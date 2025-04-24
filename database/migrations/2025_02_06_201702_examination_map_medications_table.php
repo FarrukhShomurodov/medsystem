@@ -8,13 +8,12 @@ return new class extends Migration {
 
     public function up(): void
     {
-        Schema::create('patient_service_to_medications_assignment', function (Blueprint $table) {
+        Schema::create('examination_map_medications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_service_id')->constrained('patient_services')->cascadeOnDelete();
+            $table->foreignId('examination_map_id')->constrained('examination_maps')->cascadeOnDelete();
             $table->foreignId('medication_id')->constrained('medications')->cascadeOnDelete();
             $table->string('dosage');
             $table->string('admission_period');
-            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

@@ -67,8 +67,6 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::prefix('staffs')->group(function () {
         Route::resource('', StaffController::class)->names('staffs')->parameter('', 'staff')->except('show');
         Route::resource('/positions', StaffPositionController::class)->names('staffs.position');
-        Route::get('/attach_surveys', [StaffController::class, 'attachSurveyShow'])->name('staffs.attach.surveys.show');
-        Route::post('/attach_surveys', [StaffController::class, 'attachSurvey'])->name('staffs.attach.surveys');
     });
 
     // supplies

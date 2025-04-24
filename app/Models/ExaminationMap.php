@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ExaminationMap extends Model
@@ -55,5 +56,17 @@ class ExaminationMap extends Model
     public function surveyResponses(): HasMany
     {
         return $this->hasMany(SurveyResponses::class, 'examination_map_id');
+    }
+
+    // medication
+    public function medications(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Medication::class,
+            'examination_map_medications',
+            'examination_map_id',
+            'medication_id'
+        )->using(ExaminationMapMedication::class)
+            ->withPivot('dosage', 'admission_period', 'id');
     }
 }

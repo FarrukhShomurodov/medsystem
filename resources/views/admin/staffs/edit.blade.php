@@ -75,9 +75,9 @@
                             <label class="form-label" for="basic-icon-default-company">Имя <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-company2"
-                                  class="input-group-text @error('name') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
+                                            <span id="basic-icon-default-company2"
+                                                  class="input-group-text @error('name') text-danger icon-border @enderror"><i
+                                                    class="bx bx-rename"></i></span>
                                 <input type="text" id="basic-icon-default-company"
                                        class="form-control @error('name') is-invalid @enderror"
                                        placeholder="Имя" aria-label="Имя"
@@ -94,9 +94,9 @@
                             <label class="form-label" for="basic-icon-default-company">Фамилия <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-company2"
-                                  class="input-group-text @error('last_name') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
+                                            <span id="basic-icon-default-company2"
+                                                  class="input-group-text @error('last_name') text-danger icon-border @enderror"><i
+                                                    class="bx bx-rename"></i></span>
                                 <input type="text" id="basic-icon-default-company"
                                        class="form-control @error('last_name') is-invalid @enderror"
                                        placeholder="Фамилия" aria-label="Фамилия"
@@ -113,9 +113,9 @@
                             <label class="form-label" for="basic-icon-default-company">Отчество <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-company2"
-                                  class="input-group-text @error('middle_name') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
+                                            <span id="basic-icon-default-company2"
+                                                  class="input-group-text @error('middle_name') text-danger icon-border @enderror"><i
+                                                    class="bx bx-rename"></i></span>
                                 <input type="text" id="basic-icon-default-company"
                                        class="form-control @error('middle_name') is-invalid @enderror"
                                        placeholder="Отчество" aria-label="Отчество"
@@ -132,10 +132,10 @@
                             <label class="form-label" for="basic-icon-date_birthday">Дата рождение <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('date_birthday') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
+                                                <span id="basic-icon-birth-date2"
+                                                      class="input-group-text @error('date_birthday') text-danger icon-border @enderror">
+                                                    <i class="bx bx-calendar"></i>
+                                                </span>
                                 <input type="text" name="date_birthday"
                                        value="{{ old('date_birthday', $staff->date_birthday) }}"
                                        id="basic-icon-date_birthday"
@@ -191,9 +191,9 @@
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-phone">Телефон </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-phone2"
-                                  class="input-group-text @error('phone') text-danger icon-border @enderror"><i
-                                    class="bx bx-phone"></i></span>
+                                            <span id="basic-icon-default-phone2"
+                                                  class="input-group-text @error('phone') text-danger icon-border @enderror"><i
+                                                    class="bx bx-phone"></i></span>
                                 <input type="text" id="basic-icon-default-phone"
                                        class="form-control phone @error('phone') is-invalid @enderror"
                                        name="phone"
@@ -210,8 +210,9 @@
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-email">Email</label>
                             <div class="input-group input-group-merge">
-                            <span class="input-group-text @error('email') text-danger icon-border @enderror"><i
-                                    class="bx bx-envelope"></i></span>
+                                            <span
+                                                class="input-group-text @error('email') text-danger icon-border @enderror"><i
+                                                    class="bx bx-envelope"></i></span>
                                 <input type="email" id="basic-icon-default-email"
                                        class="form-control @error('email') is-invalid @enderror" placeholder="Email"
                                        name="email"
@@ -229,10 +230,10 @@
                                 Адрес
                             </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-company2"
-                                  class="input-group-text @error('address') text-danger icon-border @enderror">
-                                <i class="bx bx-map"></i>
-                            </span>
+                                            <span id="basic-icon-default-company2"
+                                                  class="input-group-text @error('address') text-danger icon-border @enderror">
+                                                <i class="bx bx-map"></i>
+                                            </span>
                                 <input type="text" id="basic-icon-default-address"
                                        class="form-control @error('address') is-invalid @enderror"
                                        placeholder="Адрес" aria-label="Адрес"
@@ -247,13 +248,13 @@
                         </div>
 
 
-                        {{-- Emergency --}}
+                        {{--                        Emergency--}}
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-email">Экстраный кантакт (ФИО)</label>
                             <div class="input-group input-group-merge">
-                            <span
-                                class="input-group-text @error('emergency_contact_name') text-danger icon-border @enderror"><i
-                                    class="bx bx-envelope"></i></span>
+                                            <span
+                                                class="input-group-text @error('emergency_contact_name') text-danger icon-border @enderror"><i
+                                                    class="bx bx-envelope"></i></span>
                                 <input type="text" id="basic-icon-default-emergency_contact_name"
                                        class="form-control @error('emergency_contact_name') is-invalid @enderror"
                                        placeholder="Экстраный кантакт (ФИО)"
@@ -271,9 +272,9 @@
                             <label class="form-label" for="basic-icon-default-emergency_contact_phone">Экстраный кантакт
                                 (Телефон)</label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-emergency_contact_phone"
-                                  class="input-group-text @error('emergency_contact_phone') text-danger icon-border @enderror"><i
-                                    class="bx bx-phone"></i></span>
+                                            <span id="basic-icon-default-emergency_contact_phone"
+                                                  class="input-group-text @error('emergency_contact_phone') text-danger icon-border @enderror"><i
+                                                    class="bx bx-phone"></i></span>
                                 <input type="text" id="basic-icon-default-emergency_contact_phone"
                                        class="form-control phone @error('emergency_contact_phone') is-invalid @enderror"
                                        name="emergency_contact_phone"
@@ -292,10 +293,10 @@
                                 Экстраный кантакт (кем приходит)
                             </label>
                             <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-company2"
-                                  class="input-group-text @error('emergency_contact_relation') text-danger icon-border @enderror">
-                                <i class="bx bx-map"></i>
-                            </span>
+                                            <span id="basic-icon-default-company2"
+                                                  class="input-group-text @error('emergency_contact_relation') text-danger icon-border @enderror">
+                                                <i class="bx bx-map"></i>
+                                            </span>
                                 <input type="text" id="basic-icon-default-emergency_contact_relation"
                                        class="form-control @error('emergency_contact_relation') is-invalid @enderror"
                                        placeholder=" Экстраный кантакт (кем приходит)"
@@ -435,9 +436,9 @@
                             <label class="form-label" for="basic-icon-default-education_name">Название
                                 Образование </label>
                             <div class="input-group input-group-merge">
-        <span class="input-group-text @error('education_name') text-danger icon-border @enderror">
-            <i class="bx bx-book"></i>
-        </span>
+                        <span class="input-group-text @error('education_name') text-danger icon-border @enderror">
+                            <i class="bx bx-book"></i>
+                        </span>
                                 <input type="text" id="basic-icon-default-education_name"
                                        class="form-control @error('education_name') is-invalid @enderror"
                                        name="education_name"
@@ -456,10 +457,10 @@
                                 <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                       <span
-                                           class="input-group-text @error('education_graduation_year') text-danger icon-border @enderror">
-            <i class="bx bx-calendar"></i>
-        </span>
+                                                       <span
+                                                           class="input-group-text @error('education_graduation_year') text-danger icon-border @enderror">
+                            <i class="bx bx-calendar"></i>
+                        </span>
                                 <input type="text" name="education_graduation_year"
                                        value="{{ old('education_graduation_year', $staff->professionalData->education_graduation_year) }}"
                                        id="basic-icon-education_graduation_year"
@@ -476,10 +477,10 @@
                             <label class="form-label"
                                    for="basic-icon-default-certificate_name">Название сертификата</label>
                             <div class="input-group input-group-merge">
-                                    <span
-                                        class="input-group-text @error('certificate_name') text-danger icon-border @enderror">
-            <i class="bx bx-certification"></i>
-        </span>
+                                                    <span
+                                                        class="input-group-text @error('certificate_name') text-danger icon-border @enderror">
+                            <i class="bx bx-certification"></i>
+                        </span>
                                 <input type="text" id="basic-icon-default-education_name"
                                        class="form-control @error('certificate_name') is-invalid @enderror"
                                        name="certificate_name"
@@ -497,9 +498,9 @@
                             <label class="form-label"
                                    for="basic-icon-default-certificate_number">Номер лицензии </label>
                             <div class="input-group input-group-merge">
-        <span class="input-group-text @error('certificate_number') text-danger icon-border @enderror">
-            <i class="bx bx-id-card"></i>
-        </span>
+                        <span class="input-group-text @error('certificate_number') text-danger icon-border @enderror">
+                            <i class="bx bx-id-card"></i>
+                        </span>
                                 <input type="text" id="basic-icon-default-education_name"
                                        class="form-control @error('certificate_number') is-invalid @enderror"
                                        name="certificate_number"
@@ -518,9 +519,10 @@
                                 <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-        <span class="input-group-text @error('certificate_issue_date') text-danger icon-border @enderror">
-            <i class="bx bx-calendar"></i>
-        </span>
+                        <span
+                            class="input-group-text @error('certificate_issue_date') text-danger icon-border @enderror">
+                            <i class="bx bx-calendar"></i>
+                        </span>
                                 <input type="text" name="certificate_issue_date"
                                        value="{{ old('certificate_issue_date', $staff->professionalData->certificate_issue_date) }}"
                                        id="basic-icon-certificate_issue_date"
@@ -537,9 +539,10 @@
                                 <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-           <span class="input-group-text @error('certificate_validity_period') text-danger icon-border @enderror">
-            <i class="bx bx-time-five"></i>
-        </span>
+                           <span
+                               class="input-group-text @error('certificate_validity_period') text-danger icon-border @enderror">
+                            <i class="bx bx-time-five"></i>
+                        </span>
                                 <input type="text" name="certificate_validity_period"
                                        value="{{ old('certificate_validity_period', $staff->professionalData->certificate_validity_period) }}"
                                        id="basic-icon-certificate_validity_period"
@@ -575,10 +578,10 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
-                                <span id="employment_contract_number"
-                                      class="input-group-text @error('employment_contract_number') text-danger icon-border @enderror">
-                                    <i class="bx bx-file"></i>
-                                </span>
+                                                <span id="employment_contract_number"
+                                                      class="input-group-text @error('employment_contract_number') text-danger icon-border @enderror">
+                                                    <i class="bx bx-file"></i>
+                                                </span>
                                 <input type="text" id="employment_contract_number"
                                        class="form-control @error('employment_contract_number') is-invalid @enderror"
                                        name="employment_contract_number"
@@ -599,10 +602,10 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
-<span id="employment_contract_date_of_signing"
-      class="input-group-text @error('employment_contract_date_of_signing') text-danger icon-border @enderror">
-    <i class="bx bx-calendar"></i>
-</span>
+                <span id="employment_contract_date_of_signing"
+                      class="input-group-text @error('employment_contract_date_of_signing') text-danger icon-border @enderror">
+                    <i class="bx bx-calendar"></i>
+                </span>
                                 <input type="text" name="employment_contract_date_of_signing"
                                        value="{{ old('employment_contract_date_of_signing', $staff->document->employment_contract_date_of_signing) }}"
                                        id="employment_contract_date_of_signing"
@@ -622,10 +625,10 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
-<span id="employment_contract_validity_period"
-      class="input-group-text @error('employment_contract_validity_period') text-danger icon-border @enderror">
-    <i class="bx bx-calendar"></i>
-</span>
+                <span id="employment_contract_validity_period"
+                      class="input-group-text @error('employment_contract_validity_period') text-danger icon-border @enderror">
+                    <i class="bx bx-calendar"></i>
+                </span>
                                 <input type="text" id="employment_contract_validity_period"
                                        class="form-control @error('employment_contract_validity_period') is-invalid @enderror"
                                        name="employment_contract_validity_period" required
@@ -645,10 +648,10 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
-<span id="dismissal_orders_date"
-      class="input-group-text @error('dismissal_orders_date') text-danger icon-border @enderror">
-    <i class="bx bx-calendar"></i>
-</span>
+                <span id="dismissal_orders_date"
+                      class="input-group-text @error('dismissal_orders_date') text-danger icon-border @enderror">
+                    <i class="bx bx-calendar"></i>
+                </span>
                                 <input type="text" name="dismissal_orders_date"
                                        value="{{ old('dismissal_orders_date',  $staff->document->dismissal_orders_date) }}"
                                        id="dismissal_orders_date"
@@ -666,10 +669,10 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
-<span id="dismissal_reception_number"
-      class="input-group-text @error('dismissal_reception_number') text-danger icon-border @enderror">
-    <i class="bx bx-file"></i>
-</span>
+                <span id="dismissal_reception_number"
+                      class="input-group-text @error('dismissal_reception_number') text-danger icon-border @enderror">
+                    <i class="bx bx-file"></i>
+                </span>
                                 <input type="text" id="dismissal_reception_number"
                                        class="form-control @error('dismissal_reception_number') is-invalid @enderror"
                                        name="dismissal_reception_number"
@@ -689,10 +692,10 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
-<span id="dismissal_orders_number"
-      class="input-group-text @error('dismissal_orders_number') text-danger icon-border @enderror">
-    <i class="bx bx-file"></i>
-</span>
+                <span id="dismissal_orders_number"
+                      class="input-group-text @error('dismissal_orders_number') text-danger icon-border @enderror">
+                    <i class="bx bx-file"></i>
+                </span>
                                 <input type="text" id="dismissal_orders_number"
                                        class="form-control @error('dismissal_orders_number') is-invalid @enderror"
                                        name="dismissal_orders_number"
@@ -712,10 +715,10 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
-<span id="dismissal_reception_date"
-      class="input-group-text @error('dismissal_reception_date') text-danger icon-border @enderror">
-    <i class="bx bx-calendar"></i>
-</span>
+                <span id="dismissal_reception_date"
+                      class="input-group-text @error('dismissal_reception_date') text-danger icon-border @enderror">
+                    <i class="bx bx-calendar"></i>
+                </span>
                                 <input type="text" name="dismissal_reception_date"
                                        value="{{ old('dismissal_reception_date', $staff->document->dismissal_reception_date) }}"
                                        id="dismissal_reception_date"
@@ -733,9 +736,10 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
-<span id="passport_series" class="input-group-text @error('passport_series') text-danger icon-border @enderror">
-    <i class="bx bx-id-card"></i>
-</span>
+                <span id="passport_series"
+                      class="input-group-text @error('passport_series') text-danger icon-border @enderror">
+                    <i class="bx bx-id-card"></i>
+                </span>
 
                                 <input type="text" id="passport_series"
                                        class="form-control @error('passport_series') is-invalid @enderror"
@@ -755,9 +759,9 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
-<span id="INN" class="input-group-text @error('INN') text-danger icon-border @enderror">
-    <i class="bx bx-id-card"></i>
-</span>
+                <span id="INN" class="input-group-text @error('INN') text-danger icon-border @enderror">
+                    <i class="bx bx-id-card"></i>
+                </span>
                                 <input type="text" id="INN" class="form-control @error('INN') is-invalid @enderror"
                                        name="INN" value="{{ old('INN', $staff->document->INN) }}"
                                        placeholder="ИНН" aria-label="ИНН" required aria-describedby="INN"/>
@@ -773,15 +777,32 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
-                               <span id="SNILS"
-                                     class="input-group-text @error('SNILS') text-danger icon-border @enderror">
-                                <i class="bx bx-id-card"></i>
-                            </span>
+                                               <span id="SNILS"
+                                                     class="input-group-text @error('SNILS') text-danger icon-border @enderror">
+                                                <i class="bx bx-id-card"></i>
+                                            </span>
                                 <input type="text" id="SNILS" class="form-control @error('SNILS') is-invalid @enderror"
                                        name="SNILS" value="{{ old('SNILS', $staff->document->SNILS) }}"
                                        placeholder="СНИЛС" aria-label="СНИЛС" required aria-describedby="SNILS"/>
                             </div>
                             @error('SNILS')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="surveys">Мед. Документы</label>
+                            <select name="surveys[]"
+                                    class="select2 form-control @error('surveys') is-invalid @enderror"
+                                    id="surveys"
+                                    multiple>
+                                @foreach($surveys as $survey)
+                                    <option
+                                        value="{{ $survey->id }}" @selected(in_array($survey->id, old('surveys', $staff->surveys->pluck('id')->toArray())))> {{ $survey->title }} </option>
+                                @endforeach
+                            </select>
+
+                            @error('surveys')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -804,161 +825,179 @@
                         <h6 class="mb-0">График работы</h6>
                     </div>
                     <div class="row g-3">
-                        <div class="col-sm-6">
-                            <label class="form-label" for="day_start">С каких дней: <span
-                                    class="text-danger">*</span></label>
+                        <div id="weekly-schedule">
+                            @foreach(\App\Models\DayOfWeek::query()->get() as $i => $day)
+                                <div
+                                    class="days-schedule mb-4 {{ $staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'work')->count() == 0 && $staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'reception')->count() == 0 ? 'disabled-day' : '' }}">
+                                    <h5>{{ $day->name }}</h5>
 
-                            <select id="day_start" name="day_start"
-                                    class="form-control select2 @error('day_start') is-invalid @enderror" required>
-                                @foreach(\App\Models\StaffSchedule::DAY_START as $day)
-                                    <option
-                                        value="{{ $day }}" @selected($day == old('day_start' , $staff->schedule->day_start))>
-                                        {{ \App\Models\StaffSchedule::getDayOfWeekLabel($day) }}
-                                    </option>
+                                    <input type="hidden" name="days[{{ $i }}][id]" value="{{ $day->id }}">
+                                    <!-- Переключатель -->
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input day-toggle" type="checkbox"
+                                               id="toggle-{{ $day->id }}" @checked($staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'work')->count() >= 1 && $staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'reception')->count() >= 1)>
+                                        <label class="form-check-label" for="toggle-{{ $day->id }}">Рабочий день</label>
+                                    </div>
+
+                                    <!-- График работы -->
+                                    <h6 class="px-2 py-1 bg-light border-start border-4 border-primary">График
+                                        работы</h6>
+                                    <div class="time-ranges working-schedule" data-index="{{ $i }}">
+                                        @if($staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'work')->count() == 0)
+                                            <div class="time-range row g-2" data-range-index="0">
+                                                <div class="col-md-5">
+                                                    <label class="form-label">Начало</label>
+                                                    <input type="time"
+                                                           name="days[{{ $i }}][work][0][start_time]"
+                                                           class="form-control start-time"
+                                                           value="08:00">
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <label class="form-label">Конец</label>
+                                                    <input type="time"
+                                                           name="days[{{ $i }}][work][0][end_time]"
+                                                           class="form-control end-time"
+                                                           value="18:00">
+                                                </div>
+                                            </div>
+                                        @else
+                                            @foreach($staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'work')->get() as $index => $time)
+                                                <div class="time-range row g-2" data-range-index="0">
+                                                    <div class="col-md-5">
+                                                        <label class="form-label">Начало</label>
+                                                        <input type="time"
+                                                               name="days[{{ $i }}][work][{{$index}}][start_time]"
+                                                               class="form-control start-time"
+                                                               value="{{ $time->start_time }}">
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <label class="form-label">Конец</label>
+                                                        <input type="time"
+                                                               name="days[{{ $i }}][work][{{$index}}][end_time]"
+                                                               class="form-control end-time"
+                                                               value="{{ $time->end_time }}">
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endif
+
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-primary add-range mt-2"
+                                            data-index="{{ $i }}"
+                                            data-type="work">Добавить рабочий интервал
+                                    </button>
+
+                                    <!-- График приема -->
+                                    <h6 class="px-2 py-1 bg-light border-start border-4 border-success mt-4">График
+                                        приёма</h6>
+                                    <div class="time-ranges reception-schedule" data-index="{{ $i }}">
+                                        @if($staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'reception')->count() == 0)
+                                            <div class="time-range row g-2" data-range-index="0">
+                                                <div class="col-md-5">
+                                                    <label class="form-label">Начало</label>
+                                                    <input type="time"
+                                                           name="days[{{ $i }}][reception][0][start_time]"
+                                                           class="form-control start-time"
+                                                           value="08:00">
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <label class="form-label">Конец</label>
+                                                    <input type="time"
+                                                           name="days[{{ $i }}][reception][0][end_time]"
+                                                           class="form-control end-time"
+                                                           value="18:00">
+                                                </div>
+                                            </div>
+                                        @else
+                                            @foreach($staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'reception')->get() as $index => $time)
+                                                <div class="time-range row g-2" data-range-index="0">
+                                                    <div class="col-md-5">
+                                                        <label class="form-label">Начало</label>
+                                                        <input type="time"
+                                                               name="days[{{ $i }}][reception][{{ $index }}][start_time]"
+                                                               class="form-control start-time"
+                                                               value="{{ $time->start_time }}">
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <label class="form-label">Конец</label>
+                                                        <input type="time"
+                                                               name="days[{{ $i }}][reception][{{ $index }}][end_time]"
+                                                               class="form-control end-time"
+                                                               value="{{ $time->end_time }}">
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-primary add-range-reception mt-2"
+                                            data-index="{{ $i }}" data-type="reception">Добавить интервал приёма
+                                    </button>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <hr>
+
+                        <div class="content-header mb-3">
+                            <h6 class="mb-0">Нерабочие дни и периоды</h6>
+                        </div>
+
+                        <div id="absence-container">
+                            @if(!$staff->absence->isEmpty())
+                                @foreach($staff->absence as $index => $absence)
+                                    <div class="row absence-item" data-index="{{ $index }}">
+                                        <div class="col-sm-4">
+                                            <label class="form-label">Тип исключения</label>
+                                            <select name="absence[{{ $index }}][type]"
+                                                    class="form-control select2 select-type">
+                                                @foreach(\App\Models\StaffAbsence::TYPE as $type)
+                                                    <option value="{{ $type }}" @selected($absence->type == $type)>
+                                                        {{ $type == 'day' ? 'Один день' : 'Период' }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <label class="form-label">Дата</label>
+                                            @if($absence->type == 'period')
+                                                <input type="text" name="absence[{{ $index }}][date]"
+                                                       class="form-control absence-period"
+                                                       placeholder="Выберите даты"
+                                                       value="{{ $absence->start_date }} to {{ $absence->end_date }}">
+                                            @else
+                                                <input type="text" name="absence[{{ $index }}][date]"
+                                                       class="form-control flatpickr-date"
+                                                       placeholder="Выберите дату" value="{{ $absence->start_date }}">
+                                            @endif
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <label class="form-label">Причина</label>
+                                            <select name="absence[{{ $index }}][reason]"
+                                                    class="form-control select2 select-reason">
+                                                @foreach(\App\Models\StaffAbsence::REASON as $reason)
+                                                    <option
+                                                        value="{{ $reason }}" @selected($absence->reason == $reason)>
+                                                        {{ \App\Models\StaffAbsence::getReasonLabel($reason) }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-12 mt-2 d-flex align-items-end">
+                                            <button class="btn btn-sm btn-danger remove-absence">Удалить</button>
+                                        </div>
+                                    </div>
                                 @endforeach
-                            </select>
-
-                            @error('day_start')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            @endif
                         </div>
 
-                        <div class="col-sm-6">
-                            <label class="form-label" for="day_end">По какой день: <span
-                                    class="text-danger">*</span></label>
-
-                            <select id="day_end" name="day_end"
-                                    class="form-control select2 @error('day_end') is-invalid @enderror" required>
-                                @foreach(\App\Models\StaffSchedule::DAY_END as $day)
-                                    <option
-                                        value="{{ $day }}" @selected($day == old('day_end', $staff->schedule->day_end))>
-                                        {{ \App\Models\StaffSchedule::getDayOfWeekLabel($day) }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                            @error('day_end')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="start_time">Время начала смены: <span
-                                    class="text-danger">*</span></label>
-                            <input id="start_time" type="time" name="start_time"
-                                   class="form-control @error('start_time') is-invalid @enderror" required
-                                   value="{{ old('start_time', $staff->schedule->start_time) }}">
-                            @error('start_time')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="end_time">Время окончания смены: <span
-                                    class="text-danger">*</span></label>
-                            <input id="end_time" type="time" name="end_time"
-                                   class="form-control @error('end_time') is-invalid @enderror" required
-                                   value="{{ old('end_time', $staff->schedule->end_time) }}">
-                            @error('end_time')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="reception_start">Начало приёма: <span
-                                    class="text-danger">*</span></label>
-                            <input id="reception_start" type="time" name="reception_start"
-                                   class="form-control @error('reception_start') is-invalid @enderror"
-                                   value="{{ old('reception_start', $staff->schedule->reception_start) }}" required>
-                            @error('reception_start')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="reception_end">Окончание приёма: <span
-                                    class="text-danger">*</span></label>
-                            <input id="reception_end" type="time" name="reception_end"
-                                   class="form-control @error('reception_end') is-invalid @enderror"
-                                   value="{{ old('reception_end', $staff->schedule->reception_end) }}" required>
-                            @error('reception_end')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="content-header mb-3 mt-3">
-                        <h6 class="mb-0">Пропуски</h6>
-                    </div>
-                    @php
-                        $latestAbsence = $staff->absence()->latest()->first();
-                    @endphp
-                    <div class="row g-3 mb-3">
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-absence_start_date">С даты: </label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('absence_start_date') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
-                                <input type="text"
-                                       name="absence_start_date"
-                                       id="basic-icon-absence_start_date"
-                                       class="form-control flatpickr-date @error('absence_start_date') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD"
-                                       value="{{ old('absence_start_date', optional($latestAbsence)->start_date) }}"
-                                       aria-describedby="basic-icon-birth-date2"/>
-                            </div>
-                            @error('absence_start_date')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-absence_end_date">По дату: </label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('absence_end_date') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
-                                <input type="text" name="absence_end_date"
-                                       value="{{ old('absence_end_date', optional($latestAbsence)->end_date) }}"
-                                       id="basic-icon-absence_end_date"
-                                       class="form-control flatpickr-date @error('absence_end_date') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2"/>
-                            </div>
-                            @error('absence_end_date')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label" for="absence_reason">Причина отсутствия: </label>
-
-                            <select id="absence_reason" name="absence_reason"
-                                    class="form-control select2 @error('absence_reason') is-invalid @enderror">
-
-                                <option value="">
-                                    Выберите причину
-                                </option>
-
-                                @foreach(\App\Models\StaffAbsence::REASON as $reason)
-                                    <option
-                                        value="{{ $reason }}" @selected($reason == old('absence_reason', optional($latestAbsence)->reason))>
-                                        {{ \App\Models\StaffAbsence::getReasonLabel($reason) }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                            @error('absence_reason')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label" for="absence_description">Комментарий:</label>
-                            <textarea name="absence_description" class="form-control"
-                                      rows="2">{{ old('absence_description', optional($latestAbsence)->description) }}</textarea>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="add-absence">Добавить
+                                нерабочий день/период
+                            </button>
                         </div>
 
                         {{--    Навигация   --}}
@@ -976,10 +1015,180 @@
 @endsection
 
 @section('scripts')
+    <script type="text/template" id="absence-template">
+        <div class="row absence-item" data-index="__INDEX__">
+            <div class="col-sm-4">
+                <label class="form-label">Тип исключения</label>
+                <select name="absence[__INDEX__][type]" class="form-control select2 select-type">
+                    @foreach(\App\Models\StaffAbsence::TYPE as $type)
+                        <option value="{{ $type }}">{{ $type == 'day' ? 'Одинь день' : 'Период' }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-sm-4">
+                <label class="form-label">Дата</label>
+                <input type="text" name="absence[__INDEX__][date]" class="form-control flatpickr-date"
+                       placeholder="Выберите дату">
+            </div>
+            <div class="col-sm-4">
+                <label class="form-label">Причина</label>
+                <select name="absence[__INDEX__][reason]" class="form-control select2 select-reason">
+                    @foreach(\App\Models\StaffAbsence::REASON as $reason)
+                        <option value="{{ $reason }}">{{ \App\Models\StaffAbsence::getReasonLabel($reason) }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-sm-12 mt-2 d-flex align-items-end">
+                <button class="btn btn-sm btn-danger remove-absence">Удалить</button>
+            </div>
+        </div>
+    </script>
+
     <script>
         $(document).ready(function () {
             flatpickr('.flatpickr-date', {dateFormat: 'Y-m-d'});
-            flatpickr('.flatpickr-time', {enableTime: true, noCalendar: true, time_24hr: true});
+
+            // Добавление временного интервала (График работы)
+            $('.add-range').each(function () {
+                $(this).on('click', function () {
+                    const index = $(this).data('index'); // Получаем индекс дня
+                    const $container = $(this).closest('.days-schedule').find('.working-schedule');
+                    const rangeIndex = $container.find('.time-range').length; // Количество интервалов в день
+
+                    // Дублируем первый интервал
+                    const $template = $container.find('.time-range').first().clone();
+
+                    // Устанавливаем новые значения
+                    $template.find('.start-time').val('08:00');
+                    $template.find('.end-time').val('12:00');
+
+                    // Обновляем атрибуты name с уникальными индексами
+                    $template.find('.start-time').attr('name', `days[${index}][work][${rangeIndex}][start_time]`);
+                    $template.find('.end-time').attr('name', `days[${index}][work][${rangeIndex}][end_time]`);
+
+                    // Если кнопки удаления нет — добавляем
+                    if ($template.find('.remove-range').length === 0) {
+                        $template.append(`
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-outline-danger remove-range">×</button>
+                    </div>
+                `);
+                    }
+
+                    // Обработчик удаления интервала
+                    $template.find('.remove-range').on('click', function () {
+                        $(this).closest('.time-range').remove();
+                    });
+
+                    // Вставляем новый интервал
+                    $container.append($template);
+                });
+            });
+
+            // Добавление интервала приёма (График приёма)
+            $('.add-range-reception').each(function () {
+                $(this).on('click', function () {
+                    const index = $(this).data('index'); // Получаем индекс дня
+                    const $container = $(this).closest('.days-schedule').find('.reception-schedule');
+                    const rangeIndex = $container.find('.time-range').length; // Количество интервалов в день
+
+                    // Дублируем первый интервал
+                    const $template = $container.find('.time-range').first().clone();
+
+                    // Устанавливаем новые значения
+                    $template.find('.start-time').val('13:00');
+                    $template.find('.end-time').val('17:00');
+
+                    // Обновляем атрибуты name с уникальными индексами
+                    $template.find('.start-time').attr('name', `days[${index}][reception][${rangeIndex}][start_time]`);
+                    $template.find('.end-time').attr('name', `days[${index}][reception][${rangeIndex}][end_time]`);
+
+                    // Если кнопки удаления нет — добавляем
+                    if ($template.find('.remove-range').length === 0) {
+                        $template.append(`
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-outline-danger remove-range">×</button>
+                    </div>
+                `);
+                    }
+
+                    // Обработчик удаления интервала
+                    $template.find('.remove-range').on('click', function () {
+                        $(this).closest('.time-range').remove();
+                    });
+
+                    // Вставляем новый интервал
+                    $container.append($template);
+                });
+            });
+
+            // Удаление временного интервала
+            $('.remove-range').each(function () {
+                $(this).on('click', function () {
+                    $(this).closest('.time-range').remove();
+                });
+            });
+
+            // Переключение рабочего дня
+            $('.day-toggle').on('change', function () {
+                const isChecked = $(this).is(':checked');
+                const $schedule = $(this).closest('.days-schedule');
+
+                // Визуальное затемнение блока (через класс)
+                $schedule.toggleClass('disabled-day', !isChecked);
+
+                // Отключаем все инпуты и кнопки, кроме самого переключателя
+                $schedule.find('input, button').not(this).prop('disabled', !isChecked);
+            });
+
+            // absence
+            flatpickr('.absence-period', {mode: "range", dateFormat: "Y-m-d"})
+
+            @if(!$staff->absence->isEmpty())
+            let absenceIndex = {{ $staff->absence->count() }};
+            @else
+            let absenceIndex = 1;
+            @endif
+            function initFlatpickrForType($wrapper) {
+                let $typeSelect = $wrapper.find('.select-type');
+                let $dateInput = $wrapper.find('.flatpickr-date');
+
+                let fp = flatpickr($dateInput[0], {dateFormat: "Y-m-d"});
+
+                $typeSelect.off('change').on('change', function () {
+                    fp.destroy();
+                    if ($(this).val() === 'period') {
+                        fp = flatpickr($dateInput[0], {mode: "range", dateFormat: "Y-m-d"});
+                    } else {
+                        fp = flatpickr($dateInput[0], {dateFormat: "Y-m-d"});
+                    }
+                });
+            }
+
+            function initSelect2($wrapper) {
+                $wrapper.find('.select2').select2({width: '100%'});
+            }
+
+            $(document).ready(function () {
+                initFlatpickrForType($('.absence-item').first());
+                initSelect2($('.absence-item').first());
+            });
+
+            $('#add-absence').on('click', function () {
+                let template = $('#absence-template').html();
+                template = template.replace(/__INDEX__/g, absenceIndex++);
+
+                const $newItem = $(template);
+                $('#absence-container').append($newItem);
+
+                initFlatpickrForType($newItem);
+                initSelect2($newItem);
+            });
+
+            $(document).on('click', '.remove-absence', function () {
+                $(this).closest('.absence-item').remove();
+            });
         });
     </script>
 @endsection

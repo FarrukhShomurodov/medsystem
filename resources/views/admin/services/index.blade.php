@@ -46,6 +46,7 @@
                     <th>Цена</th>
                     <th>Скидка</th>
                     <th>Категория</th>
+                    <th>Статус</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -57,7 +58,13 @@
                         <td>{{ number_format($service->price, 0, '.', '.')  }}</td>
                         <td>{{ $service->discount ?? 0 }}%</td>
                         <td>{{ $service->category->name }}</td>
-
+                        <td>
+                            @if ($service->is_active)
+                                <span class="badge bg-success">Активна</span>
+                            @else
+                                <span class="badge bg-danger">Не активна</span>
+                            @endif
+                        </td>
                         <td>
                             <div class="d-inline-block text-nowrap">
                                 <button class="btn btn-sm btn-icon"

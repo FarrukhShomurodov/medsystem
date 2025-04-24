@@ -21,7 +21,7 @@ class ServiceController
     public function index(): View
     {
         $services = Service::query()
-            ->select(['id', 'name', 'price', 'discount', 'service_category_id'])
+            ->select(['id', 'name', 'price', 'discount', 'service_category_id', 'is_active'])
             ->with('category')
             ->orderBy('id', 'desc')
             ->paginate(10);

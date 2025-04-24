@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Survey;
 use App\Models\SurveyQuestion;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -16,6 +17,7 @@ class SurveyRequest extends FormRequest
         return [
             'survey_type_id' => 'required',
             'title' => 'required|string|max:255',
+            'color' => ['required', Rule::in(Survey::COLOR)],
 
             'questions' => 'required|array',
             'questions.*.question' => 'required|string|max:255',

@@ -13,15 +13,17 @@ use App\Models\Medication;
 use App\Models\Patient;
 use App\Models\Procedure;
 use App\Models\Service;
-use App\Models\Staff;
 use App\Models\Survey;
 use App\Services\ExaminationService;
+use App\Traits\HandlesStaffAvailability;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
 
 class ExaminationMapController
 {
+    use HandlesStaffAvailability;
+
     protected ExaminationService $service;
 
     public function __construct(ExaminationService $service)
@@ -88,6 +90,7 @@ class ExaminationMapController
                 }),
                 'services' => $map->services,
                 'surveyResponses' => $map->surveyResponses,
+                'medications' => $map->medications,
             ],
             'created_at' => $map->created_at->format('d.m.Y'),
         ];
@@ -99,16 +102,7 @@ class ExaminationMapController
     public function create(Patient $patient): View
     {
         $today = Carbon::parse($date ?? now());
-        $doctors = Staff::whereHas('professionalData', function ($query) {
-            $query->where('position_id', 1);
-        })->with(['absence' => function ($query) {
-            $query->latest()->limit(1);
-        }])->get()->filter(function ($staff) use ($today) {
-            $absence = $staff->absence->first();
-            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
-            return !$isAbsent;
-        });
-
+        $doctors = $this->scopeAvailableStaffOnDate(1);
         $institutions = Department::query()->get();
         $laboratories = Laboratory::query()->get();
         $types = AnalyzeType::query()->get();
@@ -118,15 +112,7 @@ class ExaminationMapController
         //service
         $procedures = Procedure::query()->get();
         $medications = Medication::query()->get();
-
-        $staffs = Staff::with(['absence' => function ($query) {
-            $query->latest()->limit(1);
-        }])->get()->filter(function ($staff) use ($today) {
-            $absence = $staff->absence->first();
-            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
-            return !$isAbsent;
-        });
-
+        $staffs = $this->scopeAvailableStaffOnDate();
         $services = Service::query()->where('is_active', true)->get();
 
         return view('admin.maps.create', compact('doctors', 'institutions', 'patient', 'laboratories', 'types', 'equipments', 'methods', 'procedures', 'medications', 'staffs',
@@ -143,17 +129,8 @@ class ExaminationMapController
 
     public function edit(ExaminationMap $map): View
     {
-        $today = Carbon::parse($date ?? now());
-
-        $doctors = Staff::whereHas('professionalData', function ($query) {
-            $query->where('position_id', 1);
-        })->with(['absence' => function ($query) {
-            $query->latest()->limit(1);
-        }])->get()->filter(function ($staff) use ($today) {
-            $absence = $staff->absence->first();
-            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
-            return !$isAbsent;
-        });
+        $map->with('medications');
+        $doctors = $this->scopeAvailableStaffOnDate(1);
 
         $institutions = Department::query()->get();
         $patients = Patient::query()->get();
@@ -165,15 +142,7 @@ class ExaminationMapController
         //service
         $procedures = Procedure::query()->get();
         $medications = Medication::query()->get();
-
-        $staffs = Staff::with(['absence' => function ($query) {
-            $query->latest()->limit(1);
-        }])->get()->filter(function ($staff) use ($today) {
-            $absence = $staff->absence->first();
-            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
-            return !$isAbsent;
-        });
-
+        $staffs = $this->scopeAvailableStaffOnDate();
         $surveys = Survey::query()->get();
         $services = Service::query()->where('is_active', true)->get();
 
@@ -184,7 +153,6 @@ class ExaminationMapController
     public function update(ExaminationMapRequest $request, ExaminationMap $map): RedirectResponse
     {
         $validated = $request->validated();
-
 
         $requiredFields = ['laboratory_id', 'types', 'methods', 'analysis_time', 'equipments'];
 

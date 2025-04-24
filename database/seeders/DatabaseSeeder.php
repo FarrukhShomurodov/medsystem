@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Admin;
+use App\Models\DayOfWeek;
 use App\Models\StaffPosition;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -19,5 +20,22 @@ class DatabaseSeeder extends Seeder
         StaffPosition::query()->create([
             'name' => 'Доктор'
         ]);
+
+        $days = [
+            'Понедельник',
+            'Вторник',
+            'Среда',
+            'Четверг',
+            'Пятница',
+            'Суббота',
+            'Воскресенье',
+        ];
+
+        foreach ($days as $day) {
+            DayOfWeek::query()->create([
+                'name' => $day,
+            ]);
+        }
+
     }
 }

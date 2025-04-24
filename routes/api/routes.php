@@ -27,3 +27,4 @@ Route::get('/surveys-response/show/{response}', [SurveyResponseController::class
 
 // medication
 Route::get('/medication/show/{medication}', [MedicationController::class, 'show']);
+Route::get('/medication/active-substance/{substance}', [MedicationController::class, 'medicationByActiveSubstance']);

@@ -3,51 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StaffSchedule extends Model
 {
+    const TYPE = ['work', 'reception'];
+
     protected $fillable = [
         'staff_id',
-        'day_start',
-        'day_end',
+        'day_of_week_id',
+        'type',
         'start_time',
         'end_time',
-        'reception_start',
-        'reception_end',
     ];
 
-    const DAY_START = [
-        'monday',
-        'tuesday',
-        'wednesday',
-        'thursday',
-        'friday',
-        'saturday',
-        'sunday',
-    ];
-
-    const DAY_END = [
-        'monday',
-        'tuesday',
-        'wednesday',
-        'thursday',
-        'friday',
-        'saturday',
-        'sunday',
-    ];
-
-    public static function getDayOfWeekLabel(string $day): string
+    public function dayOfWeek(): BelongsTo
     {
-        $days = [
-            'monday' => 'Понедельник',
-            'tuesday' => 'Вторник',
-            'wednesday' => 'Среда',
-            'thursday' => 'Четверг',
-            'friday' => 'Пятница',
-            'saturday' => 'Суббота',
-            'sunday' => 'Воскресенье',
-        ];
-
-        return $days[$day] ?? $day;
+        return $this->belongsTo(DayOfWeek::class);
     }
 }

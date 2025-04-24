@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Staff extends Model
 {
+
     protected $fillable = [
         'name',
         'last_name',
@@ -44,13 +46,47 @@ class Staff extends Model
         return $this->hasOne(StaffProfessionalData::class);
     }
 
-    public function schedule(): HasOne
+    public function schedule(): hasMany
     {
-        return $this->hasOne(StaffSchedule::class);
+        return $this->hasMany(StaffSchedule::class);
     }
 
     public function absence(): HasMany
     {
         return $this->hasMany(StaffAbsence::class);
+    }
+
+    public function isWorkingToday(Carbon $date): bool
+    {
+        $dayMap = [
+            'Monday' => 'Понедельник',
+            'Tuesday' => 'Вторник',
+            'Wednesday' => 'Среда',
+            'Thursday' => 'Четверг',
+            'Friday' => 'Пятница',
+            'Saturday' => 'Суббота',
+            'Sunday' => 'Воскресенье',
+        ];
+
+        $date = \Illuminate\Support\Carbon::parse($date ?? now());
+        $englishDay = $date->format('l');
+        $russianDay = $dayMap[$englishDay];
+
+        $dayOfWeekId = DayOfWeek::query()->where('name', $russianDay)->value('id');
+
+        $isScheduled = $this->schedule()->where('day_of_week_id', $dayOfWeekId)->exists();
+
+        $isAbsent = $this->absence()->where(function ($query) use ($date) {
+            $query->where(function ($q1) use ($date) {
+                $q1->where('type', 'day')->whereDate('start_date', '=', $date);
+            })
+                ->orWhere(function ($q2) use ($date) {
+                    $q2->where('type', 'period')
+                        ->whereDate('start_date', '<=', $date)
+                        ->whereDate('end_date', '>=', $date);
+                });
+        })->exists();
+
+        return $isScheduled && !$isAbsent;
     }
 }

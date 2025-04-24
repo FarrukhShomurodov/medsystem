@@ -49,7 +49,7 @@
                 </thead>
                 <tbody>
                 @foreach($surveys as $survey)
-                    <tr>
+                    <tr style="background-color: {{ $survey->color }}">
                         <td>{{ $survey->id }}</td>
                         <td>{{ $survey->title }}</td>
                         <td>{{ $survey->type->name }}</td>

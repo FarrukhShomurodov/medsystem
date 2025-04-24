@@ -21,7 +21,7 @@ class SurveyController
     public function index(): View
     {
         $surveys = Survey::query()
-            ->select(['id', 'title', 'survey_type_id'])
+            ->select(['id', 'title', 'color', 'survey_type_id'])
             ->with('questions')
             ->orderBy('id', 'desc')
             ->paginate(10);

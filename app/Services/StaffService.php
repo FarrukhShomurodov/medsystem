@@ -20,7 +20,29 @@ class StaffService
             $staff->contact()->create($validated);
             $staff->document()->create($validated);
             $staff->professionalData()->create($validated);
-            $staff->schedule()->create($validated);
+
+            foreach ($validated['days'] as $day) {
+                $dayId = $day['id'];
+
+                foreach ($day['work'] ?? [] as $work) {
+                    $staff->schedule()->create([
+                        'day_of_week_id' => $dayId,
+                        'start_time' => $work['start_time'],
+                        'end_time' => $work['end_time'],
+                        'type' => 'work',
+                    ]);
+                }
+
+                foreach ($day['reception'] ?? [] as $reception) {
+                    $staff->schedule()->create([
+                        'day_of_week_id' => $dayId,
+                        'start_time' => $reception['start_time'],
+                        'end_time' => $reception['end_time'],
+                        'type' => 'reception',
+                    ]);
+                }
+            }
+
 
             // Синхронизация услуг
             if (!empty($validated['services'])) {
@@ -32,26 +54,11 @@ class StaffService
     }
 
     /**
-     * @param Staff $staff
-     * @param array $validated
-     * @return Staff
-     */
-    public function attachSurvey(array $validated)
-    {
-        $staff = Staff::find($validated['staff_id']);
-
-        $staff->surveys()->sync($validated['surveys'] ?? []);
-
-        return $staff;
-    }
-
-    /**
      * @param array<string, mixed> $validated
      */
     public function update(Staff $staff, array $validated)
     {
         return DB::transaction(function () use ($validated, $staff) {
-
             $staff->update($validated);
             $validated['staff_id'] = $staff->id;
 
@@ -66,18 +73,62 @@ class StaffService
                 array_intersect_key($validated, array_flip($staff->professionalData->getFillable()))
             );
 
-            $staff->schedule()->update(
-                array_intersect_key($validated, array_flip($staff->schedule->getFillable()))
-            );
+            $staff->surveys()->sync($validated['surveys'] ?? []);
 
-            $absenceFill = [
-                'start_date' => $validated['absence_start_date'],
-                'end_date' => $validated['absence_end_date'],
-                'reason' => $validated['absence_reason'],
-                'description' => $validated['absence_description'],
-            ];
+            $staff->schedule()->delete();
 
-            $staff->absence()->create($absenceFill);
+            foreach ($validated['days'] as $day) {
+                $dayId = $day['id'];
+
+                foreach ($day['work'] ?? [] as $work) {
+                    $staff->schedule()->create([
+                        'day_of_week_id' => $dayId,
+                        'start_time' => $work['start_time'],
+                        'end_time' => $work['end_time'],
+                        'type' => 'work',
+                    ]);
+                }
+
+                foreach ($day['reception'] ?? [] as $reception) {
+                    $staff->schedule()->create([
+                        'day_of_week_id' => $dayId,
+                        'start_time' => $reception['start_time'],
+                        'end_time' => $reception['end_time'],
+                        'type' => 'reception',
+                    ]);
+                }
+            }
+
+            $staff->absence()->delete();
+
+            if (isset($validated['absence'])) {
+                foreach ($validated['absence'] as $absence) {
+                    if ($absence['type'] == 'day') {
+                        $staff->absence()->create([
+                            'type' => $absence['type'],
+                            'start_date' => $absence['date'],
+                            'reason' => $absence['reason'],
+                        ]);
+                    } else {
+                        if (strpos($absence['date'], 'to') !== false) {
+                            list($startDate, $endDate) = explode(' to ', $absence['date']);
+                            $staff->absence()->create([
+                                'type' => $absence['type'],
+                                'start_date' => $startDate,
+                                'end_date' => $endDate,
+                                'reason' => $absence['reason'],
+                            ]);
+                        } else {
+                            $staff->absence()->create([
+                                'type' => $absence['type'],
+                                'start_date' => $absence['date'],
+                                'end_date' => $absence['date'],
+                                'reason' => $absence['reason'],
+                            ]);
+                        }
+                    }
+                }
+            }
 
             // Синхронизация услуг
             if (!empty($validated['services'])) {

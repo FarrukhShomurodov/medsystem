@@ -150,23 +150,67 @@
     <div class="card mt-3">
         <div class="card-datatable table-responsive col-12">
             <div class="card-header">
-                <h5>Опросники</h5>
+                <h5>Услуги</h5>
+            </div>
+            @if($mapDetails['examinations']['services']->isNotEmpty())
+                <table class="datatables-users table border-top">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Услуга</th>
+                        <th>Дата услуги</th>
+                        <th>Время услуги</th>
+                        <th>Место оказания</th>
+                        <th>Результаты</th>
+                        <th>Статус</th>
+                        <th>Статус оплаты</th>
+                        <th>Страховая компания</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($mapDetails['examinations']['services'] as $service)
+                        <tr>
+                            <td>{{ $service->id }}</td>
+                            <td>{{ $service->service->name }}</td>
+                            <td>{{ $service->service_date }}</td>
+                            <td>{{ $service->service_time }}</td>
+                            <td>{{ $service->place }}</td>
+                            <td>{{ $service->result }}</td>
+                            <td> {!! $service->getStatusBadge() !!} </td>
+                            <td>{{ $service->payment }}</td>
+                            <td>{{ $service->insurance_policy }}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            @else
+                <div class="card-body">
+                    <p>Данные услуги отсутствуют.</p>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-datatable table-responsive col-12">
+            <div class="card-header">
+                <h5>Мед. документы</h5>
             </div>
             @if($mapDetails['examinations']['surveyResponses']->isNotEmpty())
                 <table class="datatables-users table border-top">
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Опросник</th>
+                        <th>Документ</th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($mapDetails['examinations']['surveyResponses']->sortByDesc('id')->take(5) as $response)
-                        <tr>
+                        <tr style="background-color: {{ $response->survey->color }}">
                             <td>{{$response->id}}</td>
                             <td>
-                                <p class="text-primary">{{ $response->survey->title }}</p>
+                                <p class="text-primary mb-0">{{ $response->survey->title }}</p>
                             </td>
                             <td>
                                 <button type="button" class="btn btn-sm btn-info view-response"
@@ -200,7 +244,7 @@
                 </div>
             @else
                 <div class="card-body">
-                    <p>Данные опросника отсутствуют.</p>
+                    <p>Данные документа отсутствуют.</p>
                 </div>
             @endif
         </div>

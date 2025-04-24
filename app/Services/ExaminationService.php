@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\ExaminationMapMedication;
 use App\Models\Institution;
 use App\Models\ExaminationMap;
+use App\Models\Medication;
 use Illuminate\Support\Facades\DB;
 
 class ExaminationService
@@ -71,10 +73,50 @@ class ExaminationService
                     $serviceData['medications'] = $validated['medications'];
                     $serviceData['dosages'] = $validated['dosages'];
                     $serviceData['admission_periods'] = $validated['admission_periods'];
-                    $serviceData['medication_notes'] = $validated['medication_notes'];
+//                    $serviceData['medication_notes'] = $validated['medication_notes'];
                 }
 
                 $this->patientService->store($serviceData);
+            }
+
+            // medications
+            if (isset($validated['medications'])) {
+                $medicationData = [];
+                $medicationIndexMap = [];
+
+                foreach ($validated['medications'] as $index => $medicationId) {
+                    $medicationModel = Medication::find((int) $medicationId);
+                    if (!$medicationModel) continue;
+
+                    $medicationData[$medicationModel->id] = [
+                        'dosage' => $validated['dosages'][$index] ?? null,
+                        'admission_period' => $validated['admission_periods'][$index] ?? null,
+                    ];
+                    $medicationIndexMap[$medicationModel->id] = $index;
+                }
+
+                $map->medications()->sync($medicationData);
+
+                foreach ($map->medications as $pivotedMedication) {
+                    $pivotId = $pivotedMedication->pivot->id;
+                    $pivotModel = ExaminationMapMedication::find($pivotId);
+                    if (!$pivotModel) continue;
+
+                    $index = $medicationIndexMap[$pivotedMedication->id] ?? null;
+                    if ($index === null) continue;
+
+                    $compatibles = $validated['compatible_medications'][$index] ?? [];
+                    $dosagesCompatibles = $validated['compatible_dosages'][$index] ?? [];
+
+                    $syncData = [];
+                    foreach ($compatibles as $i => $compId) {
+                        $syncData[$compId] = [
+                            'dosage' => $dosagesCompatibles[$i] ?? null,
+                        ];
+                    }
+
+                    $pivotModel->compatibleMedications()->sync($syncData);
+                }
             }
 
 
@@ -132,13 +174,6 @@ class ExaminationService
                     $serviceData['procedure_dates'] = $validated['procedure_dates'];
                 }
 
-                if (isset($validated['medications'])) {
-                    $serviceData['medications'] = $validated['medications'];
-                    $serviceData['dosages'] = $validated['dosages'];
-                    $serviceData['admission_periods'] = $validated['admission_periods'];
-                    $serviceData['medication_notes'] = $validated['medication_notes'];
-                }
-
                 $this->patientService->store($serviceData);
             }
 
@@ -158,6 +193,49 @@ class ExaminationService
 
                 $this->surveyResponseService->store($analyzeData);
             }
+
+            $map->medications()->detach();
+
+            // medications
+            if (isset($validated['medications'])) {
+                $medicationData = [];
+                $medicationIndexMap = [];
+
+                foreach ($validated['medications'] as $index => $medicationId) {
+                    $medicationModel = Medication::find((int) $medicationId);
+                    if (!$medicationModel) continue;
+
+                    $medicationData[$medicationModel->id] = [
+                        'dosage' => $validated['dosages'][$index] ?? null,
+                        'admission_period' => $validated['admission_periods'][$index] ?? null,
+                    ];
+                    $medicationIndexMap[$medicationModel->id] = $index;
+                }
+
+                $map->medications()->sync($medicationData);
+
+                foreach ($map->medications as $pivotedMedication) {
+                    $pivotId = $pivotedMedication->pivot->id;
+                    $pivotModel = ExaminationMapMedication::find($pivotId);
+                    if (!$pivotModel) continue;
+
+                    $index = $medicationIndexMap[$pivotedMedication->id] ?? null;
+                    if ($index === null) continue;
+
+                    $compatibles = $validated['compatible_medications'][$index] ?? [];
+                    $dosagesCompatibles = $validated['compatible_dosages'][$index] ?? [];
+
+                    $syncData = [];
+                    foreach ($compatibles as $i => $compId) {
+                        $syncData[$compId] = [
+                            'dosage' => $dosagesCompatibles[$i] ?? null,
+                        ];
+                    }
+
+                    $pivotModel->compatibleMedications()->sync($syncData);
+                }
+            }
+
 
             return $map;
         });

@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
 
 class StaffAbsence extends Model
 {
+    const TYPE = ['day', 'period'];
+
     protected $fillable = [
         'staff_id',
+        'type',
         'start_date',
         'end_date',
         'reason',
@@ -29,24 +31,6 @@ class StaffAbsence extends Model
         'end_date' => 'date',
     ];
 
-
-    public static function isAbsent($staffId, $date = null): bool
-    {
-        $date = Carbon::parse($date ?? now());
-
-        $absence = StaffAbsence::query()
-            ->where('staff_id', $staffId)
-            ->latest()
-            ->first();
-
-        if (!$absence) {
-            return false;
-        }
-
-        return $absence->start_date->lte($date) && $absence->end_date->gte($date);
-    }
-
-
     public function staff(): BelongsTo
     {
         return $this->belongsTo(Staff::class);
@@ -63,5 +47,4 @@ class StaffAbsence extends Model
 
         return $reasons[$reason] ?? $reason;
     }
-
 }

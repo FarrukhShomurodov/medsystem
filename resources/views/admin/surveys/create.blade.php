@@ -64,6 +64,23 @@
                 </div>
 
                 <div class="mb-3">
+                    <label class="form-label d-block">Цвет фона <span class="text-danger">*</span></label>
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach(\App\Models\Survey::COLOR as $color)
+                            <label class="color-option position-relative" style="cursor: pointer;">
+                                <input type="radio" name="color" value="{{ $color }}" class="d-none"
+                                    @checked(old('color') === $color)>
+                                <span class="color-circle border" style="background-color: {{ $color }};"
+                                      title="{{ $color }}"></span>
+                            </label>
+                        @endforeach
+                    </div>
+                    @error('color')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
                     <label class="form-label">Вопросы</label>
                     <button type="button" id="add-question" class="btn btn-success btn-sm ms-2">Добавить вопрос</button>
                     <button type="button" id="add-group" class="btn btn-primary btn-sm ms-2">Создать группу</button>

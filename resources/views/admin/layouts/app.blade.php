@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="light-style layout-menu-fixed " dir="ltr" data-theme="theme-default"
+<html lang="en" class="light-style layout-menu-fixed layout-menu-collapsed" dir="ltr" data-theme="theme-default"
       data-assets-path="/" data-template="horizontal-menu-template">
 <head>
     <meta charset="utf-8"/>
@@ -157,6 +157,7 @@
 <script src="{{ asset('js/form-wizard-validation.js') }}"></script>
 
 @yield('scripts')
+
 
 <script>
     $(document).ready(function () {

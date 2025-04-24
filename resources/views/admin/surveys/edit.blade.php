@@ -68,6 +68,23 @@
                     @enderror
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label d-block">Цвет фона <span class="text-danger">*</span></label>
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach(\App\Models\Survey::COLOR as $color)
+                            <label class="color-option position-relative" style="cursor: pointer;">
+                                <input type="radio" name="color" value="{{ $color }}" class="d-none"
+                                    @checked(old('color', $survey->color) === $color)>
+                                <span class="color-circle border" style="background-color: {{ $color }};"
+                                      title="{{ $color }}"></span>
+                            </label>
+                        @endforeach
+                    </div>
+                    @error('color')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 {{-- Кнопки добавления --}}
                 <div class="mb-3">
                     <label class="form-label">Вопросы</label>
@@ -94,7 +111,8 @@
 
                             <button type="button"
                                     class="btn-close position-absolute top-50 translate-middle-y end-0 me-2 remove-group-tab"
-                                    data-tab-id="tab-{{ $groupIndex }}" data-content-id="group-content-{{ $groupIndex }}"
+                                    data-tab-id="tab-{{ $groupIndex }}"
+                                    data-content-id="group-content-{{ $groupIndex }}"
                                     aria-label="Удалить"></button>
                         </li>
                     @endforeach
@@ -119,7 +137,8 @@
 
                     {{-- Вопросы по группам --}}
                     @foreach ($survey->groups->sortBy('id') as $groupIndex => $group)
-                        <div class="tab-pane fade" id="group-content-{{ $groupIndex }}" role="tabpanel" aria-labelledby="tab-{{ $groupIndex }}">
+                        <div class="tab-pane fade" id="group-content-{{ $groupIndex }}" role="tabpanel"
+                             aria-labelledby="tab-{{ $groupIndex }}">
                             <div class="tab-questions-container mt-3" data-group="{{$group->title}}">
                                 <h5>Группа:
                                     <input type="text" name="groups[{{ $groupIndex }}][title]"

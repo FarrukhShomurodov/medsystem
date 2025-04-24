@@ -10,6 +10,7 @@ return new class extends Migration {
         Schema::create('surveys', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->enum('color', \App\Models\Survey::COLOR);
             $table->foreignId('survey_type_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

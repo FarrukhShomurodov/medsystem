@@ -9,22 +9,6 @@ use Illuminate\Validation\Rule;
 
 class StaffRequest extends FormRequest
 {
-    /**
-     * Asence
-     * @param $validator
-     * @return void
-     */
-    public function withValidator($validator): void
-    {
-        $validator->sometimes([
-            'absence_start_date',
-            'absence_end_date',
-            'absence_reason',
-            'absence_description',
-        ], 'required', function ($input) {
-            return $input->absence_start_date || $input->absence_end_date || $input->absence_reason || $input->absence_description;
-        });
-    }
 
     /**
      * @return array<string>
@@ -71,12 +55,29 @@ class StaffRequest extends FormRequest
             'SNILS' => 'required|string|max:255',
 
             // schedule
-            'day_start' => 'required|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
-            'day_end' => 'required|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
-            'start_time' => 'required',
-            'end_time' => 'required|after:start_time',
-            'reception_start' => 'required',
-            'reception_end' => 'required|after:reception_start'
+            'days' => ['required', 'array'],
+            'days.*.id' => ['required', 'exists:day_of_weeks,id'],
+
+            // work[]
+            'days.*.work' => ['nullable', 'array'],
+            'days.*.work.*.start_time' => ['required_with:day.*.work.*.end_time'],
+            'days.*.work.*.end_time' => ['required_with:day.*.work.*.start_time', 'after:day.*.work.*.start_time'],
+
+            // reception[]
+            'days.*.reception' => ['nullable', 'array'],
+            'days.*.reception.*.start_time' => ['required_with:day.*.reception.*.end_time'],
+            'days.*.reception.*.end_time' => ['required_with:day.*.reception.*.start_time', 'after:day.*.reception.*.start_time'],
+
+
+            // absence[]
+            'absence' => 'array|nullable',
+            'absence.*.type' => 'required_with:absence.*.date,absence.*.reason',
+            'absence.*.date' => 'required_with:absence.*.type,absence.*.reason',
+            'absence.*.reason' => 'required_with:absence.*.type,absence.*.date',
+
+            // surveys[]
+            'surveys' => 'nullable|array',
+            'surveys.*' => 'required|int|exists:surveys,id',
         ];
     }
 }

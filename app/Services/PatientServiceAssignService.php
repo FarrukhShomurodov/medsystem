@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Equipment;
 use App\Models\Institution;
-use App\Models\Medication;
 use App\Models\PatientService;
 use App\Models\Procedure;
 use App\Models\ServiceMethod;
@@ -67,26 +66,6 @@ class PatientServiceAssignService
 
                 $service->procedures()->sync($procedureData);
             }
-            // medications
-            if (isset($validated['medications'])) {
-                $medicationData = [];
-
-                foreach ($validated['medications'] as $index => $medication) {
-                    if (!is_numeric($medication)) {
-                        $medicationModel = Medication::firstOrCreate(['name' => trim($medication)]);
-                    } else {
-                        $medicationModel = Medication::findOrFail($medication);
-                    }
-
-                    $medicationData[$medicationModel->id] = [
-                        'dosage' => $validated['dosages'][$index],
-                        'admission_period' => $validated['admission_periods'][$index],
-                        'notes' => $validated['medication_notes'][$index] ?? null,
-                    ];
-                }
-
-                $service->medications()->sync($medicationData);
-            }
 
             return $service;
         });
@@ -147,27 +126,6 @@ class PatientServiceAssignService
                 }
 
                 $service->procedures()->sync($procedureData);
-            }
-
-            // medications
-            if (isset($validated['medications'])) {
-                $medicationData = [];
-
-                foreach ($validated['medications'] as $index => $medication) {
-                    if (!is_numeric($medication)) {
-                        $medicationModel = Medication::firstOrCreate(['name' => trim($medication)]);
-                    } else {
-                        $medicationModel = Medication::findOrFail($medication);
-                    }
-
-                    $medicationData[$medicationModel->id] = [
-                        'dosage' => $validated['dosages'][$index],
-                        'admission_period' => $validated['admission_periods'][$index],
-                        'notes' => $validated['medication_notes'][$index] ?? null,
-                    ];
-                }
-
-                $service->medications()->sync($medicationData);
             }
 
             return $service;

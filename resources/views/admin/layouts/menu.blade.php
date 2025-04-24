@@ -2,7 +2,7 @@
     <div class="app-brand demo">
         <h5 style="margin: 0 !important;">
             <a href="{{ route('dashboard') }}" class="app-brand-link">
-                Medical system
+                M.S.
             </a>
         </h5>
 
@@ -14,14 +14,7 @@
 
     <div class="menu-divider mt-0"></div>
 
-    <ul class="menu-inner py-1 ps ps--active-y">
-        {{--        <li class="menu-item {{ Request::is('dashboard/admins*') ? 'active' : '' }}">--}}
-        {{--            <a href="{{ route('admins.index') }}" class="menu-link">--}}
-        {{--                <i class="menu-icon bx bx-shield"></i>--}}
-        {{--                <div data-i18n="Пользователи панели">Пользователи панели</div>--}}
-        {{--            </a>--}}
-        {{--        </li>--}}
-
+    <ul class="menu-inner py-1">
         {{-- Производители --}}
         <li class="menu-item {{ Request::is('dashboard/manufacturers*') ? 'active' : '' }}">
             <a href="{{ route('manufacturers.index') }}" class="menu-link">
@@ -133,14 +126,14 @@
         <li class="menu-item {{ Request::is('dashboard/surveys*') ? 'active' : '' }}">
             <a href="{{ route('surveys.index') }}" class="menu-link">
                 <i class="menu-icon bx bx-list-check"></i>
-                <div data-i18n="Опросники">Опросники</div>
+                <div data-i18n="Мед. документы">Мед. документы</div>
             </a>
         </li>
 
         {{-- Персонал --}}
         <li class="menu-item {{ Request::is('dashboard/staffs')
             || Request::is('dashboard/staffs/create')
-            || Request::is('dashboard/staffs/edit/*')
+            || Request::is('dashboard/staffs/*/edit')
             || Request::is('dashboard/staffs/positions*')
             || Request::is('dashboard/specialties*')
             || Request::is('dashboard/attach_surveys') ? 'open' : '' }}" style="">
@@ -149,7 +142,7 @@
                 <div data-i18n="Персонал">Персонал</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {{ Request::is('dashboard/staffs') || Request::is('dashboard/staffs/create') || Request::is('dashboard/staff/edit/*') ? 'active' : '' }}">
+                <li class="menu-item {{ Request::is('dashboard/staffs') || Request::is('dashboard/staffs/create') || Request::is('dashboard/staffs/*/edit') ? 'active' : '' }}">
                     <a href="{{route('staffs.index')}}" class="menu-link">
                         <div data-i18n="Список">Список</div>
                     </a>
@@ -317,5 +310,4 @@
         </li>
     </ul>
 </aside>
-
 <div class="layout-overlay layout-menu-toggle"></div>

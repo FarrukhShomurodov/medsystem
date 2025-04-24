@@ -10,8 +10,8 @@ use App\Models\Department;
 use App\Models\MedicalDevice;
 use App\Models\Patient;
 use App\Models\Region;
-use App\Models\Staff;
 use App\Services\PatientService;
+use App\Traits\HandlesStaffAvailability;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,6 +19,8 @@ use Illuminate\Support\Carbon;
 
 class PatientController
 {
+    use HandlesStaffAvailability;
+
     protected PatientService $service;
 
     public function __construct(PatientService $service)
@@ -31,16 +33,7 @@ class PatientController
         $departments = Department::query()->select(['id', 'name'])->get();
 
         $today = Carbon::parse($date ?? now());
-        $staffs = Staff::whereHas('professionalData', function ($query) {
-            $query->where('position_id', 1);
-        })->with(['absence' => function ($query) {
-            $query->latest()->limit(1);
-        }])->get()->filter(function ($staff) use ($today) {
-            $absence = $staff->absence->first();
-            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
-            return !$isAbsent;
-        });
-
+        $staffs = $this->scopeAvailableStaffOnDate(1);
 
         $patients = Patient::query()
             ->select(['id', 'first_name', 'last_name', 'middle_name', 'birth_date', 'gender', 'citizenship', 'passport_series'])
@@ -120,18 +113,7 @@ class PatientController
     {
         $regions = Region::query()->get();
         $cities = City::query()->get();
-
-        $today = Carbon::parse($date ?? now());
-        $doctors = Staff::whereHas('professionalData', function ($query) {
-            $query->where('position_id', 1);
-        })->with(['absence' => function ($query) {
-            $query->latest()->limit(1);
-        }])->get()->filter(function ($staff) use ($today) {
-            $absence = $staff->absence->first();
-            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
-            return !$isAbsent;
-        });
-
+        $doctors = $this->scopeAvailableStaffOnDate(1);
         $institutions = Department::query()->get();
         $allegories = Allegory::query()->get();
         $devices = MedicalDevice::query()->get();
@@ -152,18 +134,7 @@ class PatientController
     {
         $regions = Region::query()->get();
         $cities = City::query()->get();
-
-        $today = Carbon::parse($date ?? now());
-        $doctors = Staff::whereHas('professionalData', function ($query) {
-            $query->where('position_id', 1);
-        })->with(['absence' => function ($query) {
-            $query->latest()->limit(1);
-        }])->get()->filter(function ($staff) use ($today) {
-            $absence = $staff->absence->first();
-            $isAbsent =  $absence && $absence->start_date->lte($today) && $absence->end_date->gte($today);
-            return !$isAbsent;
-        });
-
+        $doctors = $this->scopeAvailableStaffOnDate(1);
         $institutions = Department::query()->get();
         $allegories = Allegory::query()->get();
         $devices = MedicalDevice::query()->get();

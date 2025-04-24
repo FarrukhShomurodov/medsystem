@@ -96,9 +96,12 @@
                 <h5 class="card-header">История обращение </h5>
 
 
-                <button onclick="window.location.href='{{ route('patient.map.create', $patientDetails['patient_id']) }}'" class="btn btn-primary "
-                   @disabled(!$patientDetails['history']['map_is_active'])
-                   style="margin-right: 22px;">Создать</button>
+                <button
+                    onclick="window.location.href='{{ route('patient.map.create', $patientDetails['patient_id']) }}'"
+                    class="btn btn-primary "
+                    @disabled(!$patientDetails['history']['map_is_active'])
+                    style="margin-right: 22px;">Создать
+                </button>
 
             </div>
             <table class="datatables-users table border-top">
@@ -110,7 +113,6 @@
                     <th>Врач</th>
                     <th></th>
                     <th></th>
-                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -120,11 +122,6 @@
                         <td>{{ $map->admission_date }}</td>
                         <td>{{ $map->department->name }}</td>
                         <td>{{ $map->doctor->name }}</td>
-
-                        <td>
-                            <a class="btn btn-sm btn-primary" href="{{ route('map.survey', $map->id) }}"><i
-                                    class="bx bx-show me-1"></i> Опросник</a>
-                        </td>
 
                         <td>
                             @if($map->is_active)
