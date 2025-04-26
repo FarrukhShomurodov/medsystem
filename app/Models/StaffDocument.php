@@ -14,7 +14,6 @@ class StaffDocument extends Model
 
         'dismissal_orders_number',
         'dismissal_orders_date',
-
         'dismissal_reception_number',
         'dismissal_reception_date',
 

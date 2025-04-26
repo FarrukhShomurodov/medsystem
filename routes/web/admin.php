@@ -36,6 +36,7 @@ use App\Http\Controllers\Dashboard\SupplierController;
 use App\Http\Controllers\Dashboard\SurveyController;
 use App\Http\Controllers\Dashboard\SurveyResponseController;
 use App\Http\Controllers\Dashboard\TransferController;
+use App\Http\Controllers\Dashboard\WardRoomController;
 use App\Http\Controllers\Dashboard\WarehouseAccountingController;
 use App\Http\Controllers\Dashboard\WarehouseController;
 use App\Http\Controllers\Dashboard\WarehouseTypeController;
@@ -58,6 +59,8 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::prefix('departments')->group(function () {
         Route::resource('', DepartmentController::class)->names('departments')->parameter('', 'department')->except('show');
         Route::resource('/types', DepartmentTypeController::class)->names('departments.type');
+
+        Route::resource('/rooms', WardRoomController::class)->names('departments.room');
     });
 
     //equipments
@@ -156,5 +159,5 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     Route::get('patient/map/create/{patient}', [ExaminationMapController::class, 'create'])
         ->name('patient.map.create')
-        ->middleware(ExaminationMapIsActive::class);;
+        ->middleware(ExaminationMapIsActive::class);
 });

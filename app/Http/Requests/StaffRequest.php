@@ -30,6 +30,7 @@ class StaffRequest extends FormRequest
             'emergency_contact_relation' => 'required|string|max:255',
 
             'position_id' => 'required',
+            'addition_position_id' => 'nullable',
             'speciality_id' => 'required',
             'department_id' => 'required',
             'category' => ['required', Rule::in(StaffProfessionalData::CATEGORY)],
@@ -46,10 +47,12 @@ class StaffRequest extends FormRequest
             'employment_contract_number' => 'required|string|max:255',
             'employment_contract_date_of_signing' => 'required|date',
             'employment_contract_validity_period' => 'required|string|max:255',
-            'dismissal_orders_number' => 'required|string|max:255',
-            'dismissal_orders_date' => 'required|date',
-            'dismissal_reception_number' => 'required|string|max:255',
-            'dismissal_reception_date' => 'required|date',
+
+            'dismissal_orders_number' => 'nullable|string|max:255',
+            'dismissal_orders_date' => 'nullable|date',
+            'dismissal_reception_number' => 'nullable|string|max:255',
+            'dismissal_reception_date' => 'nullable|date',
+
             'passport_series' => 'required|string|max:255',
             'INN' => 'required|string|max:255',
             'SNILS' => 'required|string|max:255',

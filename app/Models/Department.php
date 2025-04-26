@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Department extends Model
@@ -12,7 +13,9 @@ class Department extends Model
     protected $fillable = [
         'name',
         'description',
+        'floor',
         'type_id',
+        'warehouse_id',
     ];
 
     public function type(): BelongsTo
@@ -53,5 +56,15 @@ class Department extends Model
     public function license(): HasOne
     {
         return $this->hasOne(DepartmentLicense::class);
+    }
+
+    public function rooms(): BelongsToMany
+    {
+        return $this->belongsToMany(WardRoom::class, 'department_rooms');
+    }
+
+    public function staffs(): HasMany
+    {
+        return $this->hasMany(StaffProfessionalData::class);
     }
 }

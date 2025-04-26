@@ -21,6 +21,14 @@ class DatabaseSeeder extends Seeder
             'name' => 'Доктор'
         ]);
 
+        StaffPosition::query()->create([
+            'name' => 'Старшая медсестра'
+        ]);
+
+        StaffPosition::query()->create([
+            'name' => 'Медсестра'
+        ]);
+
         $days = [
             'Понедельник',
             'Вторник',

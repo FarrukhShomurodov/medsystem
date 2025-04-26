@@ -100,16 +100,17 @@
         </li>
 
         {{-- Отделение --}}
-        <li class="menu-item {{ Request::is('dashboard/departments') || Request::is('dashboard/departments/create') || Request::is('dashboard/departments/edit/*')
+        <li class="menu-item {{ Request::is('dashboard/departments') || Request::is('dashboard/departments/create') || Request::is('dashboard/departments/*/edit')
             || Request::is('dashboard/departments/services*')
-            || Request::is('dashboard/departments/types*')  ? 'open' : '' }}" style="">
+            || Request::is('dashboard/departments/types*')
+            || Request::is('dashboard/departments/rooms*') ? 'open' : '' }}" style="">
 
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon bx bx-buildings"></i>
                 <div data-i18n="Отделение">Отделение</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {{ Request::is('dashboard/departments') || Request::is('dashboard/departments/create') || Request::is('dashboard/departments/edit/*') ? 'active' : '' }}">
+                <li class="menu-item {{ Request::is('dashboard/departments') || Request::is('dashboard/departments/create') || Request::is('dashboard/departments/*/edit') ? 'active' : '' }}">
                     <a href="{{route('departments.index')}}" class="menu-link">
                         <div data-i18n="Список">Список</div>
                     </a>
@@ -117,6 +118,11 @@
                 <li class="menu-item {{ Request::is('dashboard/departments/types*') ? 'active' : '' }}">
                     <a href="{{route('departments.type.index')}}" class="menu-link">
                         <div data-i18n="Типы">Типы</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('dashboard/departments/rooms*') ? 'active' : '' }}">
+                    <a href="{{route('departments.room.index')}}" class="menu-link">
+                        <div data-i18n="Палаты">Палаты</div>
                     </a>
                 </li>
             </ul>

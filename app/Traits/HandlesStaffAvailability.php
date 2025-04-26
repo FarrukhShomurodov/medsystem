@@ -27,7 +27,7 @@ trait HandlesStaffAvailability
 
         $dayOfWeekId = DayOfWeek::query()->where('name', $russianDay)->value('id');
 
-        $query = Staff::query();
+        $query = Staff::query()->where('is_work', 1);
 
         if ($positionId) {
             $query->whereHas('professionalData', function ($q) use ($positionId) {

@@ -13,9 +13,6 @@ class DepartmentContact extends Model
         'address',
         'email',
         'fax',
-        'head_name',
-        'head_position',
-        'head_contact'
     ];
 
     public function department(): BelongsTo

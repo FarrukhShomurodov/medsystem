@@ -135,6 +135,10 @@ class StaffService
                 $staff->services()->sync($validated['services']);
             }
 
+            if (isset($validated['dismissal_reception_date'])) {
+                $staff->update(['is_work' => false]);
+            }
+
             return $staff;
         });
     }

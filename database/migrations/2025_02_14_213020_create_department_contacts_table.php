@@ -14,9 +14,6 @@ return new class extends Migration {
             $table->string('email');
             $table->string('fax');
             $table->text('address');
-            $table->string('head_name');
-            $table->string('head_position');
-            $table->string('head_contact');
             $table->timestamps();
         });
     }

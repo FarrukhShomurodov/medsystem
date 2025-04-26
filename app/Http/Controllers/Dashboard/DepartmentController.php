@@ -7,12 +7,17 @@ use App\Models\Department;
 use App\Models\Equipment;
 use App\Models\DepartmentType;
 use App\Models\Service;
+use App\Models\WardRoom;
+use App\Models\Warehouse;
 use App\Services\DepartmentService;
+use App\Traits\HandlesStaffAvailability;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
 class DepartmentController
 {
+    use HandlesStaffAvailability;
+
     protected DepartmentService $service;
 
     public function __construct(DepartmentService $service)
@@ -36,8 +41,10 @@ class DepartmentController
         $services = Service::query()->where('is_active', true)->get();
         $equipments = Equipment::query()->where('status', 'работает')->get();
         $departments = Department::query()->get();
+        $wardRooms = WardRoom::query()->get();
+        $warehouses = Warehouse::query()->get();
 
-        return view('admin.departments.create', compact('types', 'services', 'departments', 'equipments'));
+        return view('admin.departments.create', compact('types', 'services', 'departments', 'equipments', 'wardRooms', 'warehouses'));
     }
 
     public function store(DepartmentRequest $request): RedirectResponse
@@ -54,8 +61,10 @@ class DepartmentController
         $services = Service::query()->where('is_active', true)->get();
         $equipments = Equipment::query()->where('status', 'работает')->get();
         $departments = Department::query()->get();
+        $wardRooms = WardRoom::query()->get();
+        $warehouses = Warehouse::query()->get();
 
-        return view('admin.departments.edit', compact('department', 'types', 'services', 'departments', 'equipments'));
+        return view('admin.departments.edit', compact('department', 'types', 'services', 'departments', 'equipments', 'wardRooms', 'warehouses'));
     }
 
     public function update(DepartmentRequest $request, Department $department): RedirectResponse

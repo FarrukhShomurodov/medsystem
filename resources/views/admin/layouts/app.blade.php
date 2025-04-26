@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" class="light-style layout-menu-fixed layout-menu-collapsed" dir="ltr" data-theme="theme-default"
+{{-- layout-menu-collapsed --}}
+<html lang="en" class="light-style layout-menu-fixed " dir="ltr" data-theme="theme-default"
       data-assets-path="/" data-template="horizontal-menu-template">
 <head>
     <meta charset="utf-8"/>
@@ -95,6 +96,55 @@
 
         .invalid-feedback {
             display: block;
+        }
+
+        .room-map {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 колонки */
+            gap: 16px;
+            margin-top: 1rem;
+            border: 1px solid #ddd;
+            padding: 16px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            min-height: 200px;
+        }
+
+        .bed-item {
+            background-color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .bed-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        #add-bed {
+            margin-top: 20px;
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #add-bed i {
+            margin-right: 5px;
+        }
+
+        .bed-item span {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: #555;
         }
     </style>
 </head>

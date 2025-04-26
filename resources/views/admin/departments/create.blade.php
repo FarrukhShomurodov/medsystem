@@ -77,7 +77,7 @@
                         <h6 class="mb-0">Основные данные</h6>
                     </div>
                     <div class="row g-3">
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-company">Название <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
@@ -96,7 +96,7 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <label class="form-label" for="type">Типы <span
                                     class="text-danger">*</span></label>
                             <select id="type" name="type_id"
@@ -109,6 +109,25 @@
                             </select>
                             @error('type_id')
                             <div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="floor">Этаж <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                            <span id="floor"
+                                  class="input-group-text @error('floor') text-danger icon-border @enderror"><i
+                                    class="bx bx-rename"></i></span>
+                                <input type="number" id="floor"
+                                       class="form-control @error('floor') is-invalid @enderror"
+                                       placeholder="Этаж" aria-label="Этаж"
+                                       name="floor"
+                                       value="{{ old('floor') }}"
+                                       aria-describedby="floor" required/>
+                            </div>
+                            @error('floor')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-12">
@@ -206,7 +225,7 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-4">
+                        <div class="col-12">
                             <label class="form-label" for="basic-icon-default-fax">Fax</label>
                             <div class="input-group input-group-merge">
                             <span class="input-group-text @error('fax') text-danger icon-border @enderror"><i
@@ -218,58 +237,6 @@
                                        aria-label="Fax" aria-describedby="basic-icon-default-fax2"/>
                             </div>
                             @error('fax')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-head_name">ФИО (руководителя)</label>
-                            <div class="input-group input-group-merge">
-                                <span class="input-group-text @error('head_name') text-danger icon-border @enderror"><i
-                                        class="bx bx-user"></i></span>
-                                <input type="text" id="basic-icon-default-head_name"
-                                       class="form-control @error('head_name') is-invalid @enderror"
-                                       placeholder="ФИО (руководителя)"
-                                       name="head_name"
-                                       value="{{ old('head_name') }}"
-                                       aria-label="ФИО (руководителя)" aria-describedby="basic-icon-default-head_name"/>
-                            </div>
-                            @error('head_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-head_position">Должность</label>
-                            <div class="input-group input-group-merge">
-                            <span class="input-group-text @error('head_position') text-danger icon-border @enderror"><i
-                                    class="bx bx-briefcase"></i></span>
-                                <input type="text" id="basic-icon-default-head_position"
-                                       class="form-control @error('head_position') is-invalid @enderror"
-                                       placeholder="Должность"
-                                       name="head_position"
-                                       value="{{ old('head_position') }}"
-                                       aria-label="Должность" aria-describedby="basic-icon-default-head_position"/>
-                            </div>
-                            @error('head_position')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label" for="basic-icon-default-head_contact">Контакт</label>
-                            <div class="input-group input-group-merge">
-                            <span class="input-group-text @error('head_contact') text-danger icon-border @enderror">
-                                <i class="bx bx-phone"></i>
-                            </span>
-                                <input type="text" id="basic-icon-default-head_contact"
-                                       class="form-control @error('head_contact') is-invalid @enderror"
-                                       placeholder="Контакт"
-                                       name="head_contact"
-                                       value="{{ old('head_contact') }}"
-                                       aria-label="Контакт" aria-describedby="basic-icon-default-head_contact"/>
-                            </div>
-                            @error('head_contact')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -293,43 +260,82 @@
                     </div>
                     <div class="row g-3">
                         <!-- total_beds -->
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-total_beds">Количество коек <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-total_beds"
-                                  class="input-group-text @error('total_beds') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-total_beds"
-                                       class="form-control @error('total_beds') is-invalid @enderror"
-                                       name="total_beds"
-                                       value="{{ old('total_beds') }}"
-                                       placeholder="Количество коек" aria-label="Количество коек"
-                                       aria-describedby="basic-icon-default-total_beds"/>
-                            </div>
+                        {{--                        <div class="col-sm-6">--}}
+                        {{--                            <label class="form-label" for="basic-icon-default-total_beds">Количество коек <span--}}
+                        {{--                                    class="text-danger">*</span></label>--}}
+                        {{--                            <div class="input-group input-group-merge">--}}
+                        {{--                            <span id="basic-icon-default-total_beds"--}}
+                        {{--                                  class="input-group-text @error('total_beds') text-danger icon-border @enderror"><i--}}
+                        {{--                                    class="bx bx-bed"></i></span>--}}
+                        {{--                                <input type="number" id="basic-icon-default-total_beds"--}}
+                        {{--                                       class="form-control @error('total_beds') is-invalid @enderror"--}}
+                        {{--                                       name="total_beds"--}}
+                        {{--                                       value="{{ old('total_beds') }}"--}}
+                        {{--                                       placeholder="Количество коек" aria-label="Количество коек"--}}
+                        {{--                                       aria-describedby="basic-icon-default-total_beds"/>--}}
+                        {{--                            </div>--}}
 
-                            @error('total_beds')
+                        {{--                            @error('total_beds')--}}
+                        {{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+                        {{--                            @enderror--}}
+                        {{--                        </div>--}}
+
+                        {{--                        <!-- occupied_beds -->--}}
+                        {{--                        <div class="col-sm-6">--}}
+                        {{--                            <label class="form-label" for="basic-icon-default-occupied_beds">Занятые койки <span--}}
+                        {{--                                    class="text-danger">*</span></label>--}}
+                        {{--                            <div class="input-group input-group-merge">--}}
+                        {{--                            <span id="basic-icon-default-occupied_beds"--}}
+                        {{--                                  class="input-group-text @error('occupied_beds') text-danger icon-border @enderror"><i--}}
+                        {{--                                    class="bx bx-bed"></i></span>--}}
+                        {{--                                <input type="number" id="basic-icon-default-occupied_beds"--}}
+                        {{--                                       class="form-control @error('occupied_beds') is-invalid @enderror"--}}
+                        {{--                                       name="occupied_beds"--}}
+                        {{--                                       value="{{ old('occupied_beds') }}"--}}
+                        {{--                                       placeholder="Занятые койки" aria-label="Занятые койки"--}}
+                        {{--                                       aria-describedby="basic-icon-default-occupied_beds"/>--}}
+                        {{--                            </div>--}}
+
+                        {{--                            @error('occupied_beds')--}}
+                        {{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+                        {{--                            @enderror--}}
+                        {{--                        </div>--}}
+
+                        <div class="col-12">
+                            <label class="form-label" for="warehouse_id">Склады <span
+                                    class="text-danger">*</span></label>
+
+                            <select id="warehouse_id" name="warehouse_id"
+                                    class="form-control select2 @error('warehouse_id') is-invalid @enderror" required>
+                                @foreach($warehouses as $warehouse)
+                                    <option
+                                        value="{{ $warehouse->id }}" @selected(old('rooms') == $warehouse->id)>
+                                        {{ $warehouse->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('warehouse_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <!-- occupied_beds -->
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-occupied_beds">Занятые койки <span
+                        <div class="col-12">
+                            <label class="form-label" for="rooms">Палаты <span
                                     class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-occupied_beds"
-                                  class="input-group-text @error('occupied_beds') text-danger icon-border @enderror"><i
-                                    class="bx bx-bed"></i></span>
-                                <input type="number" id="basic-icon-default-occupied_beds"
-                                       class="form-control @error('occupied_beds') is-invalid @enderror"
-                                       name="occupied_beds"
-                                       value="{{ old('occupied_beds') }}"
-                                       placeholder="Занятые койки" aria-label="Занятые койки"
-                                       aria-describedby="basic-icon-default-occupied_beds"/>
-                            </div>
 
-                            @error('occupied_beds')
+                            <select id="rooms" name="rooms[]"
+                                    class="form-control select2 @error('rooms') is-invalid @enderror" required
+                                    multiple>
+                                @foreach($wardRooms as $wardRoom)
+                                    <option
+                                        value="{{ $wardRoom->id }}" @selected(in_array($wardRoom->id, old('rooms', [])) )>
+                                        {{ $wardRoom->room_number }} (Койки: {{ $wardRoom->beds->count() }})
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('rooms')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

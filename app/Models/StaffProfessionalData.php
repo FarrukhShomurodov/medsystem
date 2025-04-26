@@ -10,6 +10,7 @@ class StaffProfessionalData extends Model
     protected $fillable = [
         'staff_id',
         'position_id',
+        'addition_position_id',
         'speciality_id',
         'department_id',
 
@@ -29,5 +30,20 @@ class StaffProfessionalData extends Model
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function staff(): BelongsTo
+    {
+        return $this->belongsTo(Staff::class);
+    }
+
+    public function position(): BelongsTo
+    {
+        return $this->belongsTo(StaffPosition::class);
+    }
+
+    public function additionPosition(): BelongsTo
+    {
+        return $this->belongsTo(StaffPosition::class,'addition_position_id');
     }
 }

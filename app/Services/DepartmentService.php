@@ -18,7 +18,7 @@ class DepartmentService
 
             // Создание связанных записей
             $department->contact()->create($validated);
-            $department->bed()->create($validated);
+//            $department->bed()->create($validated);
             $department->employee()->create($validated);
             $department->license()->create($validated);
 
@@ -35,6 +35,11 @@ class DepartmentService
             // Синхронизация оборудование
             if (!empty($validated['equipments'])) {
                 $department->equipments()->sync($validated['equipments']);
+            }
+
+            // Синхронизация палаты
+            if (!empty($validated['rooms'])) {
+                $department->rooms()->sync($validated['rooms']);
             }
 
             return $department;
@@ -54,9 +59,9 @@ class DepartmentService
             $department->contact()->update(
                 array_intersect_key($validated, array_flip($department->contact->getFillable()))
             );
-            $department->bed()->update(
-                array_intersect_key($validated, array_flip($department->bed->getFillable()))
-            );
+//            $department->bed()->update(
+//                array_intersect_key($validated, array_flip($department->bed->getFillable()))
+//            );
             $department->employee()->update(
                 array_intersect_key($validated, array_flip($department->employee->getFillable()))
             );
@@ -77,6 +82,11 @@ class DepartmentService
             // Синхронизация оборудование
             if (!empty($validated['equipments'])) {
                 $department->equipments()->sync($validated['equipments']);
+            }
+
+            // Синхронизация палаты
+            if (!empty($validated['rooms'])) {
+                $department->rooms()->sync($validated['rooms']);
             }
         });
     }

@@ -349,6 +349,24 @@
                         </div>
 
                         <div class="col-sm-4">
+                            <label class="form-label" for="addition_position_id">Дополнительная должность</label>
+
+                            <select id="addition_position_id" name="addition_position_id"
+                                    class="form-control select2 @error('addition_position_id') is-invalid @enderror">
+                                @foreach($positions as $position)
+                                    <option
+                                        value="{{ $position->id }}" @selected($position->id == old('addition_position_id'))>
+                                        {{ $position->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('addition_position_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-6">
                             <label class="form-label" for="speciality">Специальность<span
                                     class="text-danger">*</span></label>
 
@@ -373,7 +391,7 @@
                                 'second' => 'Второй'
                             ]
                         @endphp
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <label class="form-label" for="category">Категория<span
                                     class="text-danger">*</span></label>
 
@@ -411,7 +429,7 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-6">
+                        <div class="col-12">
                             <label class="form-label" for="services">Услуги<span
                                     class="text-danger">*</span></label>
 
@@ -645,7 +663,7 @@
                         <!-- Дата приказа об увольнении -->
                         <div class="col-sm-4">
                             <label class="form-label" for="dismissal_orders_date">Дата приказа об увольнении
-                                <span class="text-danger">*</span>
+
                             </label>
                             <div class="input-group input-group-merge">
                 <span id="dismissal_orders_date"
@@ -656,7 +674,7 @@
                                        value="{{ old('dismissal_orders_date',  $staff->document->dismissal_orders_date) }}"
                                        id="dismissal_orders_date"
                                        class="form-control flatpickr-date @error('dismissal_orders_date') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD" aria-describedby="dismissal_orders_date" required/>
+                                       placeholder="YYYY-MM-DD" aria-describedby="dismissal_orders_date"/>
                             </div>
                             @error('dismissal_orders_date')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -666,7 +684,7 @@
                         <!-- Номер акта приема увольнения -->
                         <div class="col-sm-4">
                             <label class="form-label" for="dismissal_reception_number">Номер акта приема увольнения
-                                <span class="text-danger">*</span>
+
                             </label>
                             <div class="input-group input-group-merge">
                 <span id="dismissal_reception_number"
@@ -677,7 +695,7 @@
                                        class="form-control @error('dismissal_reception_number') is-invalid @enderror"
                                        name="dismissal_reception_number"
                                        value="{{ old('dismissal_reception_number', $staff->document->dismissal_reception_number) }}"
-                                       required placeholder="Номер акта приема увольнения"
+                                       placeholder="Номер акта приема увольнения"
                                        aria-label="Номер акта приема увольнения"
                                        aria-describedby="dismissal_reception_number"/>
                             </div>
@@ -689,7 +707,7 @@
                         <!-- Номер приказа об увольнении -->
                         <div class="col-sm-4">
                             <label class="form-label" for="dismissal_orders_number">Номер приказа об увольнении
-                                <span class="text-danger">*</span>
+
                             </label>
                             <div class="input-group input-group-merge">
                 <span id="dismissal_orders_number"
@@ -700,7 +718,7 @@
                                        class="form-control @error('dismissal_orders_number') is-invalid @enderror"
                                        name="dismissal_orders_number"
                                        value="{{ old('dismissal_orders_number', $staff->document->dismissal_orders_number) }}"
-                                       required placeholder="Номер приказа об увольнении"
+                                       placeholder="Номер приказа об увольнении"
                                        aria-label="Номер приказа об увольнении"
                                        aria-describedby="dismissal_orders_number"/>
                             </div>
@@ -712,7 +730,6 @@
                         <!-- Дата увольнения -->
                         <div class="col-12">
                             <label class="form-label" for="dismissal_reception_date">Дата увольнения
-                                <span class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
                 <span id="dismissal_reception_date"
@@ -723,7 +740,7 @@
                                        value="{{ old('dismissal_reception_date', $staff->document->dismissal_reception_date) }}"
                                        id="dismissal_reception_date"
                                        class="form-control flatpickr-date @error('dismissal_reception_date') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD" aria-describedby="dismissal_reception_date" required/>
+                                       placeholder="YYYY-MM-DD" aria-describedby="dismissal_reception_date"/>
                             </div>
                             @error('dismissal_reception_date')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -1047,6 +1064,33 @@
 
     <script>
         $(document).ready(function () {
+            $('#position, #addition_position_id').select2();
+
+            function updateAdditionSelect() {
+                const mainPositionId = $('#position').val();
+                const $additionSelect = $('#addition_position_id');
+
+                const currentAddition = $additionSelect.val();
+
+                $additionSelect.empty();
+
+                @foreach($positions as $position)
+                if ('{{ $position->id }}' !== mainPositionId) {
+                    $additionSelect.append(new Option('{{ $position->name }}', '{{ $position->id }}'));
+                }
+                @endforeach
+
+                $additionSelect.trigger('change.select2');
+
+                if (currentAddition && currentAddition !== mainPositionId) {
+                    $additionSelect.val(currentAddition).trigger('change');
+                }
+            }
+
+            $('#position').on('change', function () {
+                updateAdditionSelect();
+            });
+
             flatpickr('.flatpickr-date', {dateFormat: 'Y-m-d'});
 
             // Добавление временного интервала (График работы)

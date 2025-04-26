@@ -10,7 +10,8 @@ return new class extends Migration {
         Schema::create('staff_professional_data', function (Blueprint $table) {
             $table->id();
             $table->foreignId('staff_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('position_id');
+            $table->foreignId('position_id')->constrained('staff_positions')->cascadeOnDelete();
+            $table->foreignId('addition_position_id')->nullable()->constrained('staff_positions')->cascadeOnDelete();
             $table->foreignId('speciality_id');
             $table->foreignId('department_id');
 
