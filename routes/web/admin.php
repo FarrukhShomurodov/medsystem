@@ -25,6 +25,7 @@ use App\Http\Controllers\Dashboard\PatientServiceController;
 use App\Http\Controllers\Dashboard\PharmacyController;
 use App\Http\Controllers\Dashboard\PharmacyTypeController;
 use App\Http\Controllers\Dashboard\ProcedureController;
+use App\Http\Controllers\Dashboard\ReceptionController;
 use App\Http\Controllers\Dashboard\RegionController;
 use App\Http\Controllers\Dashboard\ServiceCategoryController;
 use App\Http\Controllers\Dashboard\ServiceController;
@@ -49,6 +50,7 @@ Route::post('admin/login', [AdminAuthController::class, 'login']);
 Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');
 
+    // home
     Route::get('', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('admins', AdminController::class);
@@ -74,6 +76,10 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // supplies
     Route::resource('supplies', MedicalSupplyController::class);
+
+    // receptions
+    Route::resource('receptions', ReceptionController::class);
+    Route::get('receptions-doctor-calendar/{staff}', [ReceptionController::class, 'doctorCalendar'])->name('receptions.doctor.calendar');
 
     // suppliers
     Route::resource('suppliers', SupplierController::class);
@@ -110,7 +116,6 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // surveys
     Route::resource('surveys', SurveyController::class)->names('surveys');
-
 
     // surveys response
     Route::get('survey-response/{map}', [SurveyResponseController::class, 'create'])->name('map.survey');

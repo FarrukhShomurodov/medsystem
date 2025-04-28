@@ -201,6 +201,15 @@
             </a>
         </li>
 
+
+        <li class="menu-item {{ Request::is('dashboard/receptions*') ? 'active' : '' }}">
+            <a href="{{ route('receptions.index') }}" class="menu-link">
+                <i class="menu-icon bx bx-calendar"></i>
+                <div data-i18n="Прием">Прием</div>
+            </a>
+        </li>
+
+
         <li class="menu-item {{ Request::is('dashboard/analyzes*') || Request::is('dashboard/laboratories*') || Request::is('dashboard/methods*') || Request::is('dashboard/types*') || Request::is('dashboard/analyze-result*') || Request::is('dashboard/analyze-result-show*') || Request::is('dashboard/analyze-result-edit*')  ? 'open' : '' }}"
             style="">
             <a href="javascript:void(0);" class="menu-link menu-toggle">

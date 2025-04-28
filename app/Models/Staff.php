@@ -56,8 +56,17 @@ class Staff extends Model
         return $this->hasMany(StaffAbsence::class);
     }
 
+    public function receptions(): HasMany
+    {
+        return $this->hasMany(Reception::class);
+    }
+
     public function isWorkingToday(Carbon $date): bool
     {
+        if (!$this->document()->where('is_work', 1)->count() > 0) {
+            return false;
+        }
+
         $dayMap = [
             'Monday' => 'Понедельник',
             'Tuesday' => 'Вторник',
@@ -68,7 +77,7 @@ class Staff extends Model
             'Sunday' => 'Воскресенье',
         ];
 
-        $date = \Illuminate\Support\Carbon::parse($date ?? now());
+        $date = Carbon::parse($date ?? now(), 'Asia/Tashkent');
         $englishDay = $date->format('l');
         $russianDay = $dayMap[$englishDay];
 
@@ -88,5 +97,130 @@ class Staff extends Model
         })->exists();
 
         return $isScheduled && !$isAbsent;
+    }
+
+
+    public function getTodayAvailability($date = null)
+    {
+        if (!$this->document()->where('is_work', 1)->count() > 0) {
+            return [];
+        }
+
+        $dayMap = [
+            'Monday' => 'Понедельник',
+            'Tuesday' => 'Вторник',
+            'Wednesday' => 'Среда',
+            'Thursday' => 'Четверг',
+            'Friday' => 'Пятница',
+            'Saturday' => 'Суббота',
+            'Sunday' => 'Воскресенье',
+        ];
+
+        $date = Carbon::parse($date ?? now(), 'Asia/Tashkent');
+
+        $englishDay = $date->format('l');
+        $russianDay = $dayMap[$englishDay];
+
+        $dayOfWeekId = DayOfWeek::query()->where('name', $russianDay)->value('id');
+
+        $schedule = $this->schedule()
+            ->where('day_of_week_id', $dayOfWeekId)
+            ->where('type', 'reception')
+            ->first();
+
+        if (!$schedule) {
+            return [];
+        }
+
+        $startTime = Carbon::parse($schedule->start_time);
+        $endTime = Carbon::parse($schedule->end_time);
+
+        $isAbsent = $this->absence()
+            ->where(function ($query) use ($date) {
+                $query->where(function ($q1) use ($date) {
+                    $q1->where('type', 'day')->whereDate('start_date', '=', $date);
+                })
+                    ->orWhere(function ($q2) use ($date) {
+                        $q2->where('type', 'period')
+                            ->whereDate('start_date', '<=', $date)
+                            ->whereDate('end_date', '>=', $date);
+                    });
+            })->exists();
+
+        if ($isAbsent) {
+            return [];
+        }
+
+        $slots = [];
+        $intervalMinutes = $this->professionalData->admission_period;
+        $time = Carbon::createFromTime(0, 0);
+        $endOfDay = Carbon::createFromTime(23, 59);
+
+        while ($time <= $endOfDay) {
+            $isAvailable = $time->betweenIncluded($startTime, $endTime);
+            $slots[] = [
+                'time' => $time->format('H:i'),
+                'is_available' => $isAvailable,
+                'admission_period' => $intervalMinutes,
+            ];
+            $time->addMinutes($intervalMinutes);
+        }
+
+        return $slots;
+    }
+
+    public function getBookedTime($date = null)
+    {
+        if (!$this->document()->where('is_work', 1)->exists()) {
+            return [];
+        }
+
+        $dayMap = [
+            'Monday' => 'Понедельник',
+            'Tuesday' => 'Вторник',
+            'Wednesday' => 'Среда',
+            'Thursday' => 'Четверг',
+            'Friday' => 'Пятница',
+            'Saturday' => 'Суббота',
+            'Sunday' => 'Воскресенье',
+        ];
+
+        $date = Carbon::parse($date ?? now(), 'Asia/Tashkent');
+        $englishDay = $date->format('l');
+        $russianDay = $dayMap[$englishDay];
+
+        $dayOfWeekId = DayOfWeek::query()->where('name', $russianDay)->value('id');
+
+        $receptions = $this->receptions()
+            ->whereDate('date', '=', $date->format('Y-m-d'))
+            ->get();
+
+        if ($receptions->isEmpty()) {
+            return [];
+        }
+
+        $slots = [];
+        $intervalMinutes = $this->professionalData->admission_period;
+        $time = Carbon::createFromTime(0, 0);
+        $endOfDay = Carbon::createFromTime(23, 59);
+
+        while ($time <= $endOfDay) {
+            $reception = $receptions->first(function ($reception) use ($time, $intervalMinutes) {
+                return Carbon::parse($reception->start_time)->format('H:i') === $time->format('H:i');
+            });
+
+            $isBooked = $reception !== null;
+
+            $slots[] = [
+                'time' => $time->format('H:i'),
+                'admission_period' => $intervalMinutes,
+                'is_booked' => $isBooked,
+                'reception_id' => $isBooked ? $reception->id : null,
+            ];
+
+            $time->addMinutes($intervalMinutes);
+        }
+
+        return $slots;
     }
 }

@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->text('description');
             $table->integer('floor');
             $table->foreignId('type_id')->constrained('department_types')->cascadeOnDelete();
-            $table->foreignId('warehouse_id')->constrained('warehouses')->cascadeOnDelete();
+            $table->foreignId('warehouse_id')->nullable()->constrained('warehouses')->cascadeOnDelete();
             $table->timestamps();
         });
     }

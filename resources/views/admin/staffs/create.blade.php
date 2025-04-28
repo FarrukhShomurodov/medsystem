@@ -793,6 +793,12 @@
                             @endforeach
                         </div>
 
+                        <div class="col-12">
+                            <label class="form-label" for="admission_period">Период приема (М)</label>
+                            <input type="number" name="admission_period" id="admission_period" class="form-control" value="{{ old('admission_period') }}">
+                        </div>
+
+
                         <!-- Навигация -->
                         <div class="col-12 d-flex justify-content-between">
                             <button class="btn btn-primary btn-prev">

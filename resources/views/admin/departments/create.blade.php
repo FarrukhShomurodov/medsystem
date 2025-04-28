@@ -302,14 +302,13 @@
                         {{--                        </div>--}}
 
                         <div class="col-12">
-                            <label class="form-label" for="warehouse_id">Склады <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="warehouse_id">Склады </label>
 
                             <select id="warehouse_id" name="warehouse_id"
-                                    class="form-control select2 @error('warehouse_id') is-invalid @enderror" required>
+                                    class="form-control select2 @error('warehouse_id') is-invalid @enderror">
                                 @foreach($warehouses as $warehouse)
                                     <option
-                                        value="{{ $warehouse->id }}" @selected(old('rooms') == $warehouse->id)>
+                                        value="{{ $warehouse->id }}" @selected(old('warehouse_id') == $warehouse->id)>
                                         {{ $warehouse->name }}
                                     </option>
                                 @endforeach

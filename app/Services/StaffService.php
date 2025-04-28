@@ -136,7 +136,7 @@ class StaffService
             }
 
             if (isset($validated['dismissal_reception_date'])) {
-                $staff->update(['is_work' => false]);
+                $staff->document->update(['is_work' => false]);
             }
 
             return $staff;

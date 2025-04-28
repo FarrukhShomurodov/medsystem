@@ -53,6 +53,8 @@ class StaffRequest extends FormRequest
             'dismissal_reception_number' => 'nullable|string|max:255',
             'dismissal_reception_date' => 'nullable|date',
 
+            'admission_period' => 'required|int',
+
             'passport_series' => 'required|string|max:255',
             'INN' => 'required|string|max:255',
             'SNILS' => 'required|string|max:255',

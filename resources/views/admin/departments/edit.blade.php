@@ -329,10 +329,10 @@
                                     class="text-danger">*</span></label>
 
                             <select id="warehouse_id" name="warehouse_id"
-                                    class="form-control select2 @error('warehouse_id') is-invalid @enderror" required>
+                                    class="form-control select2 @error('warehouse_id') is-invalid @enderror">
                                 @foreach($warehouses as $warehouse)
                                     <option
-                                        value="{{ $warehouse->id }}" @selected(old('rooms', $department->warehouse_id) == $warehouse->id)>
+                                        value="{{ $warehouse->id }}" @selected(old('warehouse_id', $department->warehouse_id) == $warehouse->id)>
                                         {{ $warehouse->name }}
                                     </option>
                                 @endforeach

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {{-- layout-menu-collapsed --}}
-<html lang="en" class="light-style layout-menu-fixed " dir="ltr" data-theme="theme-default"
+<html lang="en" class="light-style layout-menu-fixed layout-menu-collapsed" dir="ltr" data-theme="theme-default"
       data-assets-path="/" data-template="horizontal-menu-template">
 <head>
     <meta charset="utf-8"/>
@@ -145,6 +145,20 @@
             margin-top: 8px;
             font-size: 0.9rem;
             color: #555;
+        }
+
+        #calendar-container {
+            overflow-x: auto;
+        }
+
+        #calendar-table th, #calendar-table td {
+            white-space: nowrap;
+            min-width: 150px;
+            vertical-align: middle;
+        }
+
+        .status-cell {
+            cursor: pointer;
         }
     </style>
 </head>

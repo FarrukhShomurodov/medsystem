@@ -69,4 +69,9 @@ class ExaminationMap extends Model
         )->using(ExaminationMapMedication::class)
             ->withPivot('dosage', 'admission_period', 'id');
     }
+
+    public function receptions(): HasMany
+    {
+        return $this->hasMany(Reception::class);
+    }
 }

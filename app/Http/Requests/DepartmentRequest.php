@@ -17,7 +17,7 @@ class DepartmentRequest extends FormRequest
             'description' => 'nullable|string',
             'floor' => 'nullable|int',
             'type_id' => 'required|exists:department_types,id',
-            'warehouse_id' => 'required|exists:warehouses,id',
+            'warehouse_id' => 'nullable|exists:warehouses,id',
 
 //            'total_beds' => 'required|integer|min:0',
 //            'occupied_beds' => 'required|integer|min:0|lte:total_beds',

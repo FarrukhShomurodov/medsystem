@@ -24,6 +24,8 @@ return new class extends Migration {
             $table->string('certificate_number');
             $table->date('certificate_issue_date');
             $table->date('certificate_validity_period');
+
+            $table->integer('admission_period');
             $table->timestamps();
         });
     }

@@ -23,6 +23,10 @@ class StaffProfessionalData extends Model
         'certificate_number',
         'certificate_issue_date',
         'certificate_validity_period',
+
+        'certificate_validity_period',
+
+        'admission_period',
     ];
 
     const CATEGORY = ['first', 'second'];
@@ -40,6 +44,11 @@ class StaffProfessionalData extends Model
     public function position(): BelongsTo
     {
         return $this->belongsTo(StaffPosition::class);
+    }
+
+    public function speciality(): BelongsTo
+    {
+        return $this->belongsTo(Specialty::class);
     }
 
     public function additionPosition(): BelongsTo

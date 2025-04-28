@@ -366,7 +366,7 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <label class="form-label" for="speciality">Специальность<span
                                     class="text-danger">*</span></label>
 
@@ -1015,6 +1015,12 @@
                             <button type="button" class="btn btn-sm btn-outline-primary" id="add-absence">Добавить
                                 нерабочий день/период
                             </button>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label" for="admission_period">Период приема (М)</label>
+                            <input type="number" name="admission_period" id="admission_period" class="form-control"
+                                   value="{{ old('admission_period', $staff->professionalData->admission_period) }}">
                         </div>
 
                         {{--    Навигация   --}}

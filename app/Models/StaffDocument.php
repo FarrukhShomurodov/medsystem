@@ -21,5 +21,7 @@ class StaffDocument extends Model
 
         'INN',
         'SNILS',
+
+        'is_work',
     ];
 }
