@@ -794,8 +794,10 @@
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label" for="admission_period">Период приема (М)</label>
-                            <input type="number" name="admission_period" id="admission_period" class="form-control" value="{{ old('admission_period') }}">
+                            <label class="form-label" for="admission_period">Период приема (Минуты) <span
+                                    class="text-danger">*</span></label>
+                            <input type="number" name="admission_period" id="admission_period" class="form-control"
+                                   value="{{ old('admission_period') }}" required>
                         </div>
 
 
@@ -831,6 +833,8 @@
                     $additionSelect.append(new Option('{{ $position->name }}', '{{ $position->id }}'));
                 }
                 @endforeach
+
+                $additionSelect.append(new Option('-', ' ', false, true));
 
                 $additionSelect.trigger('change.select2');
 

@@ -353,6 +353,7 @@
 
                             <select id="addition_position_id" name="addition_position_id"
                                     class="form-control select2 @error('addition_position_id') is-invalid @enderror">
+                                <option value="" >---</option>
                                 @foreach($positions as $position)
                                     <option
                                         value="{{ $position->id }}" @selected($position->id == old('addition_position_id'))>
@@ -1018,8 +1019,10 @@
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label" for="admission_period">Период приема (М)</label>
+                            <label class="form-label" for="admission_period">Период приема (Минуты) <span
+                                    class="text-danger">*</span></label>
                             <input type="number" name="admission_period" id="admission_period" class="form-control"
+                                   required
                                    value="{{ old('admission_period', $staff->professionalData->admission_period) }}">
                         </div>
 
@@ -1085,6 +1088,8 @@
                     $additionSelect.append(new Option('{{ $position->name }}', '{{ $position->id }}'));
                 }
                 @endforeach
+
+                $additionSelect.append(new Option('-', ' '));
 
                 $additionSelect.trigger('change.select2');
 

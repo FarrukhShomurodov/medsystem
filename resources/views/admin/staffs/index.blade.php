@@ -44,6 +44,7 @@
                     <th>#</th>
                     <th>Имя</th>
                     <th>Фамилия</th>
+                    <th>Должность</th>
                     <th>Статус</th>
                     <th></th>
                 </tr>
@@ -54,6 +55,7 @@
                         <td>{{ $staff->id }}</td>
                         <td>{{ $staff->name }}</td>
                         <td>{{ $staff->last_name }}</td>
+                        <td>{{ $staff->professionalData->position->name }}</td>
                         <td>
                             @php
                                 $isWorking = $staff->isWorkingToday(now());

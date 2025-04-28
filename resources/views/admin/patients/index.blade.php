@@ -122,7 +122,7 @@
                         <td>{{ $patient->last_name }}</td>
                         <td>{{ $patient->middle_name }}</td>
                         <td>{{ $patient->birth_date }}</td>
-                        <td>{{ $patient->gender }}</td>
+                        <td>{{ $patient->gender == 'male' ? 'Мужской' : 'Женский' }}</td>
                         <td>{{ $patient->citizenship }}</td>
                         <td>{{ $patient->passport_series }}</td>
 
