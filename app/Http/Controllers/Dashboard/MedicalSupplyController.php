@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\MedicalSupplyRequest;
 use App\Models\MedicalSupply;
 use App\Services\MedicalSupplyService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class MedicalSupplyController
+class MedicalSupplyController extends Controller
 {
     protected MedicalSupplyService $service;
 
     public function __construct(MedicalSupplyService $service)
     {
+        $this->middleware(['permission:view_supplies'])->only('index');
+        $this->middleware(['permission:create_supplies'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_supplies'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_supplies'])->only('destroy');
+
         $this->service = $service;
     }
 

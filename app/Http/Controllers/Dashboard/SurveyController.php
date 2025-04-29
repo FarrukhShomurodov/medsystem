@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\SurveyRequest;
 use App\Models\Survey;
 use App\Models\SurveyType;
@@ -9,12 +10,17 @@ use App\Services\SurveyService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class SurveyController
+class SurveyController extends Controller
 {
     protected SurveyService $service;
 
     public function __construct(SurveyService $service)
     {
+        $this->middleware(['permission:view_surveys'])->only('index');
+        $this->middleware(['permission:create_surveys'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_surveys'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_surveys'])->only('destroy');
+
         $this->service = $service;
     }
 

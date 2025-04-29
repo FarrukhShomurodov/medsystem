@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceMethodRequest;
 use App\Models\ServiceMethod;
 use App\Services\ServicMethodService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class ServiceMethodController
+class ServiceMethodController extends Controller
 {
     protected ServicMethodService $service;
 
     public function __construct(ServicMethodService $service)
     {
+        $this->middleware(['permission:view_service_methods'])->only('index');
+        $this->middleware(['permission:create_service_methods'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_service_methods'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_service_methods'])->only('destroy');
+
         $this->service = $service;
     }
 

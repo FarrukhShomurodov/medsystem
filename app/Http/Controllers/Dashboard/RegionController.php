@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\RegionRequest;
 use App\Models\Region;
 use App\Services\RegionService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class RegionController
+class RegionController extends Controller
 {
     protected RegionService $service;
 
     public function __construct(RegionService $service)
     {
+        $this->middleware(['permission:view_regions'])->only('index');
+        $this->middleware(['permission:create_regions'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_regions'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_regions'])->only('destroy');
+
         $this->service = $service;
     }
 

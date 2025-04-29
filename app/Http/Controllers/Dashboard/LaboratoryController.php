@@ -3,18 +3,24 @@
 namespace App\Http\Controllers\Dashboard;
 
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\LaboratoryRequest;
 use App\Models\Laboratory;
 use App\Services\LaboratoryService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class LaboratoryController
+class LaboratoryController extends Controller
 {
     private LaboratoryService $service;
 
     public function __construct(LaboratoryService $service)
     {
+        $this->middleware(['permission:view_laboratories'])->only('index');
+        $this->middleware(['permission:create_laboratories'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_laboratories'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_laboratories'])->only('destroy');
+
         $this->service = $service;
     }
 

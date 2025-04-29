@@ -3,18 +3,24 @@
 namespace App\Http\Controllers\Dashboard;
 
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ProcedureRequest;
 use App\Models\Procedure;
 use App\Services\ProcedureService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class ProcedureController
+class ProcedureController extends Controller
 {
     protected ProcedureService $service;
 
     public function __construct(ProcedureService $service)
     {
+        $this->middleware(['permission:view_service_procedures'])->only('index');
+        $this->middleware(['permission:create_service_procedures'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_service_procedures'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_service_procedures'])->only('destroy');
+
         $this->service = $service;
     }
 

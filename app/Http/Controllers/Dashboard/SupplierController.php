@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\SupplierRequest;
 use App\Models\Manufacturer;
 use App\Models\Supplier;
@@ -9,12 +10,17 @@ use App\Services\SupplierService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class SupplierController
+class SupplierController extends Controller
 {
     protected SupplierService $service;
 
     public function __construct(SupplierService $service)
     {
+        $this->middleware(['permission:view_suppliers'])->only('index');
+        $this->middleware(['permission:create_suppliers'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_suppliers'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_suppliers'])->only('destroy');
+
         $this->service = $service;
     }
 

@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\SpecialtyRequest;
 use App\Models\Specialty;
 use App\Services\SpecialtyService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class SpecialtyController
+class SpecialtyController extends Controller
 {
     protected SpecialtyService $service;
 
     public function __construct(SpecialtyService $service)
     {
+        $this->middleware(['permission:view_specialties'])->only('index');
+        $this->middleware(['permission:create_specialties'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_specialties'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_specialties'])->only('destroy');
+
         $this->service = $service;
     }
 

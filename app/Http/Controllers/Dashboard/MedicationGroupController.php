@@ -3,18 +3,24 @@
 namespace App\Http\Controllers\Dashboard;
 
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\MedicationGroupRequest;
 use App\Models\MedicationGroup;
 use App\Services\MedicationGroupService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class MedicationGroupController
+class MedicationGroupController extends Controller
 {
     protected MedicationGroupService $service;
 
     public function __construct(MedicationGroupService $service)
     {
+        $this->middleware(['permission:view_medication_groups'])->only('index');
+        $this->middleware(['permission:create_medication_groups'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_medication_groups'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_medication_groups'])->only('destroy');
+
         $this->service = $service;
     }
 

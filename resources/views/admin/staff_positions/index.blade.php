@@ -58,13 +58,15 @@
                                         onclick="location.href='{{ route('staffs.position.edit', $position->id) }}'">
                                     <i
                                         class="bx bx-edit"></i></button>
-                                <form action="{{ route('staffs.position.destroy', $position->id) }}" method="POST"
-                                      style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
-                                    </button>
-                                </form>
+                                @if(!collect([1, 2, 3, 4])->contains($position->id))
+                                    <form action="{{ route('staffs.position.destroy', $position->id) }}" method="POST"
+                                          style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </td>
                     </tr>

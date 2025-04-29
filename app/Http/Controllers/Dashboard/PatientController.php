@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\PatientRequest;
 use App\Models\Allegory;
 use App\Models\ChronicDisease;
@@ -17,7 +18,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
-class PatientController
+class PatientController extends Controller
 {
     use HandlesStaffAvailability;
 
@@ -25,6 +26,11 @@ class PatientController
 
     public function __construct(PatientService $service)
     {
+        $this->middleware(['permission:view_patients'])->only('index');
+        $this->middleware(['permission:create_patients'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_patients'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_patients'])->only('destroy');
+
         $this->service = $service;
     }
 

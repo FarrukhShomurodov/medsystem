@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentTypeRequest;
 use App\Models\DepartmentType;
 use App\Services\DepartmentTypeService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class DepartmentTypeController
+class DepartmentTypeController extends Controller
 {
     protected DepartmentTypeService $service;
 
     public function __construct(DepartmentTypeService $service)
     {
+        $this->middleware(['permission:view_department_types'])->only('index');
+        $this->middleware(['permission:create_department_types'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_department_types'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_department_types'])->only('destroy');
+
         $this->service = $service;
     }
 

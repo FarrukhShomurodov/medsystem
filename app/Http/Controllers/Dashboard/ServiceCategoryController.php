@@ -3,18 +3,24 @@
 namespace App\Http\Controllers\Dashboard;
 
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceCategoryRequest;
 use App\Models\ServiceCategory;
 use App\Services\ServicCategoryService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class ServiceCategoryController
+class ServiceCategoryController extends Controller
 {
     protected ServicCategoryService $service;
 
     public function __construct(ServicCategoryService $service)
     {
+        $this->middleware(['permission:view_service_categories'])->only('index');
+        $this->middleware(['permission:create_service_categories'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_service_categories'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_service_categories'])->only('destroy');
+
         $this->service = $service;
     }
 

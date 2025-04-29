@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\MedicalDeviceRequest;
 use App\Models\MedicalDevice;
 use App\Services\MedicalDeviceService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class MedicalDeviceController
+class MedicalDeviceController extends Controller
 {
     protected MedicalDeviceService $service;
 
     public function __construct(MedicalDeviceService $service)
     {
+        $this->middleware(['permission:view_devices'])->only('index');
+        $this->middleware(['permission:create_devices'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_devices'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_devices'])->only('destroy');
+
         $this->service = $service;
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\PharmacyRequest;
 use App\Models\Pharmacy;
 use App\Models\PharmacyType;
@@ -9,12 +10,17 @@ use App\Services\PharmacyService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class PharmacyController
+class PharmacyController extends Controller
 {
     protected PharmacyService $service;
 
     public function __construct(PharmacyService $service)
     {
+        $this->middleware(['permission:view_pharmacies'])->only('index');
+        $this->middleware(['permission:create_pharmacies'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_pharmacies'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_pharmacies'])->only('destroy');
+
         $this->service = $service;
     }
 

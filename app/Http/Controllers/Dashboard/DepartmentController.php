@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentRequest;
 use App\Models\Department;
 use App\Models\Equipment;
@@ -14,7 +15,7 @@ use App\Traits\HandlesStaffAvailability;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class DepartmentController
+class DepartmentController extends Controller
 {
     use HandlesStaffAvailability;
 
@@ -22,6 +23,11 @@ class DepartmentController
 
     public function __construct(DepartmentService $service)
     {
+        $this->middleware(['permission:view_departments'])->only('index');
+        $this->middleware(['permission:create_departments'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_departments'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_departments'])->only('destroy');
+
         $this->service = $service;
     }
 

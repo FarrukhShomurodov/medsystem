@@ -3,18 +3,24 @@
 namespace App\Http\Controllers\Dashboard;
 
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\EquipmentRequest;
 use App\Models\Equipment;
 use App\Services\EquipmentService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class EquipmentController
+class EquipmentController extends Controller
 {
     protected EquipmentService $service;
 
     public function __construct(EquipmentService $service)
     {
+        $this->middleware(['permission:view_equipments'])->only('index');
+        $this->middleware(['permission:create_equipments'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_equipments'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_equipments'])->only('destroy');
+
         $this->service = $service;
     }
 

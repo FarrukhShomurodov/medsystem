@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ChronicDiseaseRequest;
 use App\Models\ChronicDisease;
 use App\Services\ChronicDiseaseService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class ChronicDiseaseController
+class ChronicDiseaseController extends Controller
 {
     protected ChronicDiseaseService $service;
 
     public function __construct(ChronicDiseaseService $service)
     {
+        $this->middleware(['permission:view_diseases'])->only('index');
+        $this->middleware(['permission:create_diseases'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_diseases'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_diseases'])->only('destroy');
+
         $this->service = $service;
     }
 

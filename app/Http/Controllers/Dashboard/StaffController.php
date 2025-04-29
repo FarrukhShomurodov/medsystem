@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Http\Requests\AttachSurveyRequest;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StaffRequest;
 use App\Models\Department;
 use App\Models\Service;
@@ -13,14 +13,18 @@ use App\Models\Survey;
 use App\Services\StaffService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Spatie\Permission\Models\Permission;
 
-class StaffController
+class StaffController extends Controller
 {
     protected StaffService $service;
 
     public function __construct(StaffService $service)
     {
+        $this->middleware(['permission:view_staffs'])->only('index');
+        $this->middleware(['permission:create_staffs'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_staffs'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_staffs'])->only('destroy');
+
         $this->service = $service;
     }
 

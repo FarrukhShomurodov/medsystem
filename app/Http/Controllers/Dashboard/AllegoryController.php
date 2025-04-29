@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\AllegoryRequest;
 use App\Models\Allegory;
 use App\Services\AllegoryService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class AllegoryController
+class AllegoryController extends Controller
 {
     protected AllegoryService $service;
 
     public function __construct(AllegoryService $service)
     {
+        $this->middleware(['permission:view_allegories'])->only('index');
+        $this->middleware(['permission:create_allegories'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_allegories'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_allegories'])->only('destroy');
+
         $this->service = $service;
     }
 

@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\WardRoomRequest;
 use App\Models\WardRoom;
 use App\Services\WardRoomService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class WardRoomController
+class WardRoomController extends Controller
 {
     protected WardRoomService $service;
 
     public function __construct(WardRoomService $service)
     {
+        $this->middleware(['permission:view_department_rooms'])->only('index');
+        $this->middleware(['permission:create_department_rooms'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_department_rooms'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_department_rooms'])->only('destroy');
+
         $this->service = $service;
     }
 

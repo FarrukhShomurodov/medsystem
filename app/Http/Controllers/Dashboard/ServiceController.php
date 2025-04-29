@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceRequest;
 use App\Models\Service;
 use App\Models\ServiceCategory;
@@ -9,12 +10,18 @@ use App\Services\ServiceService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class ServiceController
+class ServiceController extends Controller
 {
     protected ServiceService $service;
 
     public function __construct(ServiceService $service)
     {
+        $this->middleware(['permission:view_services'])->only('index');
+        $this->middleware(['permission:create_services'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_services'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_services'])->only('destroy');
+
+
         $this->service = $service;
     }
 

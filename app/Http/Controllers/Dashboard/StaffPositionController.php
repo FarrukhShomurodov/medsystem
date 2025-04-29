@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StaffPositionRequest;
 use App\Models\StaffPosition;
 use App\Services\StaffPositionService;
@@ -9,12 +10,17 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Spatie\Permission\Models\Permission;
 
-class StaffPositionController
+class StaffPositionController extends Controller
 {
     protected StaffPositionService $service;
 
     public function __construct(StaffPositionService $service)
     {
+        $this->middleware(['permission:view_staff_positions'])->only('index');
+        $this->middleware(['permission:create_staff_positions'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_staff_positions'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_staff_positions'])->only('destroy');
+
         $this->service = $service;
     }
 
@@ -60,6 +66,10 @@ class StaffPositionController
 
     public function destroy(StaffPosition $position): RedirectResponse
     {
+        if (collect([1, 2, 3, 4])->contains($position->id)) {
+            return redirect()->back()->withErrors('Удаление этой должности недоступно!');
+        }
+
         $this->service->destroy($position);
 
         return redirect()->route('staffs.position.index')->with('success', 'Должность успешно удален!');

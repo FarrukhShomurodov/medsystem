@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\TransferRequest;
 use App\Models\Medication;
 use App\Models\Pharmacy;
@@ -11,12 +12,17 @@ use App\Services\TransferService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class TransferController
+class TransferController extends Controller
 {
     protected TransferService $transferService;
 
     public function __construct(TransferService $transferService)
     {
+        $this->middleware(['permission:view_transfers'])->only('index');
+        $this->middleware(['permission:create_transfers'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_transfers'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_transfers'])->only('destroy');
+
         $this->transferService = $transferService;
     }
 

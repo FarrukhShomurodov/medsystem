@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\AnalyzeMethodRequest;
 use App\Models\AnalyzeMethod;
 use App\Services\AnalyzeMethodService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class AnalyzeMethodController
+class AnalyzeMethodController extends Controller
 {
     protected AnalyzeMethodService $service;
 
     public function __construct(AnalyzeMethodService $service)
     {
+        $this->middleware(['permission:view_analyze_methods'])->only('index');
+        $this->middleware(['permission:create_analyze_methods'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_analyze_methods'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_analyze_methods'])->only('destroy');
+
         $this->service = $service;
     }
 

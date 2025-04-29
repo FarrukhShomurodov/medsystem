@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\MedicationRequest;
 use App\Models\Manufacturer;
 use App\Models\Medication;
@@ -12,12 +13,17 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class MedicationController
+class MedicationController extends Controller
 {
     protected MedicationService $service;
 
     public function __construct(MedicationService $service)
     {
+        $this->middleware(['permission:view_medications'])->only('index');
+        $this->middleware(['permission:create_medications'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_medications'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_medications'])->only('destroy');
+
         $this->service = $service;
     }
 

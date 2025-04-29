@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\WarehouseRequest;
 use App\Models\MedicalSupply;
 use App\Models\Medication;
@@ -14,12 +15,17 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-class WarehouseController
+class WarehouseController extends Controller
 {
     protected WarehouseService $service;
 
     public function __construct(WarehouseService $service)
     {
+        $this->middleware(['permission:view_warehouses'])->only('index');
+        $this->middleware(['permission:create_warehouses'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_warehouses'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_warehouses'])->only('destroy');
+
         $this->service = $service;
     }
 

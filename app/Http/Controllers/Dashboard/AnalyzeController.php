@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\AnalyzeRequest;
 use App\Models\Analyze;
 use App\Models\AnalyzeMethod;
@@ -15,7 +16,7 @@ use App\Traits\HandlesStaffAvailability;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class AnalyzeController
+class AnalyzeController extends Controller
 {
     use HandlesStaffAvailability;
 
@@ -23,6 +24,11 @@ class AnalyzeController
 
     public function __construct(AnalyzeService $service)
     {
+        $this->middleware(['permission:view_analyzes'])->only('index');
+        $this->middleware(['permission:create_analyzes'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_analyzes'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_analyzes'])->only('destroy');
+
         $this->service = $service;
     }
 

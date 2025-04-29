@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StorageRequest;
 use App\Http\Requests\Admin\UpdateRequest;
 use App\Models\Admin;
@@ -9,12 +10,18 @@ use App\Services\AdminService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class AdminController
+class AdminController extends Controller
+
 {
     protected AdminService $adminService;
 
     public function __construct(AdminService $adminService)
     {
+        $this->middleware(['permission:view_admins'])->only('index');
+        $this->middleware(['permission:create_admins'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_admins'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_admins'])->only('destroy');
+
         $this->adminService = $adminService;
     }
 

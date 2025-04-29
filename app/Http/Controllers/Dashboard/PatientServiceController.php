@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\PatientServiceRequest;
 use App\Models\Department;
 use App\Models\Equipment;
@@ -16,7 +17,7 @@ use App\Traits\HandlesStaffAvailability;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class PatientServiceController
+class PatientServiceController extends Controller
 {
     use HandlesStaffAvailability;
 
@@ -24,6 +25,11 @@ class PatientServiceController
 
     public function __construct(PatientServiceAssignService $service)
     {
+        $this->middleware(['permission:view_patient_services'])->only('index');
+        $this->middleware(['permission:create_patient_services'])->only(['create', 'store']);
+        $this->middleware(['permission:edit_patient_services'])->only(['edit', 'update']);
+        $this->middleware(['permission:delete_patient_services'])->only('destroy');
+
         $this->service = $service;
     }
 
