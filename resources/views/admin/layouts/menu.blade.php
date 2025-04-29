@@ -23,34 +23,41 @@
             </a>
         </li>
 
-
-        {{-- Поставшик --}}
-        <li class="menu-item {{ Request::is('dashboard/suppliers*') ? 'active' : '' }}">
-            <a href="{{ route('suppliers.index') }}" class="menu-link">
-                <i class="menu-icon bx bx-box"></i>
-                <div data-i18n="Поставшик">Поставшик</div>
-            </a>
-        </li>
+        @can('view_suppliers')
+            {{-- Поставщик --}}
+            <li class="menu-item {{ Request::is('dashboard/suppliers*') ? 'active' : '' }}">
+                <a href="{{ route('suppliers.index') }}" class="menu-link">
+                    <i class="menu-icon bx bx-box"></i>
+                    <div data-i18n="Поставщик">Поставщик</div>
+                </a>
+            </li>
+        @endcan
 
         {{-- Препараты --}}
-        <li class="menu-item {{ Request::is('dashboard/medication/list*') || Request::is('dashboard/medication/groups*')  ? 'open' : '' }}">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon bx bx-capsule"></i>
-                <div data-i18n="Препараты">Препараты</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item {{ Request::is('dashboard/medication/list*') ? 'active' : '' }}">
-                    <a href="{{route('medications.index')}}" class="menu-link">
-                        <div data-i18n="Список">Список</div>
-                    </a>
-                </li>
-                <li class="menu-item {{ Request::is('dashboard/medication/groups*') ? 'active' : '' }}">
-                    <a href="{{route('medication.groups.index')}}" class="menu-link">
-                        <div data-i18n="Группы">Группы</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
+        @canany(['view medications list', 'view medication groups'])
+            <li class="menu-item {{ Request::is('dashboard/medication/list*') || Request::is('dashboard/medication/groups*') ? 'open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon bx bx-capsule"></i>
+                    <div data-i18n="Препараты">Препараты</div>
+                </a>
+                <ul class="menu-sub">
+                    @can('view medications list')
+                        <li class="menu-item {{ Request::is('dashboard/medication/list*') ? 'active' : '' }}">
+                            <a href="{{route('medications.index')}}" class="menu-link">
+                                <div data-i18n="Список">Список</div>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('view medication groups')
+                        <li class="menu-item {{ Request::is('dashboard/medication/groups*') ? 'active' : '' }}">
+                            <a href="{{route('medication.groups.index')}}" class="menu-link">
+                                <div data-i18n="Группы">Группы</div>
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
+            </li>
+        @endcanany
 
         {{-- Услуги --}}
         <li class="menu-item {{ Request::is('dashboard/services/list*') ||  Request::is('dashboard/services/categories*')

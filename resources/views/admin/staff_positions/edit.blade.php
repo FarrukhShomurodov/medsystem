@@ -51,6 +51,31 @@
                     @enderror
                 </div>
 
+
+
+                @php
+                    $roleName = $position->name;
+                    $role = \Spatie\Permission\Models\Role::where('name', $roleName)->first();
+                    $selectedPermissions = $role ? $role->permissions->pluck('name')->toArray() : [];
+                    $selectedPermissions = old('permissions', $selectedPermissions);
+                @endphp
+
+                <div class="col-12 mb-3">
+                    <label class="form-label" for="permissions">Разрешения <span class="text-danger">*</span></label>
+                    <select id="permissions" name="permissions[]"
+                            class="form-control select2 @error('permissions') is-invalid @enderror" required multiple>
+                        @foreach($permissions as $permission)
+                            <option value="{{ $permission->name }}"
+                                @selected(in_array($permission->name, $selectedPermissions))>
+                                {{ $permission->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('permissions')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <button type="submit" class="btn btn-warning ">Редактировать</button>
             </form>
         </div>

@@ -7,6 +7,7 @@ use App\Models\DayOfWeek;
 use App\Models\StaffPosition;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Database\Seeders\PermissionSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -48,6 +49,8 @@ class DatabaseSeeder extends Seeder
                 'name' => $day,
             ]);
         }
+
+        $this->call(PermissionSeeder::class);
 
     }
 }

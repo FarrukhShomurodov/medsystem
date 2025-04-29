@@ -6,6 +6,7 @@ use App\Models\Staff;
 use App\Models\StaffProfessionalData;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class StaffRequest extends FormRequest
 {
@@ -83,6 +84,10 @@ class StaffRequest extends FormRequest
             // surveys[]
             'surveys' => 'nullable|array',
             'surveys.*' => 'required|int|exists:surveys,id',
+
+            // auth
+            'login_email' => 'required|email',
+            'password' => 'nullable|min:8',
         ];
     }
 }

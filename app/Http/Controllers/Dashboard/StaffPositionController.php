@@ -7,6 +7,7 @@ use App\Models\StaffPosition;
 use App\Services\StaffPositionService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Spatie\Permission\Models\Permission;
 
 class StaffPositionController
 {
@@ -29,7 +30,9 @@ class StaffPositionController
 
     public function create(): View
     {
-        return view('admin.staff_positions.create');
+        $permissions = Permission::query()->get();
+
+        return view('admin.staff_positions.create', compact('permissions'));
     }
 
     public function store(StaffPositionRequest $request): RedirectResponse
@@ -42,7 +45,9 @@ class StaffPositionController
 
     public function edit(StaffPosition $position): View
     {
-        return view('admin.staff_positions.edit', compact('position'));
+        $permissions = Permission::query()->get();
+
+        return view('admin.staff_positions.edit', compact('position', 'permissions'));
     }
 
     public function update(StaffPositionRequest $request, StaffPosition $position): RedirectResponse

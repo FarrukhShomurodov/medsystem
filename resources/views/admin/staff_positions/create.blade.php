@@ -49,6 +49,22 @@
                     @enderror
                 </div>
 
+                <div class="col-12 mb-3">
+                    <label class="form-label" for="permissions">Разрешения <span
+                            class="text-danger">*</span></label>
+                    <select id="type" name="permissions[]"
+                            class="form-control select2 @error('permissions') is-invalid @enderror" required multiple>
+                        @foreach($permissions as $permission)
+                            <option
+                                value="{{ $permission->name }}" @selected(in_array($permission->name, old('permissions', [])))>
+                                {{ $permission->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('permissions')
+                    <div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+
                 <button type="submit" class="btn btn-primary">Сохранить</button>
             </form>
         </div>

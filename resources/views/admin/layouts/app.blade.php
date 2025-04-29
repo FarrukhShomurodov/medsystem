@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {{-- layout-menu-collapsed --}}
-<html lang="en" class="light-style layout-menu-fixed layout-menu-collapsed" dir="ltr" data-theme="theme-default"
+<html lang="en" class="light-style layout-menu-fixed " dir="ltr" data-theme="theme-default"
       data-assets-path="/" data-template="horizontal-menu-template">
 <head>
     <meta charset="utf-8"/>

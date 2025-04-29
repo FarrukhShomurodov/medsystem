@@ -61,6 +61,11 @@ class Staff extends Model
         return $this->hasMany(Reception::class);
     }
 
+    public function admin(): hasOne
+    {
+        return $this->hasOne(Admin::class);
+    }
+
     public function isWorkingToday(Carbon $date): bool
     {
         if (!$this->document()->where('is_work', 1)->count() > 0) {

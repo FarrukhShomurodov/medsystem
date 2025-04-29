@@ -166,6 +166,27 @@
                             <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
+                        {{-- Staff Auth --}}
+                        <div class="mb-3 col-6">
+                            <label class="form-label" for="login_email ">Email <span
+                                    class="text-danger">*</span></label>
+                            <input type="email " name="login_email" class="form-control @error('login_email ') is-invalid @enderror"
+                                   id="login_email " placeholder="Email" value="{{ old('login_email ') }}" required>
+                            @error('login_email ')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="password" class="form-label">Пароль <span
+                                    class="text-danger">*</span></label>
+                            <input class="form-control @error('password') is-invalid @enderror" type="password"
+                                   name="password" id="password"
+                                   placeholder="Пароль" required>
+                            @error('password')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <!-- Navigation -->
                         <div class="col-12 d-flex justify-content-between">
                             <button class="btn btn-label-secondary btn-prev" disabled>

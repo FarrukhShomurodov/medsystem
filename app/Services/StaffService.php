@@ -3,7 +3,10 @@
 namespace App\Services;
 
 use App\Models\Staff;
+use App\Models\StaffPosition;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class StaffService
 {
@@ -48,6 +51,12 @@ class StaffService
             if (!empty($validated['services'])) {
                 $staff->services()->sync($validated['services']);
             }
+
+
+            $authValidated['email'] = $validated['login_email'];
+            $authValidated['password'] = $validated['password'];
+
+            $this->staffAuth($staff, $authValidated, 'store', $validated['position_id']);
 
             return $staff;
         }, 5);
@@ -139,15 +148,45 @@ class StaffService
                 $staff->document->update(['is_work' => false]);
             }
 
+            $authValidated['email'] = $validated['login_email'];
+            $authValidated['password'] = isset($validated['password']) ? $validated['password'] : null;
+
+            $this->staffAuth($staff, $authValidated, 'update', $validated['position_id']);
+
             return $staff;
         });
+    }
+
+    public function staffAuth($staff, $validated, $method, $positionId): void
+    {
+        $positionName = StaffPosition::find($positionId)->name;
+
+        if ($method == 'update') {
+            if (isset($validated['password']) && $validated['password'] !== '') {
+                $validated['password'] = Hash::make((string)$validated['password']);
+            } else {
+                unset($validated['password']);
+            }
+
+            $staff->admin()->update($validated);
+            $admin = $staff->admin;
+        } else {
+            $validated['password'] = isset($validated['password'])
+                ? Hash::make((string)$validated['password'])
+                : null;
+
+            $admin = $staff->admin()->create($validated);
+        }
+
+        $admin->assignRole($positionName);
     }
 
     /**
      * @param Staff $staff
      * @return void
      */
-    public function destroy(Staff $staff): void
+    public
+    function destroy(Staff $staff): void
     {
         $staff->delete();
     }

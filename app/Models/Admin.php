@@ -2,16 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
 
 class Admin extends Authenticatable
 {
-    use HasUlids;
+    use HasRoles;
+
+    protected $guard_name = ['admin'];
 
     protected $fillable = [
         'email',
         'password',
+        'staff_id',
     ];
 
     /**

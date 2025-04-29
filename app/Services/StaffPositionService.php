@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\StaffPosition;
+use Spatie\Permission\Models\Role;
 
 class StaffPositionService
 {
@@ -11,7 +12,16 @@ class StaffPositionService
      */
     public function store(array $validated): StaffPosition
     {
-        return StaffPosition::query()->create($validated);
+        $position = StaffPosition::query()->create($validated);
+
+        $role = Role::firstOrCreate([
+            'name' => $position->name,
+            'guard_name' => 'admin',
+        ]);
+
+        $role->syncPermissions($validated['permissions']);
+
+        return $position;
     }
 
     /**
@@ -20,6 +30,17 @@ class StaffPositionService
     public function update(StaffPosition $position, array $validated): StaffPosition
     {
         $position->update($validated);
+
+        $role = Role::query()->updateOrCreate(
+            [
+                'name' => $position->name,
+                'guard_name' => 'admin',
+            ],
+            [] // Если не нужно обновлять другие поля, можно оставить пустым
+        );
+
+        $role->syncPermissions($validated['permissions']);
+
         return $position->refresh();
     }
 
