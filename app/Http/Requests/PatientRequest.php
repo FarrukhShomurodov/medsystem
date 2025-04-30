@@ -70,6 +70,8 @@ class PatientRequest extends FormRequest
             'allegories' => 'required|array',
             'medical_devices' => 'required|array',
             'chronic_diseases' => 'required|array',
+
+            'files' => 'sometimes',
         ];
 
         if ($this->method() == 'PUT') {

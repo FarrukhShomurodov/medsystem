@@ -153,15 +153,6 @@ class PatientController extends Controller
     public function update(PatientRequest $request, Patient $patient): RedirectResponse
     {
         $validated = $request->validated();
-
-        if (
-            (!empty($validated['institution_id']) && empty($validated['staff_id']) && empty($validated['admission_date'])) ||
-            (!empty($validated['staff_id']) && empty($validated['institution_id']) && empty($validated['admission_date'])) ||
-            (!empty($validated['admission_date']) && empty($validated['institution_id']) && empty($validated['staff_id']))
-        ) {
-            return redirect()->back()->withErrors('Заполните все поля для добавления обращения или не заполняйте их вообще!');
-        }
-
         $this->service->update($patient, (array)$validated);
 
         return redirect()->route('patients.index')->with('success', 'Пациент устройство  успешно обновлена!');

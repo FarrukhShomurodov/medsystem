@@ -183,7 +183,7 @@
                         </div>
 
                         <!-- Паспортные данные -->
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-passport-series">Серия паспорта <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
@@ -202,7 +202,7 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-passport-issue-date">Срок действия <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
@@ -217,6 +217,20 @@
                                        required/>
                             </div>
                             @error('passport_validity_period')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="files">Файлы</label>
+                            <div class="input-group input-group-merge">
+                                <input type="file" name="files[]" id="files"
+                                       multiple
+                                       value="{{ old('files') }}"
+                                       class="form-control @error('files') is-invalid @enderror"
+                                       placeholder="Файлы"/>
+                            </div>
+                            @error('files')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -862,7 +876,7 @@
                 <div id="visit-history" class="content">
                     <div class="content-header mb-3">
                         <h6 class="mb-3">История обращений</h6>
-{{--                        <p>Кол-во посещений: 0 </p>--}}
+                        {{--                        <p>Кол-во посещений: 0 </p>--}}
                     </div>
                     <div class="row g-3">
                         <input type="hidden"

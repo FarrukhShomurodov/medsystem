@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\Dashboard\Api;
 
-use App\Models\Image;
+use App\Models\File;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 
-class ImageController
+class FileController
 {
-    public function deletePhoto(
+    public function deleteFile(
         string $folderName,
         string $fileName
     ): \Illuminate\Foundation\Application|Response|Application|ResponseFactory {
         $url = $folderName.'/'.$fileName;
-        Image::query()->where('url', $url)->delete();
+        File::query()->where('url', $url)->delete();
         Storage::disk('public')->delete($url);
 
         return response([], 201);

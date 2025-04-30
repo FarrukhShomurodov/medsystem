@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Dashboard\Api\ExaminationMapController;
-use App\Http\Controllers\Dashboard\Api\ImageController;
+use App\Http\Controllers\Dashboard\Api\FileController;
 use App\Http\Controllers\Dashboard\Api\MedicationController;
 use App\Http\Controllers\Dashboard\Api\PatientController;
 use App\Http\Controllers\Dashboard\Api\ReceptionController;
@@ -13,7 +13,7 @@ use App\Models\Staff;
 use Illuminate\Support\Facades\Route;
 
 // Delete image
-Route::delete('/delete/image/{folderName}/{fileName}', [ImageController::class, 'deletePhoto']);
+Route::delete('/delete/file/{folderName}/{fileName}', [FileController::class, 'deleteFile']);
 
 // Examination maps
 Route::get('examination-map-by-patient/{patient}', [ExaminationMapController::class, 'mapByPatient']);

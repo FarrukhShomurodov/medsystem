@@ -10,6 +10,7 @@ use App\Models\MedicalDevice;
 use App\Models\Patient;
 use App\Models\Region;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PatientService
 {
@@ -86,6 +87,16 @@ class PatientService
             ];
 
             $patient->examinationMaps()->create($mapData);
+
+            if (isset($validated['files'])) {
+                foreach ($validated['files'] as $file) {
+                    $path = $file->store('patient_files', 'public');
+                    $patient->files()->create([
+                        'name' => $file->getClientOriginalName(),
+                        'url' => $path
+                    ]);
+                }
+            }
 
             return $patient;
         });
@@ -167,6 +178,16 @@ class PatientService
                 ];
 
                 $patient->examinationMaps()->create($mapData);
+            }
+
+            if (isset($validated['files'])) {
+                foreach ($validated['files'] as $file) {
+                    $path = $file->store('patient_files', 'public');
+                    $patient->files()->create([
+                        'name' => $file->getClientOriginalName(),
+                        'url' => $path
+                    ]);
+                }
             }
 
             return $patient;

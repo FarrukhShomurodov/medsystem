@@ -180,7 +180,7 @@
                         </div>
 
                         <!-- Паспортные данные -->
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-passport-series">Серия паспорта <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
@@ -200,7 +200,7 @@
                         </div>
 
 
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-passport-issue-date">Срок действия <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
@@ -217,6 +217,44 @@
                             @error('passport_validity_period')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="files">Файлы</label>
+                            <div class="input-group input-group-merge">
+                                <input type="file" name="files[]" id="files"
+                                       multiple
+                                       value="{{ old('files') }}"
+                                       class="form-control @error('files') is-invalid @enderror"
+                                       placeholder="Файлы"/>
+                            </div>
+                            @error('files')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="files">Файлы</label>
+
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach($patient->files as $file)
+                                    <div class="border rounded p-3 d-flex flex-row justify-content-between file_container">
+                                        <div class="text-truncate mb-2" title="{{ $file->name }}">
+                                            <strong>{{ \Illuminate\Support\Str::limit($file->name, 40) }}</strong>
+                                        </div>
+                                        <div class="ms-1">
+                                            <a href="{{ asset('storage/' . $file->url) }}" target="_blank"
+                                               class="text-secondary" title="Просмотр">
+                                                <i class="bx bx-show fs-5"></i>
+                                            </a>
+                                            <span class="text-danger delete_file" role="button"
+                                                  data-file-path="{{ $file->url }}" title="Удалить">
+                                                <i class="bx bx-trash fs-5"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
 
                         <div class="col-12 d-flex justify-content-between">
@@ -908,19 +946,19 @@
                             <h6 class="mb-0">Новая обращение</h6>
                         </div>
 
-{{--                        <div>--}}
-{{--                            <label class="form-label" for="basic-icon-default-visit-dates">Дата посещения </label>--}}
-{{--                            <div class="input-group input-group-merge">--}}
-{{--                                <input type="date" id="basic-icon-default-visit-dates"--}}
-{{--                                       class="form-control flatpickr-date @error('admission_date') is-invalid @enderror"--}}
-{{--                                       placeholder="YYYY-MM-DD" name="admission_date"--}}
-{{--                                       value="{{ old('admission_date') }}"--}}
-{{--                                       aria-describedby="basic-icon-default-visit-dates2"/>--}}
-{{--                            </div>--}}
-{{--                            @error('admission_date')--}}
-{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
-{{--                            @enderror--}}
-{{--                        </div>--}}
+                        {{--                        <div>--}}
+                        {{--                            <label class="form-label" for="basic-icon-default-visit-dates">Дата посещения </label>--}}
+                        {{--                            <div class="input-group input-group-merge">--}}
+                        {{--                                <input type="date" id="basic-icon-default-visit-dates"--}}
+                        {{--                                       class="form-control flatpickr-date @error('admission_date') is-invalid @enderror"--}}
+                        {{--                                       placeholder="YYYY-MM-DD" name="admission_date"--}}
+                        {{--                                       value="{{ old('admission_date') }}"--}}
+                        {{--                                       aria-describedby="basic-icon-default-visit-dates2"/>--}}
+                        {{--                            </div>--}}
+                        {{--                            @error('admission_date')--}}
+                        {{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+                        {{--                            @enderror--}}
+                        {{--                        </div>--}}
                         <input type="hidden"
                                placeholder="YYYY-MM-DD" name="admission_date"
                                value="{{ now()->format('Y-m-d')  }}"
@@ -989,6 +1027,27 @@
 
                 $('#basic-icon-default-region2').val(regionVal).trigger('change');
                 $('#basic-icon-default-city2').val(cityVal).trigger('change');
+            });
+
+
+            $(document).on('click', '.delete_file', function () {
+                const path = $(this).data('file-path');
+                if (path) {
+                    $.ajax({
+                        url: `/api/delete/file/${path}/`,
+                        method: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            $(this).closest('.file_container').remove();
+                        }.bind(this),
+                        error: function (error) {
+                            console.error('Error deleting photo:', error);
+                        }
+                    });
+                }
             });
         })
     </script>
