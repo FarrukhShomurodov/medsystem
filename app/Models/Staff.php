@@ -107,7 +107,7 @@ class Staff extends Model
 
     public function getTodayAvailability($date = null)
     {
-        if (!$this->document()->where('is_work', 1)->count() > 0) {
+        if (!$this->document()->where('is_work', 1)->exists()) {
             return [];
         }
 
@@ -128,18 +128,17 @@ class Staff extends Model
 
         $dayOfWeekId = DayOfWeek::query()->where('name', $russianDay)->value('id');
 
-        $schedule = $this->schedule()
+        // Получаем все расписания на этот день
+        $schedules = $this->schedule()
             ->where('day_of_week_id', $dayOfWeekId)
             ->where('type', 'reception')
-            ->first();
+            ->get();
 
-        if (!$schedule) {
+        if ($schedules->isEmpty()) {
             return [];
         }
 
-        $startTime = Carbon::parse($schedule->start_time);
-        $endTime = Carbon::parse($schedule->end_time);
-
+        // Проверка на отсутствие (отпуск и т.д.)
         $isAbsent = $this->absence()
             ->where(function ($query) use ($date) {
                 $query->where(function ($q1) use ($date) {
@@ -162,12 +161,24 @@ class Staff extends Model
         $endOfDay = Carbon::createFromTime(23, 59);
 
         while ($time <= $endOfDay) {
-            $isAvailable = $time->betweenIncluded($startTime, $endTime);
+            $isAvailable = false;
+
+            foreach ($schedules as $schedule) {
+                $startTime = Carbon::parse($schedule->start_time);
+                $endTime = Carbon::parse($schedule->end_time);
+
+                if ($time->betweenIncluded($startTime, $endTime)) {
+                    $isAvailable = true;
+                    break;
+                }
+            }
+
             $slots[] = [
                 'time' => $time->format('H:i'),
                 'is_available' => $isAvailable,
                 'admission_period' => $intervalMinutes,
             ];
+
             $time->addMinutes($intervalMinutes);
         }
 

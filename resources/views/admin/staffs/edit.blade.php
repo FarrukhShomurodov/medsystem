@@ -966,6 +966,12 @@
                                                                class="form-control end-time"
                                                                value="{{ $time->end_time }}">
                                                     </div>
+
+                                                    @if($index >= 1)
+                                                        <div class="col-md-2 d-flex align-items-end">
+                                                            <button class="btn btn-outline-danger remove-range">×</button>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             @endforeach
                                         @endif

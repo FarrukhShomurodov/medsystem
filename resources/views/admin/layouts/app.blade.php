@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-{{-- layout-menu-collapsed --}}
-<html lang="en" class="light-style layout-menu-fixed " dir="ltr" data-theme="theme-default"
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default"
       data-assets-path="/" data-template="horizontal-menu-template">
 <head>
     <meta charset="utf-8"/>
@@ -224,7 +223,19 @@
 
 
 <script>
+    const isCollapsed = localStorage.getItem('menuCollapsed');
+    if (isCollapsed === 'true') {
+        $('html').addClass('layout-menu-collapsed');
+    }
+
     $(document).ready(function () {
+        $('.menu-toggle-icon').on('click', function () {
+            const isCollapsed = $('html').hasClass('layout-menu-collapsed');
+
+            localStorage.setItem('menuCollapsed', isCollapsed ? 'false' : 'true');
+        });
+
+
         $('.flatpickr-date').flatpickr({
             dateFormat: 'Y-m-d', // Формат для отправки
         })
