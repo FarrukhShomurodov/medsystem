@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 // Delete image
 Route::delete('/delete/file/{folderName}/{fileName}', [FileController::class, 'deleteFile']);
+Route::delete('/delete/file/{folderName}/{fileName}', [FileController::class, 'deleteFile']);
 
 // Examination maps
 Route::get('examination-map-by-patient/{patient}', [ExaminationMapController::class, 'mapByPatient']);

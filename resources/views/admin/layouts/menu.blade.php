@@ -236,14 +236,31 @@
             </li>
         @endcan
 
-        @can('view_receptions')
-            <li class="menu-item {{ Request::is('dashboard/receptions*') ? 'active' : '' }}">
-                <a href="{{ route('receptions.index') }}" class="menu-link">
+        {{-- Прием --}}
+        @canany(['view_receptions', 'view_appointment_receptions'])
+            <li class="menu-item {{ Request::is('dashboard/receptions/list') || Request::is('dashboard/receptions-appointment') || Request::is('dashboard/receptions-doctor-calendar/*') ? 'open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon bx bx-calendar"></i>
                     <div data-i18n="Прием">Прием</div>
                 </a>
+                <ul class="menu-sub">
+                    @can('view_receptions')
+                        <li class="menu-item {{ Request::is('dashboard/receptions/list') ? 'active' : '' }}">
+                            <a href="{{ route('receptions.index') }}" class="menu-link">
+                                <div data-i18n="Список">Список</div>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('view_appointment_receptions')
+                        <li class="menu-item {{ Request::is('dashboard/receptions-appointment') ? 'active' : '' }}">
+                            <a href="{{ route('receptions.appointment') }}" class="menu-link">
+                                <div data-i18n="Назначить">Назначить</div>
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
             </li>
-        @endcan
+        @endcanany
 
         {{-- Анализы --}}
         @canany(['view_analyzes', 'view_laboratories', 'view_analyze_methods', 'view_analyze_types'])

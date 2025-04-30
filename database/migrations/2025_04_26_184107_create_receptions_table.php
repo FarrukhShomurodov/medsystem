@@ -9,7 +9,8 @@ return new class extends Migration {
     {
         Schema::create('receptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('examination_map_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('examination_map_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('patient_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('staff_id')->constrained()->cascadeOnDelete();
             $table->time('start_time');
             $table->time('end_time');

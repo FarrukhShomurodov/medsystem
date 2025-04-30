@@ -13,7 +13,7 @@ class PatientRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = [
+        return [
             // Основные данные
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -73,21 +73,5 @@ class PatientRequest extends FormRequest
 
             'files' => 'sometimes',
         ];
-
-        if ($this->method() == 'PUT') {
-            $rules = array_merge($rules, [
-                'institution_id' => 'nullable',
-                'doctor_id' => 'nullable|int|exists:staff,id',
-                'admission_date' => 'nullable|date|date_format:Y-m-d',
-            ]);
-        } else if ($this->method() == 'POST') {
-            $rules = array_merge($rules, [
-                'institution_id' => 'required',
-                'doctor_id' => 'required|int|exists:staff,id',
-                'admission_date' => 'required|date|date_format:Y-m-d',
-            ]);
-        }
-
-        return $rules;
     }
 }

@@ -75,19 +75,6 @@ class PatientService
             $patient->diseases()->sync($validated['chronic_diseases']);
 
 
-            // Examination Map
-            if (!is_numeric($validated['institution_id'])) {
-                $validated['institution_id'] = Department::query()->create(['name' => $validated['institution_id']])->id;
-            }
-
-            $mapData = [
-                'department_id' => $validated['institution_id'],
-                'staff_id' => $validated['doctor_id'],
-                'admission_date' => $validated['admission_date'],
-            ];
-
-            $patient->examinationMaps()->create($mapData);
-
             if (isset($validated['files'])) {
                 foreach ($validated['files'] as $file) {
                     $path = $file->store('patient_files', 'public');
@@ -164,21 +151,6 @@ class PatientService
             }
 
             $patient->diseases()->sync($validated['chronic_diseases']);
-
-            // Examination Map
-            if (isset($validated['institution_id']) && isset($validated['doctor_id']) && isset($validated['admission_date'])) {
-                if (!is_numeric($validated['institution_id'])) {
-                    $validated['institution_id'] = Department::query()->create(['name' => $validated['institution_id']])->id;
-                }
-
-                $mapData = [
-                    'department_id' => $validated['institution_id'],
-                    'staff_id' => $validated['doctor_id'],
-                    'admission_date' => $validated['admission_date'],
-                ];
-
-                $patient->examinationMaps()->create($mapData);
-            }
 
             if (isset($validated['files'])) {
                 foreach ($validated['files'] as $file) {

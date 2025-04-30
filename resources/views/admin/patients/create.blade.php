@@ -52,20 +52,6 @@
                     <span class="bs-stepper-label">Медицинская информация</span>
                 </button>
             </div>
-            <div class="line"></div>
-            <div class="step" data-target="#visit-history">
-                <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">6</span>
-                    <span class="bs-stepper-label">История обращений</span>
-                </button>
-            </div>
-            {{--            <div class="line"></div>--}}
-            {{--            <div class="step" data-target="#other">--}}
-            {{--                <button type="button" class="step-trigger">--}}
-            {{--                    <span class="bs-stepper-circle">7</span>--}}
-            {{--                    <span class="bs-stepper-label">Прочее</span>--}}
-            {{--                </button>--}}
-            {{--            </div>--}}
         </div>
 
         <div class="bs-stepper-content">
@@ -861,68 +847,7 @@
 
                         <div class="col-12 d-flex justify-content-between">
                             <button class="btn btn-primary btn-prev">
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                <span class="d-sm-inline-block d-none">Назад</span>
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                <span class="d-sm-inline-block d-none">Далее</span>
-                                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- История обращений --}}
-                <div id="visit-history" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-3">История обращений</h6>
-                        {{--                        <p>Кол-во посещений: 0 </p>--}}
-                    </div>
-                    <div class="row g-3">
-                        <input type="hidden"
-                               placeholder="YYYY-MM-DD" name="admission_date"
-                               value="{{ now()->format('Y-m-d')  }}"
-                               required
-                               aria-describedby="basic-icon-default-visit-dates2"/>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-doctors">Лечащий врач<span
-                                    class="text-danger">*</span></label>
-                            <select id="basic-icon-default-doctors" name="doctor_id"
-                                    class="form-control select2 @error('doctor_id') is-invalid @enderror"
-                                    multiple required>
-                                <option value="" disabled>Выберите врача</option>
-                                @foreach($doctors as $doctor)
-                                    <option
-                                        value="{{ $doctor->id }}" @selected($doctor->id == old('doctor_id'))>{{ $doctor->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('doctor_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-departments">Отделение, к которому
-                                прикреплен<span class="text-danger">*</span></label>
-                            <select id="basic-icon-default-departments" name="institution_id"
-                                    class="form-control select2 @error('institution_id') is-invalid @enderror" multiple
-                                    required>
-                                <option value="" disabled>Выберите отделение</option>
-                                @foreach($institutions as $institution)
-                                    <option
-                                        value="{{ $institution->id }}" @selected($institution->id == old('institution_id'))>{{ $institution->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('institution_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev"><i
-                                    class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                <span class="d-sm-inline-block d-none">Назад</span>
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
                             </button>
                             <button type="submit" class="btn btn-success">Сохранить</button>
                         </div>

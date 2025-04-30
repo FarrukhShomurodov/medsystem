@@ -178,7 +178,9 @@ class StaffService
             $admin = $staff->admin()->create($validated);
         }
 
-        $admin->assignRole($positionName);
+        $role = Role::firstOrCreate(['name' => $positionName]);
+
+        $admin->assignRole($role->name);
     }
 
     /**

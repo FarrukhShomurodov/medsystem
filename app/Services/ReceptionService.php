@@ -10,9 +10,14 @@ class ReceptionService
     /**
      * @param array<string, mixed> $validated
      */
-    public function store(array $validated): Reception
+    public function store(array $validated)
     {
-        $validated['examination_map_id'] = Patient::find($validated['patient_id'])->examinationMaps()->where('is_active', 1)->first()->id;
+        $patient = Patient::find($validated['patient_id']);
+        if ($patient->examinationMaps->isEmpty()) {
+            unset($validated['password']);
+        } else {
+            $validated['examination_map_id'] = $patient->examinationMaps()->where('is_active', 1)->first()->id;
+        }
 
         return Reception::query()->create($validated);
     }

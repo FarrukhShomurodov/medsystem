@@ -93,7 +93,14 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::resource('supplies', MedicalSupplyController::class);
 
     // receptions
-    Route::resource('receptions', ReceptionController::class);
+    Route::get('receptions-appointment', [ReceptionController::class, 'appointment'])
+        ->name('receptions.appointment')
+        ->middleware('permission:view_appointment_receptions');
+
+    Route::get('receptions/list', [ReceptionController::class, 'index'])
+        ->name('receptions.index')
+        ->middleware('permission:view_receptions');
+
     Route::get('receptions-doctor-calendar/{staff}', [ReceptionController::class, 'doctorCalendar'])
         ->name('receptions.doctor.calendar')
         ->middleware('permission:view_reception_doctor_calendar');

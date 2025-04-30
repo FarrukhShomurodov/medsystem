@@ -202,6 +202,7 @@ class Staff extends Model
         ];
 
         $date = Carbon::parse($date ?? now(), 'Asia/Tashkent');
+
         $englishDay = $date->format('l');
         $russianDay = $dayMap[$englishDay];
 

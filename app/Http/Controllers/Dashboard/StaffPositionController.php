@@ -72,9 +72,7 @@ class StaffPositionController extends Controller
             'delete_supplies' => 'Удаление расходников',
 
             'view_receptions' => 'Просмотр приемов',
-            'create_receptions' => 'Создание приемов',
-            'edit_receptions' => 'Редактирование приемов',
-            'delete_receptions' => 'Удаление приемов',
+            'view_appointment_receptions' => 'Назначить прием',
             'view_reception_doctor_calendar' => 'Просмотр календаря врача',
 
             'view_suppliers' => 'Просмотр поставщиков',

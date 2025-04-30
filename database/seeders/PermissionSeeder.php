@@ -60,9 +60,7 @@ class PermissionSeeder extends Seeder
             'delete_supplies',
 
             'view_receptions',
-            'create_receptions',
-            'edit_receptions',
-            'delete_receptions',
+            'view_appointment_receptions',
             'view_reception_doctor_calendar',
 
             'view_suppliers',

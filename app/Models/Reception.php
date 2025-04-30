@@ -9,6 +9,7 @@ class Reception extends Model
 {
     protected $fillable = [
         'examination_map_id',
+        'patient_id',
         'staff_id',
         'start_time',
         'end_time',
@@ -19,6 +20,11 @@ class Reception extends Model
     public function map(): BelongsTo
     {
         return $this->belongsTo(ExaminationMap::class, 'examination_map_id');
+    }
+
+    public function patient(): BelongsTo
+    {
+        return $this->belongsTo(Patient::class, 'patient_id');
     }
 
     public function staff(): BelongsTo

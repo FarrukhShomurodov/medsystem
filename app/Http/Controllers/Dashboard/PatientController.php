@@ -119,13 +119,11 @@ class PatientController extends Controller
     {
         $regions = Region::query()->get();
         $cities = City::query()->get();
-        $doctors = $this->scopeAvailableStaffOnDate(1);
-        $institutions = Department::query()->get();
         $allegories = Allegory::query()->get();
         $devices = MedicalDevice::query()->get();
         $diseases = ChronicDisease::query()->get();
 
-        return view('admin.patients.create', compact('regions', 'cities', 'doctors', 'institutions', 'allegories', 'devices', 'diseases'));
+        return view('admin.patients.create', compact('regions', 'cities', 'allegories', 'devices', 'diseases'));
     }
 
     public function store(PatientRequest $request): RedirectResponse
@@ -140,14 +138,12 @@ class PatientController extends Controller
     {
         $regions = Region::query()->get();
         $cities = City::query()->get();
-        $doctors = $this->scopeAvailableStaffOnDate(1);
-        $institutions = Department::query()->get();
         $allegories = Allegory::query()->get();
         $devices = MedicalDevice::query()->get();
         $diseases = ChronicDisease::query()->get();
         $maps = $patient->examinationMaps;
 
-        return view('admin.patients.edit', compact('patient', 'regions', 'cities', 'doctors', 'institutions', 'allegories', 'devices', 'diseases', 'maps'));
+        return view('admin.patients.edit', compact('patient', 'regions', 'cities', 'allegories', 'devices', 'diseases', 'maps'));
     }
 
     public function update(PatientRequest $request, Patient $patient): RedirectResponse

@@ -21,6 +21,16 @@ class ReceptionController
 
     public function staffByPosition(int $positionId)
     {
+//        $roles = auth('admin')->user()->getRoleNames();
+//
+//        if ($roles->contains('Доктор')) {
+//            $staff = Staff::find(auth('admin')->user()->staff_id);
+//        } else {
+//            $staff = Staff::whereHas('professionalData', function ($query) use ($positionId) {
+//                $query->where('position_id', $positionId);
+//            })->with('professionalData')->get();
+//        }
+
         $staff = Staff::whereHas('professionalData', function ($query) use ($positionId) {
             $query->where('position_id', $positionId);
         })->with('professionalData')->get();
@@ -46,8 +56,8 @@ class ReceptionController
     {
         $validated = $request->validated();
 
-        $this->service->store($validated);
+        $result =  $this->service->store($validated);
 
-        return response()->json(['Запись успешно создана!', 200]);
+        return response()->json([$result, 200]);
     }
 }

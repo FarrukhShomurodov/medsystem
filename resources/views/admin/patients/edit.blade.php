@@ -942,61 +942,6 @@
                             </table>
                         </div>
 
-                        <div class="content-header">
-                            <h6 class="mb-0">Новая обращение</h6>
-                        </div>
-
-                        {{--                        <div>--}}
-                        {{--                            <label class="form-label" for="basic-icon-default-visit-dates">Дата посещения </label>--}}
-                        {{--                            <div class="input-group input-group-merge">--}}
-                        {{--                                <input type="date" id="basic-icon-default-visit-dates"--}}
-                        {{--                                       class="form-control flatpickr-date @error('admission_date') is-invalid @enderror"--}}
-                        {{--                                       placeholder="YYYY-MM-DD" name="admission_date"--}}
-                        {{--                                       value="{{ old('admission_date') }}"--}}
-                        {{--                                       aria-describedby="basic-icon-default-visit-dates2"/>--}}
-                        {{--                            </div>--}}
-                        {{--                            @error('admission_date')--}}
-                        {{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
-                        {{--                            @enderror--}}
-                        {{--                        </div>--}}
-                        <input type="hidden"
-                               placeholder="YYYY-MM-DD" name="admission_date"
-                               value="{{ now()->format('Y-m-d')  }}"
-                               required
-                               aria-describedby="basic-icon-default-visit-dates2"/>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-doctors">Лечащий врач</label>
-                            <select id="basic-icon-default-doctors" name="doctor_id"
-                                    class="form-control select2 @error('doctor_id') is-invalid @enderror"
-                                    multiple>
-                                <option value="" disabled>Выберите врача</option>
-                                @foreach($doctors as $doctor)
-                                    <option
-                                        value="{{ $doctor->id }}" @selected($doctor->id == old('doctor_id'))>{{ $doctor->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('doctor_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-departments">Отделение, к которому
-                                прикреплен</label>
-                            <select id="basic-icon-default-departments" name="institution_id"
-                                    class="form-control select2 @error('institution_id') is-invalid @enderror" multiple>
-                                <option value="" disabled>Выберите отделение</option>
-                                @foreach($institutions as $institution)
-                                    <option
-                                        value="{{ $institution->id }}" @selected($institution->id == old('institution_id'))>{{ $institution->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('institution_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
                         <div class="col-12 d-flex justify-content-between">
                             <button class="btn btn-primary btn-prev"><i
                                     class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
