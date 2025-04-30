@@ -67,7 +67,7 @@
                         @foreach($permissions as $permission)
                             <option value="{{ $permission->name }}"
                                 @selected(in_array($permission->name, $selectedPermissions))>
-                                {{ $permission->name }}
+                                {{ $permissionsRu[$permission->name] ?? $permission->name  }}
                             </option>
                         @endforeach
                     </select>
