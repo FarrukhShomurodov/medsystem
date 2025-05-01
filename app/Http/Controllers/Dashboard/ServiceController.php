@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceRequest;
 use App\Models\Service;
 use App\Models\ServiceCategory;
+use App\Models\ServiceType;
 use App\Services\ServiceService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -28,8 +29,9 @@ class ServiceController extends Controller
     public function index(): View
     {
         $services = Service::query()
-            ->select(['id', 'name', 'price', 'discount', 'service_category_id', 'is_active'])
+            ->select(['id', 'name', 'price', 'discount', 'service_category_id', 'is_active', 'service_type_id'])
             ->with('category')
+            ->with('type')
             ->orderBy('id', 'desc')
             ->paginate(10);
 
@@ -39,8 +41,9 @@ class ServiceController extends Controller
     public function create(): View
     {
         $categories = ServiceCategory::query()->get();
+        $types = ServiceType::query()->get();
 
-        return view('admin.services.create', compact('categories'));
+        return view('admin.services.create', compact('categories', 'types'));
     }
 
     public function store(ServiceRequest $request): RedirectResponse
@@ -54,8 +57,9 @@ class ServiceController extends Controller
     public function edit(Service $service): View
     {
         $categories = ServiceCategory::query()->get();
+        $types = ServiceType::query()->get();
 
-        return view('admin.services.edit', compact('categories', 'service'));
+        return view('admin.services.edit', compact('categories', 'service', 'types'));
     }
 
     public function update(ServiceRequest $request, Service $service): RedirectResponse

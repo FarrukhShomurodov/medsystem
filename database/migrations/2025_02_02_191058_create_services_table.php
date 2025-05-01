@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('currency')->nullable();
 //            $table->string('duration')->nullable();
             $table->foreignId('service_category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('service_type_id')->constrained()->cascadeOnDelete();
             $table->boolean('is_active')->default(1);
             $table->timestamps();
         });

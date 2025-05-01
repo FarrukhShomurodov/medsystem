@@ -17,11 +17,17 @@ class Service extends Model
         'currency',
 //        'duration',
         'service_category_id',
+        'service_type_id',
         'is_active',
     ];
 
     public function category(): BelongsTo
     {
         return $this->belongsTo(ServiceCategory::class, 'service_category_id');
+    }
+
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(ServiceType::class, 'service_category_id');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Service;
 use App\Models\ServiceCategory;
+use App\Models\ServiceType;
 use Illuminate\Support\Facades\DB;
 
 class ServiceService
@@ -16,6 +17,10 @@ class ServiceService
         $service = DB::transaction(function () use ($validated) {
             if (!is_numeric($validated['service_category_id'])) {
                 $validated['service_category_id'] = ServiceCategory::query()->create(['name' => $validated['service_category_id']])->id;
+            }
+
+            if (!is_numeric($validated['service_type_id'])) {
+                $validated['service_type_id'] = ServiceType::query()->create(['name' => $validated['service_type_id']])->id;
             }
 
             return Service::query()->create($validated);
@@ -32,6 +37,10 @@ class ServiceService
         return DB::transaction(function () use ($validated) {
             if (!is_numeric($validated['service_category_id'])) {
                 $validated['service_category_id'] = ServiceCategory::query()->create(['name' => $validated['service_category_id']])->id;
+            }
+
+            if (!is_numeric($validated['service_type_id'])) {
+                $validated['service_type_id'] = ServiceType::query()->create(['name' => $validated['service_type_id']])->id;
             }
 
             return Service::query()->update($validated);

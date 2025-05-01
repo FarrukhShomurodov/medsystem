@@ -150,6 +150,11 @@ class PermissionSeeder extends Seeder
             'edit_service_categories',
             'delete_service_categories',
 
+            'view_service_types',
+            'create_service_types',
+            'edit_service_types',
+            'delete_service_types',
+
             'view_service_procedures',
             'create_service_procedures',
             'edit_service_procedures',

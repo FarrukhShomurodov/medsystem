@@ -61,8 +61,8 @@
         @endcanany
 
         {{-- Услуги --}}
-        @canany(['view_services', 'view_patient_services', 'view_service_categories', 'view_service_procedures', 'view_service_methods'])
-            <li class="menu-item {{ Request::is('dashboard/services/list*') || Request::is('dashboard/services/categories*') || Request::is('dashboard/services/procedures*') || Request::is('dashboard/services/methods*') || Request::is('dashboard/services/equipments*') || Request::is('dashboard/services/staff-specialties*') || Request::is('dashboard/services/staffs*') || Request::is('dashboard/services/assign-patient*') ? 'open' : '' }}">
+        @canany(['view_services', 'view_patient_services', 'view_service_categories', 'view_service_procedures', 'view_service_methods', 'view_service_types'])
+            <li class="menu-item {{ Request::is('dashboard/services/list*') || Request::is('dashboard/services/types*') || Request::is('dashboard/services/categories*') || Request::is('dashboard/services/procedures*') || Request::is('dashboard/services/methods*') || Request::is('dashboard/services/equipments*') || Request::is('dashboard/services/staff-specialties*') || Request::is('dashboard/services/staffs*') || Request::is('dashboard/services/assign-patient*') ? 'open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon bx bx-plus-medical"></i>
                     <div data-i18n="Услуги">Услуги</div>
@@ -86,6 +86,13 @@
                         <li class="menu-item {{ Request::is('dashboard/services/categories*') ? 'active' : '' }}">
                             <a href="{{route('categories.index')}}" class="menu-link">
                                 <div data-i18n="Категории">Категории</div>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('view_service_types')
+                        <li class="menu-item {{ Request::is('dashboard/services/types*') ? 'active' : '' }}">
+                            <a href="{{route('service.types.index')}}" class="menu-link">
+                                <div data-i18n="Типы">Типы</div>
                             </a>
                         </li>
                     @endcan

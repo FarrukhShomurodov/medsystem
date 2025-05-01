@@ -172,44 +172,65 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                </div>
 
-                <div class="col-12 mb-3">
-                    <label class="form-label" for="basic-icon-default-description"> Описание </label>
-                    <div class="input-group input-group-merge">
+                    <div class="col-12 mb-3">
+                        <label class="form-label" for="basic-icon-default-description"> Описание </label>
+                        <div class="input-group input-group-merge">
                         <span id="basic-icon-default-last-name2"
                               class="input-group-text @error('description') text-danger icon-border @enderror">
                             <i class="bx bx-edit"></i>
                         </span>
-                        <textarea id="basic-icon-default-description"
-                                  class="form-control @error('description') is-invalid @enderror"
-                                  placeholder="Описание" aria-label="Описание" name="description"
-                                  aria-describedby="basic-icon-default-last-name2">{{ old('description', $service->description) }}</textarea>
+                            <textarea id="basic-icon-default-description"
+                                      class="form-control @error('description') is-invalid @enderror"
+                                      placeholder="Описание" aria-label="Описание" name="description"
+                                      aria-describedby="basic-icon-default-last-name2">{{ old('description', $service->description) }}</textarea>
+                        </div>
+                        @error('description')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
-                    @error('description')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
 
-                <div class="mb-3">
-                    <label class="form-label" for="specialty">Категории <span
-                            class="text-danger">*</span></label>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="specialty">Категории <span
+                                class="text-danger">*</span></label>
 
-                    <select name="service_category_id"
-                            class="select2 form-control @error('service_category_id') is-invalid @enderror"
-                            id="specialty"
-                            required>
-                        <option value="" disabled selected>Выберите категорию</option>
+                        <select name="service_category_id"
+                                class="select2 form-control @error('service_category_id') is-invalid @enderror"
+                                id="specialty"
+                                required>
+                            <option value="" disabled selected>Выберите категорию</option>
 
-                        @foreach($categories as $category)
-                            <option
-                                value="{{ $category->id }}" @selected($category->id == old('service_category_id', $service->service_category_id))> {{ $category->name }} </option>
-                        @endforeach
-                    </select>
+                            @foreach($categories as $category)
+                                <option
+                                    value="{{ $category->id }}" @selected($category->id == old('service_category_id', $service->service_category_id))> {{ $category->name }} </option>
+                            @endforeach
+                        </select>
 
-                    @error('service_category_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                        @error('service_category_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="service_type">Типы <span
+                                class="text-danger">*</span></label>
+
+                        <select name="service_type_id"
+                                class="select2 form-control @error('service_type_id') is-invalid @enderror"
+                                id="service_type"
+                                required>
+                            <option value="" disabled selected>Выберите тип</option>
+
+                            @foreach($types as $type)
+                                <option
+                                    value="{{ $type->id }}" @selected($type->id == old('service_type_id',  $service->service_type_id))> {{ $type->name }} </option>
+                            @endforeach
+                        </select>
+
+                        @error('service_type_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-warning ">Редактировать</button>

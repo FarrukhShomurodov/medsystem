@@ -22,6 +22,7 @@ class ServiceRequest extends FormRequest
             'currency' => 'nullable|string|max:255',
 //            'duration' => 'nullable|string|max:255',
             'service_category_id' => 'required',
+            'service_type_id' => 'required',
             'is_active' => 'required|bool',
         ];
     }

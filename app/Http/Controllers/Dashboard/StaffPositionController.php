@@ -162,6 +162,13 @@ class StaffPositionController extends Controller
             'edit_service_categories' => 'Редактирование категорий услуг',
             'delete_service_categories' => 'Удаление категорий услуг',
 
+
+            'view_service_types' => 'Просмотр типа услуг',
+            'create_service_types' => 'Создание типа услуг',
+            'edit_service_types' => 'Редактирование типа услуг',
+            'delete_service_types' => 'Удаление типа услуг',
+
+
             'view_service_procedures' => 'Просмотр процедур',
             'create_service_procedures' => 'Создание процедур',
             'edit_service_procedures' => 'Редактирование процедур',
