@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Admin;
 use App\Models\DayOfWeek;
+use App\Models\ServiceType;
+use App\Models\Staff;
 use App\Models\StaffPosition;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -32,6 +34,10 @@ class DatabaseSeeder extends Seeder
 
         StaffPosition::query()->create([
             'name' => 'Заведуюший'
+        ]);
+
+        ServiceType::query()->create([
+            'name' => 'По типу'
         ]);
 
         $days = [

@@ -53,18 +53,20 @@
                         <td>{{ $type->name }}</td>
 
                         <td>
-                            <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('service.types.edit', $type->id) }}'"><i
-                                        class="bx bx-edit"></i></button>
-                                <form action="{{ route('service.types.destroy', $type->id) }}" method="POST"
-                                      style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
+                            @if($type->id == 1)
+                                <div class="d-inline-block text-nowrap">
+                                    <button class="btn btn-sm btn-icon"
+                                            onclick="location.href='{{ route('service.types.edit', $type->id) }}'"><i
+                                            class="bx bx-edit"></i></button>
+                                    <form action="{{ route('service.types.destroy', $type->id) }}" method="POST"
+                                          style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

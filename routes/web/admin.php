@@ -195,7 +195,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
             ->except('show');
         Route::resource('assign-patient', PatientServiceController::class)->names('patient.services')->parameter('assign-patient', 'service');
         Route::resource('categories', ServiceCategoryController::class);
-            Route::resource('types', ServiceTypeController::class)->names('service.types');
+        Route::resource('types', ServiceTypeController::class)->names('service.types');
         Route::resource('procedures', ProcedureController::class);
         Route::resource('methods', ServiceMethodController::class)->names('service.methods');
     });

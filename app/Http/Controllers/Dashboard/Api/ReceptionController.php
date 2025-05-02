@@ -33,6 +33,8 @@ class ReceptionController
 
         $staff = Staff::whereHas('professionalData', function ($query) use ($positionId) {
             $query->where('position_id', $positionId);
+        })->whereHas('services', function ($query) {
+            $query->where('service_type_id', 1);
         })->with('professionalData')->get();
 
         return $staff->map(function ($s) {
@@ -56,7 +58,7 @@ class ReceptionController
     {
         $validated = $request->validated();
 
-        $result =  $this->service->store($validated);
+        $result = $this->service->store($validated);
 
         return response()->json([$result, 200]);
     }

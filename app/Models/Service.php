@@ -15,7 +15,6 @@ class Service extends Model
         'price_vat',
         'discount',
         'currency',
-//        'duration',
         'service_category_id',
         'service_type_id',
         'is_active',

@@ -46,14 +46,23 @@ class ServiceTypeController extends Controller
         return redirect()->route('service.types.index')->with('success', 'Тип успешно добавлена!');
     }
 
-    public function edit(ServiceType $type): View
+    public function edit(ServiceType $type)
     {
+        if ($type->id == 1) {
+            return redirect()->back()->withErrors('Редактирования этого типа недоступно!');
+        }
+
         return view('admin.service_types.edit', compact('type'));
     }
 
     public function update(ServiceTypeRequest $request, ServiceType $type): RedirectResponse
     {
         $validated = $request->validated();
+
+        if ($type->id == 1) {
+            return redirect()->back()->withErrors('Редактирования этого типа недоступно!');
+        }
+
         $this->service->update($type, (array)$validated);
 
         return redirect()->route('service.types.index')->with('success', 'Тип успешно обновлена!');
@@ -61,6 +70,10 @@ class ServiceTypeController extends Controller
 
     public function destroy(ServiceType $type): RedirectResponse
     {
+        if ($type->id == 1) {
+            return redirect()->back()->withErrors('Удаление этого типа недоступно!');
+        }
+
         $this->service->destroy($type);
 
         return redirect()->route('service.types.index')->with('success', 'Тип успешно удалена!');

@@ -63,8 +63,12 @@ class ReceptionController extends Controller
         return view('admin.receptions.appointment ', compact('positions'));
     }
 
-    public function doctorCalendar(Staff $staff): View
+    public function doctorCalendar(Staff $staff)
     {
+        if (!$staff->services()->where('service_type_id', 1)->exists()) {
+            return redirect()->back()->withErrors('Календарь не доступень!');
+        }
+
         return view('admin.receptions.calendar', compact('staff'));
     }
 }

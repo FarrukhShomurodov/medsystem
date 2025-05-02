@@ -112,6 +112,11 @@ class Staff extends Model
             return [];
         }
 
+        if (!$this->services()->where('service_type_id', 1)->exists()) {
+            return [];
+        }
+
+
         $dayMap = [
             'Monday' => 'Понедельник',
             'Tuesday' => 'Вторник',
@@ -189,6 +194,10 @@ class Staff extends Model
     public function getBookedTime($date = null)
     {
         if (!$this->document()->where('is_work', 1)->exists()) {
+            return [];
+        }
+
+        if (!$this->services()->where('service_type_id', 1)->exists()) {
             return [];
         }
 
