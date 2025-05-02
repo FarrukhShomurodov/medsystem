@@ -45,17 +45,17 @@
                     <span class="bs-stepper-label">Страховка</span>
                 </button>
             </div>
-            <div class="line"></div>
-            <div class="step" data-target="#medical-info">
-                <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">5</span>
-                    <span class="bs-stepper-label">Медицинская информация</span>
-                </button>
-            </div>
+{{--            <div class="line"></div>--}}
+{{--            <div class="step" data-target="#medical-info">--}}
+{{--                <button type="button" class="step-trigger">--}}
+{{--                    <span class="bs-stepper-circle">5</span>--}}
+{{--                    <span class="bs-stepper-label">Медицинская информация</span>--}}
+{{--                </button>--}}
+{{--            </div>--}}
             <div class="line"></div>
             <div class="step" data-target="#visit-history">
                 <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">6</span>
+                    <span class="bs-stepper-circle">5</span>
                     <span class="bs-stepper-label">История обращений</span>
                 </button>
             </div>
@@ -755,147 +755,147 @@
                 </div>
 
                 {{-- Медицинская информация --}}
-                <div id="medical-info" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">Медицинская информация</h6>
-                    </div>
-                    <div class="row g-3">
-                        <div>
-                            <label class="form-label" for="basic-icon-default-history">История заболеваний </label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-default-history2"
-                                      class="input-group-text @error('medical_history') text-danger icon-border @enderror">
-                                    <i class="bx bx-notepad"></i>
-                                </span>
-                                <textarea id="basic-icon-default-history"
-                                          class="form-control @error('medical_history') is-invalid @enderror"
-                                          placeholder="История заболеваний" aria-label="История заболеваний"
-                                          name="medical_history"
-                                          aria-describedby="basic-icon-default-history2">{{ old('medical_history', $patient->medical_history) }}</textarea>
-                            </div>
-                            @error('medical_history')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+{{--                <div id="medical-info" class="content">--}}
+{{--                    <div class="content-header mb-3">--}}
+{{--                        <h6 class="mb-0">Медицинская информация</h6>--}}
+{{--                    </div>--}}
+{{--                    <div class="row g-3">--}}
+{{--                        <div>--}}
+{{--                            <label class="form-label" for="basic-icon-default-history">История заболеваний </label>--}}
+{{--                            <div class="input-group input-group-merge">--}}
+{{--                                <span id="basic-icon-default-history2"--}}
+{{--                                      class="input-group-text @error('medical_history') text-danger icon-border @enderror">--}}
+{{--                                    <i class="bx bx-notepad"></i>--}}
+{{--                                </span>--}}
+{{--                                <textarea id="basic-icon-default-history"--}}
+{{--                                          class="form-control @error('medical_history') is-invalid @enderror"--}}
+{{--                                          placeholder="История заболеваний" aria-label="История заболеваний"--}}
+{{--                                          name="medical_history"--}}
+{{--                                          aria-describedby="basic-icon-default-history2">{{ old('medical_history', $patient->medical_history) }}</textarea>--}}
+{{--                            </div>--}}
+{{--                            @error('medical_history')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
 
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-allergies">Аллергии <span
-                                    class="text-danger">*</span></label>
-                            <select id="basic-icon-default-allergies" name="allegories[]"
-                                    class="form-control select2 @error('allegories') is-invalid @enderror"
-                                    multiple required>
-                                <option value="" disabled>Выберите аллергию</option>
-                                @foreach($allegories as $allegory)
-                                    <option
-                                        value="{{ $allegory->id }}" @selected(in_array($allegory->id, old('allegories', $patient->allegories->pluck('id')->toArray() )))>{{ $allegory->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('allegories')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+{{--                        <div class="col-sm-4">--}}
+{{--                            <label class="form-label" for="basic-icon-default-allergies">Аллергии <span--}}
+{{--                                    class="text-danger">*</span></label>--}}
+{{--                            <select id="basic-icon-default-allergies" name="allegories[]"--}}
+{{--                                    class="form-control select2 @error('allegories') is-invalid @enderror"--}}
+{{--                                    multiple required>--}}
+{{--                                <option value="" disabled>Выберите аллергию</option>--}}
+{{--                                @foreach($allegories as $allegory)--}}
+{{--                                    <option--}}
+{{--                                        value="{{ $allegory->id }}" @selected(in_array($allegory->id, old('allegories', $patient->allegories->pluck('id')->toArray() )))>{{ $allegory->name }}</option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                            @error('allegories')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
 
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-chronic-diseases">Хронические болезни
-                                <span class="text-danger">*</span></label>
-                            <select id="basic-icon-default-chronic-diseases" name="chronic_diseases[]"
-                                    class="form-control select2 @error('chronic_diseases') is-invalid @enderror"
-                                    multiple
-                                    required>
-                                <option value="" disabled>Выберите хроническию болезнь</option>
-                                @foreach($diseases as $disease)
-                                    <option
-                                        value="{{ $disease->id }}" @selected(in_array($disease->id, old('chronic_diseases', $patient->diseases->pluck('id')->toArray())))>{{ $disease->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('chronic_diseases')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+{{--                        <div class="col-sm-4">--}}
+{{--                            <label class="form-label" for="basic-icon-default-chronic-diseases">Хронические болезни--}}
+{{--                                <span class="text-danger">*</span></label>--}}
+{{--                            <select id="basic-icon-default-chronic-diseases" name="chronic_diseases[]"--}}
+{{--                                    class="form-control select2 @error('chronic_diseases') is-invalid @enderror"--}}
+{{--                                    multiple--}}
+{{--                                    required>--}}
+{{--                                <option value="" disabled>Выберите хроническию болезнь</option>--}}
+{{--                                @foreach($diseases as $disease)--}}
+{{--                                    <option--}}
+{{--                                        value="{{ $disease->id }}" @selected(in_array($disease->id, old('chronic_diseases', $patient->diseases->pluck('id')->toArray())))>{{ $disease->name }}</option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                            @error('chronic_diseases')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
 
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-blood-type">Группа крови <span
-                                    class="text-danger">*</span></label>
-                            <select id="basic-icon-default-blood-type" name="blood_type"
-                                    class="form-control select2 @error('blood_type') is-invalid @enderror"
-                                    required>
-                                <option value="" disabled>Выберите группу крови</option>
-                                @foreach (App\Models\Patient::BLOOD_TYPES as $bloodType)
-                                    <option
-                                        value="{{ $bloodType }}" @selected($bloodType == old('blood_type',$patient->blood_type))>{{ $bloodType }}</option>
-                                @endforeach
-                            </select>
-                            @error('blood_type')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+{{--                        <div class="col-sm-4">--}}
+{{--                            <label class="form-label" for="basic-icon-default-blood-type">Группа крови <span--}}
+{{--                                    class="text-danger">*</span></label>--}}
+{{--                            <select id="basic-icon-default-blood-type" name="blood_type"--}}
+{{--                                    class="form-control select2 @error('blood_type') is-invalid @enderror"--}}
+{{--                                    required>--}}
+{{--                                <option value="" disabled>Выберите группу крови</option>--}}
+{{--                                @foreach (App\Models\Patient::BLOOD_TYPES as $bloodType)--}}
+{{--                                    <option--}}
+{{--                                        value="{{ $bloodType }}" @selected($bloodType == old('blood_type',$patient->blood_type))>{{ $bloodType }}</option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                            @error('blood_type')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
 
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-rh-factor">Резус-фактор</label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-default-rh-factor2"
-                                      class="input-group-text @error('rh_factor') text-danger icon-border @enderror">
-                                    <i class="bx bxs-donate-blood"></i>
-                                </span>
-                                <input type="number" id="basic-icon-default-rh-factor"
-                                       class="form-control @error('rh_factor') is-invalid @enderror"
-                                       placeholder="Резус-фактор" aria-label="Резус-фактор" name="rh_factor"
-                                       value="{{ old('rh_factor', $patient->rh_factor) }}"
-                                       aria-describedby="basic-icon-default-rh-factor2"/>
-                            </div>
-                            @error('rh_factor')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+{{--                        <div class="col-sm-6">--}}
+{{--                            <label class="form-label" for="basic-icon-default-rh-factor">Резус-фактор</label>--}}
+{{--                            <div class="input-group input-group-merge">--}}
+{{--                                <span id="basic-icon-default-rh-factor2"--}}
+{{--                                      class="input-group-text @error('rh_factor') text-danger icon-border @enderror">--}}
+{{--                                    <i class="bx bxs-donate-blood"></i>--}}
+{{--                                </span>--}}
+{{--                                <input type="number" id="basic-icon-default-rh-factor"--}}
+{{--                                       class="form-control @error('rh_factor') is-invalid @enderror"--}}
+{{--                                       placeholder="Резус-фактор" aria-label="Резус-фактор" name="rh_factor"--}}
+{{--                                       value="{{ old('rh_factor', $patient->rh_factor) }}"--}}
+{{--                                       aria-describedby="basic-icon-default-rh-factor2"/>--}}
+{{--                            </div>--}}
+{{--                            @error('rh_factor')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
 
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-medical-devices">Медицинские
-                                устройства<span class="text-danger">*</span></label>
-                            <select id="basic-icon-default-medical-devices" name="medical_devices[]"
-                                    class="form-control select2 @error('medical_devices') is-invalid @enderror"
-                                    required>
-                                <option value="" disabled>Выберите устройство</option>
-                                @foreach($devices as $device)
-                                    <option
-                                        value="{{ $device->id }}" @selected(in_array($device->id, old('medical_devices', $patient->devices->pluck('id')->toArray())))>{{ $device->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('medical_devices')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+{{--                        <div class="col-sm-6">--}}
+{{--                            <label class="form-label" for="basic-icon-default-medical-devices">Медицинские--}}
+{{--                                устройства<span class="text-danger">*</span></label>--}}
+{{--                            <select id="basic-icon-default-medical-devices" name="medical_devices[]"--}}
+{{--                                    class="form-control select2 @error('medical_devices') is-invalid @enderror"--}}
+{{--                                    required>--}}
+{{--                                <option value="" disabled>Выберите устройство</option>--}}
+{{--                                @foreach($devices as $device)--}}
+{{--                                    <option--}}
+{{--                                        value="{{ $device->id }}" @selected(in_array($device->id, old('medical_devices', $patient->devices->pluck('id')->toArray())))>{{ $device->name }}</option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                            @error('medical_devices')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
 
-                        <div>
-                            <label class="form-label" for="basic-icon-default-special-instructions">Особые
-                                указания</label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-default-special-instructions2"
-                                      class="input-group-text @error('special_instructions') text-danger icon-border @enderror">
-                                    <i class="bx bx-detail"></i>
-                                </span>
-                                <textarea id="basic-icon-default-special-instructions"
-                                          class="form-control @error('special_instructions') is-invalid @enderror"
-                                          placeholder="Особые указания" aria-label="Особые указания"
-                                          name="special_instructions"
-                                          aria-describedby="basic-icon-default-special-instructions2">{{ old('special_instructions',$patient->special_instructions) }}</textarea>
-                            </div>
-                            @error('special_instructions')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+{{--                        <div>--}}
+{{--                            <label class="form-label" for="basic-icon-default-special-instructions">Особые--}}
+{{--                                указания</label>--}}
+{{--                            <div class="input-group input-group-merge">--}}
+{{--                                <span id="basic-icon-default-special-instructions2"--}}
+{{--                                      class="input-group-text @error('special_instructions') text-danger icon-border @enderror">--}}
+{{--                                    <i class="bx bx-detail"></i>--}}
+{{--                                </span>--}}
+{{--                                <textarea id="basic-icon-default-special-instructions"--}}
+{{--                                          class="form-control @error('special_instructions') is-invalid @enderror"--}}
+{{--                                          placeholder="Особые указания" aria-label="Особые указания"--}}
+{{--                                          name="special_instructions"--}}
+{{--                                          aria-describedby="basic-icon-default-special-instructions2">{{ old('special_instructions',$patient->special_instructions) }}</textarea>--}}
+{{--                            </div>--}}
+{{--                            @error('special_instructions')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
 
-                        <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev">
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                <span class="d-sm-inline-block d-none">Назад</span>
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                <span class="d-sm-inline-block d-none">Далее</span>
-                                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+{{--                        <div class="col-12 d-flex justify-content-between">--}}
+{{--                            <button class="btn btn-primary btn-prev">--}}
+{{--                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>--}}
+{{--                                <span class="d-sm-inline-block d-none">Назад</span>--}}
+{{--                            </button>--}}
+{{--                            <button class="btn btn-primary btn-next">--}}
+{{--                                <span class="d-sm-inline-block d-none">Далее</span>--}}
+{{--                                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>--}}
+{{--                            </button>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
 
                 {{-- История обращений --}}
                 <div id="visit-history" class="content">

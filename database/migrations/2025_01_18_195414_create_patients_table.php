@@ -52,15 +52,15 @@ return new class extends Migration {
             $table->string('emergency_contact_address')->nullable();
 
             // Медицинская информация
-            $table->string('medical_history')->nullable();
-            $table->enum('blood_type', ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-']);
-            $table->string('rh_factor')->nullable();
-            $table->string('special_instructions')->nullable();
-
-            $table->string('passport_scan')->nullable();
-            $table->string('insurance_policy_scan')->nullable();
-            $table->string('other_scans')->nullable();
-            $table->string('notes')->nullable();
+//            $table->string('medical_history')->nullable();
+//            $table->enum('blood_type', ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-']);
+//            $table->string('rh_factor')->nullable();
+//            $table->string('special_instructions')->nullable();
+//
+//            $table->string('passport_scan')->nullable();
+//            $table->string('insurance_policy_scan')->nullable();
+//            $table->string('other_scans')->nullable();
+//            $table->string('notes')->nullable();
             $table->timestamps();
         });
     }

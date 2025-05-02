@@ -57,19 +57,19 @@ class PatientRequest extends FormRequest
             'emergency_contact_address' => 'nullable|string|max:255',
 
             // Медицинская информация
-            'medical_history' => 'nullable|string|max:255',
-            'blood_type' => ['required', 'in:' . implode(',', Patient::BLOOD_TYPES)],
-            'rh_factor' => 'nullable|string|max:255',
-            'special_instructions' => 'nullable|string|max:255',
-
-            'passport_scan' => 'nullable|string|max:255',
-            'insurance_policy_scan' => 'nullable|string|max:255',
-            'other_scans' => 'nullable|string|max:255',
-            'notes' => 'nullable|string|max:255',
-
-            'allegories' => 'required|array',
-            'medical_devices' => 'required|array',
-            'chronic_diseases' => 'required|array',
+//            'medical_history' => 'nullable|string|max:255',
+//            'blood_type' => ['required', 'in:' . implode(',', Patient::BLOOD_TYPES)],
+//            'rh_factor' => 'nullable|string|max:255',
+//            'special_instructions' => 'nullable|string|max:255',
+//
+//            'passport_scan' => 'nullable|string|max:255',
+//            'insurance_policy_scan' => 'nullable|string|max:255',
+//            'other_scans' => 'nullable|string|max:255',
+//            'notes' => 'nullable|string|max:255',
+//
+//            'allegories' => 'required|array',
+//            'medical_devices' => 'required|array',
+//            'chronic_diseases' => 'required|array',
 
             'files' => 'sometimes',
         ];

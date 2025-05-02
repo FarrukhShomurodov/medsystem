@@ -79,16 +79,16 @@
         </div>
     </div>
 
-    <div class="card mt-3">
-        <div class="card-header">
-            <h5>Медицинская информация</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Группа крови:</strong> {{ $patientDetails['medical_info']['blood_type'] }}</p>
-            <p><strong>Резус фактор:</strong> {{ $patientDetails['medical_info']['rh_factor'] }}</p>
-            <p><strong>Особые указания:</strong> {{ $patientDetails['medical_info']['special_instructions'] }}</p>
-        </div>
-    </div>
+{{--    <div class="card mt-3">--}}
+{{--        <div class="card-header">--}}
+{{--            <h5>Медицинская информация</h5>--}}
+{{--        </div>--}}
+{{--        <div class="card-body">--}}
+{{--            <p><strong>Группа крови:</strong> {{ $patientDetails['medical_info']['blood_type'] }}</p>--}}
+{{--            <p><strong>Резус фактор:</strong> {{ $patientDetails['medical_info']['rh_factor'] }}</p>--}}
+{{--            <p><strong>Особые указания:</strong> {{ $patientDetails['medical_info']['special_instructions'] }}</p>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 
     <div class="card mt-3">
         <div class="card-datatable table-responsive col-12">

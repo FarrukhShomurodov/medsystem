@@ -59,15 +59,15 @@ class Patient extends Model
         'emergency_contact_address',
 
         // Медицинская информация
-        'medical_history',
-        'blood_type',
-        'rh_factor',
-        'special_instructions',
-
-        'passport_scan',
-        'insurance_policy_scan',
-        'other_scans',
-        'notes',
+//        'medical_history',
+//        'blood_type',
+//        'rh_factor',
+//        'special_instructions',
+//
+//        'passport_scan',
+//        'insurance_policy_scan',
+//        'other_scans',
+//        'notes',
     ];
 
     public function allegories(): BelongsToMany

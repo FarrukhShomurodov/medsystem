@@ -48,32 +48,32 @@ class PatientService
             $patient = Patient::query()->create($validated);
 
             //  Allegories
-            foreach ($validated['allegories'] as $key => $allegory) {
-                if (!is_numeric($allegory)) {
-                    $validated['allegories'][$key] = Allegory::query()->create(['name' => $allegory])->id;
-                }
-            }
-
-            $patient->allegories()->sync($validated['allegories']);
-
-            //  Medical devices
-            foreach ($validated['medical_devices'] as $key => $device) {
-                if (!is_numeric($device)) {
-                    $validated['medical_devices'][$key] = MedicalDevice::query()->create(['name' => $device])->id;
-                }
-            }
-
-            $patient->devices()->sync($validated['medical_devices']);
-
-            //  Chronic diseases
-            foreach ($validated['chronic_diseases'] as $key => $disease) {
-                if (!is_numeric($disease)) {
-                    $validated['chronic_diseases'][$key] = ChronicDisease::query()->create(['name' => $disease])->id;
-                }
-            }
-
-            $patient->diseases()->sync($validated['chronic_diseases']);
-
+//            foreach ($validated['allegories'] as $key => $allegory) {
+//                if (!is_numeric($allegory)) {
+//                    $validated['allegories'][$key] = Allegory::query()->create(['name' => $allegory])->id;
+//                }
+//            }
+//
+//            $patient->allegories()->sync($validated['allegories']);
+//
+//            //  Medical devices
+//            foreach ($validated['medical_devices'] as $key => $device) {
+//                if (!is_numeric($device)) {
+//                    $validated['medical_devices'][$key] = MedicalDevice::query()->create(['name' => $device])->id;
+//                }
+//            }
+//
+//            $patient->devices()->sync($validated['medical_devices']);
+//
+//            //  Chronic diseases
+//            foreach ($validated['chronic_diseases'] as $key => $disease) {
+//                if (!is_numeric($disease)) {
+//                    $validated['chronic_diseases'][$key] = ChronicDisease::query()->create(['name' => $disease])->id;
+//                }
+//            }
+//
+//            $patient->diseases()->sync($validated['chronic_diseases']);
+//
 
             if (isset($validated['files'])) {
                 foreach ($validated['files'] as $file) {
@@ -126,31 +126,31 @@ class PatientService
             $patient->update($validated);
 
             //  Allegories
-            foreach ($validated['allegories'] as $key => $allegory) {
-                if (!is_numeric($allegory)) {
-                    $validated['allegories'][$key] = Allegory::query()->create(['name' => $allegory])->id;
-                }
-            }
-
-            $patient->allegories()->sync($validated['allegories']);
-
-            //  Medical devices
-            foreach ($validated['medical_devices'] as $key => $device) {
-                if (!is_numeric($device)) {
-                    $validated['medical_devices'][$key] = MedicalDevice::query()->create(['name' => $device])->id;
-                }
-            }
-
-            $patient->devices()->sync($validated['medical_devices']);
-
-            //  Chronic diseases
-            foreach ($validated['chronic_diseases'] as $key => $disease) {
-                if (!is_numeric($disease)) {
-                    $validated['chronic_diseases'][$key] = ChronicDisease::query()->create(['name' => $disease])->id;
-                }
-            }
-
-            $patient->diseases()->sync($validated['chronic_diseases']);
+//            foreach ($validated['allegories'] as $key => $allegory) {
+//                if (!is_numeric($allegory)) {
+//                    $validated['allegories'][$key] = Allegory::query()->create(['name' => $allegory])->id;
+//                }
+//            }
+//
+//            $patient->allegories()->sync($validated['allegories']);
+//
+//            //  Medical devices
+//            foreach ($validated['medical_devices'] as $key => $device) {
+//                if (!is_numeric($device)) {
+//                    $validated['medical_devices'][$key] = MedicalDevice::query()->create(['name' => $device])->id;
+//                }
+//            }
+//
+//            $patient->devices()->sync($validated['medical_devices']);
+//
+//            //  Chronic diseases
+//            foreach ($validated['chronic_diseases'] as $key => $disease) {
+//                if (!is_numeric($disease)) {
+//                    $validated['chronic_diseases'][$key] = ChronicDisease::query()->create(['name' => $disease])->id;
+//                }
+//            }
+//
+//            $patient->diseases()->sync($validated['chronic_diseases']);
 
             if (isset($validated['files'])) {
                 foreach ($validated['files'] as $file) {
