@@ -44,8 +44,10 @@ class StaffController extends Controller
         $specialties = Specialty::query()->get();
         $departments = Department::query()->get();
         $services = Service::query()->where('is_active', true)->get();
+        $surveys = Survey::query()->get();
 
-        return view('admin.staffs.create', compact('specialties', 'positions', 'departments', 'services'));
+
+        return view('admin.staffs.create', compact('specialties', 'positions', 'departments', 'services', 'surveys'));
     }
 
     public function store(StaffRequest $request): RedirectResponse

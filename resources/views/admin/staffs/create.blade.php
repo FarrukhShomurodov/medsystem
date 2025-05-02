@@ -127,7 +127,7 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-date_birthday">Дата рождение <span
                                     class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
@@ -151,7 +151,7 @@
                                 'female' => 'Женщина'
                             ]
                         @endphp
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <label class="form-label" for="type">Пол <span
                                     class="text-danger">*</span></label>
                             <select id="type" name="gender"
@@ -166,11 +166,30 @@
                             <div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
+                        <div class="col-sm-4">
+                            <label class="form-label" for="citizenship">Гражданство <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <span id="citizenship"
+                                      class="input-group-text @error('citizenship') text-danger icon-border @enderror">
+                                    <i class="bx bx-file"></i>
+                                </span>
+                                <input type="text" name="citizenship" value="{{ old('citizenship') }}"
+                                       id="citizenship"
+                                       class="form-control @error('citizenship') is-invalid @enderror"
+                                       placeholder="Гражданство" required/>
+                            </div>
+                            @error('citizenship')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         {{-- Staff Auth --}}
                         <div class="mb-3 col-6">
                             <label class="form-label" for="login_email ">Email <span
                                     class="text-danger">*</span></label>
-                            <input type="email " name="login_email" class="form-control @error('login_email ') is-invalid @enderror"
+                            <input type="email " name="login_email"
+                                   class="form-control @error('login_email ') is-invalid @enderror"
                                    id="login_email " placeholder="Email" value="{{ old('login_email ') }}" required>
                             @error('login_email ')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -642,10 +661,10 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
-<span id="employment_contract_date_of_signing"
-      class="input-group-text @error('employment_contract_date_of_signing') text-danger icon-border @enderror">
-    <i class="bx bx-calendar"></i>
-</span>
+                                <span id="employment_contract_date_of_signing"
+                                      class="input-group-text @error('employment_contract_date_of_signing') text-danger icon-border @enderror">
+                                    <i class="bx bx-calendar"></i>
+                                </span>
                                 <input type="text" name="employment_contract_date_of_signing"
                                        value="{{ old('employment_contract_date_of_signing') }}"
                                        id="employment_contract_date_of_signing"
@@ -735,6 +754,23 @@
                                        placeholder="СНИЛС" aria-label="СНИЛС" required aria-describedby="SNILS"/>
                             </div>
                             @error('SNILS')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="surveys">Мед. Документы</label>
+                            <select name="surveys[]"
+                                    class="select2 form-control @error('surveys') is-invalid @enderror"
+                                    id="surveys"
+                                    multiple>
+                                @foreach($surveys as $survey)
+                                    <option
+                                        value="{{ $survey->id }}" @selected(in_array($survey->id, old('surveys')))> {{ $survey->title }} </option>
+                                @endforeach
+                            </select>
+
+                            @error('surveys')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

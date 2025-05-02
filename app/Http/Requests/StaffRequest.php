@@ -22,6 +22,8 @@ class StaffRequest extends FormRequest
             'middle_name' => 'required|string|max:255',
             'date_birthday' => 'required|date',
             'gender' => ['required', Rule::in(Staff::GENDER)],
+            'citizenship' => 'required|string',
+
 
             'phone' => 'required|string|max:255',
             'email' => 'required|string|max:255',
@@ -86,7 +88,13 @@ class StaffRequest extends FormRequest
             'surveys.*' => 'required|int|exists:surveys,id',
 
             // auth
-            'login_email' => 'required|email',
+            'login_email' => [
+                'required',
+                'email',
+                $this->isMethod('PUT') || $this->isMethod('PATCH')
+                    ? Rule::unique('admins', 'email')->ignore(optional($this->staff->admin)->id)
+                    : Rule::unique('admins', 'email'),
+            ],
             'password' => 'nullable|min:8',
         ];
     }

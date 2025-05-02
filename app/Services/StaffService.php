@@ -52,6 +52,9 @@ class StaffService
                 $staff->services()->sync($validated['services']);
             }
 
+            if (isset($validated['surveys'])) {
+                $staff->surveys()->sync($validated['surveys']);
+            }
 
             $authValidated['email'] = $validated['login_email'];
             $authValidated['password'] = $validated['password'];

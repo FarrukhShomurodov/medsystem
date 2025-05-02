@@ -17,6 +17,7 @@ class Staff extends Model
         'middle_name',
         'date_birthday',
         'gender',
+        'citizenship',
     ];
 
     const GENDER = ['male', 'female'];
