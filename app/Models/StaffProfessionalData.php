@@ -24,8 +24,6 @@ class StaffProfessionalData extends Model
         'certificate_issue_date',
         'certificate_validity_period',
 
-        'certificate_validity_period',
-
         'admission_period',
     ];
 

@@ -11,7 +11,6 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     CityController,
     DashboardController,
     DepartmentController,
-    DepartmentTypeController,
     EquipmentController,
     ExaminationMapController,
     LaboratoryController,
@@ -69,9 +68,6 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
             ->parameter('', 'department')
             ->except('show');
 
-        Route::resource('/types', DepartmentTypeController::class)
-            ->names('departments.type');
-
         Route::resource('/rooms', WardRoomController::class)
             ->names('departments.room');
     });
@@ -82,8 +78,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     // staff
     Route::prefix('staffs')->group(function () {
         Route::resource('', StaffController::class)->names('staffs')
-            ->parameter('', 'staff')
-            ->except('show');
+            ->parameter('', 'staff');
 
         Route::resource('/positions', StaffPositionController::class)
             ->names('staffs.position');

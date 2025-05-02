@@ -41,11 +41,6 @@ class StaffPositionController extends Controller
             'edit_departments' => 'Редактирование отделений',
             'delete_departments' => 'Удаление отделений',
 
-            'view_department_types' => 'Просмотр типов отделений',
-            'create_department_types' => 'Создание типов отделений',
-            'edit_department_types' => 'Редактирование типов отделений',
-            'delete_department_types' => 'Удаление типов отделений',
-
             'view_department_rooms' => 'Просмотр помещений отделений',
             'create_department_rooms' => 'Создание помещений отделений',
             'edit_department_rooms' => 'Редактирование помещений отделений',

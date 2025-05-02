@@ -5,9 +5,6 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentRequest;
 use App\Models\Department;
-use App\Models\Equipment;
-use App\Models\DepartmentType;
-use App\Models\Service;
 use App\Models\WardRoom;
 use App\Models\Warehouse;
 use App\Services\DepartmentService;
@@ -34,7 +31,9 @@ class DepartmentController extends Controller
     public function index(): View
     {
         $departments = Department::query()
-            ->select(['id', 'name', 'type_id'])
+            ->select(['id', 'name', 'floor', 'warehouse_id'])
+            ->with('warehouse')
+            ->with('rooms')
             ->orderBy('id', 'desc')
             ->paginate(10);
 
@@ -43,14 +42,10 @@ class DepartmentController extends Controller
 
     public function create(): View
     {
-        $types = DepartmentType::query()->get();
-        $services = Service::query()->where('is_active', true)->get();
-        $equipments = Equipment::query()->where('status', 'работает')->get();
-        $departments = Department::query()->get();
         $wardRooms = WardRoom::query()->get();
         $warehouses = Warehouse::query()->get();
 
-        return view('admin.departments.create', compact('types', 'services', 'departments', 'equipments', 'wardRooms', 'warehouses'));
+        return view('admin.departments.create', compact('wardRooms', 'warehouses'));
     }
 
     public function store(DepartmentRequest $request): RedirectResponse
@@ -63,14 +58,12 @@ class DepartmentController extends Controller
 
     public function edit(Department $department): View
     {
-        $types = DepartmentType::query()->get();
-        $services = Service::query()->where('is_active', true)->get();
-        $equipments = Equipment::query()->where('status', 'работает')->get();
-        $departments = Department::query()->get();
         $wardRooms = WardRoom::query()->get();
         $warehouses = Warehouse::query()->get();
 
-        return view('admin.departments.edit', compact('department', 'types', 'services', 'departments', 'equipments', 'wardRooms', 'warehouses'));
+        $department->with('staffs');
+
+        return view('admin.departments.edit', compact('department', 'wardRooms', 'warehouses'));
     }
 
     public function update(DepartmentRequest $request, Department $department): RedirectResponse

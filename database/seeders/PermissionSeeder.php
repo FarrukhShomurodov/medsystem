@@ -29,11 +29,6 @@ class PermissionSeeder extends Seeder
             'edit_departments',
             'delete_departments',
 
-            'view_department_types',
-            'create_department_types',
-            'edit_department_types',
-            'delete_department_types',
-
             'view_department_rooms',
             'create_department_rooms',
             'edit_department_rooms',

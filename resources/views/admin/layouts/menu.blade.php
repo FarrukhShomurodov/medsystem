@@ -124,7 +124,7 @@
         @endcan
 
         {{-- Отделение --}}
-        @canany(['view_departments', 'view_department_types', 'view_department_rooms'])
+        @canany(['view_departments', 'view_department_rooms'])
             <li class="menu-item {{ Request::is('dashboard/departments*') ? 'open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon bx bx-buildings"></i>
@@ -135,13 +135,6 @@
                         <li class="menu-item {{ Request::is('dashboard/departments') || Request::is('dashboard/departments/create') || Request::is('dashboard/departments/*/edit') ? 'active' : '' }}">
                             <a href="{{route('departments.index')}}" class="menu-link">
                                 <div data-i18n="Список">Список</div>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('view_department_types')
-                        <li class="menu-item {{ Request::is('dashboard/departments/types*') ? 'active' : '' }}">
-                            <a href="{{route('departments.type.index')}}" class="menu-link">
-                                <div data-i18n="Типы">Типы</div>
                             </a>
                         </li>
                     @endcan

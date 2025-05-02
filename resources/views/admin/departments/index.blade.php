@@ -43,7 +43,9 @@
                 <tr>
                     <th>#</th>
                     <th>Название</th>
-                    <th>Тип</th>
+                    <th>Этаж</th>
+                    <th>Склад</th>
+                    <th>Кол - во палат</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -52,7 +54,9 @@
                     <tr>
                         <td>{{ $department->id }}</td>
                         <td>{{ $department->name }}</td>
-                        <td>{{ $department->type->name }}</td>
+                        <td>{{ $department->floor }}</td>
+                        <td>{{ $department->warehouse->name ?? '' }}</td>
+                        <td>{{ $department->rooms->count() }}</td>
                         <td>
                             <div class="d-inline-block text-nowrap">
                                 <button class="btn btn-sm btn-icon"

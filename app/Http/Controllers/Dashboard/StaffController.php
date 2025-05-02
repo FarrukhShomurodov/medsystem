@@ -13,6 +13,7 @@ use App\Models\Survey;
 use App\Services\StaffService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use PHPUnit\TextUI\XmlConfiguration\MoveWhitelistExcludesToCoverage;
 
 class StaffController extends Controller
 {
@@ -20,7 +21,7 @@ class StaffController extends Controller
 
     public function __construct(StaffService $service)
     {
-        $this->middleware(['permission:view_staffs'])->only('index');
+        $this->middleware(['permission:view_staffs'])->only(['index', 'show']);
         $this->middleware(['permission:create_staffs'])->only(['create', 'store']);
         $this->middleware(['permission:edit_staffs'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_staffs'])->only('destroy');
@@ -36,6 +37,11 @@ class StaffController extends Controller
             ->paginate(10);
 
         return view('admin.staffs.index', compact('staffs'));
+    }
+
+    public function show(Staff $staff): View
+    {
+        return view('admin.staffs.show', compact('staff'));
     }
 
     public function create(): View
