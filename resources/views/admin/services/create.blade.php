@@ -27,7 +27,7 @@
             <h5 class="mb-0">Создать</h5>
 
             <label class="switch" style="margin-right: 40px">
-                <input type="checkbox" class="switch-input" name="is_active" checked>
+                <input type="checkbox" class="switch-input switch-active" name="is_active" checked>
                 <span class="switch-toggle-slider">
                     <span class="switch-on"></span>
                     <span class="switch-off"></span>
@@ -131,22 +131,6 @@
                         @enderror
                     </div>
 
-                    {{--                    <div class="col-md-4 mb-3">--}}
-                    {{--                        <label class="form-label" for="basic-icon-default-duration">Длительность оказания услуги  </label>--}}
-                    {{--                        <div class="input-group input-group-merge">--}}
-                    {{--                            <span id="basic-icon-default-middle-name2"--}}
-                    {{--                                  class="input-group-text @error('duration') text-danger icon-border @enderror">--}}
-                    {{--                                <i class="bx bx-time"></i>--}}
-                    {{--                            </span>--}}
-                    {{--                            <input type="text" id="basic-icon-default-duration"--}}
-                    {{--                                   class="form-control @error('duration') is-invalid @enderror"--}}
-                    {{--                                   placeholder="Длительность оказания услуги" aria-label="duration" name="duration"--}}
-                    {{--                                   value="{{ old('duration') }}" aria-describedby="basic-icon-default-middle-name2"/>--}}
-                    {{--                        </div>--}}
-                    {{--                        @error('duration')--}}
-                    {{--                        <div class="invalid-feedback">{{ $message }}</div>--}}
-                    {{--                        @enderror--}}
-                    {{--                    </div>--}}
                     <div class="col-md-4 mb-3">
                         <label class="form-label" for="basic-icon-default-price_vat">12% НДС <span
                                 class="text-danger">*</span></label>
@@ -184,22 +168,22 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label" for="specialty">Категории <span
+                        <label class="form-label" for="specialty">Группы <span
                                 class="text-danger">*</span></label>
 
-                        <select name="service_category_id"
-                                class="select2 form-control @error('service_category_id') is-invalid @enderror"
+                        <select name="service_group_id"
+                                class="select2 form-control @error('service_group_id') is-invalid @enderror"
                                 id="specialty"
                                 required>
-                            <option value="" disabled selected>Выберите категорию</option>
+                            <option value="" disabled selected>Выберите группу</option>
 
-                            @foreach($categories as $category)
+                            @foreach($groups as $group)
                                 <option
-                                    value="{{ $category->id }}" @selected($category->id == old('service_category_id'))> {{ $category->name }} </option>
+                                    value="{{ $group->id }}" @selected($group->id == old('service_group_id'))> {{ $group->name }} </option>
                             @endforeach
                         </select>
 
-                        @error('service_category_id')
+                        @error('service_group_id')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -224,6 +208,19 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    <div class="col-12 mb-3 d-flex align-items-center flex-row ">
+                        <label for="is_appointment">По записи</label>
+                        <input type="hidden" name="is_appointment" class="is_appointment">
+
+                        <label class="switch">
+                            <input type="checkbox" class="switch-input switch-appointment" checked>
+                            <span class="switch-toggle-slider ms-1">
+                                <span class="switch-on"></span>
+                                <span class="switch-off"></span>
+                            </span>
+                        </label>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Сохранить</button>
@@ -236,9 +233,15 @@
     <script>
         $(document).ready(function () {
             $('.is_active').val(1);
-            $('.switch-input').on('change', function () {
+            $('.switch-active').on('change', function () {
                 let isActive = $(this).is(':checked') ? 1 : 0;
                 $('.is_active').val(isActive);
+            });
+
+            $('.is_appointment').val(1);
+            $('.switch-appointment').on('change', function () {
+                let isActive = $(this).is(':checked') ? 1 : 0;
+                $('.is_appointment').val(isActive);
             });
         });
     </script>

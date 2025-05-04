@@ -12,7 +12,6 @@ class ServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // main info
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
             'code' => 'nullable|string|max:255',
@@ -20,10 +19,10 @@ class ServiceRequest extends FormRequest
             'price_vat' => 'required|int',
             'discount' => 'nullable|int',
             'currency' => 'nullable|string|max:255',
-//            'duration' => 'nullable|string|max:255',
-            'service_category_id' => 'required',
+            'service_group_id' => 'required',
             'service_type_id' => 'required',
             'is_active' => 'required|bool',
+            'is_appointment' => 'required|bool',
         ];
     }
 }

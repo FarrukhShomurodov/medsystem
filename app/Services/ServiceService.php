@@ -15,10 +15,6 @@ class ServiceService
     public function store(array $validated): Service
     {
         $service = DB::transaction(function () use ($validated) {
-            if (!is_numeric($validated['service_category_id'])) {
-                $validated['service_category_id'] = ServiceCategory::query()->create(['name' => $validated['service_category_id']])->id;
-            }
-
             if (!is_numeric($validated['service_type_id'])) {
                 $validated['service_type_id'] = ServiceType::query()->create(['name' => $validated['service_type_id']])->id;
             }
@@ -34,16 +30,12 @@ class ServiceService
      */
     public function update(Service $service, array $validated)
     {
-        return DB::transaction(function () use ($validated) {
-            if (!is_numeric($validated['service_category_id'])) {
-                $validated['service_category_id'] = ServiceCategory::query()->create(['name' => $validated['service_category_id']])->id;
-            }
-
+        return DB::transaction(function () use ($validated, $service) {
             if (!is_numeric($validated['service_type_id'])) {
                 $validated['service_type_id'] = ServiceType::query()->create(['name' => $validated['service_type_id']])->id;
             }
 
-            return Service::query()->update($validated);
+            return $service->update($validated);
         });
     }
 

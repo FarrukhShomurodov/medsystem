@@ -45,8 +45,9 @@
                     <th>Наименование</th>
                     <th>Цена</th>
                     <th>Скидка</th>
-                    <th>Категория</th>
+                    <th>Группа</th>
                     <th>Статус</th>
+                    <th>По записи</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -57,9 +58,16 @@
                         <td>{{ $service->name }}</td>
                         <td>{{ number_format($service->price, 0, '.', '.')  }}</td>
                         <td>{{ $service->discount ?? 0 }}%</td>
-                        <td>{{ $service->category->name }}</td>
+                        <td>{{ $service->group->name }}</td>
                         <td>
                             @if ($service->is_active)
+                                <span class="badge bg-success">Активна</span>
+                            @else
+                                <span class="badge bg-danger">Не активна</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if ($service->is_appointment)
                                 <span class="badge bg-success">Активна</span>
                             @else
                                 <span class="badge bg-danger">Не активна</span>

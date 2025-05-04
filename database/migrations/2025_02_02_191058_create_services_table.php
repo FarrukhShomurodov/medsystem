@@ -17,7 +17,9 @@ return new class extends Migration {
             $table->integer('discount')->nullable();
             $table->string('currency')->nullable();
             $table->foreignId('service_type_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('service_group_id')->constrained()->cascadeOnDelete();
             $table->boolean('is_active')->default(1);
+            $table->boolean('is_appointment')->default(0);
             $table->timestamps();
         });
     }

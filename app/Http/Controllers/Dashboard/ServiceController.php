@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceRequest;
 use App\Models\Service;
-use App\Models\ServiceCategory;
+use App\Models\ServiceGroup;
 use App\Models\ServiceType;
 use App\Services\ServiceService;
 use Illuminate\Contracts\View\View;
@@ -29,8 +29,8 @@ class ServiceController extends Controller
     public function index(): View
     {
         $services = Service::query()
-            ->select(['id', 'name', 'price', 'discount', 'service_category_id', 'is_active', 'service_type_id'])
-            ->with('category')
+            ->select(['id', 'name', 'price', 'discount', 'service_group_id', 'is_active', 'service_type_id', 'is_appointment'])
+            ->with('group')
             ->with('type')
             ->orderBy('id', 'desc')
             ->paginate(10);
@@ -40,10 +40,10 @@ class ServiceController extends Controller
 
     public function create(): View
     {
-        $categories = ServiceCategory::query()->get();
+        $groups = ServiceGroup::query()->get();
         $types = ServiceType::query()->get();
 
-        return view('admin.services.create', compact('categories', 'types'));
+        return view('admin.services.create', compact('groups', 'types'));
     }
 
     public function store(ServiceRequest $request): RedirectResponse
@@ -56,10 +56,10 @@ class ServiceController extends Controller
 
     public function edit(Service $service): View
     {
-        $categories = ServiceCategory::query()->get();
+        $groups = ServiceGroup::query()->get();
         $types = ServiceType::query()->get();
 
-        return view('admin.services.edit', compact('categories', 'service', 'types'));
+        return view('admin.services.edit', compact('groups', 'service', 'types'));
     }
 
     public function update(ServiceRequest $request, Service $service): RedirectResponse

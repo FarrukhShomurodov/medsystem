@@ -16,12 +16,14 @@ class Service extends Model
         'discount',
         'currency',
         'service_type_id',
+        'service_group_id',
         'is_active',
+        'is_appointment',
     ];
 
-    public function category(): BelongsTo
+    public function group(): BelongsTo
     {
-        return $this->belongsTo(ServiceCategory::class, 'service_category_id');
+        return $this->belongsTo(ServiceGroup::class, 'service_group_id');
     }
 
     public function type(): BelongsTo
