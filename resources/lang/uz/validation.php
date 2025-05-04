@@ -131,7 +131,7 @@ return [
         'description.uz' => 'Tavsif Uz',
         'is_active' => 'Faol',
         'publication_date' => 'Nashr sanasi',
-        'categories' => 'Kategoriyalar',
+        'service_groups' => 'Kategoriyalar',
         'genres' => 'Janrlar',
         'photos' => 'Rasmlar',
         'files' => 'Fayl',

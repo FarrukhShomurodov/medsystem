@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Медицинская система | Персонал</title>
+    <title>Медицинская система | Группы</title>
 @endsection
 
 @section('content')
     <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light">Персонал</span>
+        <span class="text-muted fw-light">Группы</span>
     </h6>
 
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
@@ -33,8 +33,8 @@
 
     <div class="card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Персонал</h5>
-            <a href="{{ route('service.staffs.create') }}" class="btn btn-primary "
+            <h5 class="card-header">Группы</h5>
+            <a href="{{ route('service.groups.create') }}" class="btn btn-primary "
                style="margin-right: 22px;">Создать</a>
         </div>
         <div class="card-datatable table-responsive">
@@ -42,27 +42,25 @@
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>Имя</th>
-                    <th>Фамилия</th>
-                    <th>Отчесво</th>
-                    <th>Специальность</th>
+                    <th>Названия</th>
+                    <th>Подгруппы</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($staffs as $staff)
+                @foreach($groups as $group)
                     <tr>
-                        <td>{{ $staff->id }}</td>
-                        <td>{{ $staff->first_name }}</td>
-                        <td>{{ $staff->last_name }}</td>
-                        <td>{{ $staff->middle_name }}</td>
-                        <td>{{ $staff->specialty->name }}</td>
+                        <td>{{ $group->id }}</td>
+                        <td>{{ $group->name }}</td>
+                        <td>{{ implode(', ', $group->subGroups->pluck('name')->toArray())  }}</td>
+
                         <td>
                             <div class="d-inline-block text-nowrap">
                                 <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('service.staffs.edit', $staff->id) }}'"><i
+                                        onclick="location.href='{{ route('service.groups.edit', $group->id) }}'">
+                                    <i
                                         class="bx bx-edit"></i></button>
-                                <form action="{{ route('service.staffs.destroy', $staff->id) }}" method="POST"
+                                <form action="{{ route('service.groups.destroy', $group->id) }}" method="POST"
                                       style="display:inline;">
                                     @csrf
                                     @method('DELETE')
@@ -76,7 +74,7 @@
                 </tbody>
             </table>
             <div class="mt-4 p-1">
-                {{ $staffs->links('pagination::bootstrap-5') }}
+                {{ $groups->links('pagination::bootstrap-5') }}
             </div>
         </div>
     </div>

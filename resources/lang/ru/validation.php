@@ -132,7 +132,7 @@ return [
         'description.uz' => 'Описание Uz',
         'is_active' => 'Активный',
         'publication_date' => 'Дата публикации',
-        'categories' => 'Категории',
+        'service_groups' => 'Категории',
         'genres' => 'Жанры',
         'photos' => 'Фото',
         'files' => 'Файл',

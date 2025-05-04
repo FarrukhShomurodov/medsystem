@@ -157,6 +157,10 @@ class StaffPositionController extends Controller
             'edit_service_types' => 'Редактирование типа услуг',
             'delete_service_types' => 'Удаление типа услуг',
 
+            'view_service_groups' => 'Просмотр группы услуг',
+            'create_service_groups' => 'Создание группы услуг',
+            'edit_service_groups' => 'Редактирование группы услуг',
+            'delete_service_groups' => 'Удаление группы услуг',
 
             'view_service_procedures' => 'Просмотр процедур',
             'create_service_procedures' => 'Создание процедур',

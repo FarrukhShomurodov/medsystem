@@ -61,8 +61,8 @@
         @endcanany
 
         {{-- Услуги --}}
-        @canany(['view_services', 'view_patient_services', 'view_service_procedures', 'view_service_methods', 'view_service_types'])
-            <li class="menu-item {{ Request::is('dashboard/services/list*') || Request::is('dashboard/services/types*') || Request::is('dashboard/services/categories*') || Request::is('dashboard/services/procedures*') || Request::is('dashboard/services/methods*') || Request::is('dashboard/services/equipments*') || Request::is('dashboard/services/staff-specialties*') || Request::is('dashboard/services/staffs*') || Request::is('dashboard/services/assign-patient*') ? 'open' : '' }}">
+        @canany(['view_services', 'view_patient_services', 'view_service_procedures', 'view_service_methods', 'view_service_types', 'view_service_groups'])
+            <li class="menu-item {{ Request::is('dashboard/services*')  ? 'open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon bx bx-plus-medical"></i>
                     <div data-i18n="Услуги">Услуги</div>
@@ -86,6 +86,13 @@
                         <li class="menu-item {{ Request::is('dashboard/services/types*') ? 'active' : '' }}">
                             <a href="{{route('service.types.index')}}" class="menu-link">
                                 <div data-i18n="Типы">Типы</div>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('view_service_groups')
+                        <li class="menu-item {{ Request::is('dashboard/services/groups*') ? 'active' : '' }}">
+                            <a href="{{route('service.groups.index')}}" class="menu-link">
+                                <div data-i18n="Группы">Группы</div>
                             </a>
                         </li>
                     @endcan
@@ -153,7 +160,7 @@
         @endcan
 
         {{-- Персонал --}}
-        @canany(['view_staffs', 'view_staff_positions', 'view_specialties'])1
+        @canany(['view_staffs', 'view_staff_positions', 'view_specialties'])
             <li class="menu-item {{ Request::is('dashboard/staffs*') ? 'open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon bx bx-user"></i>

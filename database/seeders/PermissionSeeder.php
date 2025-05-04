@@ -140,6 +140,11 @@ class PermissionSeeder extends Seeder
             'edit_patient_services',
             'delete_patient_services',
 
+            'view_service_groups',
+            'create_service_groups',
+            'edit_service_groups',
+            'delete_service_groups',
+
             'view_service_types',
             'create_service_types',
             'edit_service_types',
