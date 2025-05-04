@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Медицинская система | Создать тип аллегрии</title>
+    <title>Медицинская система | Создать аллергию</title>
 @endsection
 
 @section('content')
     <h6 class="py-3 breadcrumb-wrapper mb-4">
         <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('allegories.index') }}">Аллегрии</a> /</span>Создать
+                                             href="{{ route('allegories.index') }}">Аллергии</a> /</span>Создать
     </h6>
 
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
