@@ -23,6 +23,7 @@ class ReceptionController
     {
         $staff = Staff::whereHas('services', function ($query) use ($serviceId) {
             $query->where('staff_service_id', $serviceId);
+            $query->where('is_appointment', true);
         })->with('professionalData')->get();
 
         return $staff->map(function ($s) {

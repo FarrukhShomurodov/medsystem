@@ -112,7 +112,7 @@ class Staff extends Model
             return [];
         }
 
-        if (!$this->services()->where('service_type_id', 1)->exists()) {
+        if (!$this->services()->where('is_appointment', true)->exists()) {
             return [];
         }
 
@@ -197,7 +197,7 @@ class Staff extends Model
             return [];
         }
 
-        if (!$this->services()->where('service_type_id', 1)->exists()) {
+        if (!$this->services()->where('is_appointment', true)->exists()) {
             return [];
         }
 

@@ -57,7 +57,7 @@ class ReceptionController extends Controller
             $staff = Staff::find(auth('admin')->user()->staff_id);
             $services = $staff->services()->get();
         } else {
-            $services = Service::query()->get();
+            $services = Service::query()->where('is_appointment', true)->get();
         }
 
         return view('admin.receptions.appointment ', compact('services'));
