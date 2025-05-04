@@ -61,7 +61,7 @@
         @endcanany
 
         {{-- Услуги --}}
-        @canany(['view_services', 'view_patient_services', 'view_service_categories', 'view_service_procedures', 'view_service_methods', 'view_service_types'])
+        @canany(['view_services', 'view_patient_services', 'view_service_procedures', 'view_service_methods', 'view_service_types'])
             <li class="menu-item {{ Request::is('dashboard/services/list*') || Request::is('dashboard/services/types*') || Request::is('dashboard/services/categories*') || Request::is('dashboard/services/procedures*') || Request::is('dashboard/services/methods*') || Request::is('dashboard/services/equipments*') || Request::is('dashboard/services/staff-specialties*') || Request::is('dashboard/services/staffs*') || Request::is('dashboard/services/assign-patient*') ? 'open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon bx bx-plus-medical"></i>
@@ -79,13 +79,6 @@
                         <li class="menu-item {{ Request::is('dashboard/services/assign-patient*') ? 'active' : '' }}">
                             <a href="{{route('patient.services.index')}}" class="menu-link">
                                 <div data-i18n="Назначеные">Назначеные</div>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('view_service_categories')
-                        <li class="menu-item {{ Request::is('dashboard/services/categories*') ? 'active' : '' }}">
-                            <a href="{{route('categories.index')}}" class="menu-link">
-                                <div data-i18n="Категории">Категории</div>
                             </a>
                         </li>
                     @endcan
@@ -160,7 +153,7 @@
         @endcan
 
         {{-- Персонал --}}
-        @canany(['view_staffs', 'view_staff_positions', 'view_specialties'])
+        @canany(['view_staffs', 'view_staff_positions', 'view_specialties'])1
             <li class="menu-item {{ Request::is('dashboard/staffs*') ? 'open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon bx bx-user"></i>

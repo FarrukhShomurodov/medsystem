@@ -152,12 +152,6 @@ class StaffPositionController extends Controller
             'edit_patient_services' => 'Редактирование услуг пациента',
             'delete_patient_services' => 'Удаление услуг пациента',
 
-            'view_service_categories' => 'Просмотр категорий услуг',
-            'create_service_categories' => 'Создание категорий услуг',
-            'edit_service_categories' => 'Редактирование категорий услуг',
-            'delete_service_categories' => 'Удаление категорий услуг',
-
-
             'view_service_types' => 'Просмотр типа услуг',
             'create_service_types' => 'Создание типа услуг',
             'edit_service_types' => 'Редактирование типа услуг',

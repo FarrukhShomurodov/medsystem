@@ -26,7 +26,6 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     ProcedureController,
     ReceptionController,
     RegionController,
-    ServiceCategoryController,
     ServiceController,
     ServiceMethodController,
     ServiceTypeController,
@@ -190,7 +189,6 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
             ->parameter('list', 'service')
             ->except('show');
         Route::resource('assign-patient', PatientServiceController::class)->names('patient.services')->parameter('assign-patient', 'service');
-        Route::resource('categories', ServiceCategoryController::class);
         Route::resource('types', ServiceTypeController::class)->names('service.types');
         Route::resource('procedures', ProcedureController::class);
         Route::resource('methods', ServiceMethodController::class)->names('service.methods');
