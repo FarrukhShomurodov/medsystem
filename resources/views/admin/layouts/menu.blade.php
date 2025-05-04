@@ -161,14 +161,14 @@
 
         {{-- Персонал --}}
         @canany(['view_staffs', 'view_staff_positions', 'view_specialties'])
-            <li class="menu-item {{ Request::is('dashboard/staffs*') || Request::is('dashboard/specialties*') ? 'open' : '' }}">
+            <li class="menu-item {{ Request::is('dashboard/staffs*') ? 'open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon bx bx-user"></i>
                     <div data-i18n="Персонал">Персонал</div>
                 </a>
                 <ul class="menu-sub">
                     @can('view_staffs')
-                        <li class="menu-item {{ Request::is('dashboard/staffs*') && !Request::is('dashboard/staffs/positions*') ? 'active' : '' }}">
+                        <li class="menu-item {{ Request::is('dashboard/staffs/list*') ? 'active' : '' }}">
                             <a href="{{ route('staffs.index') }}" class="menu-link">
                                 <div data-i18n="Список">Список</div>
                             </a>
@@ -177,14 +177,14 @@
                     @can('view_staff_positions')
                         <li class="menu-item {{ Request::is('dashboard/staffs/positions*') ? 'active' : '' }}">
                             <a href="{{ route('staffs.position.index') }}" class="menu-link">
-                                <div data-i18n="Должность">Должность</div>
+                                <div data-i18n="Должности">Должности</div>
                             </a>
                         </li>
                     @endcan
                     @can('view_specialties')
-                        <li class="menu-item {{ Request::is('dashboard/specialties*') ? 'active' : '' }}">
+                        <li class="menu-item {{ Request::is('dashboard/staffs/specialties*') ? 'active' : '' }}">
                             <a href="{{ route('specialties.index') }}" class="menu-link">
-                                <div data-i18n="Специальность">Специальность</div>
+                                <div data-i18n="Специальности">Специальности</div>
                             </a>
                         </li>
                     @endcan

@@ -19,22 +19,10 @@ class ReceptionController
         $this->service = $service;
     }
 
-    public function staffByPosition(int $positionId)
+    public function staffByService(int $serviceId)
     {
-//        $roles = auth('admin')->user()->getRoleNames();
-//
-//        if ($roles->contains('Доктор')) {
-//            $staff = Staff::find(auth('admin')->user()->staff_id);
-//        } else {
-//            $staff = Staff::whereHas('professionalData', function ($query) use ($positionId) {
-//                $query->where('position_id', $positionId);
-//            })->with('professionalData')->get();
-//        }
-
-        $staff = Staff::whereHas('professionalData', function ($query) use ($positionId) {
-            $query->where('position_id', $positionId);
-        })->whereHas('services', function ($query) {
-            $query->where('service_type_id', 1);
+        $staff = Staff::whereHas('services', function ($query) use ($serviceId) {
+            $query->where('staff_service_id', $serviceId);
         })->with('professionalData')->get();
 
         return $staff->map(function ($s) {

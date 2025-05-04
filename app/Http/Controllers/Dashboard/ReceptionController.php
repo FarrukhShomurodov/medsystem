@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Reception;
+use App\Models\Service;
 use App\Models\Staff;
-use App\Models\StaffPosition;
 use App\Services\ReceptionService;
 use App\Traits\HandlesStaffAvailability;
 use Illuminate\Contracts\View\View;
@@ -55,12 +55,12 @@ class ReceptionController extends Controller
 
         if ($roles->contains('Доктор')) {
             $staff = Staff::find(auth('admin')->user()->staff_id);
-            $positions = $staff->professionalData->position()->get();
+            $services = $staff->services()->get();
         } else {
-            $positions = StaffPosition::query()->get();
+            $services = Service::query()->get();
         }
 
-        return view('admin.receptions.appointment ', compact('positions'));
+        return view('admin.receptions.appointment ', compact('services'));
     }
 
     public function doctorCalendar(Staff $staff)

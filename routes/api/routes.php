@@ -34,7 +34,7 @@ Route::get('/medication/show/{medication}', [MedicationController::class, 'show'
 Route::get('/medication/active-substance/{substance}', [MedicationController::class, 'medicationByActiveSubstance']);
 
 // receptions
-Route::get('/staff-by-position/{positionId}', [ReceptionController::class, 'staffByPosition']);
+Route::get('/staff-by-service/{serviceId}', [ReceptionController::class, 'staffByService']);
 Route::post('/receptions', [ReceptionController::class, 'store']);
 Route::get('/receptions/{reception}', [ReceptionController::class, 'show']);
 

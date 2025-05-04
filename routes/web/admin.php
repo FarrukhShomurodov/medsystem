@@ -60,7 +60,6 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     Route::resource('admins', AdminController::class);
 
-    Route::resource('specialties', SpecialtyController::class);
 
     // department
     Route::prefix('departments')->group(function () {
@@ -77,11 +76,13 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // staff
     Route::prefix('staffs')->group(function () {
-        Route::resource('', StaffController::class)->names('staffs')
-            ->parameter('', 'staff');
-
         Route::resource('/positions', StaffPositionController::class)
             ->names('staffs.position');
+
+        Route::resource('/specialties', SpecialtyController::class);
+
+        Route::resource('list', StaffController::class)->names('staffs')
+            ->parameter('list', 'staff');
     });
 
     // supplies

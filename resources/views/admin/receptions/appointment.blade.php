@@ -36,11 +36,11 @@
             <h5 class="card-header">Запись на прием</h5>
 
             <div class="m-3">
-                <label for="position">Должности</label>
-                <select class="form-control select2" id="position" name="position">
-                    <option value="" selected disabled> Выберите позицию</option>
-                    @foreach($positions as $position)
-                        <option value="{{ $position->id }}"> {{ $position->name }}</option>
+                <label for="service">Услуги</label>
+                <select class="form-control select2" id="service" name="service">
+                    <option value="" selected disabled> Выберите услугу</option>
+                    @foreach($services as $service)
+                        <option value="{{ $service->id }}"> {{ $service->name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -175,11 +175,11 @@
             let minAdmissionPeriod;
             let staff;
 
-            $('#position').on('change', function () {
-                const positionId = $(this).val();
+            $('#service').on('change', function () {
+                const serviceId = $(this).val();
 
                 $.ajax({
-                    url: '/api/staff-by-position/' + positionId,
+                    url: '/api/staff-by-service/' + serviceId,
                     method: 'GET',
                     success: function (response) {
                         staff = response;
