@@ -35,90 +35,89 @@ class ExaminationService
 
             $patient = $map->patient;
 
-            if (isset($validated['laboratory_id'])) {
-                $analyzeData = [
-                    'patient_id' => $patient->id,
-                    'staff_id' => $validated['staff_id'],
-                    'examination_map_id' => $map->id,
-                    'laboratory_id' => $validated['laboratory_id'],
-                    'types' => $validated['types'],
-                    'methods' => $validated['methods'],
-                    'analysis_time' => $validated['analysis_time'],
-                    'medical_staff' => $validated['medical_staff'],
-                    'equipments' => $validated['equipments'],
-                    'status' => 'assigned',
-                ];
-
-                $this->service->store($analyzeData);
-            }
-
-
-            if (isset($validated['service_id'])) {
-                $serviceData = [
-                    'service_id' => $validated['service_id'],
-                    'patient_id' => $patient->id,
-                    'examination_map_id' => $map->id,
-                    'service_date' => $validated['service_date'],
-                    'place' => $validated['place'],
-                    'status' => $validated['service_status'],
-                    'staffs' => $validated['staffs'],
-                ];
-
-                if (isset($validated['procedures'])) {
-                    $serviceData['procedures'] = $validated['procedures'];
-                    $serviceData['procedure_dates'] = $validated['procedure_dates'];
-                }
-
-                if (isset($validated['medications'])) {
-                    $serviceData['medications'] = $validated['medications'];
-                    $serviceData['dosages'] = $validated['dosages'];
-                    $serviceData['admission_periods'] = $validated['admission_periods'];
-//                    $serviceData['medication_notes'] = $validated['medication_notes'];
-                }
-
-                $this->patientService->store($serviceData);
-            }
+//            if (isset($validated['laboratory_id'])) {
+//                $analyzeData = [
+//                    'patient_id' => $patient->id,
+//                    'staff_id' => $validated['staff_id'],
+//                    'examination_map_id' => $map->id,
+//                    'laboratory_id' => $validated['laboratory_id'],
+//                    'types' => $validated['types'],
+//                    'methods' => $validated['methods'],
+//                    'analysis_time' => $validated['analysis_time'],
+//                    'medical_staff' => $validated['medical_staff'],
+//                    'equipments' => $validated['equipments'],
+//                    'status' => 'assigned',
+//                ];
+//
+//                $this->service->store($analyzeData);
+//            }
+//
+//
+//            if (isset($validated['service_id'])) {
+//                $serviceData = [
+//                    'service_id' => $validated['service_id'],
+//                    'patient_id' => $patient->id,
+//                    'examination_map_id' => $map->id,
+//                    'service_date' => $validated['service_date'],
+//                    'place' => $validated['place'],
+//                    'status' => $validated['service_status'],
+//                    'staffs' => $validated['staffs'],
+//                ];
+//
+//                if (isset($validated['procedures'])) {
+//                    $serviceData['procedures'] = $validated['procedures'];
+//                    $serviceData['procedure_dates'] = $validated['procedure_dates'];
+//                }
+//
+//                if (isset($validated['medications'])) {
+//                    $serviceData['medications'] = $validated['medications'];
+//                    $serviceData['dosages'] = $validated['dosages'];
+//                    $serviceData['admission_periods'] = $validated['admission_periods'];
+////                    $serviceData['medication_notes'] = $validated['medication_notes'];
+//                }
+//
+//                $this->patientService->store($serviceData);
+//            }
 
             // medications
-            if (isset($validated['medications'])) {
-                $medicationData = [];
-                $medicationIndexMap = [];
-
-                foreach ($validated['medications'] as $index => $medicationId) {
-                    $medicationModel = Medication::find((int) $medicationId);
-                    if (!$medicationModel) continue;
-
-                    $medicationData[$medicationModel->id] = [
-                        'dosage' => $validated['dosages'][$index] ?? null,
-                        'admission_period' => $validated['admission_periods'][$index] ?? null,
-                    ];
-                    $medicationIndexMap[$medicationModel->id] = $index;
-                }
-
-                $map->medications()->sync($medicationData);
-
-                foreach ($map->medications as $pivotedMedication) {
-                    $pivotId = $pivotedMedication->pivot->id;
-                    $pivotModel = ExaminationMapMedication::find($pivotId);
-                    if (!$pivotModel) continue;
-
-                    $index = $medicationIndexMap[$pivotedMedication->id] ?? null;
-                    if ($index === null) continue;
-
-                    $compatibles = $validated['compatible_medications'][$index] ?? [];
-                    $dosagesCompatibles = $validated['compatible_dosages'][$index] ?? [];
-
-                    $syncData = [];
-                    foreach ($compatibles as $i => $compId) {
-                        $syncData[$compId] = [
-                            'dosage' => $dosagesCompatibles[$i] ?? null,
-                        ];
-                    }
-
-                    $pivotModel->compatibleMedications()->sync($syncData);
-                }
-            }
-
+//            if (isset($validated['medications'])) {
+//                $medicationData = [];
+//                $medicationIndexMap = [];
+//
+//                foreach ($validated['medications'] as $index => $medicationId) {
+//                    $medicationModel = Medication::find((int) $medicationId);
+//                    if (!$medicationModel) continue;
+//
+//                    $medicationData[$medicationModel->id] = [
+//                        'dosage' => $validated['dosages'][$index] ?? null,
+//                        'admission_period' => $validated['admission_periods'][$index] ?? null,
+//                    ];
+//                    $medicationIndexMap[$medicationModel->id] = $index;
+//                }
+//
+//                $map->medications()->sync($medicationData);
+//
+//                foreach ($map->medications as $pivotedMedication) {
+//                    $pivotId = $pivotedMedication->pivot->id;
+//                    $pivotModel = ExaminationMapMedication::find($pivotId);
+//                    if (!$pivotModel) continue;
+//
+//                    $index = $medicationIndexMap[$pivotedMedication->id] ?? null;
+//                    if ($index === null) continue;
+//
+//                    $compatibles = $validated['compatible_medications'][$index] ?? [];
+//                    $dosagesCompatibles = $validated['compatible_dosages'][$index] ?? [];
+//
+//                    $syncData = [];
+//                    foreach ($compatibles as $i => $compId) {
+//                        $syncData[$compId] = [
+//                            'dosage' => $dosagesCompatibles[$i] ?? null,
+//                        ];
+//                    }
+//
+//                    $pivotModel->compatibleMedications()->sync($syncData);
+//                }
+//            }
 
             return $map;
         });
@@ -141,100 +140,100 @@ class ExaminationService
 
             $patient = $map->patient;
 
-            if (isset($validated['laboratory_id'])) {
-                $analyzeData = [
-                    'patient_id' => $patient->id,
-                    'staff_id' => $validated['staff_id'],
-                    'examination_map_id' => $map->id,
-                    'laboratory_id' => $validated['laboratory_id'],
-                    'types' => $validated['types'],
-                    'methods' => $validated['methods'],
-                    'analysis_time' => $validated['analysis_time'],
-                    'medical_staff' => $validated['medical_staff'],
-                    'equipments' => $validated['equipments'],
-                    'status' => 'assigned',
-                ];
-
-                $this->service->store($analyzeData);
-            }
-
-            if (isset($validated['service_id'])) {
-                $serviceData = [
-                    'service_id' => $validated['service_id'],
-                    'patient_id' => $patient->id,
-                    'examination_map_id' => $map->id,
-                    'service_date' => $validated['service_date'],
-                    'place' => $validated['place'],
-                    'status' => $validated['service_status'],
-                    'staffs' => $validated['staffs']
-                ];
-
-                if (isset($validated['procedures'])) {
-                    $serviceData['procedures'] = $validated['procedures'];
-                    $serviceData['procedure_dates'] = $validated['procedure_dates'];
-                }
-
-                $this->patientService->store($serviceData);
-            }
-
-
-            if (isset($validated['discharge_date']) && $validated['discharge_date']) {
-                $map->update([
-                    'is_active' => false
-                ]);
-            }
-
-            if (isset($validated['survey_id'])) {
-                $analyzeData = [
-                    'survey_id' => $validated['survey_id'],
-                    'answers' => $validated['answers'],
-                    'examination_map_id' => $map->id,
-                ];
-
-                $this->surveyResponseService->store($analyzeData);
-            }
-
-            $map->medications()->detach();
-
-            // medications
-            if (isset($validated['medications'])) {
-                $medicationData = [];
-                $medicationIndexMap = [];
-
-                foreach ($validated['medications'] as $index => $medicationId) {
-                    $medicationModel = Medication::find((int) $medicationId);
-                    if (!$medicationModel) continue;
-
-                    $medicationData[$medicationModel->id] = [
-                        'dosage' => $validated['dosages'][$index] ?? null,
-                        'admission_period' => $validated['admission_periods'][$index] ?? null,
-                    ];
-                    $medicationIndexMap[$medicationModel->id] = $index;
-                }
-
-                $map->medications()->sync($medicationData);
-
-                foreach ($map->medications as $pivotedMedication) {
-                    $pivotId = $pivotedMedication->pivot->id;
-                    $pivotModel = ExaminationMapMedication::find($pivotId);
-                    if (!$pivotModel) continue;
-
-                    $index = $medicationIndexMap[$pivotedMedication->id] ?? null;
-                    if ($index === null) continue;
-
-                    $compatibles = $validated['compatible_medications'][$index] ?? [];
-                    $dosagesCompatibles = $validated['compatible_dosages'][$index] ?? [];
-
-                    $syncData = [];
-                    foreach ($compatibles as $i => $compId) {
-                        $syncData[$compId] = [
-                            'dosage' => $dosagesCompatibles[$i] ?? null,
-                        ];
-                    }
-
-                    $pivotModel->compatibleMedications()->sync($syncData);
-                }
-            }
+//            if (isset($validated['laboratory_id'])) {
+//                $analyzeData = [
+//                    'patient_id' => $patient->id,
+//                    'staff_id' => $validated['staff_id'],
+//                    'examination_map_id' => $map->id,
+//                    'laboratory_id' => $validated['laboratory_id'],
+//                    'types' => $validated['types'],
+//                    'methods' => $validated['methods'],
+//                    'analysis_time' => $validated['analysis_time'],
+//                    'medical_staff' => $validated['medical_staff'],
+//                    'equipments' => $validated['equipments'],
+//                    'status' => 'assigned',
+//                ];
+//
+//                $this->service->store($analyzeData);
+//            }
+//
+//            if (isset($validated['service_id'])) {
+//                $serviceData = [
+//                    'service_id' => $validated['service_id'],
+//                    'patient_id' => $patient->id,
+//                    'examination_map_id' => $map->id,
+//                    'service_date' => $validated['service_date'],
+//                    'place' => $validated['place'],
+//                    'status' => $validated['service_status'],
+//                    'staffs' => $validated['staffs']
+//                ];
+//
+//                if (isset($validated['procedures'])) {
+//                    $serviceData['procedures'] = $validated['procedures'];
+//                    $serviceData['procedure_dates'] = $validated['procedure_dates'];
+//                }
+//
+//                $this->patientService->store($serviceData);
+//            }
+//
+//
+//            if (isset($validated['discharge_date']) && $validated['discharge_date']) {
+//                $map->update([
+//                    'is_active' => false
+//                ]);
+//            }
+//
+//            if (isset($validated['survey_id'])) {
+//                $analyzeData = [
+//                    'survey_id' => $validated['survey_id'],
+//                    'answers' => $validated['answers'],
+//                    'examination_map_id' => $map->id,
+//                ];
+//
+//                $this->surveyResponseService->store($analyzeData);
+//            }
+//
+//            $map->medications()->detach();
+//
+//            // medications
+//            if (isset($validated['medications'])) {
+//                $medicationData = [];
+//                $medicationIndexMap = [];
+//
+//                foreach ($validated['medications'] as $index => $medicationId) {
+//                    $medicationModel = Medication::find((int) $medicationId);
+//                    if (!$medicationModel) continue;
+//
+//                    $medicationData[$medicationModel->id] = [
+//                        'dosage' => $validated['dosages'][$index] ?? null,
+//                        'admission_period' => $validated['admission_periods'][$index] ?? null,
+//                    ];
+//                    $medicationIndexMap[$medicationModel->id] = $index;
+//                }
+//
+//                $map->medications()->sync($medicationData);
+//
+//                foreach ($map->medications as $pivotedMedication) {
+//                    $pivotId = $pivotedMedication->pivot->id;
+//                    $pivotModel = ExaminationMapMedication::find($pivotId);
+//                    if (!$pivotModel) continue;
+//
+//                    $index = $medicationIndexMap[$pivotedMedication->id] ?? null;
+//                    if ($index === null) continue;
+//
+//                    $compatibles = $validated['compatible_medications'][$index] ?? [];
+//                    $dosagesCompatibles = $validated['compatible_dosages'][$index] ?? [];
+//
+//                    $syncData = [];
+//                    foreach ($compatibles as $i => $compId) {
+//                        $syncData[$compId] = [
+//                            'dosage' => $dosagesCompatibles[$i] ?? null,
+//                        ];
+//                    }
+//
+//                    $pivotModel->compatibleMedications()->sync($syncData);
+//                }
+//            }
 
 
             return $map;

@@ -121,16 +121,16 @@ class StaffPositionController extends Controller
             'create_survey_response' => 'Создание ответа на опрос',
             'store_survey_response' => 'Сохранение ответа на опрос',
 
-            'view_analyzes' => 'Просмотр анализов',
-            'create_analyzes' => 'Создание анализов',
-            'edit_analyzes' => 'Редактирование анализов',
-            'delete_analyzes' => 'Удаление анализов',
-
-            'create_analyze_result' => 'Создание результата анализа',
-            'store_analyze_result' => 'Сохранение результата анализа',
-            'show_analyze_result' => 'Просмотр результата анализа',
-            'edit_analyze_result' => 'Редактирование результата анализа',
-            'update_analyze_result' => 'Обновление результата анализа',
+//            'view_analyzes' => 'Просмотр анализов',
+//            'create_analyzes' => 'Создание анализов',
+//            'edit_analyzes' => 'Редактирование анализов',
+//            'delete_analyzes' => 'Удаление анализов',
+//
+//            'create_analyze_result' => 'Создание результата анализа',
+//            'store_analyze_result' => 'Сохранение результата анализа',
+//            'show_analyze_result' => 'Просмотр результата анализа',
+//            'edit_analyze_result' => 'Редактирование результата анализа',
+//            'update_analyze_result' => 'Обновление результата анализа',
 
             'view_medications' => 'Просмотр медикаментов',
             'create_medications' => 'Создание медикаментов',
@@ -177,15 +177,15 @@ class StaffPositionController extends Controller
             'edit_laboratories' => 'Редактирование лабораторий',
             'delete_laboratories' => 'Удаление лабораторий',
 
-            'view_analyze_methods' => 'Просмотр методов анализов',
-            'create_analyze_methods' => 'Создание методов анализов',
-            'edit_analyze_methods' => 'Редактирование методов анализов',
-            'delete_analyze_methods' => 'Удаление методов анализов',
-
-            'view_analyze_types' => 'Просмотр типов анализов',
-            'create_analyze_types' => 'Создание типов анализов',
-            'edit_analyze_types' => 'Редактирование типов анализов',
-            'delete_analyze_types' => 'Удаление типов анализов',
+//            'view_analyze_methods' => 'Просмотр методов анализов',
+//            'create_analyze_methods' => 'Создание методов анализов',
+//            'edit_analyze_methods' => 'Редактирование методов анализов',
+//            'delete_analyze_methods' => 'Удаление методов анализов',
+//
+//            'view_analyze_types' => 'Просмотр типов анализов',
+//            'create_analyze_types' => 'Создание типов анализов',
+//            'edit_analyze_types' => 'Редактирование типов анализов',
+//            'delete_analyze_types' => 'Удаление типов анализов',
 
             'view_regions' => 'Просмотр регионов',
             'create_regions' => 'Создание регионов',

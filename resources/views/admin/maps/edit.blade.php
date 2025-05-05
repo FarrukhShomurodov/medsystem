@@ -44,29 +44,29 @@
                     <span class="bs-stepper-label">Анамнез</span>
                 </button>
             </div>
-            <div class="line"></div>
-            <div class="step" data-target="#analyzes">
-                <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">3</span>
-                    <span class="bs-stepper-label">Анализ</span>
-                </button>
-            </div>
+{{--            <div class="line"></div>--}}
+{{--            <div class="step" data-target="#analyzes">--}}
+{{--                <button type="button" class="step-trigger">--}}
+{{--                    <span class="bs-stepper-circle">3</span>--}}
+{{--                    <span class="bs-stepper-label">Анализ</span>--}}
+{{--                </button>--}}
+{{--            </div>--}}
 
-            <div class="line"></div>
-            <div class="step" data-target="#survey">
-                <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">4</span>
-                    <span class="bs-stepper-label">Мед. документы</span>
-                </button>
-            </div>
+{{--            <div class="line"></div>--}}
+{{--            <div class="step" data-target="#survey">--}}
+{{--                <button type="button" class="step-trigger">--}}
+{{--                    <span class="bs-stepper-circle">4</span>--}}
+{{--                    <span class="bs-stepper-label">Мед. документы</span>--}}
+{{--                </button>--}}
+{{--            </div>--}}
 
-            <div class="line"></div>
-            <div class="step" data-target="#service">
-                <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">5</span>
-                    <span class="bs-stepper-label">Услуги</span>
-                </button>
-            </div>
+{{--            <div class="line"></div>--}}
+{{--            <div class="step" data-target="#service">--}}
+{{--                <button type="button" class="step-trigger">--}}
+{{--                    <span class="bs-stepper-circle">5</span>--}}
+{{--                    <span class="bs-stepper-label">Услуги</span>--}}
+{{--                </button>--}}
+{{--            </div>--}}
         </div>
 
         <div class="bs-stepper-content">
@@ -397,630 +397,6 @@
                         </div>
 
                         <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-label-secondary btn-prev" disabled>
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                <span class="d-sm-inline-block d-none">Назад</span>
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                <span class="d-sm-inline-block d-none me-sm-1">Далее</span>
-                                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-
-                {{-- Анализ --}}
-                <div id="analyzes" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">Анализ</h6>
-                    </div>
-
-                    @if($map->analyze->isNotEmpty())
-                        <div>
-                            <div class="content-header mb-3">
-                                <h6 class="mb-0">История анализа</h6>
-                            </div>
-                            @foreach($map->analyze as $analyze)
-                                @if($analyze->results->isNotEmpty())
-                                    <table class="datatables-users table border-top">
-                                        <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Тип анализа</th>
-                                            <th>Единица измерения</th>
-                                            <th>Значение</th>
-                                            <th>Референсный диапазон</th>
-                                            <th>Комментарий</th>
-                                            <th>Дата</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        @foreach($analyze->results as $result)
-                                            <tr>
-                                                <td>{{ $result->id }}</td>
-                                                <td>{{ $result->type->name }}</td>
-                                                <td>{{ $result->unit }}</td>
-                                                <td>{{ $result->value }}</td>
-                                                <td>{{ $result->reference_range }}</td>
-                                                <td>{{ $result->comment }}</td>
-                                                <td>{{ $analyze->created_at->format('d.m.Y') }}</td>
-                                            </tr>
-                                        @endforeach
-
-                                        </tbody>
-                                    </table>
-                                @endif
-                            @endforeach
-                        </div>
-                    @endif
-
-                    <div class="row g-3">
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-departments">Лаборатории</label>
-                            <select id="basic-icon-default-departments" name="laboratory_id"
-                                    class="form-control select2 @error('laboratory_id') is-invalid @enderror">
-                                <option value="" selected disabled>Выберите лабораторию</option>
-                                @foreach($laboratories as $laboratory)
-                                    <option
-                                        value="{{ $laboratory->id }}" @selected($laboratory->id == old('laboratory_id'))>{{ $laboratory->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('laboratory_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-types">Типы анализов</label>
-                            <select id="basic-icon-default-types" name="types[]"
-                                    class="form-control select2 @error('types') is-invalid @enderror" multiple>
-                                <option value="" disabled>Выберите тип</option>
-                                @foreach($types as $type)
-                                    <option
-                                        value="{{ $type->id }}" @selected(in_array($type->id, old('types',[])))>{{ $type->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('types')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-medical_staff">Ответственный медицинский
-                                персонал </label>
-                            <select id="basic-icon-default-medical_staff" name="medical_staff"
-                                    class="form-control select2 @error('medical_staff') is-invalid @enderror">
-                                <option value="" selected disabled>Выберите персонал</option>
-                                <option value="doctor" @selected('doctor' == old('medical_staff'))>Врач</option>
-                                <option value="assist" @selected('assist' == old('medical_staff'))>Лаборант</option>
-                            </select>
-
-                            @error('medical_staff')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="flatpickr-datetime">Дата и время сдачи анализа </label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-birth-date2"
-                                      class="input-group-text @error('analysis_time') text-danger icon-border @enderror">
-                                    <i class="bx bx-calendar"></i>
-                                </span>
-                                <input type="text" name="analysis_time" value="{{ old('analysis_time') }}"
-                                       id="flatpickr-datetime"
-                                       required
-                                       class="form-control flatpickr-date-time @error('analysis_time') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD HH:MM" aria-describedby="basic-icon-birth-date2"/>
-                            </div>
-                            @error('analysis_time')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-methods">Метод исследования</label>
-                            <select id="basic-icon-default-methods" name="methods[]"
-                                    class="form-control select2 @error('methods') is-invalid @enderror" multiple>
-                                <option value="" disabled>Выберите метод</option>
-                                @foreach($methods as $method)
-                                    <option
-                                        value="{{ $method->id }}" @selected(in_array($method->id, old('methods',[])))>{{ $method->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('methods')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-equipments">Оборудование</label>
-                            <select id="basic-icon-default-equipments" name="equipments[]"
-                                    class="form-control select2 @error('equipments') is-invalid @enderror"
-                                    multiple>
-                                <option value="" disabled>Выберите оборудования</option>
-                                @foreach($equipments as $equipment)
-                                    <option
-                                        value="{{ $equipment->id }}" @selected(in_array($equipment->id, old('equipments',[])))>{{ $equipment->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('equipments')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-label-secondary btn-prev" disabled>
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                <span class="d-sm-inline-block d-none">Назад</span>
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                <span class="d-sm-inline-block d-none me-sm-1">Далее</span>
-                                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-
-                {{-- Услуги --}}
-                <div id="service" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">Услуги</h6>
-                    </div>
-
-                    @if($map->services->isNotEmpty())
-                        <div>
-                            <div class="content-header mb-3">
-                                <h6 class="mb-0">История услуг</h6>
-                            </div>
-                            <table class="datatables-users table border-top">
-                                <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Услуга</th>
-                                    <th>Дата услуги</th>
-                                    <th>Время услуги</th>
-                                    <th>Место оказания</th>
-                                    <th>Результаты</th>
-                                    <th>Статус</th>
-                                    <th>Статус оплаты</th>
-                                    <th>Страховая компания</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($map->services as $service)
-                                    <tr>
-                                        <td>{{ $service->id }}</td>
-                                        <td>{{ $service->service->name }}</td>
-                                        <td>{{ $service->service_date }}</td>
-                                        <td>{{ $service->service_time }}</td>
-                                        <td>{{ $service->place }}</td>
-                                        <td>{{ $service->result }}</td>
-                                        <td> {!! $service->getStatusBadge() !!} </td>
-                                        <td>{{ $service->payment }}</td>
-                                        <td>{{ $service->insurance_policy }}</td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @endif
-
-                    <div class="row g-3">
-                        {{-- status --}}
-                        <input type="hidden" name="service_status" value="assigned">
-
-                        <div class="col-12">
-                            <label class="form-label" for="service_id">Услуга</label>
-                            <select id="service_id" name="service_id"
-                                    class="form-control select2 @error('service_id') is-invalid @enderror">
-                                <option value="" disabled selected>Выберите услугу</option>
-                                @foreach($services as $service)
-                                    <option value="{{ $service->id }}" @selected(old('service_id') == $service->id)>
-                                        {{ $service->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('service_id')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <!-- Service Date -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="service_date">Дата услуги</label>
-                            <input type="text" name="service_date" id="service_date"
-                                   class="form-control flatpickr-date @error('service_date') is-invalid @enderror"
-                                   value="{{ old('service_date') }}">
-                            @error('service_date')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <!-- Place -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="place">Место оказания </label>
-                            <select id="place" name="place"
-                                    class="form-control select2 @error('place') is-invalid @enderror">
-                                @foreach(\App\Models\PatientService::PLACE as $value)
-                                    <option value="{{ $value }}" @selected(old('place') == $value)>
-                                        {{ $value }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('place')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <!-- Staffs -->
-                        <div class="col-sm-4">
-                            <label class="form-label" for="staffs">Персонал </label>
-                            <select id="staffs" name="staffs[]"
-                                    class="form-control select2 @error('staffs') is-invalid @enderror" multiple>
-                                @foreach($staffs as $staff)
-                                    <option value="{{ $staff->id }}" @selected(in_array($staff->id, old('staffs', [])))>
-                                        {{ $staff->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('staffs')
-                            <div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Процедуры</label>
-                            <div id="procedures-container">
-                            </div>
-
-                            <button type="button" class="btn btn-primary mt-2" id="btn-add-procedure">
-                                <i class="fas fa-plus me-2"></i> Добавить процедуру
-                            </button>
-
-                            <template id="procedure-template">
-                                <div class="row mb-2 procedure-row">
-                                    <div class="col-sm-5">
-                                        <select name="procedures[]" class="form-control procedure-select"
-                                                data-placeholder="Выберите или введите новую процедуру" required>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-5">
-                                        <input type="date" name="procedure_dates[]"
-                                               class="form-control"
-                                               value="{{ now()->format('Y-m-d') }}"
-                                               required>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <button type="button" class="btn btn-danger btn-remove-procedure">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">медикаменты</label>
-                            <div id="medications-container">
-                                {{-- Медикаменты --}}
-                                @foreach($map->medications as $i => $serviceMedication)
-                                    <div class="card mb-4 medication-row shadow-sm">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                                <h6 class="card-title mb-0">медикамент #{{ $i + 1 }}</h6>
-                                                <button type="button"
-                                                        class="btn btn-sm btn-danger btn-remove-medication">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-
-                                            {{-- Основной медикамент --}}
-                                            <div class="mb-3">
-                                                <label class="form-label">Основной медикамент</label>
-                                                <select name="medications[{{ $i }}]"
-                                                        class="form-control medication-select select2" required>
-                                                    @foreach($medications as $medication)
-                                                        <option value="{{ $medication->id }}"
-                                                                data-active-substance="{{ $medication->composition->active_substance_name }}"
-                                                            @selected($medication->id == $serviceMedication->id)>
-                                                            {{ $medication->name }}
-                                                            ({{ $medication->composition->active_substance_name }})
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <div class="d-flex flex-row gap-2 medication_information mt-2">
-                                                    <p>Группа: <small> {{ $serviceMedication->group->name }}</small></p>
-                                                    <p>Активное вешество: <small> {{ $serviceMedication->composition->active_substance_name }}</small></p>
-                                                </div>
-                                            </div>
-
-                                            {{-- Дозировка --}}
-                                            <div class="mb-3">
-                                                <label class="form-label">Дозировка</label>
-                                                <input type="text" name="dosages[{{ $i }}]" class="form-control"
-                                                       value="{{ $serviceMedication->pivot->dosage }}"
-                                                       placeholder="Дозировка" required>
-                                            </div>
-
-                                            {{-- Период приёма --}}
-                                            <div class="mb-3">
-                                                <label class="form-label">Период приёма</label>
-                                                <div class="admission-period-wrapper border rounded p-3">
-                                                    <div class="d-flex align-items-center gap-2 mb-3">
-                                                        <select class="form-select w-auto admission-hour">
-                                                            @for($h = 0; $h < 24; $h++)
-                                                                <option
-                                                                    value="{{ sprintf('%02d', $h) }}">{{ sprintf('%02d', $h) }}</option>
-                                                            @endfor
-                                                        </select>
-                                                        <span>:</span>
-                                                        <select class="form-select w-auto admission-minute">
-                                                            @for($m = 0; $m < 60; $m += 5)
-                                                                <option
-                                                                    value="{{ sprintf('%02d', $m) }}">{{ sprintf('%02d', $m) }}</option>
-                                                            @endfor
-                                                        </select>
-                                                        <button type="button"
-                                                                class="btn btn-outline-success btn-add-time"
-                                                                title="Добавить время">
-                                                            <i class="fas fa-clock"></i>
-                                                        </button>
-                                                    </div>
-                                                    <div class="admission-times-list d-flex flex-wrap gap-2"></div>
-                                                    <input type="hidden" name="admission_periods[{{ $i }}]"
-                                                           class="admission-hidden-input"
-                                                           value="{{ $serviceMedication->pivot->admission_period }}"
-                                                           data-times="{{ $serviceMedication->pivot->admission_period }}">
-                                                </div>
-                                            </div>
-
-                                            @php
-                                                // Получаем лекарство с нужным pivot через belongsToMany
-                                                $medicationWithPivot = $map->medications()->where('medication_id', $serviceMedication->id)->first();
-
-                                                // Получаем кастомную модель pivot
-                                                $pivotModel = $medicationWithPivot?->pivot;
-
-                                                // Получаем связанные совместимые лекарства
-                                                $compatibleMedications = $pivotModel?->compatibleMedications;
-
-                                                $medicationsForCompatible = $medications->filter(function ($m) use ($serviceMedication) {
-                                                    return optional($m->composition)->active_substance_name === optional($serviceMedication->composition)->active_substance_name;
-                                                });
-                                            @endphp
-
-                                            {{-- Совместимые медикаменты --}}
-                                            <div class="mb-2 compatible-medications-wrapper">
-                                                <label class="form-label">Совместимые медикаменты</label>
-                                                <div class="compatible-list">
-                                                    @foreach($compatibleMedications ?? [] as $compatible)
-                                                        <div class="input-group mb-2 compatible-item">
-                                                            <input type="hidden"
-                                                                   name="compatible_medications[{{ $i }}][]"
-                                                                   value="{{ $compatible->id }}">
-                                                            <input type="hidden" name="compatible_dosages[{{ $i }}][]"
-                                                                   value="{{ $compatible->pivot->dosage }}">
-                                                            <span class="input-group-text">{{ $compatible->name }} ({{ $compatible->pivot->dosage }})</span>
-                                                            <button type="button"
-                                                                    class="btn btn-outline-danger btn-remove-compatible">
-                                                                ×
-                                                            </button>
-                                                        </div>
-                                                    @endforeach
-                                                </div>
-
-                                                <div class="row g-2 mt-2">
-                                                    <div class="col-md-6">
-                                                        <select
-                                                            class="form-control compatible-medication-select select2">
-                                                            <option value="" disabled selected>Выберите медикамент
-                                                            </option>
-                                                            @foreach($medicationsForCompatible as $medication)
-                                                                <option
-                                                                    value="{{ $medication->id }}">{{ $medication->name }}
-                                                                    ({{ $medication->composition->active_substance_name }}
-                                                                    )
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <input type="text" class="form-control compatible-dosage"
-                                                               placeholder="Дозировка">
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <button type="button"
-                                                                class="btn btn-outline-primary w-100 btn-add-compatible">
-                                                            Добавить
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-
-
-                            <div class="text-end">
-                                <button type="button" class="btn btn-primary" id="btn-add-medication">
-                                    <i class="fas fa-plus me-2"></i> Добавить медикамент
-                                </button>
-                            </div>
-
-                            <template id="medication-template">
-                                <div class="card mb-4 medication-row shadow-sm">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <h6 class="card-title mb-0 medication-title">медикамент #1</h6>
-                                            <button type="button" class="btn btn-sm btn-danger btn-remove-medication">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-
-                                        <!-- Основной медикамент -->
-                                        <div class="mb-3">
-                                            <label class="form-label">Основной медикамент</label>
-                                            <select name="medications[]" class="form-control medication-select select2"
-                                                    required>
-                                                @foreach($medications as $medication)
-                                                    <option value="{{ $medication->id }}"
-                                                            data-active-substance="{{ $medication->composition->active_substance_name }}">
-                                                        {{ $medication->name }}
-                                                        ({{ $medication->composition->active_substance_name }})
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <div class="d-flex flex-row gap-2 medication_information mt-2"></div>
-                                        </div>
-
-                                        <!-- Дозировка -->
-                                        <div class="mb-3">
-                                            <label class="form-label">Дозировка</label>
-                                            <input type="text" name="dosages[]" class="form-control"
-                                                   value=""
-                                                   placeholder="Дозировка" required>
-                                        </div>
-
-                                        <!-- Период приёма -->
-                                        <div class="col-12 mb-3">
-                                            <label class="form-label">Период приёма</label>
-                                            <div class="admission-period-wrapper border rounded p-2">
-                                                <div class="d-flex align-items-center gap-2 mb-2">
-                                                    <select class="form-select w-auto admission-hour">
-                                                        @for($h = 0; $h < 24; $h++)
-                                                            <option
-                                                                value="{{ sprintf('%02d', $h) }}">{{ sprintf('%02d', $h) }}</option>
-                                                        @endfor
-                                                    </select>
-                                                    <span>:</span>
-                                                    <select class="form-select w-auto admission-minute">
-                                                        @for($m = 0; $m < 60; $m += 5)
-                                                            <option
-                                                                value="{{ sprintf('%02d', $m) }}">{{ sprintf('%02d', $m) }}</option>
-                                                        @endfor
-                                                    </select>
-                                                    <button type="button" class="btn btn-outline-success btn-add-time"
-                                                            title="Добавить время">
-                                                        <i class="fas fa-clock"></i>
-                                                    </button>
-                                                </div>
-                                                <div class="admission-times-list d-flex flex-wrap gap-2"></div>
-                                                <input type="hidden" name="admission_periods[]"
-                                                       class="admission-hidden-input">
-                                            </div>
-                                        </div>
-
-                                        <!-- Совместимые медикаменты -->
-                                        <div class="mb-2 compatible-medications-wrapper">
-                                            <label class="form-label">Совместимые медикаменты</label>
-                                            <div class="compatible-list"></div>
-
-                                            <div class="row g-2 mt-2">
-                                                <div class="col-md-6">
-                                                    <select class="form-control compatible-medication-select select2">
-                                                        <option value="" disabled selected>Выберите медикамент</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <input type="text" class="form-control compatible-dosage" placeholder="Дозировка">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <button type="button" class="btn btn-outline-primary w-100 btn-add-compatible">Добавить</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-
-                        <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-label-secondary btn-prev" disabled>
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                <span class="d-sm-inline-block d-none">Назад</span>
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                <span class="d-sm-inline-block d-none me-sm-1">Далее</span>
-                                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Мед. документы --}}
-                <div id="survey" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">Мед. документы</h6>
-                    </div>
-
-                    <div class="row g-3">
-                        <table class="datatables-users table border-top">
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Документ</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($map->surveyResponses->sortByDesc('id')->take(5) as $response)
-                                <tr style="background-color: {{ $response->survey->color }}">
-                                    <td>{{$response->id}}</td>
-                                    <td>
-                                        <p class="text-primary mb-0">{{ $response->survey->title }}</p>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-info view-response"
-                                                data-id="{{ $response->id }}"
-                                                data-bs-toggle="modal" data-bs-target="#responseModal">
-                                            Просмотр
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-
-                        <!-- Модальное окно -->
-                        <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel"
-                             aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="responseModalLabel">Ответы документа</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div id="response-content">
-                                            <p class="text-muted">Загрузка...</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3 mt-3">
-                            <div class="col-12">
-                                <label class="form-label" for="survey-select">Мед. документы </label>
-                                <select id="survey-select" name="survey_id"
-                                        class="form-control select2 @error('survey_id') is-invalid @enderror">
-                                    <option value="" disabled selected>Выберите документ</option>
-                                    @foreach($surveys as $survey)
-                                        <option value="{{ $survey->id }}"
-                                                @selected($survey->id == old('survey_id')) style="background-color: {{ $survey->color }} !important;">{{ $survey->title }}</option>
-                                    @endforeach
-                                </select>
-                                @error('survey_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            {{-- Question container --}}
-                            <div id="questions-container" class="mt-3"></div>
-                        </div>
-
-                        <div class="col-12 d-flex justify-content-between">
                             <button class="btn btn-primary btn-prev"><i
                                     class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                 <span class="d-sm-inline-block d-none">Назад</span>
@@ -1029,6 +405,627 @@
                         </div>
                     </div>
                 </div>
+
+
+{{--                --}}{{-- Анализ --}}
+{{--                <div id="analyzes" class="content">--}}
+{{--                    <div class="content-header mb-3">--}}
+{{--                        <h6 class="mb-0">Анализ</h6>--}}
+{{--                    </div>--}}
+
+{{--                    @if($map->analyze->isNotEmpty())--}}
+{{--                        <div>--}}
+{{--                            <div class="content-header mb-3">--}}
+{{--                                <h6 class="mb-0">История анализа</h6>--}}
+{{--                            </div>--}}
+{{--                            @foreach($map->analyze as $analyze)--}}
+{{--                                @if($analyze->results->isNotEmpty())--}}
+{{--                                    <table class="datatables-users table border-top">--}}
+{{--                                        <thead>--}}
+{{--                                        <tr>--}}
+{{--                                            <th>ID</th>--}}
+{{--                                            <th>Тип анализа</th>--}}
+{{--                                            <th>Единица измерения</th>--}}
+{{--                                            <th>Значение</th>--}}
+{{--                                            <th>Референсный диапазон</th>--}}
+{{--                                            <th>Комментарий</th>--}}
+{{--                                            <th>Дата</th>--}}
+{{--                                        </tr>--}}
+{{--                                        </thead>--}}
+{{--                                        <tbody>--}}
+{{--                                        @foreach($analyze->results as $result)--}}
+{{--                                            <tr>--}}
+{{--                                                <td>{{ $result->id }}</td>--}}
+{{--                                                <td>{{ $result->type->name }}</td>--}}
+{{--                                                <td>{{ $result->unit }}</td>--}}
+{{--                                                <td>{{ $result->value }}</td>--}}
+{{--                                                <td>{{ $result->reference_range }}</td>--}}
+{{--                                                <td>{{ $result->comment }}</td>--}}
+{{--                                                <td>{{ $analyze->created_at->format('d.m.Y') }}</td>--}}
+{{--                                            </tr>--}}
+{{--                                        @endforeach--}}
+
+{{--                                        </tbody>--}}
+{{--                                    </table>--}}
+{{--                                @endif--}}
+{{--                            @endforeach--}}
+{{--                        </div>--}}
+{{--                    @endif--}}
+
+{{--                    <div class="row g-3">--}}
+{{--                        <div class="col-sm-4">--}}
+{{--                            <label class="form-label" for="basic-icon-default-departments">Лаборатории</label>--}}
+{{--                            <select id="basic-icon-default-departments" name="laboratory_id"--}}
+{{--                                    class="form-control select2 @error('laboratory_id') is-invalid @enderror">--}}
+{{--                                <option value="" selected disabled>Выберите лабораторию</option>--}}
+{{--                                @foreach($laboratories as $laboratory)--}}
+{{--                                    <option--}}
+{{--                                        value="{{ $laboratory->id }}" @selected($laboratory->id == old('laboratory_id'))>{{ $laboratory->name }}</option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                            @error('laboratory_id')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
+
+{{--                        <div class="col-sm-4">--}}
+{{--                            <label class="form-label" for="basic-icon-default-types">Типы анализов</label>--}}
+{{--                            <select id="basic-icon-default-types" name="types[]"--}}
+{{--                                    class="form-control select2 @error('types') is-invalid @enderror" multiple>--}}
+{{--                                <option value="" disabled>Выберите тип</option>--}}
+{{--                                @foreach($types as $type)--}}
+{{--                                    <option--}}
+{{--                                        value="{{ $type->id }}" @selected(in_array($type->id, old('types',[])))>{{ $type->name }}</option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                            @error('types')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
+
+{{--                        <div class="col-sm-4">--}}
+{{--                            <label class="form-label" for="basic-icon-default-medical_staff">Ответственный медицинский--}}
+{{--                                персонал </label>--}}
+{{--                            <select id="basic-icon-default-medical_staff" name="medical_staff"--}}
+{{--                                    class="form-control select2 @error('medical_staff') is-invalid @enderror">--}}
+{{--                                <option value="" selected disabled>Выберите персонал</option>--}}
+{{--                                <option value="doctor" @selected('doctor' == old('medical_staff'))>Врач</option>--}}
+{{--                                <option value="assist" @selected('assist' == old('medical_staff'))>Лаборант</option>--}}
+{{--                            </select>--}}
+
+{{--                            @error('medical_staff')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
+
+{{--                        <div class="col-sm-4">--}}
+{{--                            <label class="form-label" for="flatpickr-datetime">Дата и время сдачи анализа </label>--}}
+{{--                            <div class="input-group input-group-merge">--}}
+{{--                                <span id="basic-icon-birth-date2"--}}
+{{--                                      class="input-group-text @error('analysis_time') text-danger icon-border @enderror">--}}
+{{--                                    <i class="bx bx-calendar"></i>--}}
+{{--                                </span>--}}
+{{--                                <input type="text" name="analysis_time" value="{{ old('analysis_time') }}"--}}
+{{--                                       id="flatpickr-datetime"--}}
+{{--                                       required--}}
+{{--                                       class="form-control flatpickr-date-time @error('analysis_time') is-invalid @enderror"--}}
+{{--                                       placeholder="YYYY-MM-DD HH:MM" aria-describedby="basic-icon-birth-date2"/>--}}
+{{--                            </div>--}}
+{{--                            @error('analysis_time')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
+
+{{--                        <div class="col-sm-4">--}}
+{{--                            <label class="form-label" for="basic-icon-default-methods">Метод исследования</label>--}}
+{{--                            <select id="basic-icon-default-methods" name="methods[]"--}}
+{{--                                    class="form-control select2 @error('methods') is-invalid @enderror" multiple>--}}
+{{--                                <option value="" disabled>Выберите метод</option>--}}
+{{--                                @foreach($methods as $method)--}}
+{{--                                    <option--}}
+{{--                                        value="{{ $method->id }}" @selected(in_array($method->id, old('methods',[])))>{{ $method->name }}</option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                            @error('methods')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
+
+{{--                        <div class="col-sm-4">--}}
+{{--                            <label class="form-label" for="basic-icon-default-equipments">Оборудование</label>--}}
+{{--                            <select id="basic-icon-default-equipments" name="equipments[]"--}}
+{{--                                    class="form-control select2 @error('equipments') is-invalid @enderror"--}}
+{{--                                    multiple>--}}
+{{--                                <option value="" disabled>Выберите оборудования</option>--}}
+{{--                                @foreach($equipments as $equipment)--}}
+{{--                                    <option--}}
+{{--                                        value="{{ $equipment->id }}" @selected(in_array($equipment->id, old('equipments',[])))>{{ $equipment->name }}</option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                            @error('equipments')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
+
+{{--                        <div class="col-12 d-flex justify-content-between">--}}
+{{--                            <button class="btn btn-label-secondary btn-prev" disabled>--}}
+{{--                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>--}}
+{{--                                <span class="d-sm-inline-block d-none">Назад</span>--}}
+{{--                            </button>--}}
+{{--                            <button class="btn btn-primary btn-next">--}}
+{{--                                <span class="d-sm-inline-block d-none me-sm-1">Далее</span>--}}
+{{--                                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>--}}
+{{--                            </button>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+
+{{--                </div>--}}
+
+{{--                --}}{{-- Услуги --}}
+{{--                <div id="service" class="content">--}}
+{{--                    <div class="content-header mb-3">--}}
+{{--                        <h6 class="mb-0">Услуги</h6>--}}
+{{--                    </div>--}}
+
+{{--                    @if($map->services->isNotEmpty())--}}
+{{--                        <div>--}}
+{{--                            <div class="content-header mb-3">--}}
+{{--                                <h6 class="mb-0">История услуг</h6>--}}
+{{--                            </div>--}}
+{{--                            <table class="datatables-users table border-top">--}}
+{{--                                <thead>--}}
+{{--                                <tr>--}}
+{{--                                    <th>ID</th>--}}
+{{--                                    <th>Услуга</th>--}}
+{{--                                    <th>Дата услуги</th>--}}
+{{--                                    <th>Время услуги</th>--}}
+{{--                                    <th>Место оказания</th>--}}
+{{--                                    <th>Результаты</th>--}}
+{{--                                    <th>Статус</th>--}}
+{{--                                    <th>Статус оплаты</th>--}}
+{{--                                    <th>Страховая компания</th>--}}
+{{--                                </tr>--}}
+{{--                                </thead>--}}
+{{--                                <tbody>--}}
+{{--                                @foreach($map->services as $service)--}}
+{{--                                    <tr>--}}
+{{--                                        <td>{{ $service->id }}</td>--}}
+{{--                                        <td>{{ $service->service->name }}</td>--}}
+{{--                                        <td>{{ $service->service_date }}</td>--}}
+{{--                                        <td>{{ $service->service_time }}</td>--}}
+{{--                                        <td>{{ $service->place }}</td>--}}
+{{--                                        <td>{{ $service->result }}</td>--}}
+{{--                                        <td> {!! $service->getStatusBadge() !!} </td>--}}
+{{--                                        <td>{{ $service->payment }}</td>--}}
+{{--                                        <td>{{ $service->insurance_policy }}</td>--}}
+{{--                                    </tr>--}}
+{{--                                @endforeach--}}
+{{--                                </tbody>--}}
+{{--                            </table>--}}
+{{--                        </div>--}}
+{{--                    @endif--}}
+
+{{--                    <div class="row g-3">--}}
+{{--                        --}}{{-- status --}}
+{{--                        <input type="hidden" name="service_status" value="assigned">--}}
+
+{{--                        <div class="col-12">--}}
+{{--                            <label class="form-label" for="service_id">Услуга</label>--}}
+{{--                            <select id="service_id" name="service_id"--}}
+{{--                                    class="form-control select2 @error('service_id') is-invalid @enderror">--}}
+{{--                                <option value="" disabled selected>Выберите услугу</option>--}}
+{{--                                @foreach($services as $service)--}}
+{{--                                    <option value="{{ $service->id }}" @selected(old('service_id') == $service->id)>--}}
+{{--                                        {{ $service->name }}--}}
+{{--                                    </option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                            @error('service_id')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>@enderror--}}
+{{--                        </div>--}}
+
+{{--                        <!-- Service Date -->--}}
+{{--                        <div class="col-sm-4">--}}
+{{--                            <label class="form-label" for="service_date">Дата услуги</label>--}}
+{{--                            <input type="text" name="service_date" id="service_date"--}}
+{{--                                   class="form-control flatpickr-date @error('service_date') is-invalid @enderror"--}}
+{{--                                   value="{{ old('service_date') }}">--}}
+{{--                            @error('service_date')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>@enderror--}}
+{{--                        </div>--}}
+
+{{--                        <!-- Place -->--}}
+{{--                        <div class="col-sm-4">--}}
+{{--                            <label class="form-label" for="place">Место оказания </label>--}}
+{{--                            <select id="place" name="place"--}}
+{{--                                    class="form-control select2 @error('place') is-invalid @enderror">--}}
+{{--                                @foreach(\App\Models\PatientService::PLACE as $value)--}}
+{{--                                    <option value="{{ $value }}" @selected(old('place') == $value)>--}}
+{{--                                        {{ $value }}--}}
+{{--                                    </option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                            @error('place')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>@enderror--}}
+{{--                        </div>--}}
+
+{{--                        <!-- Staffs -->--}}
+{{--                        <div class="col-sm-4">--}}
+{{--                            <label class="form-label" for="staffs">Персонал </label>--}}
+{{--                            <select id="staffs" name="staffs[]"--}}
+{{--                                    class="form-control select2 @error('staffs') is-invalid @enderror" multiple>--}}
+{{--                                @foreach($staffs as $staff)--}}
+{{--                                    <option value="{{ $staff->id }}" @selected(in_array($staff->id, old('staffs', [])))>--}}
+{{--                                        {{ $staff->name }}--}}
+{{--                                    </option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                            @error('staffs')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>@enderror--}}
+{{--                        </div>--}}
+
+{{--                        <div class="mb-3">--}}
+{{--                            <label class="form-label">Процедуры</label>--}}
+{{--                            <div id="procedures-container">--}}
+{{--                            </div>--}}
+
+{{--                            <button type="button" class="btn btn-primary mt-2" id="btn-add-procedure">--}}
+{{--                                <i class="fas fa-plus me-2"></i> Добавить процедуру--}}
+{{--                            </button>--}}
+
+{{--                            <template id="procedure-template">--}}
+{{--                                <div class="row mb-2 procedure-row">--}}
+{{--                                    <div class="col-sm-5">--}}
+{{--                                        <select name="procedures[]" class="form-control procedure-select"--}}
+{{--                                                data-placeholder="Выберите или введите новую процедуру" required>--}}
+{{--                                        </select>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="col-sm-5">--}}
+{{--                                        <input type="date" name="procedure_dates[]"--}}
+{{--                                               class="form-control"--}}
+{{--                                               value="{{ now()->format('Y-m-d') }}"--}}
+{{--                                               required>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="col-sm-2">--}}
+{{--                                        <button type="button" class="btn btn-danger btn-remove-procedure">--}}
+{{--                                            <i class="fas fa-trash"></i>--}}
+{{--                                        </button>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </template>--}}
+{{--                        </div>--}}
+
+{{--                        <div class="mb-3">--}}
+{{--                            <label class="form-label">медикаменты</label>--}}
+{{--                            <div id="medications-container">--}}
+{{--                                --}}{{-- Медикаменты --}}
+{{--                                @foreach($map->medications as $i => $serviceMedication)--}}
+{{--                                    <div class="card mb-4 medication-row shadow-sm">--}}
+{{--                                        <div class="card-body">--}}
+{{--                                            <div class="d-flex justify-content-between align-items-center mb-3">--}}
+{{--                                                <h6 class="card-title mb-0">медикамент #{{ $i + 1 }}</h6>--}}
+{{--                                                <button type="button"--}}
+{{--                                                        class="btn btn-sm btn-danger btn-remove-medication">--}}
+{{--                                                    <i class="fas fa-trash"></i>--}}
+{{--                                                </button>--}}
+{{--                                            </div>--}}
+
+{{--                                            --}}{{-- Основной медикамент --}}
+{{--                                            <div class="mb-3">--}}
+{{--                                                <label class="form-label">Основной медикамент</label>--}}
+{{--                                                <select name="medications[{{ $i }}]"--}}
+{{--                                                        class="form-control medication-select select2" required>--}}
+{{--                                                    @foreach($medications as $medication)--}}
+{{--                                                        <option value="{{ $medication->id }}"--}}
+{{--                                                                data-active-substance="{{ $medication->composition->active_substance_name }}"--}}
+{{--                                                            @selected($medication->id == $serviceMedication->id)>--}}
+{{--                                                            {{ $medication->name }}--}}
+{{--                                                            ({{ $medication->composition->active_substance_name }})--}}
+{{--                                                        </option>--}}
+{{--                                                    @endforeach--}}
+{{--                                                </select>--}}
+{{--                                                <div class="d-flex flex-row gap-2 medication_information mt-2">--}}
+{{--                                                    <p>Группа: <small> {{ $serviceMedication->group->name }}</small></p>--}}
+{{--                                                    <p>Активное вешество: <small> {{ $serviceMedication->composition->active_substance_name }}</small></p>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+
+{{--                                            --}}{{-- Дозировка --}}
+{{--                                            <div class="mb-3">--}}
+{{--                                                <label class="form-label">Дозировка</label>--}}
+{{--                                                <input type="text" name="dosages[{{ $i }}]" class="form-control"--}}
+{{--                                                       value="{{ $serviceMedication->pivot->dosage }}"--}}
+{{--                                                       placeholder="Дозировка" required>--}}
+{{--                                            </div>--}}
+
+{{--                                            --}}{{-- Период приёма --}}
+{{--                                            <div class="mb-3">--}}
+{{--                                                <label class="form-label">Период приёма</label>--}}
+{{--                                                <div class="admission-period-wrapper border rounded p-3">--}}
+{{--                                                    <div class="d-flex align-items-center gap-2 mb-3">--}}
+{{--                                                        <select class="form-select w-auto admission-hour">--}}
+{{--                                                            @for($h = 0; $h < 24; $h++)--}}
+{{--                                                                <option--}}
+{{--                                                                    value="{{ sprintf('%02d', $h) }}">{{ sprintf('%02d', $h) }}</option>--}}
+{{--                                                            @endfor--}}
+{{--                                                        </select>--}}
+{{--                                                        <span>:</span>--}}
+{{--                                                        <select class="form-select w-auto admission-minute">--}}
+{{--                                                            @for($m = 0; $m < 60; $m += 5)--}}
+{{--                                                                <option--}}
+{{--                                                                    value="{{ sprintf('%02d', $m) }}">{{ sprintf('%02d', $m) }}</option>--}}
+{{--                                                            @endfor--}}
+{{--                                                        </select>--}}
+{{--                                                        <button type="button"--}}
+{{--                                                                class="btn btn-outline-success btn-add-time"--}}
+{{--                                                                title="Добавить время">--}}
+{{--                                                            <i class="fas fa-clock"></i>--}}
+{{--                                                        </button>--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="admission-times-list d-flex flex-wrap gap-2"></div>--}}
+{{--                                                    <input type="hidden" name="admission_periods[{{ $i }}]"--}}
+{{--                                                           class="admission-hidden-input"--}}
+{{--                                                           value="{{ $serviceMedication->pivot->admission_period }}"--}}
+{{--                                                           data-times="{{ $serviceMedication->pivot->admission_period }}">--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+
+{{--                                            @php--}}
+{{--                                                // Получаем лекарство с нужным pivot через belongsToMany--}}
+{{--                                                $medicationWithPivot = $map->medications()->where('medication_id', $serviceMedication->id)->first();--}}
+
+{{--                                                // Получаем кастомную модель pivot--}}
+{{--                                                $pivotModel = $medicationWithPivot?->pivot;--}}
+
+{{--                                                // Получаем связанные совместимые лекарства--}}
+{{--                                                $compatibleMedications = $pivotModel?->compatibleMedications;--}}
+
+{{--                                                $medicationsForCompatible = $medications->filter(function ($m) use ($serviceMedication) {--}}
+{{--                                                    return optional($m->composition)->active_substance_name === optional($serviceMedication->composition)->active_substance_name;--}}
+{{--                                                });--}}
+{{--                                            @endphp--}}
+
+{{--                                            --}}{{-- Совместимые медикаменты --}}
+{{--                                            <div class="mb-2 compatible-medications-wrapper">--}}
+{{--                                                <label class="form-label">Совместимые медикаменты</label>--}}
+{{--                                                <div class="compatible-list">--}}
+{{--                                                    @foreach($compatibleMedications ?? [] as $compatible)--}}
+{{--                                                        <div class="input-group mb-2 compatible-item">--}}
+{{--                                                            <input type="hidden"--}}
+{{--                                                                   name="compatible_medications[{{ $i }}][]"--}}
+{{--                                                                   value="{{ $compatible->id }}">--}}
+{{--                                                            <input type="hidden" name="compatible_dosages[{{ $i }}][]"--}}
+{{--                                                                   value="{{ $compatible->pivot->dosage }}">--}}
+{{--                                                            <span class="input-group-text">{{ $compatible->name }} ({{ $compatible->pivot->dosage }})</span>--}}
+{{--                                                            <button type="button"--}}
+{{--                                                                    class="btn btn-outline-danger btn-remove-compatible">--}}
+{{--                                                                ×--}}
+{{--                                                            </button>--}}
+{{--                                                        </div>--}}
+{{--                                                    @endforeach--}}
+{{--                                                </div>--}}
+
+{{--                                                <div class="row g-2 mt-2">--}}
+{{--                                                    <div class="col-md-6">--}}
+{{--                                                        <select--}}
+{{--                                                            class="form-control compatible-medication-select select2">--}}
+{{--                                                            <option value="" disabled selected>Выберите медикамент--}}
+{{--                                                            </option>--}}
+{{--                                                            @foreach($medicationsForCompatible as $medication)--}}
+{{--                                                                <option--}}
+{{--                                                                    value="{{ $medication->id }}">{{ $medication->name }}--}}
+{{--                                                                    ({{ $medication->composition->active_substance_name }}--}}
+{{--                                                                    )--}}
+{{--                                                                </option>--}}
+{{--                                                            @endforeach--}}
+{{--                                                        </select>--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="col-md-4">--}}
+{{--                                                        <input type="text" class="form-control compatible-dosage"--}}
+{{--                                                               placeholder="Дозировка">--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="col-md-2">--}}
+{{--                                                        <button type="button"--}}
+{{--                                                                class="btn btn-outline-primary w-100 btn-add-compatible">--}}
+{{--                                                            Добавить--}}
+{{--                                                        </button>--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                @endforeach--}}
+{{--                            </div>--}}
+
+
+{{--                            <div class="text-end">--}}
+{{--                                <button type="button" class="btn btn-primary" id="btn-add-medication">--}}
+{{--                                    <i class="fas fa-plus me-2"></i> Добавить медикамент--}}
+{{--                                </button>--}}
+{{--                            </div>--}}
+
+{{--                            <template id="medication-template">--}}
+{{--                                <div class="card mb-4 medication-row shadow-sm">--}}
+{{--                                    <div class="card-body">--}}
+{{--                                        <div class="d-flex justify-content-between align-items-center mb-3">--}}
+{{--                                            <h6 class="card-title mb-0 medication-title">медикамент #1</h6>--}}
+{{--                                            <button type="button" class="btn btn-sm btn-danger btn-remove-medication">--}}
+{{--                                                <i class="fas fa-trash"></i>--}}
+{{--                                            </button>--}}
+{{--                                        </div>--}}
+
+{{--                                        <!-- Основной медикамент -->--}}
+{{--                                        <div class="mb-3">--}}
+{{--                                            <label class="form-label">Основной медикамент</label>--}}
+{{--                                            <select name="medications[]" class="form-control medication-select select2"--}}
+{{--                                                    required>--}}
+{{--                                                @foreach($medications as $medication)--}}
+{{--                                                    <option value="{{ $medication->id }}"--}}
+{{--                                                            data-active-substance="{{ $medication->composition->active_substance_name }}">--}}
+{{--                                                        {{ $medication->name }}--}}
+{{--                                                        ({{ $medication->composition->active_substance_name }})--}}
+{{--                                                    </option>--}}
+{{--                                                @endforeach--}}
+{{--                                            </select>--}}
+{{--                                            <div class="d-flex flex-row gap-2 medication_information mt-2"></div>--}}
+{{--                                        </div>--}}
+
+{{--                                        <!-- Дозировка -->--}}
+{{--                                        <div class="mb-3">--}}
+{{--                                            <label class="form-label">Дозировка</label>--}}
+{{--                                            <input type="text" name="dosages[]" class="form-control"--}}
+{{--                                                   value=""--}}
+{{--                                                   placeholder="Дозировка" required>--}}
+{{--                                        </div>--}}
+
+{{--                                        <!-- Период приёма -->--}}
+{{--                                        <div class="col-12 mb-3">--}}
+{{--                                            <label class="form-label">Период приёма</label>--}}
+{{--                                            <div class="admission-period-wrapper border rounded p-2">--}}
+{{--                                                <div class="d-flex align-items-center gap-2 mb-2">--}}
+{{--                                                    <select class="form-select w-auto admission-hour">--}}
+{{--                                                        @for($h = 0; $h < 24; $h++)--}}
+{{--                                                            <option--}}
+{{--                                                                value="{{ sprintf('%02d', $h) }}">{{ sprintf('%02d', $h) }}</option>--}}
+{{--                                                        @endfor--}}
+{{--                                                    </select>--}}
+{{--                                                    <span>:</span>--}}
+{{--                                                    <select class="form-select w-auto admission-minute">--}}
+{{--                                                        @for($m = 0; $m < 60; $m += 5)--}}
+{{--                                                            <option--}}
+{{--                                                                value="{{ sprintf('%02d', $m) }}">{{ sprintf('%02d', $m) }}</option>--}}
+{{--                                                        @endfor--}}
+{{--                                                    </select>--}}
+{{--                                                    <button type="button" class="btn btn-outline-success btn-add-time"--}}
+{{--                                                            title="Добавить время">--}}
+{{--                                                        <i class="fas fa-clock"></i>--}}
+{{--                                                    </button>--}}
+{{--                                                </div>--}}
+{{--                                                <div class="admission-times-list d-flex flex-wrap gap-2"></div>--}}
+{{--                                                <input type="hidden" name="admission_periods[]"--}}
+{{--                                                       class="admission-hidden-input">--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+
+{{--                                        <!-- Совместимые медикаменты -->--}}
+{{--                                        <div class="mb-2 compatible-medications-wrapper">--}}
+{{--                                            <label class="form-label">Совместимые медикаменты</label>--}}
+{{--                                            <div class="compatible-list"></div>--}}
+
+{{--                                            <div class="row g-2 mt-2">--}}
+{{--                                                <div class="col-md-6">--}}
+{{--                                                    <select class="form-control compatible-medication-select select2">--}}
+{{--                                                        <option value="" disabled selected>Выберите медикамент</option>--}}
+{{--                                                    </select>--}}
+{{--                                                </div>--}}
+{{--                                                <div class="col-md-4">--}}
+{{--                                                    <input type="text" class="form-control compatible-dosage" placeholder="Дозировка">--}}
+{{--                                                </div>--}}
+{{--                                                <div class="col-md-2">--}}
+{{--                                                    <button type="button" class="btn btn-outline-primary w-100 btn-add-compatible">Добавить</button>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </template>--}}
+{{--                        </div>--}}
+
+{{--                        <div class="col-12 d-flex justify-content-between">--}}
+{{--                            <button class="btn btn-label-secondary btn-prev" disabled>--}}
+{{--                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>--}}
+{{--                                <span class="d-sm-inline-block d-none">Назад</span>--}}
+{{--                            </button>--}}
+{{--                            <button class="btn btn-primary btn-next">--}}
+{{--                                <span class="d-sm-inline-block d-none me-sm-1">Далее</span>--}}
+{{--                                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>--}}
+{{--                            </button>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+
+{{--                --}}{{-- Мед. документы --}}
+{{--                <div id="survey" class="content">--}}
+{{--                    <div class="content-header mb-3">--}}
+{{--                        <h6 class="mb-0">Мед. документы</h6>--}}
+{{--                    </div>--}}
+
+{{--                    <div class="row g-3">--}}
+{{--                        <table class="datatables-users table border-top">--}}
+{{--                            <thead>--}}
+{{--                            <tr>--}}
+{{--                                <th>ID</th>--}}
+{{--                                <th>Документ</th>--}}
+{{--                                <th></th>--}}
+{{--                            </tr>--}}
+{{--                            </thead>--}}
+{{--                            <tbody>--}}
+{{--                            @foreach($map->surveyResponses->sortByDesc('id')->take(5) as $response)--}}
+{{--                                <tr style="background-color: {{ $response->survey->color }}">--}}
+{{--                                    <td>{{$response->id}}</td>--}}
+{{--                                    <td>--}}
+{{--                                        <p class="text-primary mb-0">{{ $response->survey->title }}</p>--}}
+{{--                                    </td>--}}
+{{--                                    <td>--}}
+{{--                                        <button type="button" class="btn btn-sm btn-info view-response"--}}
+{{--                                                data-id="{{ $response->id }}"--}}
+{{--                                                data-bs-toggle="modal" data-bs-target="#responseModal">--}}
+{{--                                            Просмотр--}}
+{{--                                        </button>--}}
+{{--                                    </td>--}}
+{{--                                </tr>--}}
+{{--                            @endforeach--}}
+{{--                            </tbody>--}}
+{{--                        </table>--}}
+
+{{--                        <!-- Модальное окно -->--}}
+{{--                        <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel"--}}
+{{--                             aria-hidden="true">--}}
+{{--                            <div class="modal-dialog modal-lg">--}}
+{{--                                <div class="modal-content">--}}
+{{--                                    <div class="modal-header">--}}
+{{--                                        <h5 class="modal-title" id="responseModalLabel">Ответы документа</h5>--}}
+{{--                                        <button type="button" class="btn-close" data-bs-dismiss="modal"--}}
+{{--                                                aria-label="Close"></button>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="modal-body">--}}
+{{--                                        <div id="response-content">--}}
+{{--                                            <p class="text-muted">Загрузка...</p>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+
+{{--                        <div class="row mb-3 mt-3">--}}
+{{--                            <div class="col-12">--}}
+{{--                                <label class="form-label" for="survey-select">Мед. документы </label>--}}
+{{--                                <select id="survey-select" name="survey_id"--}}
+{{--                                        class="form-control select2 @error('survey_id') is-invalid @enderror">--}}
+{{--                                    <option value="" disabled selected>Выберите документ</option>--}}
+{{--                                    @foreach($surveys as $survey)--}}
+{{--                                        <option value="{{ $survey->id }}"--}}
+{{--                                                @selected($survey->id == old('survey_id')) style="background-color: {{ $survey->color }} !important;">{{ $survey->title }}</option>--}}
+{{--                                    @endforeach--}}
+{{--                                </select>--}}
+{{--                                @error('survey_id')--}}
+{{--                                <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                                @enderror--}}
+{{--                            </div>--}}
+
+{{--                            --}}{{-- Question container --}}
+{{--                            <div id="questions-container" class="mt-3"></div>--}}
+{{--                        </div>--}}
+
+{{--                        <div class="col-12 d-flex justify-content-between">--}}
+{{--                            <button class="btn btn-primary btn-prev"><i--}}
+{{--                                    class="bx bx-chevron-left bx-sm ms-sm-n2"></i>--}}
+{{--                                <span class="d-sm-inline-block d-none">Назад</span>--}}
+{{--                            </button>--}}
+{{--                            <button type="submit" class="btn btn-warning ">Редактировать</button>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
             </form>
         </div>
     </div>

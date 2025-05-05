@@ -263,44 +263,44 @@
         @endcanany
 
         {{-- Анализы --}}
-        @canany(['view_analyzes', 'view_laboratories', 'view_analyze_methods', 'view_analyze_types'])
-            <li class="menu-item {{ Request::is('dashboard/analyzes*') || Request::is('dashboard/laboratories*') || Request::is('dashboard/methods*') || Request::is('dashboard/types*') ? 'open' : '' }}">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class="menu-icon bx bx-dna"></i>
-                    <div data-i18n="Анализы">Анализы</div>
-                </a>
-                <ul class="menu-sub">
-                    @can('view_analyzes')
-                        <li class="menu-item {{ Request::is('dashboard/analyzes*') ? 'active' : '' }}">
-                            <a href="{{ route('analyzes.index') }}" class="menu-link">
-                                <div data-i18n="Список">Список</div>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('view_laboratories')
-                        <li class="menu-item {{ Request::is('dashboard/laboratories*') ? 'active' : '' }}">
-                            <a href="{{ route('laboratories.index') }}" class="menu-link">
-                                <div data-i18n="Лаборатории">Лаборатории</div>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('view_analyze_methods')
-                        <li class="menu-item {{ Request::is('dashboard/methods*') ? 'active' : '' }}">
-                            <a href="{{ route('methods.index') }}" class="menu-link">
-                                <div data-i18n="Методы">Методы</div>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('view_analyze_types')
-                        <li class="menu-item {{ Request::is('dashboard/types*') ? 'active' : '' }}">
-                            <a href="{{ route('types.index') }}" class="menu-link">
-                                <div data-i18n="Типы">Типы</div>
-                            </a>
-                        </li>
-                    @endcan
-                </ul>
-            </li>
-        @endcanany
+{{--        @canany(['view_analyzes', 'view_laboratories', 'view_analyze_methods', 'view_analyze_types'])--}}
+{{--            <li class="menu-item {{ Request::is('dashboard/analyzes*') || Request::is('dashboard/laboratories*') || Request::is('dashboard/methods*') || Request::is('dashboard/types*') ? 'open' : '' }}">--}}
+{{--                <a href="javascript:void(0);" class="menu-link menu-toggle">--}}
+{{--                    <i class="menu-icon bx bx-dna"></i>--}}
+{{--                    <div data-i18n="Анализы">Анализы</div>--}}
+{{--                </a>--}}
+{{--                <ul class="menu-sub">--}}
+{{--                    @can('view_analyzes')--}}
+{{--                        <li class="menu-item {{ Request::is('dashboard/analyzes*') ? 'active' : '' }}">--}}
+{{--                            <a href="{{ route('analyzes.index') }}" class="menu-link">--}}
+{{--                                <div data-i18n="Список">Список</div>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
+{{--                    @endcan--}}
+{{--                    @can('view_laboratories')--}}
+{{--                        <li class="menu-item {{ Request::is('dashboard/laboratories*') ? 'active' : '' }}">--}}
+{{--                            <a href="{{ route('laboratories.index') }}" class="menu-link">--}}
+{{--                                <div data-i18n="Лаборатории">Лаборатории</div>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
+{{--                    @endcan--}}
+{{--                    @can('view_analyze_methods')--}}
+{{--                        <li class="menu-item {{ Request::is('dashboard/methods*') ? 'active' : '' }}">--}}
+{{--                            <a href="{{ route('methods.index') }}" class="menu-link">--}}
+{{--                                <div data-i18n="Методы">Методы</div>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
+{{--                    @endcan--}}
+{{--                    @can('view_analyze_types')--}}
+{{--                        <li class="menu-item {{ Request::is('dashboard/types*') ? 'active' : '' }}">--}}
+{{--                            <a href="{{ route('types.index') }}" class="menu-link">--}}
+{{--                                <div data-i18n="Типы">Типы</div>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
+{{--                    @endcan--}}
+{{--                </ul>--}}
+{{--            </li>--}}
+{{--        @endcanany--}}
 
         {{-- Склад --}}
         @canany(['view_warehouses', 'view_warehouse_medications', 'view_warehouse_supplies', 'view_warehouse_types'])

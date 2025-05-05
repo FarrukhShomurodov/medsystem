@@ -109,16 +109,16 @@ class PermissionSeeder extends Seeder
             'create_survey_response',
             'store_survey_response',
 
-            'view_analyzes',
-            'create_analyzes',
-            'edit_analyzes',
-            'delete_analyzes',
-
-            'create_analyze_result',
-            'store_analyze_result',
-            'show_analyze_result',
-            'edit_analyze_result',
-            'update_analyze_result',
+//            'view_analyzes',
+//            'create_analyzes',
+//            'edit_analyzes',
+//            'delete_analyzes',
+//
+//            'create_analyze_result',
+//            'store_analyze_result',
+//            'show_analyze_result',
+//            'edit_analyze_result',
+//            'update_analyze_result',
 
             'view_medications',
             'create_medications',
@@ -165,15 +165,15 @@ class PermissionSeeder extends Seeder
             'edit_laboratories',
             'delete_laboratories',
 
-            'view_analyze_methods',
-            'create_analyze_methods',
-            'edit_analyze_methods',
-            'delete_analyze_methods',
-
-            'view_analyze_types',
-            'create_analyze_types',
-            'edit_analyze_types',
-            'delete_analyze_types',
+//            'view_analyze_methods',
+//            'create_analyze_methods',
+//            'edit_analyze_methods',
+//            'delete_analyze_methods',
+//
+//            'view_analyze_types',
+//            'create_analyze_types',
+//            'edit_analyze_types',
+//            'delete_analyze_types',
 
             'view_regions',
             'create_regions',

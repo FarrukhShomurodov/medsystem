@@ -158,24 +158,24 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         ->middleware('permission:store_survey_response');
 
     // analyze
-    Route::resource('analyzes', AnalyzeController::class);
+//    Route::resource('analyzes', AnalyzeController::class);
 
     // analyze result
-    Route::get('analyze-result/{analyze}', [AnalyzeResultController::class, 'create'])
-        ->name('analyze.result')
-        ->middleware('permission:create_analyze_result');
-    Route::post('analyze-result/{analyze}', [AnalyzeResultController::class, 'store'])
-        ->name('analyze.result.store')
-        ->middleware('permission:store_analyze_result');
-    Route::get('analyze-result-show/{analyze}', [AnalyzeResultController::class, 'show'])
-        ->name('analyze.result.show')
-        ->middleware('permission:show_analyze_result');
-    Route::get('analyze-result-edit/{analyze}', [AnalyzeResultController::class, 'edit'])
-        ->name('analyze.result.edit')
-        ->middleware('permission:edit_analyze_result');
-    Route::put('analyze-result/{analyze}', [AnalyzeResultController::class, 'update'])
-        ->name('analyze.result.update')
-        ->middleware('permission:update_analyze_result');
+//    Route::get('analyze-result/{analyze}', [AnalyzeResultController::class, 'create'])
+//        ->name('analyze.result')
+//        ->middleware('permission:create_analyze_result');
+//    Route::post('analyze-result/{analyze}', [AnalyzeResultController::class, 'store'])
+//        ->name('analyze.result.store')
+//        ->middleware('permission:store_analyze_result');
+//    Route::get('analyze-result-show/{analyze}', [AnalyzeResultController::class, 'show'])
+//        ->name('analyze.result.show')
+//        ->middleware('permission:show_analyze_result');
+//    Route::get('analyze-result-edit/{analyze}', [AnalyzeResultController::class, 'edit'])
+//        ->name('analyze.result.edit')
+//        ->middleware('permission:edit_analyze_result');
+//    Route::put('analyze-result/{analyze}', [AnalyzeResultController::class, 'update'])
+//        ->name('analyze.result.update')
+//        ->middleware('permission:update_analyze_result');
 
     // medications
     Route::prefix('medication')->group(function () {
@@ -198,9 +198,9 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         Route::resource('groups', ServiceGroupController::class)->names('service.groups');
     });
 
-    Route::resource('laboratories', LaboratoryController::class);
-    Route::resource('methods', AnalyzeMethodController::class);
-    Route::resource('types', AnalyzeTypeController::class);
+//    Route::resource('laboratories', LaboratoryController::class);
+//    Route::resource('methods', AnalyzeMethodController::class);
+//    Route::resource('types', AnalyzeTypeController::class);
     Route::resource('regions', RegionController::class);
     Route::resource('cities', CityController::class);
     Route::resource('allegories', AllegoryController::class);
