@@ -889,14 +889,14 @@
                         <div id="weekly-schedule">
                             @foreach(\App\Models\DayOfWeek::query()->get() as $i => $day)
                                 <div
-                                    class="days-schedule mb-4 {{ $staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'work')->count() == 0 && $staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'reception')->count() == 0 ? 'disabled-day' : '' }}">
+                                    class="days-schedule mb-4 {{ $staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'work')->count() == 0 ? 'disabled-day' : '' }}">
                                     <h5>{{ $day->name }}</h5>
 
                                     <input type="hidden" name="days[{{ $i }}][id]" value="{{ $day->id }}">
                                     <!-- Переключатель -->
                                     <div class="form-check form-switch mb-3">
                                         <input class="form-check-input day-toggle" type="checkbox"
-                                               id="toggle-{{ $day->id }}" @checked($staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'work')->count() >= 1 && $staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'reception')->count() >= 1)>
+                                               id="toggle-{{ $day->id }}" @checked($staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'work')->count() >= 1)>
                                         <label class="form-check-label" for="toggle-{{ $day->id }}">Рабочий день</label>
                                     </div>
 
@@ -952,50 +952,29 @@
                                     <h6 class="px-2 py-1 bg-light border-start border-4 border-success mt-4">График
                                         приёма</h6>
                                     <div class="time-ranges reception-schedule" data-index="{{ $i }}">
-                                        @if($staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'reception')->count() == 0)
+                                        @foreach($staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'reception')->get() as $index => $time)
                                             <div class="time-range row g-2" data-range-index="0">
                                                 <div class="col-md-5">
                                                     <label class="form-label">Начало</label>
                                                     <input type="time"
-                                                           name="days[{{ $i }}][reception][0][start_time]"
+                                                           name="days[{{ $i }}][reception][{{ $index }}][start_time]"
                                                            class="form-control start-time"
-                                                           value="08:00">
+                                                           value="{{ $time->start_time }}">
                                                 </div>
                                                 <div class="col-md-5">
                                                     <label class="form-label">Конец</label>
                                                     <input type="time"
-                                                           name="days[{{ $i }}][reception][0][end_time]"
+                                                           name="days[{{ $i }}][reception][{{ $index }}][end_time]"
                                                            class="form-control end-time"
-                                                           value="18:00">
+                                                           value="{{ $time->end_time }}">
+                                                </div>
+
+                                                <div class="col-md-2 d-flex align-items-end">
+                                                    <button class="btn btn-outline-danger remove-range">×
+                                                    </button>
                                                 </div>
                                             </div>
-                                        @else
-                                            @foreach($staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'reception')->get() as $index => $time)
-                                                <div class="time-range row g-2" data-range-index="0">
-                                                    <div class="col-md-5">
-                                                        <label class="form-label">Начало</label>
-                                                        <input type="time"
-                                                               name="days[{{ $i }}][reception][{{ $index }}][start_time]"
-                                                               class="form-control start-time"
-                                                               value="{{ $time->start_time }}">
-                                                    </div>
-                                                    <div class="col-md-5">
-                                                        <label class="form-label">Конец</label>
-                                                        <input type="time"
-                                                               name="days[{{ $i }}][reception][{{ $index }}][end_time]"
-                                                               class="form-control end-time"
-                                                               value="{{ $time->end_time }}">
-                                                    </div>
-
-                                                    @if($index >= 1)
-                                                        <div class="col-md-2 d-flex align-items-end">
-                                                            <button class="btn btn-outline-danger remove-range">×
-                                                            </button>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            @endforeach
-                                        @endif
+                                        @endforeach
                                     </div>
                                     <button type="button"
                                             class="btn btn-sm btn-outline-primary add-range-reception mt-2"
@@ -1199,7 +1178,25 @@
                     const rangeIndex = $container.find('.time-range').length; // Количество интервалов в день
 
                     // Дублируем первый интервал
-                    const $template = $container.find('.time-range').first().clone();
+                    let $template = $container.find('.time-range').first().clone();
+
+                    if ($template.length === 0) {
+                        $template = $(`
+                            <div class="time-range row g-2" data-range-index="${rangeIndex}">
+                                <div class="col-md-5">
+                                    <label class="form-label">Начало</label>
+                                    <input type="time" class="form-control start-time">
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="form-label">Конец</label>
+                                    <input type="time" class="form-control end-time">
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button class="btn btn-outline-danger remove-range">×</button>
+                                </div>
+                            </div>
+                        `);
+                    }
 
                     // Устанавливаем новые значения
                     $template.find('.start-time').val('13:00');

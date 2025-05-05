@@ -840,6 +840,9 @@
                                                 <input type="time" name="days[{{ $i }}][reception][0][end_time]"
                                                        class="form-control end-time" value="17:00">
                                             </div>
+                                            <div class="col-md-2 d-flex align-items-end">
+                                                <button class="btn btn-outline-danger remove-range">×</button>
+                                            </div>
                                         </div>
                                     </div>
                                     <button type="button"
@@ -946,41 +949,41 @@
             });
 
             // Добавление интервала приёма (График приёма)
-            $('.add-range-reception').each(function () {
-                $(this).on('click', function () {
-                    const index = $(this).data('index'); // Получаем индекс дня
-                    const $container = $(this).closest('.days-schedule').find('.reception-schedule');
-                    const rangeIndex = $container.find('.time-range').length; // Количество интервалов в день
+            $('.add-range-reception').on('click', function () {
+                const index = $(this).data('index');
+                const $container = $(this).closest('.days-schedule').find('.reception-schedule');
+                const rangeIndex = $container.find('.time-range').length;
 
-                    // Дублируем первый интервал
-                    const $template = $container.find('.time-range').first().clone();
+                let $template = $container.find('.time-range').first().clone();
 
-                    // Устанавливаем новые значения
-                    $template.find('.start-time').val('13:00');
-                    $template.find('.end-time').val('17:00');
+                if ($template.length === 0) {
+                    $template = $(`
+                        <div class="time-range row g-2" data-range-index="${rangeIndex}">
+                            <div class="col-md-5">
+                                <label class="form-label">Начало</label>
+                                <input type="time" class="form-control start-time">
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label">Конец</label>
+                                <input type="time" class="form-control end-time">
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button class="btn btn-outline-danger remove-range">×</button>
+                            </div>
+                        </div>
+                    `);
+                }
 
-                    // Обновляем атрибуты name с уникальными индексами
-                    $template.find('.start-time').attr('name', `days[${index}][reception][${rangeIndex}][start_time]`);
-                    $template.find('.end-time').attr('name', `days[${index}][reception][${rangeIndex}][end_time]`);
+                $template.find('.start-time').val('13:00').attr('name', `days[${index}][reception][${rangeIndex}][start_time]`);
+                $template.find('.end-time').val('17:00').attr('name', `days[${index}][reception][${rangeIndex}][end_time]`);
 
-                    // Если кнопки удаления нет — добавляем
-                    if ($template.find('.remove-range').length === 0) {
-                        $template.append(`
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button class="btn btn-outline-danger remove-range">×</button>
-                    </div>
-                `);
-                    }
-
-                    // Обработчик удаления интервала
-                    $template.find('.remove-range').on('click', function () {
-                        $(this).closest('.time-range').remove();
-                    });
-
-                    // Вставляем новый интервал
-                    $container.append($template);
+                $template.find('.remove-range').on('click', function () {
+                    $(this).closest('.time-range').remove();
                 });
+
+                $container.append($template);
             });
+
 
             // Удаление временного интервала
             $('.remove-range').each(function () {
