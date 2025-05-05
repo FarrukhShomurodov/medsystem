@@ -12,7 +12,6 @@ class Service extends Model
         'description',
         'code',
         'price',
-        'price_vat',
         'discount',
         'currency',
         'service_type_id',

@@ -19,6 +19,7 @@ class ServiceService
                 $validated['service_type_id'] = ServiceType::query()->create(['name' => $validated['service_type_id']])->id;
             }
 
+            $validated['price'] -= $validated['price'] * 12 / 112;
             return Service::query()->create($validated);
         });
 
@@ -33,6 +34,10 @@ class ServiceService
         return DB::transaction(function () use ($validated, $service) {
             if (!is_numeric($validated['service_type_id'])) {
                 $validated['service_type_id'] = ServiceType::query()->create(['name' => $validated['service_type_id']])->id;
+            }
+
+            if ($service->price !== $validated['price']) {
+                $validated['price'] -= $validated['price'] * 12 / 112;
             }
 
             return $service->update($validated);

@@ -13,7 +13,6 @@ return new class extends Migration {
             $table->string('description')->nullable();
             $table->string('code')->nullable();
             $table->decimal('price');
-            $table->decimal('price_vat');
             $table->integer('discount')->nullable();
             $table->string('currency')->nullable();
             $table->foreignId('service_type_id')->constrained()->cascadeOnDelete();

@@ -36,10 +36,6 @@ class DatabaseSeeder extends Seeder
             'name' => 'Заведуюший'
         ]);
 
-        ServiceType::query()->create([
-            'name' => 'По записи'
-        ]);
-
         $days = [
             'Понедельник',
             'Вторник',

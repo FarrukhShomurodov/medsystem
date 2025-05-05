@@ -91,7 +91,7 @@
                                    class="form-control @error('price') is-invalid @enderror"
                                    placeholder="Стоимость" aria-label="price" name="price"
                                    required
-                                   value="{{ old('price', round($service->price)) }}"
+                                   value="{{ old('price', $service->price) }}"
                                    aria-describedby="basic-icon-default-middle-name2"/>
                         </div>
                         @error('price')
@@ -99,7 +99,7 @@
                         @enderror
                     </div>
 
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-6 mb-3">
                         <label class="form-label" for="basic-icon-default-discount">Скидка</label>
                         <div class="input-group input-group-merge">
                             <span id="basic-icon-default-middle-name2"
@@ -117,7 +117,7 @@
                         @enderror
                     </div>
 
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-6 mb-3">
                         <label class="form-label" for="basic-icon-default-currency">Валюта </label>
                         <div class="input-group input-group-merge">
                             <span id="basic-icon-default-middle-name2"
@@ -131,26 +131,6 @@
                                    aria-describedby="basic-icon-default-middle-name2"/>
                         </div>
                         @error('currency')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label" for="basic-icon-default-price_vat">12% НДС <span
-                                class="text-danger">*</span></label>
-                        <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-middle-name2"
-                                  class="input-group-text @error('price_vat') text-danger icon-border @enderror">
-                                <i class="bx bx-dollar"></i>
-                            </span>
-                            <input type="number" id="basic-icon-default-price_vat"
-                                   class="form-control @error('price_vat') is-invalid @enderror"
-                                   placeholder="12% НДС" aria-label="price_vat" name="price_vat"
-                                   required
-                                   value="{{ old('price_vat', round($service->price_vat)) }}"
-                                   aria-describedby="basic-icon-default-middle-name2"/>
-                        </div>
-                        @error('price')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

@@ -43,7 +43,7 @@
                 <tr>
                     <th>#</th>
                     <th>Наименование</th>
-                    <th>Цена</th>
+                    <th>Цена (с учетам НДС)</th>
                     <th>Скидка</th>
                     <th>Группа</th>
                     <th>Статус</th>
@@ -56,7 +56,7 @@
                     <tr>
                         <td>{{ $service->id }}</td>
                         <td>{{ $service->name }}</td>
-                        <td>{{ number_format($service->price, 0, '.', '.')  }}</td>
+                        <td>{{ $service->price  }}</td>
                         <td>{{ $service->discount ?? 0 }}%</td>
                         <td>{{ $service->group->name }}</td>
                         <td>
