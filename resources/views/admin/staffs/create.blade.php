@@ -746,9 +746,9 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
-   <span id="SNILS" class="input-group-text @error('SNILS') text-danger icon-border @enderror">
-    <i class="bx bx-id-card"></i>
-</span>
+                           <span id="SNILS" class="input-group-text @error('SNILS') text-danger icon-border @enderror">
+                                <i class="bx bx-id-card"></i>
+                            </span>
                                 <input type="text" id="SNILS" class="form-control @error('SNILS') is-invalid @enderror"
                                        name="SNILS" value="{{ old('SNILS') }}"
                                        placeholder="СНИЛС" aria-label="СНИЛС" required aria-describedby="SNILS"/>
@@ -790,6 +790,12 @@
                 <!-- График работы -->
                 <div id="schedule" class="content">
                     <div class="row g-3">
+                        <div class="d-flex justify-content-end">
+                            <div class="form-check form-switch mb-3">
+                                <input id="disable_reception_times" class="form-check-input disable_reception_times" type="checkbox">
+                                <label class="form-check-label" for="disable_reception_times">Отключить графики приема</label>
+                            </div>
+                        </div>
                         <div id="weekly-schedule">
                             @foreach(\App\Models\DayOfWeek::query()->get() as $i => $day)
                                 <div class="days-schedule mb-4">
@@ -1002,6 +1008,17 @@
 
                 // Отключаем все инпуты и кнопки, кроме самого переключателя
                 $schedule.find('input, button').not(this).prop('disabled', !isChecked);
+            });
+
+            $('.disable_reception_times').on('change', function () {
+                const isChecked = $(this).is(':checked');
+                const $schedule = $('.reception-schedule');
+
+                // Визуальное затемнение блока (через класс)
+                $schedule.toggleClass('disabled-day', isChecked);
+
+                // Отключаем все инпуты и кнопки, кроме самого переключателя
+                $schedule.find('input, button').not(this).prop('disabled', isChecked);
             });
         });
     </script>
