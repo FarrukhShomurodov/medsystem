@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Reception;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ReceptionRequest extends FormRequest
 {
@@ -18,6 +20,7 @@ class ReceptionRequest extends FormRequest
             'end_time' => 'required',
             'date' => 'required|date',
             'comment' => 'nullable|string',
+            'status' => ['required', Rule::in(Reception::STATUS)],
         ];
     }
 }

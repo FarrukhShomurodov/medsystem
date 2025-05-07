@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PatientService extends Model
 {
@@ -30,6 +31,18 @@ class PatientService extends Model
         'insurance_policy' => 'array',
         'payment' => 'array',
     ];
+
+    public static function getStatusTranslate($status)
+    {
+        $statusRu = [
+            'assigned' => 'Назначена',
+            'in_process' => 'В процессе',
+            'completed' => 'Завершена',
+            'cancelled' => 'Отменена'
+        ];
+
+        return $statusRu[$status];
+    }
 
     public static function getStatusStyles(): array
     {
@@ -88,11 +101,6 @@ class PatientService extends Model
         return $this->belongsTo(Staff::class);
     }
 
-    public function institution(): BelongsTo
-    {
-        return $this->belongsTo(Institution::class);
-    }
-
     public function equipments(): belongsToMany
     {
         return $this->belongsToMany(Equipment::class, 'patient_service_to_equipments_assignment', 'patient_service_id', 'service_equipment_id');
@@ -116,5 +124,10 @@ class PatientService extends Model
             'patient_service_id',
             'procedure_id'
         )->withPivot('procedure_date');
+    }
+
+    public function surveyResponses(): HasMany
+    {
+        return $this->hasMany(SurveyResponses::class);
     }
 }

@@ -19,6 +19,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     MedicalSupplyController,
     MedicationController,
     MedicationGroupController,
+    PatientAssignmentController,
     PatientController,
     PatientServiceController,
     PharmacyController,
@@ -154,7 +155,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         ->name('map.survey')
         ->middleware('permission:create_survey_response');
     Route::post('survey-response', [SurveyResponseController::class, 'store'])
-        ->name('map.survey.store')
+        ->name('response.survey.store')
         ->middleware('permission:store_survey_response');
 
     // analyze
@@ -190,7 +191,8 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
             ->parameter('list', 'service')
             ->except('show');
 
-        Route::resource('assign-patient', PatientServiceController::class)->names('patient.services')->parameter('assign-patient', 'service');
+        Route::resource('assign-patient', PatientServiceController::class)->names('patient.services')->parameter('assign-patient', 'service')->except('show');
+
         Route::resource('types', ServiceTypeController::class)->names('service.types');
         Route::resource('procedures', ProcedureController::class);
         Route::resource('methods', ServiceMethodController::class)->names('service.methods');
@@ -207,6 +209,8 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::resource('diseases', ChronicDiseaseController::class);
     Route::resource('devices', MedicalDeviceController::class);
     Route::resource('patients', PatientController::class);
+
+    Route::post('patient-assignment', [PatientAssignmentController::class, 'store'])->name('patient.assignment.store');
 
     // permissions
     Route::resource('maps', ExaminationMapController::class)

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Equipment;
 use App\Models\Institution;
+use App\Models\Patient;
 use App\Models\PatientService;
 use App\Models\Procedure;
 use App\Models\ServiceMethod;
@@ -17,55 +18,57 @@ class PatientServiceAssignService
     public function store(array $validated): PatientService
     {
         $service = DB::transaction(function () use ($validated) {
-            if (isset($validated['institution_id']) && !is_numeric($validated['institution_id'])) {
-                $validated['institution_id'] = Institution::query()->create(['name' => $validated['institution_id']])->id;
+
+            $map = Patient::find($validated['patient_id'])->examinationMaps()->where('is_active', true);
+            if ($map->exists()) {
+                $validated['examination_map_id'] = $map->first()->id;
             }
 
             $service = PatientService::query()->create($validated);
 
             //  methods
-            if (isset($validated['methods'])) {
-                foreach ($validated['methods'] as $key => $method) {
-                    if (!is_numeric($method)) {
-                        $validated['methods'][$key] = ServiceMethod::query()->create(['name' => $method])->id;
-                    }
-                }
-
-                $service->methods()->sync($validated['methods']);
-            }
+//            if (isset($validated['methods'])) {
+//                foreach ($validated['methods'] as $key => $method) {
+//                    if (!is_numeric($method)) {
+//                        $validated['methods'][$key] = ServiceMethod::query()->create(['name' => $method])->id;
+//                    }
+//                }
+//
+//                $service->methods()->sync($validated['methods']);
+//            }
 
 
             //  equipments
-            if (isset($validated['equipments'])) {
-                foreach ($validated['equipments'] as $key => $equipment) {
-                    if (!is_numeric($equipment)) {
-                        $validated['equipments'][$key] = Equipment::query()->create(['name' => $equipment])->id;
-                    }
-                }
-                $service->equipments()->sync($validated['equipments']);
-            }
+//            if (isset($validated['equipments'])) {
+//                foreach ($validated['equipments'] as $key => $equipment) {
+//                    if (!is_numeric($equipment)) {
+//                        $validated['equipments'][$key] = Equipment::query()->create(['name' => $equipment])->id;
+//                    }
+//                }
+//                $service->equipments()->sync($validated['equipments']);
+//            }
 
             // staff
-            $service->staffs()->sync($validated['staffs']);
+//            $service->staffs()->sync($validated['staffs']);
 
             // procedures
-            if (isset($validated['procedures'])) {
-                $procedureData = [];
-
-                foreach ($validated['procedures'] as $index => $procedure) {
-                    if (!is_numeric($procedure)) {
-                        $procedureModel = Procedure::firstOrCreate(['name' => trim($procedure)]);
-                    } else {
-                        $procedureModel = Procedure::findOrFail($procedure);
-                    }
-
-                    $procedureData[$procedureModel->id] = [
-                        'procedure_date' => $validated['procedure_dates'][$index]
-                    ];
-                }
-
-                $service->procedures()->sync($procedureData);
-            }
+//            if (isset($validated['procedures'])) {
+//                $procedureData = [];
+//
+//                foreach ($validated['procedures'] as $index => $procedure) {
+//                    if (!is_numeric($procedure)) {
+//                        $procedureModel = Procedure::firstOrCreate(['name' => trim($procedure)]);
+//                    } else {
+//                        $procedureModel = Procedure::findOrFail($procedure);
+//                    }
+//
+//                    $procedureData[$procedureModel->id] = [
+//                        'procedure_date' => $validated['procedure_dates'][$index]
+//                    ];
+//                }
+//
+//                $service->procedures()->sync($procedureData);
+//            }
 
             return $service;
         });
@@ -79,54 +82,50 @@ class PatientServiceAssignService
     public function update(PatientService $service, array $validated): PatientService
     {
         $service = DB::transaction(function () use ($validated, $service) {
-            if (isset($validated['institution_id']) && !is_numeric($validated['institution_id'])) {
-                $validated['institution_id'] = Institution::query()->create(['name' => $validated['institution_id']])->id;
-            }
-
             $service->update($validated);
 
             //  methods
-            if (isset($validated['methods'])) {
-                foreach ($validated['methods'] as $key => $method) {
-                    if (!is_numeric($method)) {
-                        $validated['methods'][$key] = ServiceMethod::query()->create(['name' => $method])->id;
-                    }
-                }
-
-                $service->methods()->sync($validated['methods']);
-            }
+//            if (isset($validated['methods'])) {
+//                foreach ($validated['methods'] as $key => $method) {
+//                    if (!is_numeric($method)) {
+//                        $validated['methods'][$key] = ServiceMethod::query()->create(['name' => $method])->id;
+//                    }
+//                }
+//
+//                $service->methods()->sync($validated['methods']);
+//            }
 
             //  equipments
-            if (isset($validated['equipments'])) {
-                foreach ($validated['equipments'] as $key => $equipment) {
-                    if (!is_numeric($equipment)) {
-                        $validated['equipments'][$key] = Equipment::query()->create(['name' => $equipment])->id;
-                    }
-                }
-                $service->equipments()->sync($validated['equipments']);
-            }
+//            if (isset($validated['equipments'])) {
+//                foreach ($validated['equipments'] as $key => $equipment) {
+//                    if (!is_numeric($equipment)) {
+//                        $validated['equipments'][$key] = Equipment::query()->create(['name' => $equipment])->id;
+//                    }
+//                }
+//                $service->equipments()->sync($validated['equipments']);
+//            }
 
             // staff
-            $service->staffs()->sync($validated['staffs']);
+//            $service->staffs()->sync($validated['staffs']);
 
             // procedures
-            if (isset($validated['procedures'])) {
-                $procedureData = [];
-
-                foreach ($validated['procedures'] as $index => $procedure) {
-                    if (!is_numeric($procedure)) {
-                        $procedureModel = Procedure::firstOrCreate(['name' => trim($procedure)]);
-                    } else {
-                        $procedureModel = Procedure::findOrFail($procedure);
-                    }
-
-                    $procedureData[$procedureModel->id] = [
-                        'procedure_date' => $validated['procedure_dates'][$index]
-                    ];
-                }
-
-                $service->procedures()->sync($procedureData);
-            }
+//            if (isset($validated['procedures'])) {
+//                $procedureData = [];
+//
+//                foreach ($validated['procedures'] as $index => $procedure) {
+//                    if (!is_numeric($procedure)) {
+//                        $procedureModel = Procedure::firstOrCreate(['name' => trim($procedure)]);
+//                    } else {
+//                        $procedureModel = Procedure::findOrFail($procedure);
+//                    }
+//
+//                    $procedureData[$procedureModel->id] = [
+//                        'procedure_date' => $validated['procedure_dates'][$index]
+//                    ];
+//                }
+//
+//                $service->procedures()->sync($procedureData);
+//            }
 
             return $service;
         });

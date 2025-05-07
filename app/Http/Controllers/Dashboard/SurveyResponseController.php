@@ -39,10 +39,8 @@ class SurveyResponseController
     public function store(SurveyResponseRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-
-        $patientId = ExaminationMap::find($validated['examination_map_id'])->patient->id;
         $this->service->store($validated);
 
-        return redirect()->route('patients.show', $patientId);
+        return redirect()->back()->with('success', 'Мед. документ назначен!');
     }
 }

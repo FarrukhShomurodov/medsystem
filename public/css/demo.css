@@ -3,6 +3,50 @@
 * File include item demo only specific css only
 ******************************************************************************/
 
+.history-section h2 {
+    color: #2980b9;
+}
+
+.history-item {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.history-header {
+    background-color: #f8f9fa;
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.history-header:hover {
+    background-color: #e9ecef;
+}
+
+.history-title {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.history-date {
+    color: #7f8c8d;
+    font-size: 0.9em;
+}
+
+.history-content {
+    padding: 15px;
+    display: none;
+    background-color: white;
+}
+
+.history-content.show {
+    display: block;
+}
+
 .light-style .menu .app-brand.demo {
     height: 64px;
 }

@@ -18,7 +18,7 @@ class ServiceRequest extends FormRequest
             'price' => 'required|numeric',
             'discount' => 'nullable|int',
             'currency' => 'nullable|string|max:255',
-            'service_group_id' => 'required',
+            'service_group_id' => 'required|int|exists:service_groups,id',
             'service_type_id' => 'required',
             'is_active' => 'required|bool',
             'is_appointment' => 'required|bool',

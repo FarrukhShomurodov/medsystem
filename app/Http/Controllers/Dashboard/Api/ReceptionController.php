@@ -7,6 +7,8 @@ use App\Models\Reception;
 use App\Models\Staff;
 use App\Services\ReceptionService;
 use App\Traits\HandlesStaffAvailability;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ReceptionController
 {
@@ -38,7 +40,7 @@ class ReceptionController
 
     public function show(Reception $reception)
     {
-        $reception->load('map', 'map.patient', 'staff', 'staff.professionalData', 'staff.professionalData.position');
+        $reception->load('patient', 'map', 'map.patient', 'staff', 'staff.professionalData', 'staff.professionalData.position');
 
         return response()->json($reception);
     }
@@ -48,6 +50,15 @@ class ReceptionController
         $validated = $request->validated();
 
         $result = $this->service->store($validated);
+
+        return response()->json([$result, 200]);
+    }
+
+    public function changeStatus(Reception $reception, Request $request)
+    {
+        $validated = $request->validate(['status' => ['required', Rule::in(Reception::STATUS)]]);
+
+        $result = $this->service->update($reception, $validated);
 
         return response()->json([$result, 200]);
     }

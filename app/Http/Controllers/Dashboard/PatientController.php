@@ -11,6 +11,8 @@ use App\Models\Department;
 use App\Models\MedicalDevice;
 use App\Models\Patient;
 use App\Models\Region;
+use App\Models\Service;
+use App\Models\Survey;
 use App\Services\PatientService;
 use App\Traits\HandlesStaffAvailability;
 use Illuminate\Contracts\View\View;
@@ -68,6 +70,49 @@ class PatientController extends Controller
 
     public function show(Patient $patient): View
     {
+        $patient->load([
+            'examinationMaps' => function ($query) {
+                $query->with(['department', 'doctor', 'services'])
+                    ->orderByDesc('admission_date')
+                    ->get()
+                    ->each(function ($map) {
+                        $map->admission_date = Carbon::parse($map->admission_date);
+                        $map->discharge_date = $map->discharge_date
+                            ? Carbon::parse($map->discharge_date)
+                            : null;
+                    });
+            },
+            'assignments' => function ($query) {
+                $query->with(['service', 'staff'])
+                    ->orderByDesc('created_at')
+                    ->get()
+                    ->each(function ($assignment) {
+                        $assignment->created_at = Carbon::parse($assignment->created_at);
+                    });
+            },
+            'services' => function ($query) {
+                $query->orderByDesc('created_at')
+                    ->get()
+                    ->each(function ($service) {
+                        $service->created_at = Carbon::parse($service->created_at);
+                    });
+            },
+            'receptions' => function ($query) {
+                $query->orderByDesc('created_at')
+                    ->get()
+                    ->each(function ($reception) {
+                        $reception->created_at = Carbon::parse($reception->created_at);
+                    });
+            },
+            'surveyResponses' => function ($query) {
+                $query->orderByDesc('created_at')
+                    ->get()
+                    ->each(function ($survey) {
+                        $survey->created_at = Carbon::parse($survey->created_at);
+                    });
+            },
+        ]);
+
         $patientDetails = [
             'basic_info' => [
                 'full_name' => "{$patient->last_name} {$patient->first_name} {$patient->middle_name}",
@@ -106,11 +151,70 @@ class PatientController extends Controller
                 'doctors' => $patient->doctors,
             ],
             'history' => [
-                'maps' => $patient->examinationMaps()->orderBy('id', 'desc')->get(),
                 'map_is_active' => $patient->examinationMaps()->where('is_active', 1)->count() >= 1 ? false : true,
+                'surveyResponses' => $patient->surveyResponses,
             ],
-            'patient_id' => $patient->id
+            'patient_id' => $patient->id,
+            'services' => Service::query()->get(),
+            'surveys' => Survey::query()->get(),
         ];
+
+        // Собираем все события в один массив с унифицированной структурой
+        $timeline = collect();
+
+        // Обработка карт обследования
+        foreach ($patient->examinationMaps as $map) {
+            $timeline->push([
+                'type' => 'examination_map',
+                'date' => $map->admission_date,
+                'end_date' => $map->discharge_date,
+                'data' => $map,
+                'sort_date' => Carbon::parse($map->admission_date)
+            ]);
+        }
+
+        // Обработка направление
+        foreach ($patient->assignments as $assignment) {
+            $timeline->push([
+                'type' => 'assignment',
+                'date' => $assignment->created_at,
+                'data' => $assignment,
+                'sort_date' => $assignment->created_at
+            ]);
+        }
+
+        // Обработка услугу
+        foreach ($patient->services as $service) {
+            $timeline->push([
+                'type' => 'service',
+                'date' => $service->created_at,
+                'data' => $service,
+                'sort_date' => $service->created_at
+            ]);
+        }
+
+        // Обработка мед документа
+        foreach ($patient->surveyResponses as $response) {
+            $timeline->push([
+                'type' => 'patient_med_document',
+                'date' => $response->created_at,
+                'data' => $response,
+                'sort_date' => $response->created_at
+            ]);
+        }
+
+        // Обработка мед документа
+        foreach ($patient->receptions as $reception) {
+            $timeline->push([
+                'type' => 'reception',
+                'date' => $reception->created_at,
+                'data' => $reception,
+                'sort_date' => $reception->created_at
+            ]);
+        }
+
+        // Сортировка по дате
+        $patientDetails['timeline'] = $timeline->sortByDesc('sort_date');
 
         return view('admin.patients.show', compact('patientDetails'));
     }

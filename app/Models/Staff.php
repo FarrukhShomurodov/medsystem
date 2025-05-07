@@ -219,6 +219,7 @@ class Staff extends Model
         $dayOfWeekId = DayOfWeek::query()->where('name', $russianDay)->value('id');
 
         $receptions = $this->receptions()
+            ->where('status', '!=', 'cancelled')
             ->whereDate('date', '=', $date->format('Y-m-d'))
             ->get();
 

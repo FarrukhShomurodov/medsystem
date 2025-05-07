@@ -27,38 +27,16 @@ class ExaminationMap extends Model
         'is_outpatient',
     ];
 
-    public function doctor(): BelongsTo
-    {
-        return $this->belongsTo(Staff::class, 'staff_id');
-    }
-
-    public function department(): BelongsTo
-    {
-        return $this->belongsTo(Department::class);
-    }
-
-    public function patient(): BelongsTo
-    {
-        return $this->belongsTo(Patient::class);
-    }
-
-    public function analyze(): HasMany
-    {
-        return $this->hasMany(Analyze::class);
-    }
-
     public function services(): HasMany
     {
-        return $this->hasMany(PatientService::class);
+        return $this->hasMany(PatientService::class)->with('service');
     }
-
 
     public function surveyResponses(): HasMany
     {
         return $this->hasMany(SurveyResponses::class, 'examination_map_id');
     }
 
-    // medication
     public function medications(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -74,4 +52,25 @@ class ExaminationMap extends Model
     {
         return $this->hasMany(Reception::class);
     }
+
+    // Belongs to
+    public function doctor(): BelongsTo
+    {
+        return $this->belongsTo(Staff::class, 'staff_id');
+    }
+
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function patient(): BelongsTo
+    {
+        return $this->belongsTo(Patient::class);
+    }
+
+//    public function analyze(): HasMany
+//    {
+//        return $this->hasMany(Analyze::class);
+//    }
 }

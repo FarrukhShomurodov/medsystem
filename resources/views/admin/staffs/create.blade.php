@@ -766,7 +766,7 @@
                                     multiple>
                                 @foreach($surveys as $survey)
                                     <option
-                                        value="{{ $survey->id }}" @selected(in_array($survey->id, old('surveys')))> {{ $survey->title }} </option>
+                                        value="{{ $survey->id }}" @selected(in_array($survey->id, old('surveys',[])))> {{ $survey->title }} </option>
                                 @endforeach
                             </select>
 
@@ -792,8 +792,10 @@
                     <div class="row g-3">
                         <div class="d-flex justify-content-end">
                             <div class="form-check form-switch mb-3">
-                                <input id="disable_reception_times" class="form-check-input disable_reception_times" type="checkbox">
-                                <label class="form-check-label" for="disable_reception_times">Отключить графики приема</label>
+                                <input id="disable_reception_times" class="form-check-input disable_reception_times"
+                                       type="checkbox">
+                                <label class="form-check-label" for="disable_reception_times">Отключить графики
+                                    приема</label>
                             </div>
                         </div>
                         <div id="weekly-schedule">

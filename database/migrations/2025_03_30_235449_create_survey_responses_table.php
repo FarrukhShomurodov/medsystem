@@ -10,8 +10,10 @@ return new class extends Migration {
     {
         Schema::create('survey_responses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('examination_map_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('examination_map_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('survey_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('patient_service_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Reception extends Model
 {
+    const STATUS = ['new', 'done', 'paid', 'cancelled'];
+
     protected $fillable = [
         'examination_map_id',
         'patient_id',
@@ -15,7 +17,20 @@ class Reception extends Model
         'end_time',
         'date',
         'comment',
+        'status',
     ];
+
+
+    public function statusTranslate($status)
+    {
+        $statusRu = [
+            'new' => 'Новое',
+            'paid' => 'Оплачено',
+            'cancelled' => 'Отмена',
+            'done' => 'Выполнено'
+        ];
+        return $statusRu[$status];
+    }
 
     public function map(): BelongsTo
     {

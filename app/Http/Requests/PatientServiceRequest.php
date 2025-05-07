@@ -16,7 +16,7 @@ class PatientServiceRequest extends FormRequest
         return [
             'service_id' => 'required',
             'patient_id' => 'required|int|exists:patients,id',
-            'examination_map_id' => 'required|int|exists:examination_maps,id',
+            'examination_map_id' => 'nullable|int|exists:examination_maps,id',
             'service_date' => 'required|date',
             'service_time' => 'nullable|date_format:H:i',
             'place' => ['required', Rule::in(PatientService::PLACE)],
@@ -30,42 +30,42 @@ class PatientServiceRequest extends FormRequest
             'insurance_policy.insurance_policy_number' => 'nullable|string',
             'insurance_policy.percentage_of_coverage' => 'nullable|string',
 
-            'methods' => 'nullable|array',
-            'equipments' => 'nullable|array',
-            'staffs' => 'required|array',
-            'staffs.*' => 'required|int|exists:staff,id',
-
-            'procedures' => 'nullable|array',
-            'procedures.*' => 'nullable|string',
-            'procedure_dates' => [
-                'nullable',
-                'array',
-                Rule::when($this->has('procedures'), [
-                    'size:' . count($this->input('procedures', []))
-                ])
-            ],
-            'procedure_dates.*' => 'date',
-
-            'medications' => 'nullable|array',
-            'medications.*' => 'nullable|string',
-            'dosages' => [
-                'nullable',
-                'array',
-                Rule::when($this->has('procedures'), [
-                    'size:' . count($this->input('medications', []))
-                ])
-            ],
-            'dosages.*' => 'nullable|string|max:50',
-            'admission_periods' => [
-                'nullable',
-                'array',
-                Rule::when($this->has('procedures'), [
-                    'size:' . count($this->input('medications', []))
-                ])
-            ],
-            'admission_periods.*' => 'nullable|string|max:100',
-            'medication_notes' => 'nullable|array',
-            'medication_notes.*' => 'nullable|string|max:500',
+//            'methods' => 'nullable|array',
+//            'equipments' => 'nullable|array',
+//            'staffs' => 'required|array',
+//            'staffs.*' => 'required|int|exists:staff,id',
+//
+//            'procedures' => 'nullable|array',
+//            'procedures.*' => 'nullable|string',
+//            'procedure_dates' => [
+//                'nullable',
+//                'array',
+//                Rule::when($this->has('procedures'), [
+//                    'size:' . count($this->input('procedures', []))
+//                ])
+//            ],
+//            'procedure_dates.*' => 'date',
+//
+//            'medications' => 'nullable|array',
+//            'medications.*' => 'nullable|string',
+//            'dosages' => [
+//                'nullable',
+//                'array',
+//                Rule::when($this->has('procedures'), [
+//                    'size:' . count($this->input('medications', []))
+//                ])
+//            ],
+//            'dosages.*' => 'nullable|string|max:50',
+//            'admission_periods' => [
+//                'nullable',
+//                'array',
+//                Rule::when($this->has('procedures'), [
+//                    'size:' . count($this->input('medications', []))
+//                ])
+//            ],
+//            'admission_periods.*' => 'nullable|string|max:100',
+//            'medication_notes' => 'nullable|array',
+//            'medication_notes.*' => 'nullable|string|max:500',
         ];
     }
 }

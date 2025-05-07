@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Reception;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,6 +17,7 @@ return new class extends Migration {
             $table->time('end_time');
             $table->date('date');
             $table->text('comment')->nullable();
+            $table->enum('status', Reception::STATUS)->default('new');
             $table->timestamps();
         });
     }

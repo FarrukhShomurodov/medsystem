@@ -45,11 +45,6 @@ class PatientServiceController extends Controller
         return view('admin.patient_services.index', compact('services'));
     }
 
-    public function show()
-    {
-        dd('show');
-    }
-
     public function create(): View
     {
         $services = Service::query()->where('is_active', true)->get();
@@ -70,7 +65,7 @@ class PatientServiceController extends Controller
         $validated = $request->validated();
         $this->service->store((array)$validated);
 
-        return redirect()->route('patient.services.index')->with('success', 'Услуга назначена!');
+        return redirect()->back()->with('success', 'Услуга назначена!');
     }
 
     public function edit(PatientService $service): View

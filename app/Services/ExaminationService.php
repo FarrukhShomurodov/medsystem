@@ -176,13 +176,6 @@ class ExaminationService
 //                $this->patientService->store($serviceData);
 //            }
 //
-//
-//            if (isset($validated['discharge_date']) && $validated['discharge_date']) {
-//                $map->update([
-//                    'is_active' => false
-//                ]);
-//            }
-//
 //            if (isset($validated['survey_id'])) {
 //                $analyzeData = [
 //                    'survey_id' => $validated['survey_id'],
@@ -235,6 +228,11 @@ class ExaminationService
 //                }
 //            }
 
+            if (isset($validated['discharge_date']) && $validated['discharge_date']) {
+                $map->update([
+                    'is_active' => false
+                ]);
+            }
 
             return $map;
         });

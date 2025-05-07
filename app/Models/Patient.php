@@ -57,35 +57,9 @@ class Patient extends Model
         'emergency_contact_relation',
         'emergency_contact_phone',
         'emergency_contact_address',
-
-        // Медицинская информация
-//        'medical_history',
-//        'blood_type',
-//        'rh_factor',
-//        'special_instructions',
-//
-//        'passport_scan',
-//        'insurance_policy_scan',
-//        'other_scans',
-//        'notes',
     ];
 
-    public function allegories(): BelongsToMany
-    {
-        return $this->belongsToMany(Allegory::class, 'patient_allegories', 'patient_id', 'allegory_id');
-    }
-
-    public function devices(): BelongsToMany
-    {
-        return $this->belongsToMany(MedicalDevice::class, 'patient_medical_devices', 'patient_id', 'medical_device_id');
-    }
-
-    public function diseases(): BelongsToMany
-    {
-        return $this->belongsToMany(ChronicDisease::class, 'patient_chronic_diseases', 'patient_id', 'chronic_disease_id');
-    }
-
-
+    // regions
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
@@ -106,19 +80,63 @@ class Patient extends Model
         return $this->belongsTo(City::class, 'registered_city_id');
     }
 
-    // Examination Map
+    // services
     public function examinationMaps(): HasMany
     {
-        return $this->hasMany(ExaminationMap::class);
+        return $this->hasMany(ExaminationMap::class)
+            ->with(['department', 'doctor'])
+            ->orderByDesc('admission_date');
     }
 
-    public function analyzes(): HasMany
+    public function services(): HasMany
     {
-        return $this->hasMany(Analyze::class);
+        return $this->hasMany(PatientService::class)
+            ->whereNull('examination_map_id')
+            ->orderByDesc('created_at');
     }
 
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(PatientAssignment::class)
+            ->with(['service', 'staff'])
+            ->orderByDesc('created_at');
+    }
+
+    public function surveyResponses(): HasMany
+    {
+        return $this->hasMany(SurveyResponses::class, 'patient_id')
+            ->whereNull('examination_map_id')
+            ->whereNull('patient_service_id');
+    }
+
+    public function receptions(): HasMany
+    {
+        return $this->hasMany(Reception::class, 'patient_id')
+            ->whereNull('examination_map_id');
+    }
+
+    // file
     public function files(): MorphMany
     {
         return $this->morphMany(File::class, 'fileable');
     }
+
+//    public function analyzes(): HasMany
+//    {
+//        return $this->hasMany(Analyze::class);
+//    }
+//    public function allegories(): BelongsToMany
+//    {
+//        return $this->belongsToMany(Allegory::class, 'patient_allegories', 'patient_id', 'allegory_id');
+//    }
+//
+//    public function devices(): BelongsToMany
+//    {
+//        return $this->belongsToMany(MedicalDevice::class, 'patient_medical_devices', 'patient_id', 'medical_device_id');
+//    }
+//
+//    public function diseases(): BelongsToMany
+//    {
+//        return $this->belongsToMany(ChronicDisease::class, 'patient_chronic_diseases', 'patient_id', 'chronic_disease_id');
+//    }
 }

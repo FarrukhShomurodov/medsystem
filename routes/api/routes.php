@@ -4,6 +4,7 @@ use App\Http\Controllers\Dashboard\Api\ExaminationMapController;
 use App\Http\Controllers\Dashboard\Api\FileController;
 use App\Http\Controllers\Dashboard\Api\MedicationController;
 use App\Http\Controllers\Dashboard\Api\PatientController;
+use App\Http\Controllers\Dashboard\Api\PatientServiceController;
 use App\Http\Controllers\Dashboard\Api\ReceptionController;
 use App\Http\Controllers\Dashboard\Api\StaffController;
 use App\Http\Controllers\Dashboard\Api\SurveyController;
@@ -36,6 +37,7 @@ Route::get('/medication/active-substance/{substance}', [MedicationController::cl
 // receptions
 Route::get('/staff-by-service/{serviceId}', [ReceptionController::class, 'staffByService']);
 Route::post('/receptions', [ReceptionController::class, 'store']);
+Route::put('/reception-status-update/{reception}', [ReceptionController::class, 'changeStatus']);
 Route::get('/receptions/{reception}', [ReceptionController::class, 'show']);
 
 Route::get('/staff-availability-today/{staff}', function (Staff $staff) {
@@ -50,3 +52,6 @@ Route::get('staff-availability-week/{id}', [StaffController::class, 'availabilit
 
 // patients
 Route::get('/patients', [PatientController::class, 'get']);
+
+// patients
+Route::get('patient/service/update-status/{service}', [PatientServiceController::class, 'changeStatus']);

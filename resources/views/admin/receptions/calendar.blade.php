@@ -49,8 +49,11 @@
                         </div>
 
                         <div class="m-3">
-                            <label for="doctor-position">Должность</label>
-                            <input type="text" class="form-control" id="doctor-position" disabled>
+                            <label for="appointment-status">Статус</label>
+                            <select id="appointment-status" class="form-select">
+                                <option value="new">Новое</option>
+                                <option value="paid">Оплачено</option>
+                            </select>
                         </div>
 
                         <div class="m-3">
@@ -104,12 +107,21 @@
                         <input type="text" class="form-control" id="view-appointment-date" readonly>
                     </div>
 
+
+                    <div class="m-3">
+                        <label for="view-appointment-status">Статус</label>
+                        <input type="text" class="form-control" id="view-appointment-status" readonly>
+                    </div>
+
                     <div class="m-3">
                         <label for="view-comment">Комментарий</label>
                         <textarea class="form-control" id="view-comment" readonly></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-warning cancel_reception" data-bs-dismiss="modal"
+                            data-reception-id="">Отменить
+                    </button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
                 </div>
             </div>
@@ -335,6 +347,7 @@
                 let startTime = $('#start-time').val();
                 let endTime = $('#end-time').val();
                 let date = $('#appointment-date').val();
+                let status = $('#appointment-status').val();
                 let comment = $('#comment').val();
 
                 if (!patientId || !startTime || !staffId || !endTime || !date) {
@@ -348,6 +361,7 @@
                     data: {
                         patient_id: patientId,
                         staff_id: staffId,
+                        status: status,
                         start_time: startTime,
                         end_time: endTime,
                         date: date,
@@ -374,22 +388,59 @@
                     url: `/api/receptions/${receptionId}`,
                     method: 'GET',
                     success: function(data) {
+                        let status = {
+                            'new': 'Новое',
+                            'paid': 'Оплачено',
+                            'cancelled': 'Отмена',
+                            'done': 'Выполнено'
+                        }
+
                         // Заполняем данные в модальное окно просмотра
-                        $('#view-patient').val(data.map.patient.first_name + ' ' + data.map.patient.last_name);
+                        $('#view-patient').val(data.patient.first_name + ' ' + data.patient.last_name);
                         $('#view-appointment-time').val(
                             moment(data.start_time, 'HH:mm:ss').format('HH:mm') + ' - ' +
                             moment(data.end_time, 'HH:mm:ss').format('HH:mm')
                         );
                         $('#view-doctor-name').val(data.staff.name + ' ' + data.staff.last_name);
                         $('#view-doctor-position').val(data.staff.professional_data.position.name);
+                        $('#view-appointment-status').val(status[data.status]);
                         $('#view-appointment-date').val(data.date);
                         $('#view-comment').val(data.comment);
+
+                        if (data.status == 'cancelled') {
+                            $('.cancel_reception').hide();
+                        } else {
+                            $('.cancel_reception').show();
+                            $('.cancel_reception').attr('data-reception-id', data.id);
+                        }
 
                         // Показываем модальное окно просмотра
                         $('#viewAppointmentModal').modal('show');
                     },
                     error: function(xhr) {
                         console.error(xhr.responseText);
+                    }
+                });
+            });
+
+            $(document).on('click', '.cancel_reception', function () {
+                const receptionId = $(this).data('reception-id');
+
+                $.ajax({
+                    url: `/api/reception-status-update/${receptionId}`,
+                    method: 'PUT',
+                    data: {
+                        status: 'cancelled',
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (response) {
+                        $('#viewAppointmentModal').modal('hide');
+
+                        alert('Прием успешно отменен');
+                    },
+                    error: function (xhr) {
+                        console.error(xhr.responseText);
+                        alert('Произошла ошибка при отмене приема');
                     }
                 });
             });
