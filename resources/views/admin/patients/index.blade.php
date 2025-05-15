@@ -45,11 +45,21 @@
         </div>
 
         <div id="filtersCollapse"
-             class="collapse @if(request('department_id') || request('birth_date') || request('staff_id') || request('full_name')) show @endif">
+             class="collapse @if(request('department_id') || request('birth_date') || request('staff_id') || request('full_name')  || request('id')) show @endif">
             <div class="card-body">
                 <form method="GET" action="{{ route('patients.index') }}">
                     <div class="row g-3">
-                        <div class="col-md-3 form-group">
+                        <div class="col-md-2 form-group">
+                            <label class="form-label" for="id">ID</label>
+                            <div class="input-group input-group-merge">
+                                <input type="text" name="id" value="{{ request("id") }}"
+                                       id="id"
+                                       class="form-control"
+                                       placeholder="ID"/>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 form-group">
                             <label class="form-label" for="full_name">ФИО</label>
                             <div class="input-group input-group-merge">
                                 <input type="text" name="full_name" value="{{ request("full_name") }}"
@@ -59,7 +69,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3 form-group">
+                        <div class="col-md-2 form-group">
                             <label class="form-label" for="basic-icon-birth-date">Дата рождения </label>
                             <div class="input-group input-group-merge">
                                     <span id="basic-icon-birth-date2" class="input-group-text"><i
@@ -79,7 +89,7 @@
                         @endphp
 
                         @foreach($filters as $filter)
-                            <div class="col-md-3 form-group">
+                            <div class="col-md-2 form-group">
                                 <label for="{{ $filter['id'] }}">{{ $filter['label'] }}</label>
                                 <select id="{{ $filter['id'] }}" name="{{ $filter['id'] }}_id"
                                         class="form-control select2">
@@ -104,13 +114,15 @@
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>Имя</th>
-                    <th>Фамилия</th>
-                    <th>Отчество</th>
-                    <th>Дата рождения</th>
-                    <th>Пол</th>
-                    <th>Гражданство</th>
-                    <th>Серия паспорта</th>
+                    <th>Дата поступления</th>
+                    <th>Отделения</th>
+                    <th>ФИО</th>
+                    <th>Дата рождения / Возвраст</th>
+                    <th>Палаты</th>
+                    <th>Диагноз</th>
+                    <th>Дата и название операции</th>
+                    <th>Лечащий врач</th>
+                    <th>Дней в стационаре</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -118,13 +130,15 @@
                 @foreach($patients as $patient)
                     <tr>
                         <td>{{ $patient->id }}</td>
-                        <td>{{ $patient->first_name }}</td>
-                        <td>{{ $patient->last_name }}</td>
-                        <td>{{ $patient->middle_name }}</td>
-                        <td>{{ $patient->birth_date }}</td>
-                        <td>{{ $patient->gender == 'male' ? 'Мужской' : 'Женский' }}</td>
-                        <td>{{ $patient->citizenship }}</td>
-                        <td>{{ $patient->passport_series }}</td>
+                        <td>{{ $patient->created_at }}</td>
+                        <td>{{ $patient->examinationMaps()->first()?->department->name ?? '-' }}</td>
+                        <td>{{ $patient->first_name }} {{ $patient->last_name }} {{ $patient->middle_name }}</td>
+                        <td>{{ $patient->birth_date }} / {{ \Carbon\Carbon::parse($patient->birth_date)->age }}</td>
+                        <td>-</td>
+                        <td>{{ $patient->examinationMaps()->first()?->admission_diagnosis_description ?? '-' }}</td>
+                        <td>-</td>
+                        <td>{{ $patient->examinationMaps()->first()?->doctor->name ?? '-' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($patient->examinationMaps()->first()?->admission_date)->age }}</td>
 
                         <td>
                             <div class="d-inline-block text-nowrap">

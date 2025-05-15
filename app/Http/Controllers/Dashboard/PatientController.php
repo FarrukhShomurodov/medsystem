@@ -44,8 +44,12 @@ class PatientController extends Controller
         $staffs = $this->scopeAvailableStaffOnDate(1);
 
         $patients = Patient::query()
-            ->select(['id', 'first_name', 'last_name', 'middle_name', 'birth_date', 'gender', 'citizenship', 'passport_series'])
+            ->select(['id', 'first_name', 'last_name', 'middle_name', 'birth_date', 'gender', 'citizenship', 'passport_series', 'created_at'])
+            ->with('examinationMaps')
             ->orderBy('id', 'desc')
+            ->when($request->filled('id'), function ($query) use ($request) {
+                $query->where('id', 'ILIKE', '%' . $request->input('id') . '%');
+            })
             ->when($request->filled('full_name'), function ($query) use ($request) {
                 $term = $request->input('full_name');
                 $query->where(\DB::raw("CONCAT_WS(' ', first_name, last_name, middle_name)"), 'ILIKE', '%' . $term . '%');
