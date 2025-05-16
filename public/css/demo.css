@@ -3,6 +3,20 @@
 * File include item demo only specific css only
 ******************************************************************************/
 
+.nested-item {
+    background-color: #f8f9fa;
+}
+
+.nested-item .history-item {
+    border-left: 3px solid #dee2e6;
+    padding-left: 10px;
+    transition: all 0.3s ease;
+}
+
+.nested-item:hover {
+    background-color: #e9ecef;
+}
+
 .history-section h2 {
     color: #2980b9;
 }

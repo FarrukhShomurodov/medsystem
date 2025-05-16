@@ -58,61 +58,61 @@
     </div>
 </div>
 
-@php
-    // Собираем все элементы истории в одну коллекцию
-    $timeline = collect();
+{{--@php--}}
+{{--    // Собираем все элементы истории в одну коллекцию--}}
+{{--    $timeline = collect();--}}
 
-    // Добавляем услуги
-    foreach($data->services as $service) {
-        $timeline->push([
-            'type' => 'service',
-            'date' => $service->created_at,
-            'data' => $service,
-            'sort_date' => $service->created_at
-        ]);
-    }
+{{--    // Добавляем услуги--}}
+{{--    foreach($data->services as $service) {--}}
+{{--        $timeline->push([--}}
+{{--            'type' => 'service',--}}
+{{--            'date' => $service->created_at,--}}
+{{--            'data' => $service,--}}
+{{--            'sort_date' => $service->created_at--}}
+{{--        ]);--}}
+{{--    }--}}
 
-    // Добавляем приемы
-    foreach($data->receptions as $reception) {
-        $timeline->push([
-            'type' => 'reception',
-            'date' => $reception->created_at,
-            'data' => $reception,
-            'sort_date' => $reception->created_at
-        ]);
-    }
+{{--    // Добавляем приемы--}}
+{{--    foreach($data->receptions as $reception) {--}}
+{{--        $timeline->push([--}}
+{{--            'type' => 'reception',--}}
+{{--            'date' => $reception->created_at,--}}
+{{--            'data' => $reception,--}}
+{{--            'sort_date' => $reception->created_at--}}
+{{--        ]);--}}
+{{--    }--}}
 
-    // Сортируем по дате (новые сверху)
-    $timeline = $timeline->sortByDesc('sort_date');
-@endphp
+{{--    // Сортируем по дате (новые сверху)--}}
+{{--    $timeline = $timeline->sortByDesc('sort_date');--}}
+{{--@endphp--}}
 
-@if($timeline->count() > 0)
-    <div class="history-timeline">
-        <h4 class="mb-4">История</h4>
+{{--@if($timeline->count() > 0)--}}
+{{--    <div class="history-timeline">--}}
+{{--        <h4 class="mb-4">История</h4>--}}
 
-        @foreach($timeline as $item)
-            <div class="timeline-item mb-4">
-                @if($item['type'] === 'service')
-                    <h5 class="mb-2">Услуга</h5>
-                @else
-                    <h5 class="mb-2">Прием</h5>
-                @endif
+{{--        @foreach($timeline as $item)--}}
+{{--            <div class="timeline-item mb-4">--}}
+{{--                @if($item['type'] === 'service')--}}
+{{--                    <h5 class="mb-2">Услуга</h5>--}}
+{{--                @else--}}
+{{--                    <h5 class="mb-2">Прием</h5>--}}
+{{--                @endif--}}
 
-                <div class="timeline-content">
-                    @if($item['type'] === 'service')
-                        @include('admin.patients.history.service', ['data' => $item['data']])
-                    @else
-                        @include('admin.patients.history.reception', ['data' => $item['data']])
-                    @endif
-                </div>
-            </div>
-        @endforeach
-    </div>
-@else
-    <div class="alert alert-info">
-        Нет данных о посещениях
-    </div>
-@endif
+{{--                <div class="timeline-content">--}}
+{{--                    @if($item['type'] === 'service')--}}
+{{--                        @include('admin.patients.history.service', ['data' => $item['data']])--}}
+{{--                    @else--}}
+{{--                        @include('admin.patients.history.reception', ['data' => $item['data']])--}}
+{{--                    @endif--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        @endforeach--}}
+{{--    </div>--}}
+{{--@else--}}
+{{--    <div class="alert alert-info">--}}
+{{--        Нет данных о посещениях--}}
+{{--    </div>--}}
+{{--@endif--}}
 
 <div class="d-flex justify-content-end">
     <a href="{{ route('maps.show', $data->id) }}"

@@ -96,6 +96,90 @@
     {{--                    Процедуры--}}
     {{--                </button>--}}
 
+    {{--    <div class="card mt-3">--}}
+    {{--        <div class="d-flex justify-content-between align-items-center">--}}
+    {{--            <h5 class="card-header">История посещений клиники</h5>--}}
+    {{--            <div>--}}
+    {{--                <button--}}
+    {{--                    type="button"--}}
+    {{--                    class="btn btn-primary me-3"--}}
+    {{--                    data-bs-toggle="modal"--}}
+    {{--                    data-bs-target="#createServiceModal">--}}
+    {{--                    Новая услуга--}}
+    {{--                </button>--}}
+
+    {{--                <button--}}
+    {{--                    type="button"--}}
+    {{--                    class="btn btn-primary me-3"--}}
+    {{--                    data-bs-toggle="modal"--}}
+    {{--                    data-bs-target="#createDocumentModal">--}}
+    {{--                    Мед Документ--}}
+    {{--                </button>--}}
+
+    {{--                <button--}}
+    {{--                    type="button"--}}
+    {{--                    class="btn btn-primary me-3"--}}
+    {{--                    data-bs-toggle="modal"--}}
+    {{--                    data-bs-target="#createMapModal">--}}
+    {{--                    Направление--}}
+    {{--                </button>--}}
+
+    {{--                <button--}}
+    {{--                    onclick="window.location.href='{{ route('patient.map.create', $patientDetails['patient_id']) }}'"--}}
+    {{--                    class="btn btn-primary me-3"--}}
+    {{--                    @disabled(!$patientDetails['history']['map_is_active'])>Создать госпитализацию--}}
+    {{--                </button>--}}
+    {{--            </div>--}}
+    {{--        </div>--}}
+
+    {{--        <div class="card-body">--}}
+    {{--            <div class="history-section">--}}
+    {{--                @forelse($patientDetails['timeline'] as $event)--}}
+    {{--                    <div class="history-item">--}}
+    {{--                        <div class="history-header" onclick="toggleHistoryItem(this)">--}}
+    {{--                            <div>--}}
+    {{--                            <span class="history-title">--}}
+    {{--                                @switch($event['type'])--}}
+    {{--                                    @case('examination_map') Госпитализация @break--}}
+    {{--                                    @case('assignment') Направление @break--}}
+    {{--                                    @case('service') Оказанная услуга @break--}}
+    {{--                                    @case('patient_med_document') Мед. Документ @break--}}
+    {{--                                    @case('reception') Приемы @break--}}
+    {{--                                @endswitch--}}
+    {{--                            </span>--}}
+    {{--                                <span class="history-date">--}}
+    {{--                                    @if($event['date'] instanceof \Carbon\Carbon)--}}
+    {{--                                        {{ $event['date']->format('d.m.Y') }}--}}
+    {{--                                    @else--}}
+    {{--                                        {{ \Carbon\Carbon::parse($event['date'])->format('d.m.Y') }}--}}
+    {{--                                    @endif--}}
+
+    {{--                                    @if($event['type'] === 'examination_map' && $event['end_date'])--}}
+    {{--                                        ---}}
+    {{--                                        @if($event['end_date'] instanceof \Carbon\Carbon)--}}
+    {{--                                            {{ $event['end_date']->format('d.m.Y') }}--}}
+    {{--                                        @else--}}
+    {{--                                            {{ \Carbon\Carbon::parse($event['end_date'])->format('d.m.Y') }}--}}
+    {{--                                        @endif--}}
+    {{--                                    @endif--}}
+    {{--                                </span>--}}
+    {{--                            </div>--}}
+    {{--                            <span class="collapsible-icon">▼</span>--}}
+    {{--                        </div>--}}
+    {{--                        <div class="history-content">--}}
+    {{--                            @include('admin.patients.history.'.$event['type'], ['data' => $event['data']])--}}
+    {{--                        </div>--}}
+    {{--                    </div>--}}
+    {{--                @empty--}}
+    {{--                    <div class="text-center py-3">Нет данных о посещениях</div>--}}
+    {{--                @endforelse--}}
+    {{--            </div>--}}
+    {{--        </div>--}}
+    {{--    </div>--}}
+
+
+    {{-- new card history patient --}}
+
     <div class="card mt-3">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-header">История посещений клиники</h5>
@@ -133,46 +217,154 @@
         </div>
 
         <div class="card-body">
-            <div class="history-section">
-                @forelse($patientDetails['timeline'] as $event)
-                    <div class="history-item">
-                        <div class="history-header" onclick="toggleHistoryItem(this)">
-                            <div>
-                            <span class="history-title">
-                                @switch($event['type'])
-                                    @case('examination_map') Госпитализация @break
-                                    @case('assignment') Направление @break
-                                    @case('service') Оказанная услуга @break
-                                    @case('patient_med_document') Мед. Документ @break
-                                    @case('reception') Приемы @break
-                                @endswitch
-                            </span>
-                                <span class="history-date">
-                                    @if($event['date'] instanceof \Carbon\Carbon)
-                                        {{ $event['date']->format('d.m.Y') }}
-                                    @else
-                                        {{ \Carbon\Carbon::parse($event['date'])->format('d.m.Y') }}
-                                    @endif
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>№</th>
+                        <th>Записи</th>
+                        <th>Физические показатели</th>
+                        <th>Лист назначения</th>
+                        <th>Диагноз</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @php
+                        // Собираем все элементы истории в одну коллекцию с учетом вложенности
+                        $groupedTimeline = collect();
 
-                                    @if($event['type'] === 'examination_map' && $event['end_date'])
-                                        -
-                                        @if($event['end_date'] instanceof \Carbon\Carbon)
-                                            {{ $event['end_date']->format('d.m.Y') }}
-                                        @else
-                                            {{ \Carbon\Carbon::parse($event['end_date'])->format('d.m.Y') }}
-                                        @endif
-                                    @endif
-                                </span>
-                            </div>
-                            <span class="collapsible-icon">▼</span>
-                        </div>
-                        <div class="history-content">
-                            @include('admin.patients.history.'.$event['type'], ['data' => $event['data']])
-                        </div>
-                    </div>
-                @empty
-                    <div class="text-center py-3">Нет данных о посещениях</div>
-                @endforelse
+                        foreach ($patientDetails['timeline'] as $event) {
+                            $item = [
+                                'type' => $event['type'],
+                                'date' => $event['date'],
+                                'data' => $event['data'],
+                                'is_main' => true,
+                                'parent_id' => null
+                            ];
+
+                            // Если это госпитализация, добавляем ее первой
+                            if ($event['type'] === 'examination_map') {
+                                $groupedTimeline->push($item);
+
+                                // Добавляем связанные элементы как дочерние
+                                foreach ($event['data']->services as $service) {
+                                    $groupedTimeline->push([
+                                        'type' => 'service',
+                                        'date' => $service->created_at,
+                                        'data' => $service,
+                                        'is_main' => false,
+                                        'parent_id' => $event['data']->id
+                                    ]);
+                                }
+
+                                foreach ($event['data']->receptions as $reception) {
+                                    $groupedTimeline->push([
+                                        'type' => 'reception',
+                                        'date' => $reception->created_at,
+                                        'data' => $reception,
+                                        'is_main' => false,
+                                        'parent_id' => $event['data']->id
+                                    ]);
+                                }
+
+                                foreach ($event['data']->surveyResponses as $response) {
+                                    $groupedTimeline->push([
+                                        'type' => 'patient_med_document',
+                                        'date' => $response->created_at,
+                                        'data' => $response,
+                                        'is_main' => false,
+                                        'parent_id' => $event['data']->id
+                                    ]);
+                                }
+                            } else {
+                                // Добавляем независимые элементы
+                                $groupedTimeline->push($item);
+                            }
+                        }
+
+                        // Сортируем по дате (главные элементы первыми)
+                        $groupedTimeline = $groupedTimeline->sortByDesc('date');
+                    @endphp
+
+                    @forelse($groupedTimeline as $index => $event)
+                        <tr class="@if(!$event['is_main']) nested-item @endif">
+                            <td>
+                                @if($event['is_main'])
+                                    {{ $loop->iteration }}
+                                @endif
+                            </td>
+
+                            <!-- Записи -->
+                            <td>
+                                <div class="history-item" @if(!$event['is_main']) style="margin-left: 20px;" @endif>
+                                    <div class="history-header"
+                                         data-bs-toggle="modal"
+                                         data-bs-target="#eventDetailModal"
+                                         data-id='{{ $event['data']->id }}'
+                                         data-type='{{ $event['type'] }}'>
+                                        <div>
+                                        <span class="history-title">
+                                            @switch($event['type'])
+                                                @case('examination_map') Госпитализация @break
+                                                @case('assignment') Направление @break
+                                                @case('service') Услуга @break
+                                                @case('patient_med_document') Мед. Документ @break
+                                                @case('reception') Прием @break
+                                            @endswitch
+                                        </span>
+                                        <span class="history-date">
+                                            {{ \Carbon\Carbon::parse($event['date'])->format('d.m.Y') }}
+                                            @if($event['type'] === 'examination_map' && $event['data']->end_date)
+                                                - {{ \Carbon\Carbon::parse($event['data']->end_date)->format('d.m.Y') }}
+                                            @endif
+                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Физические показатели -->
+                            <td>
+                                @if($event['type'] === 'reception' && $event['data']->physical)
+                                    <ul class="mb-0">
+                                        @foreach($event['data']->physical as $key => $value)
+                                            <li><strong>{{ $key }}:</strong> {{ $value }}</li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    —
+                                @endif
+                            </td>
+
+                            <!-- Лист назначения -->
+                            <td>
+                                @if($event['type'] === 'assignment' && $event['data']->assignments)
+                                    <ul class="mb-0">
+                                        @foreach($event['data']->assignments as $assignment)
+                                            <li>{{ $assignment }}</li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    —
+                                @endif
+                            </td>
+
+                            <!-- Диагноз -->
+                            <td>
+                                @if($event['data']->admission_diagnosis_description)
+                                    {{ $event['data']->admission_diagnosis_description }}
+                                @else
+                                    —
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center">Нет данных о посещениях</td>
+                        </tr>
+                    @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -335,10 +527,53 @@
             </div>
         </div>
     </div>
+
+    {{-- универсальное модальное окно  --}}
+    <div class="modal fade" id="eventDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="eventModalContent">
+                <div class="modal-header">
+                    <h5 class="modal-title">Детали события</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Загрузка...
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    {{-- show view modal  --}}
+    <script>
+        $(document).on('click', '.history-header', function () {
+            const id = $(this).data('id');
+            const type = $(this).data('type');
+
+            $.ajax({
+                url: '{{ route('admin.patients.history.partial') }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    type: type,
+                    id: id
+                },
+                success: function (html) {
+                    console.log(html)
+                    $('#eventDetailModal .modal-body').html(html);
+                    $('#eventDetailModal').modal('show');
+                },
+                error: function () {
+                    $('#eventDetailModal .modal-body').html('<div class="text-danger">Ошибка загрузки данных</div>');
+                    $('#eventDetailModal').modal('show');
+                }
+            });
+        });
+    </script>
+
     <script>
         $(document).ready(function () {
             // Modals
@@ -595,7 +830,7 @@
                 $('#responseModal').modal('hide');
             });
 
-            $('.service_status').on('change', function() {
+            $('.service_status').on('change', function () {
                 const serviceId = $(this).data('service-id');
                 const newStatus = $(this).val();
 
@@ -605,17 +840,17 @@
                     data: {
                         status: newStatus
                     },
-                    beforeSend: function() {
+                    beforeSend: function () {
                         // Блокировка элемента на время запроса
                         $('#service_status').prop('disabled', true);
                     },
-                    success: function(response) {
+                    success: function (response) {
                         Toast.fire({
                             icon: 'success',
                             title: 'Статус успешно обновлен'
                         });
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         Toast.fire({
                             icon: 'error',
                             title: 'Ошибка: ' + xhr.responseJSON.message
@@ -623,7 +858,7 @@
                         // Возвращаем предыдущее значение
                         $('#service_status').val(triggeredStatus).trigger('change');
                     },
-                    complete: function() {
+                    complete: function () {
                         $('#service_status').prop('disabled', false);
                     }
                 });

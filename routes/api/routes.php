@@ -4,6 +4,7 @@ use App\Http\Controllers\Dashboard\Api\ExaminationMapController;
 use App\Http\Controllers\Dashboard\Api\FileController;
 use App\Http\Controllers\Dashboard\Api\MedicationController;
 use App\Http\Controllers\Dashboard\Api\PatientController;
+use App\Http\Controllers\Dashboard\Api\PatientHistoryController;
 use App\Http\Controllers\Dashboard\Api\PatientServiceController;
 use App\Http\Controllers\Dashboard\Api\ReceptionController;
 use App\Http\Controllers\Dashboard\Api\StaffController;
@@ -55,3 +56,6 @@ Route::get('/patients', [PatientController::class, 'get']);
 
 // patients
 Route::get('patient/service/update-status/{service}', [PatientServiceController::class, 'changeStatus']);
+
+Route::post('admin/patient/history/partial', [PatientHistoryController::class, 'partial'])
+    ->name('admin.patients.history.partial');
