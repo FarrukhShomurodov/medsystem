@@ -11,13 +11,14 @@ class ServiceController extends Controller
 {
     public function getByType(ServiceType $type): JsonResponse
     {
-        $services = Service::query()->where('service_type_id', $type->id)->where('is_active', true);
+        $query = Service::query();
+        $query->where('service_type_id', $type->id)->where('is_active', true);
 
         if ($type->id == 4) {
-            $services->where('is_appointment', true);
+            $query->where('is_appointment', true);
         }
 
-        $services->get();
+        $services = $query->get();
 
         return response()->json($services);
     }
