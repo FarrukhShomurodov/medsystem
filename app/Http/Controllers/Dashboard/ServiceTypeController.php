@@ -59,7 +59,8 @@ class ServiceTypeController extends Controller
     {
         $validated = $request->validated();
 
-        if ($type->id == 1) {
+
+        if (collect(range(1, 21))->contains($type->id)) {
             return redirect()->back()->withErrors('Редактирования этого типа недоступно!');
         }
 
@@ -70,7 +71,8 @@ class ServiceTypeController extends Controller
 
     public function destroy(ServiceType $type): RedirectResponse
     {
-        if ($type->id == 1) {
+
+        if (collect(range(1, 21))->contains($type->id)) {
             return redirect()->back()->withErrors('Удаление этого типа недоступно!');
         }
 

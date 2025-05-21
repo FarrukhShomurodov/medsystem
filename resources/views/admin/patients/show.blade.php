@@ -79,107 +79,6 @@
         </div>
     </div>
 
-
-    {{--                <button--}}
-    {{--                    type="button"--}}
-    {{--                    class="btn btn-primary me-3"--}}
-    {{--                    data-bs-toggle="modal"--}}
-    {{--                    data-bs-target="#createMapModal">--}}
-    {{--                    Препараты--}}
-    {{--                </button>--}}
-
-    {{--                <button--}}
-    {{--                    type="button"--}}
-    {{--                    class="btn btn-primary me-3"--}}
-    {{--                    data-bs-toggle="modal"--}}
-    {{--                    data-bs-target="#createMapModal">--}}
-    {{--                    Процедуры--}}
-    {{--                </button>--}}
-
-    {{--    <div class="card mt-3">--}}
-    {{--        <div class="d-flex justify-content-between align-items-center">--}}
-    {{--            <h5 class="card-header">История посещений клиники</h5>--}}
-    {{--            <div>--}}
-    {{--                <button--}}
-    {{--                    type="button"--}}
-    {{--                    class="btn btn-primary me-3"--}}
-    {{--                    data-bs-toggle="modal"--}}
-    {{--                    data-bs-target="#createServiceModal">--}}
-    {{--                    Новая услуга--}}
-    {{--                </button>--}}
-
-    {{--                <button--}}
-    {{--                    type="button"--}}
-    {{--                    class="btn btn-primary me-3"--}}
-    {{--                    data-bs-toggle="modal"--}}
-    {{--                    data-bs-target="#createDocumentModal">--}}
-    {{--                    Мед Документ--}}
-    {{--                </button>--}}
-
-    {{--                <button--}}
-    {{--                    type="button"--}}
-    {{--                    class="btn btn-primary me-3"--}}
-    {{--                    data-bs-toggle="modal"--}}
-    {{--                    data-bs-target="#createMapModal">--}}
-    {{--                    Направление--}}
-    {{--                </button>--}}
-
-    {{--                <button--}}
-    {{--                    onclick="window.location.href='{{ route('patient.map.create', $patientDetails['patient_id']) }}'"--}}
-    {{--                    class="btn btn-primary me-3"--}}
-    {{--                    @disabled(!$patientDetails['history']['map_is_active'])>Создать госпитализацию--}}
-    {{--                </button>--}}
-    {{--            </div>--}}
-    {{--        </div>--}}
-
-    {{--        <div class="card-body">--}}
-    {{--            <div class="history-section">--}}
-    {{--                @forelse($patientDetails['timeline'] as $event)--}}
-    {{--                    <div class="history-item">--}}
-    {{--                        <div class="history-header" onclick="toggleHistoryItem(this)">--}}
-    {{--                            <div>--}}
-    {{--                            <span class="history-title">--}}
-    {{--                                @switch($event['type'])--}}
-    {{--                                    @case('examination_map') Госпитализация @break--}}
-    {{--                                    @case('assignment') Направление @break--}}
-    {{--                                    @case('service') Оказанная услуга @break--}}
-    {{--                                    @case('patient_med_document') Мед. Документ @break--}}
-    {{--                                    @case('reception') Приемы @break--}}
-    {{--                                @endswitch--}}
-    {{--                            </span>--}}
-    {{--                                <span class="history-date">--}}
-    {{--                                    @if($event['date'] instanceof \Carbon\Carbon)--}}
-    {{--                                        {{ $event['date']->format('d.m.Y') }}--}}
-    {{--                                    @else--}}
-    {{--                                        {{ \Carbon\Carbon::parse($event['date'])->format('d.m.Y') }}--}}
-    {{--                                    @endif--}}
-
-    {{--                                    @if($event['type'] === 'examination_map' && $event['end_date'])--}}
-    {{--                                        ---}}
-    {{--                                        @if($event['end_date'] instanceof \Carbon\Carbon)--}}
-    {{--                                            {{ $event['end_date']->format('d.m.Y') }}--}}
-    {{--                                        @else--}}
-    {{--                                            {{ \Carbon\Carbon::parse($event['end_date'])->format('d.m.Y') }}--}}
-    {{--                                        @endif--}}
-    {{--                                    @endif--}}
-    {{--                                </span>--}}
-    {{--                            </div>--}}
-    {{--                            <span class="collapsible-icon">▼</span>--}}
-    {{--                        </div>--}}
-    {{--                        <div class="history-content">--}}
-    {{--                            @include('admin.patients.history.'.$event['type'], ['data' => $event['data']])--}}
-    {{--                        </div>--}}
-    {{--                    </div>--}}
-    {{--                @empty--}}
-    {{--                    <div class="text-center py-3">Нет данных о посещениях</div>--}}
-    {{--                @endforelse--}}
-    {{--            </div>--}}
-    {{--        </div>--}}
-    {{--    </div>--}}
-
-
-    {{-- new card history patient --}}
-
     <div class="card mt-3">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-header">История посещений клиники</h5>
@@ -188,25 +87,43 @@
                     type="button"
                     class="btn btn-primary me-3"
                     data-bs-toggle="modal"
+                    data-type-id="4"
                     data-bs-target="#createServiceModal">
-                    Новая услуга
+                    Инструментальные исследования
                 </button>
 
                 <button
                     type="button"
                     class="btn btn-primary me-3"
                     data-bs-toggle="modal"
-                    data-bs-target="#createDocumentModal">
-                    Мед Документ
+                    data-type-id="5"
+                    data-bs-target="#createServiceModal">
+                    Лаборатория
                 </button>
 
-                <button
+                <a
                     type="button"
                     class="btn btn-primary me-3"
-                    data-bs-toggle="modal"
-                    data-bs-target="#createMapModal">
-                    Направление
-                </button>
+                    target="_blank"
+                    href="{{ route('receptions.appointment') }}">
+                    Консультация
+                </a>
+
+                {{--                <button--}}
+                {{--                    type="button"--}}
+                {{--                    class="btn btn-primary me-3"--}}
+                {{--                    data-bs-toggle="modal"--}}
+                {{--                    data-bs-target="#createDocumentModal">--}}
+                {{--                    Мед Документ--}}
+                {{--                </button>--}}
+
+                {{--                <button--}}
+                {{--                    type="button"--}}
+                {{--                    class="btn btn-primary me-3"--}}
+                {{--                    data-bs-toggle="modal"--}}
+                {{--                    data-bs-target="#createMapModal">--}}
+                {{--                    Направление--}}
+                {{--                </button>--}}
 
                 <button
                     onclick="window.location.href='{{ route('patient.map.create', $patientDetails['patient_id']) }}'"
@@ -230,7 +147,6 @@
                     </thead>
                     <tbody>
                     @php
-                        // Собираем все элементы истории в одну коллекцию с учетом вложенности
                         $groupedTimeline = collect();
 
                         foreach ($patientDetails['timeline'] as $event) {
@@ -312,11 +228,11 @@
                                                 @case('reception') Прием @break
                                             @endswitch
                                         </span>
-                                        <span class="history-date">
+                                            <span class="history-date">
                                             {{ \Carbon\Carbon::parse($event['date'])->format('d.m.Y') }}
-                                            @if($event['type'] === 'examination_map' && $event['data']->end_date)
-                                                - {{ \Carbon\Carbon::parse($event['data']->end_date)->format('d.m.Y') }}
-                                            @endif
+                                                @if($event['type'] === 'examination_map' && $event['data']->end_date)
+                                                    - {{ \Carbon\Carbon::parse($event['data']->end_date)->format('d.m.Y') }}
+                                                @endif
                                         </span>
                                         </div>
                                     </div>
@@ -574,9 +490,52 @@
         });
     </script>
 
+    {{--  Modals  --}}
     <script>
         $(document).ready(function () {
-            // Modals
+            $('button[data-type-id][data-bs-target="#createServiceModal"]').on('click', function (e) {
+                e.preventDefault();
+                var button = $(this);
+                var typeId = button.data('typeId');
+                var modal = $(button.data('bs-target'));
+
+                $.ajax({
+                    url: '/api/service/by-type/' + typeId,
+                    method: 'GET',
+                    cache: false,
+                    success: function (data) {
+                        var select = $('#service_create');
+                        select.empty().append('<option disabled selected>Выберите услугу</option>');
+                        $.each(data, function (index, service) {
+                            select.append(new Option(service.name, service.id));
+                        });
+                        modal.modal('show');
+                    },
+                    error: function () {
+                        console.error('Ошибка при загрузке услуг');
+                    }
+                });
+            });
+
+            $('#createServiceModal').on('shown.bs.modal', function () {
+                $('#service_create').select2({
+                    dropdownParent: $(this),
+                    width: '100%',
+                    placeholder: "Выберите услугу",
+                });
+                $('#place').select2({
+                    dropdownParent: $(this),
+                    width: '100%',
+                });
+            });
+
+            $('#createServiceModal').on('hidden.bs.modal', function () {
+                $('#service_create').select2('destroy');
+                $('#place').select2('destroy');
+                $('#service_create').empty().append('<option disabled selected>Выберите услугу</option>');
+            });
+
+
             $('#createMapModal').on('shown.bs.modal', function () {
                 $('#service').select2({
                     dropdownParent: $('#createMapModal'),
@@ -587,24 +546,6 @@
 
             $('#createMapModal').on('hidden.bs.modal', function () {
                 $('#service').select2('destroy');
-            });
-
-            $('#createServiceModal').on('shown.bs.modal', function () {
-                $('#service_create').select2({
-                    dropdownParent: $('#createServiceModal'),
-                    width: '100%',
-                    placeholder: "Выберите услугу",
-                });
-
-                $('#place').select2({
-                    dropdownParent: $('#createServiceModal'),
-                    width: '100%',
-                });
-            });
-
-            $('#createServiceModal').on('hidden.bs.modal', function () {
-                $('#service_create').select2('destroy');
-                $('#place').select2('destroy');
             });
 
             $('#createDocumentModal').on('shown.bs.modal', function (event) {
@@ -623,7 +564,11 @@
             $('#createDocumentModal').on('hidden.bs.modal', function () {
                 $('#survey-select').select2('destroy');
             });
+        });
+    </script>
 
+    <script>
+        $(document).ready(function () {
             // Мед. документы
             $('#survey-select').on('change', function () {
                 let surveyId = $(this).val();

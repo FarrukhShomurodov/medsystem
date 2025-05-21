@@ -53,7 +53,7 @@
                         <td>{{ $type->name }}</td>
 
                         <td>
-                            @if($type->id == 1)
+                            @if(!collect(range(1, 21))->contains($type->id))
                                 <div class="d-inline-block text-nowrap">
                                     <button class="btn btn-sm btn-icon"
                                             onclick="location.href='{{ route('service.types.edit', $type->id) }}'"><i
