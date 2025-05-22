@@ -74,6 +74,30 @@ class PatientController extends Controller
 
     public function show(Patient $patient): View
     {
+        // last view
+        $admin = auth()->guard('admin')->user();
+
+        if ($admin) {
+            $lastViewsQuery = $admin->lastViewed();
+
+            if (!$lastViewsQuery->where('patient_id', $patient->id)->exists()) {
+
+                $lastViewsCount = $lastViewsQuery->count();
+
+                if ($lastViewsCount >= 10) {
+                    $oldest = $lastViewsQuery->orderBy('pivot_created_at')->limit($lastViewsCount - 9)->get();
+
+                    foreach ($oldest as $old) {
+                        $admin->lastViewed()->detach($old->id);
+                    }
+                }
+
+                $admin->lastViewed()->attach($patient->id);
+            }
+
+            $lastViews = $admin->lastViewed;
+        }
+
         $patient->load([
             'examinationMaps' => function ($query) {
                 $query->with(['department', 'doctor', 'services'])
@@ -163,10 +187,8 @@ class PatientController extends Controller
             'surveys' => Survey::query()->get(),
         ];
 
-        // Собираем все события в один массив с унифицированной структурой
         $timeline = collect();
 
-        // Обработка карт обследования
         foreach ($patient->examinationMaps as $map) {
             $timeline->push([
                 'type' => 'examination_map',
@@ -220,7 +242,7 @@ class PatientController extends Controller
         // Сортировка по дате
         $patientDetails['timeline'] = $timeline->sortByDesc('sort_date');
 
-        return view('admin.patients.show', compact('patientDetails'));
+        return view('admin.patients.show', compact('patientDetails', 'lastViews'));
     }
 
     public function create(): View

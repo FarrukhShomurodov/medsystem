@@ -80,6 +80,72 @@
     </div>
 
     <div class="card mt-3">
+        <div class="card-header">
+            <h5>Последние пациенты</h5>
+        </div>
+        <table class="datatables-users table border-top">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Дата поступления</th>
+                <th>Отделения</th>
+                <th>ФИО</th>
+                <th>Дата рождения / Возвраст</th>
+                <th>Палаты</th>
+                <th>Диагноз</th>
+                <th>Дата и название операции</th>
+                <th>Лечащий врач</th>
+                <th>Дней в стационаре</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            @php
+                $count = 1;
+            @endphp
+
+            @foreach($lastViews as $patient)
+                <tr>
+                    <td>{{ $count++ }}</td>
+                    <td>{{ $patient->created_at }}</td>
+                    <td>
+                        {{ $patient->examinationMaps()->first()?->department->name ?? '-' }}
+                    </td>
+                    <td>
+                        <a href="{{ route('patients.show', $patient->id) }}"> {{ $patient->first_name }} {{ $patient->last_name }} {{ $patient->middle_name }} </a>
+                    </td>
+                    <td>{{ $patient->birth_date }} / {{ \Carbon\Carbon::parse($patient->birth_date)->age }}</td>
+                    <td>-</td>
+                    <td>{{ $patient->examinationMaps()->first()?->admission_diagnosis_description ?? '-' }}</td>
+                    <td>-</td>
+                    <td>{{ $patient->examinationMaps()->first()?->doctor->name ?? '-' }}</td>
+                    <td>{{ \Carbon\Carbon::parse($patient->examinationMaps()->first()?->admission_date)->age }}</td>
+
+                    <td>
+                        <div class="d-inline-block text-nowrap">
+                            <button class="btn btn-sm btn-icon"
+                                    onclick="location.href='{{ route('patients.show', $patient->id) }}'"><i
+                                    class="bx bx-show"></i></button>
+                            <button class="btn btn-sm btn-icon"
+                                    onclick="location.href='{{ route('patients.edit', $patient->id) }}'"><i
+                                    class="bx bx-edit"></i></button>
+                            <form action="{{ route('patients.destroy', $patient->id) }}" method="POST"
+                                  style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card mt-3">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-header">История посещений клиники</h5>
             <div>

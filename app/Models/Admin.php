@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -27,4 +28,9 @@ class Admin extends Authenticatable
     protected $guarded = 'admin';
 
     protected $hidden = ['password'];
+
+    public function lastViewed(): BelongsToMany
+    {
+        return $this->belongsToMany(Patient::class, 'last_viewed_patients')->withTimestamps();
+    }
 }
