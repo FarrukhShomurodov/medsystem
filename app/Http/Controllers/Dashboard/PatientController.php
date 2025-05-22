@@ -259,7 +259,9 @@ class PatientController extends Controller
         // Сортировка по дате
         $patientDetails['timeline'] = $timeline->sortByDesc('sort_date');
 
-        return view('admin.patients.show', compact('patientDetails', 'lastViews'));
+        $departments = Department::query()->select(['id', 'name'])->get();
+
+        return view('admin.patients.show', compact('patientDetails', 'lastViews', 'departments'));
     }
 
     public function create(): View
