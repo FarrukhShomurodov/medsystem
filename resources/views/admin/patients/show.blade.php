@@ -175,6 +175,14 @@
                     Консультация
                 </a>
 
+                <button
+                    type="button"
+                    class="btn btn-primary me-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#diagnosisesModal">
+                    Добавить диагноз
+                </button>
+
                 {{--                <button--}}
                 {{--                    type="button"--}}
                 {{--                    class="btn btn-primary me-3"--}}
@@ -524,6 +532,34 @@
             </div>
         </div>
     </div>
+
+    {{-- Assign Serice --}}
+    <div class="modal fade" id="diagnosisesModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Создать диагноз</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('diagnosises.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
+                        <div class="row">
+                            <div class="col-12">
+                                <textarea id="basic-icon-default-history" class="form-control" placeholder="Диагноз"
+                                          name="description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="submit" class="btn btn-primary">Создать</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -600,7 +636,6 @@
                 $('#place').select2('destroy');
                 $('#service_create').empty().append('<option disabled selected>Выберите услугу</option>');
             });
-
 
             $('#createMapModal').on('shown.bs.modal', function () {
                 $('#service').select2({
