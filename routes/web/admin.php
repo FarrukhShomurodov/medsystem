@@ -32,6 +32,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     ServiceGroupController,
     ServiceMethodController,
     ServiceTypeController,
+    SisterWindowController,
     SpecialtyController,
     StaffController,
     StaffPositionController,
@@ -214,8 +215,11 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     // diagnosises
     Route::post('diagnosises', [PatientDiagnosisController::class, 'store'])->name('diagnosises.store');
 
-
+    // patient assignment
     Route::post('patient-assignment', [PatientAssignmentController::class, 'store'])->name('patient.assignment.store');
+
+    // sister-window
+    Route::get('sister-window', [SisterWindowController::class, 'index'])->name('sister.window.index');
 
     // permissions
     Route::resource('maps', ExaminationMapController::class)

@@ -236,6 +236,13 @@
             </li>
         @endcan
 
+        <li class="menu-item {{ Request::is('dashboard/sister-window*')  ? 'active' : '' }}">
+            <a href="{{ route('sister.window.index') }}" class="menu-link">
+                <i class="menu-icon bx bx-clinic"></i>
+                <div data-i18n="Сестринское окно">Сестринское окно</div>
+            </a>
+        </li>
+
         {{-- Прием --}}
         @canany(['view_receptions', 'view_appointment_receptions'])
             <li class="menu-item {{ Request::is('dashboard/receptions/list') || Request::is('dashboard/receptions-appointment') || Request::is('dashboard/receptions-doctor-calendar/*') ? 'open' : '' }}">
