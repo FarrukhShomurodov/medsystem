@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ExaminationMap;
 use App\Models\PatientAssignment;
+use App\Models\PatientDiagnosis;
 use App\Models\PatientService;
 use App\Models\Reception;
 use App\Models\SurveyResponses;
@@ -37,6 +38,9 @@ class PatientHistoryController extends Controller
                 break;
             case 'reception':
                 $data = Reception::with(['staff', 'patient'])->find($id);
+                break;
+            case 'diagnosis':
+                $data = PatientDiagnosis::find($id);
                 break;
             default:
                 return response()->json(['error' => 'Unknown type'], 400);

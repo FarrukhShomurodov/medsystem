@@ -121,6 +121,11 @@ class Patient extends Model
         return $this->morphMany(File::class, 'fileable');
     }
 
+    public function diagnosises(): HasMany
+    {
+        return $this->hasMany(PatientDiagnosis::class, 'patient_id');
+    }
+
 //    public function analyzes(): HasMany
 //    {
 //        return $this->hasMany(Analyze::class);

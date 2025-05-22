@@ -139,6 +139,13 @@ class PatientController extends Controller
                         $survey->created_at = Carbon::parse($survey->created_at);
                     });
             },
+            'diagnosises' => function ($query) {
+                $query->orderByDesc('created_at')
+                    ->get()
+                    ->each(function ($diagnosis) {
+                        $diagnosis->created_at = Carbon::parse($diagnosis->created_at);
+                    });
+            },
         ]);
 
         $patientDetails = [
@@ -236,6 +243,16 @@ class PatientController extends Controller
                 'date' => $reception->created_at,
                 'data' => $reception,
                 'sort_date' => $reception->created_at
+            ]);
+        }
+
+        // Обработка диагноза
+        foreach ($patient->diagnosises as $diagnosis) {
+            $timeline->push([
+                'type' => 'diagnosis',
+                'date' => $diagnosis->created_at,
+                'data' => $diagnosis,
+                'sort_date' => $diagnosis->created_at
             ]);
         }
 

@@ -286,13 +286,14 @@
 
                             <!-- Записи -->
                             <td>
-                                <div class="history-item" @if(!$event['is_main']) style="margin-left: 20px;" @endif>
-                                    <div class="history-header"
-                                         data-bs-toggle="modal"
-                                         data-bs-target="#eventDetailModal"
-                                         data-id='{{ $event['data']->id }}'
-                                         data-type='{{ $event['type'] }}'>
-                                        <div>
+                                @if($event['type'] != 'diagnosis')
+                                    <div class="history-item" @if(!$event['is_main']) style="margin-left: 20px;" @endif>
+                                        <div class="history-header"
+                                             data-bs-toggle="modal"
+                                             data-bs-target="#eventDetailModal"
+                                             data-id='{{ $event['data']->id }}'
+                                             data-type='{{ $event['type'] }}'>
+                                            <div>
                                         <span class="history-title">
                                             @switch($event['type'])
                                                 @case('examination_map') Госпитализация @break
@@ -302,15 +303,16 @@
                                                 @case('reception') Прием @break
                                             @endswitch
                                         </span>
-                                            <span class="history-date">
+                                                <span class="history-date">
                                             {{ \Carbon\Carbon::parse($event['date'])->format('d.m.Y') }}
-                                                @if($event['type'] === 'examination_map' && $event['data']->end_date)
-                                                    - {{ \Carbon\Carbon::parse($event['data']->end_date)->format('d.m.Y') }}
-                                                @endif
+                                                    @if($event['type'] === 'examination_map' && $event['data']->end_date)
+                                                        - {{ \Carbon\Carbon::parse($event['data']->end_date)->format('d.m.Y') }}
+                                                    @endif
                                         </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                @endif
                             </td>
 
                             <!-- Физические показатели -->
@@ -341,8 +343,20 @@
 
                             <!-- Диагноз -->
                             <td>
-                                @if($event['data']->admission_diagnosis_description)
-                                    {{ $event['data']->admission_diagnosis_description }}
+                                @if($event['type'] == 'diagnosis')
+                                    <div class="history-item" @if(!$event['is_main']) style="margin-left: 20px;" @endif>
+                                        <div class="history-header"
+                                             data-bs-toggle="modal"
+                                             data-bs-target="#eventDetailModal"
+                                             data-id='{{ $event['data']->id }}'
+                                             data-type='{{ $event['type'] }}'>
+                                            <div>
+                                                <span class="history-title">
+                                                    Диагноз
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 @else
                                     —
                                 @endif
