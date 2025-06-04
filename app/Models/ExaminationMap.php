@@ -69,6 +69,11 @@ class ExaminationMap extends Model
         return $this->belongsTo(Patient::class);
     }
 
+    public function documentResponse(): HasMany
+    {
+        return $this->hasMany(DocumentResponse::class, 'examination_map_id');
+    }
+
 //    public function analyze(): HasMany
 //    {
 //        return $this->hasMany(Analyze::class);

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
@@ -124,6 +123,11 @@ class Patient extends Model
     public function diagnosises(): HasMany
     {
         return $this->hasMany(PatientDiagnosis::class, 'patient_id');
+    }
+
+    public function documentResponse(): HasMany
+    {
+        return $this->hasMany(DocumentResponse::class, 'patient_id');
     }
 
 //    public function analyzes(): HasMany

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Лист оценки риска падения амбулаторного пациента</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background-color: #f7f7f7;
+      line-height: 1.6;
+    }
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+    .section {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #eaeaea;
+    }
+    input[type="text"], input[type="date"], input[type="time"] {
+      width: 100%;
+      padding: 5px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+    label {
+      display: block;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Лист оценки риска падения амбулаторного пациента (КДО)</h1>
+
+   <div class="section">
+      <label>ФИО пациента: <input type="text" /></label>
+      <label>Дата рождения: <input type="date" /></label>
+    </div>
+
+
+  <div class="section">
+    <h2>I. Первичная оценка проводится при первом посещении процедурного кабинета Клинико-диагностического отделения.</h2>
+    <h2>II. Повторную оценку проводить после завершения манипуляций/процедур при каждом контакте с амбулаторным пациентом (ежедневно) и записать результат здесь.</h2>
+    <p><strong>Прежде чем отпустить пациента из отделения, спросить у пациента:</strong></p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Вопрос</th>
+          <th>Ответ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1. Падали ли вы в последние 3 мес.?<br>При повторной оценке падал/а ли за последние сутки?</td>
+          <td>Нет / Да</td>
+        </tr>
+        <tr>
+          <td>2. Чувствуете ли вы сейчас головокружение?</td>
+          <td>Нет / Да</td>
+        </tr>
+        <tr>
+          <td>3. Чувствуете слабость в ногах?</td>
+          <td>Нет / Да</td>
+        </tr>
+        <tr>
+          <td>4. Ходит с костылями/тростью/в инвалидном кресле</td>
+          <td>Нет / Да</td>
+        </tr>
+        <tr>
+          <td>5. Принял процедуру, медикамент или анестезию, повышающую риск падения или риск головокружения</td>
+          <td>Нет / Да</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>1 ответ «ДА» = 1 балл<br>
+    3 и более ответов «ДА» (3 - 5 баллов) считать как высокий риск падения!</strong></p>
+    <p><strong>Если на 3 и более вопросов ответ «Да», то обеспечить сопровождение пациента.</strong></p>
+  </div>
+
+  <div class="section">
+    <h2>Сестринское клиническое мышление</h2>
+    <p>Помните, что несмотря на результат оценки, вы можете оценить риск падения как «высокий», полагаясь на свой опыт и клиническое мышление. Даже если у пациента нет высокого риска падения, обратить внимание и сопроводить пациента, если он/она:</p>
+    <ul>
+      <li>Импульсивный и беспокойный;</li>
+      <li>Жалуется на головокружение, слабость;</li>
+      <li>Под действием анестетиков;</li>
+      <li>Передвигается с помощью кого-то, опираясь о стену или предметы;</li>
+      <li>На ваш взгляд может упасть.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>III.	Запишите результат повторной оценки риска падения амбулаторного пациента:</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Дата</th>
+          <th>Время</th>
+          <th>Балл</th>
+          <th>Риск (высокий / нет)</th>
+          <th>Комментарии (что сделано)</th>
+          <th>Фамилия, подпись</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="date"></td>
+          <td><input type="time"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+        </tr>
+        <tr>
+          <td><input type="date"></td>
+          <td><input type="time"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+        </tr>
+        <tr>
+          <td><input type="date"></td>
+          <td><input type="time"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+        </tr>
+        <tr>
+          <td><input type="date"></td>
+          <td><input type="time"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+        </tr>
+        <tr>
+          <td><input type="date"></td>
+          <td><input type="time"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+        </tr>
+        <tr>
+          <td><input type="date"></td>
+          <td><input type="time"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+        </tr>
+        <tr>
+          <td><input type="date"></td>
+          <td><input type="time"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+        </tr>
+        <tr>
+          <td><input type="date"></td>
+          <td><input type="time"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+        </tr>
+        <tr>
+          <td><input type="date"></td>
+          <td><input type="time"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+        </tr>
+        <tr>
+          <td><input type="date"></td>
+          <td><input type="time"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+          <td><input type="text"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>IV. Действия среднего медицинского персонала</h2>
+
+    <h3>Риска падения нет — Профилактические меры</h3>
+    <label><input type="checkbox"> Сообщить членам семьи/пациенту о его/ее риске падения</label>
+    <label><input type="checkbox"> Ознакомить пациента с местностью</label>
+    <label><input type="checkbox"> Обучить пациента о предотвращении падения (заполнить лист обучения):</label>
+    <ul>
+      <li>Вызывать мед.персонал или члена семьи, если нужно в туалет или другое место</li>
+      <li>Держаться за поручни на стенах, обращать внимание на знак «мокрый пол» и т.д.</li>
+      <li>Не вставать с постели/стула без посторонней помощи, если кружится голова</li>
+      <li>Напомнить, чтобы пациент носил нескользкую обувь</li>
+    </ul>
+
+    <h3>Высокий риск падения — меры для пациентов высокого риска падения</h3>
+    <label><input type="checkbox"> Выдать памятку по профилактике и снижению риска падения</label>
+    <label><input type="checkbox"> Обучить пациента о предотвращении падения (заполнить Лист обучения амбулаторного пациента Форма ОПС-01-3):</label>
+    <ul>
+      <li>Вызывать мед.персонал или члена семьи, если нужно в туалет или другое место</li>
+      <li>Держаться за поручни на стенах, обращать внимание на знак «мокрый пол» и т.д.</li>
+      <li>Не вставать с постели/стула без посторонней помощи, если кружится голова</li>
+      <li>Напомнить, чтобы пациент носил нескользкую обувь</li>
+    </ul>
+    <label><input type="checkbox"> Сопровождать пациента после процедур до родственников, объяснить необходимость сопровождения</label>
+    <label><input type="checkbox"> Обучить о принимаемых ЛС, об их влиянии на падение (головокружение, слабость)</label>
+  </div>
+</body>
+</html>

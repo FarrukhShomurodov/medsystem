@@ -3,17 +3,13 @@
 use App\Http\Controllers\Dashboard\{AdminAuthController,
     AdminController,
     AllegoryController,
-    AnalyzeController,
-    AnalyzeMethodController,
-    AnalyzeResultController,
-    AnalyzeTypeController,
     ChronicDiseaseController,
     CityController,
     DashboardController,
     DepartmentController,
+    DocumentController,
     EquipmentController,
     ExaminationMapController,
-    LaboratoryController,
     ManufacturerController,
     MedicalDeviceController,
     MedicalSupplyController,
@@ -43,9 +39,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     WardRoomController,
     WarehouseAccountingController,
     WarehouseController,
-    WarehouseTypeController
-};
-
+    WarehouseTypeController};
 use App\Http\Middleware\ExaminationMapIsActive;
 use Illuminate\Support\Facades\Route;
 
@@ -123,7 +117,9 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
             ->name('warehouses.medications')
             ->middleware('permission:view_warehouse_medications');
 
-        Route::get('medication-show/{accounting}', [WarehouseAccountingController::class, 'show'])->name('warehouse.medication.show');
+        Route::get('medication-show/{accounting}', [WarehouseAccountingController::class, 'show'])->name(
+            'warehouse.medication.show'
+        );
 
         Route::get('supplies', [WarehouseController::class, 'supplies'])
             ->name('warehouses.supplies')
@@ -193,7 +189,10 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
             ->parameter('list', 'service')
             ->except('show');
 
-        Route::resource('assign-patient', PatientServiceController::class)->names('patient.services')->parameter('assign-patient', 'service')->except('show');
+        Route::resource('assign-patient', PatientServiceController::class)->names('patient.services')->parameter(
+            'assign-patient',
+            'service'
+        )->except('show');
 
         Route::resource('types', ServiceTypeController::class)->names('service.types');
         Route::resource('procedures', ProcedureController::class);
@@ -229,4 +228,16 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::get('patient/map/create/{patient}', [ExaminationMapController::class, 'create'])
         ->name('patient.map.create')
         ->middleware(ExaminationMapIsActive::class);
+
+
+    // documents
+    Route::get('documents/{document}', [DocumentController::class, 'show'])->name('documents.show');
+    Route::post('document/response', [DocumentController::class, 'store'])->name('document.response.store');
+    Route::get('document/response/answers/{documentResponse}', [DocumentController::class, 'showAnswer'])->name(
+        'documents.show.answer'
+    );
+
+    Route::get('document/response/answers/delete/{documentResponse}', [DocumentController::class, 'delete'])->name(
+        'documents.show.answer.delete'
+    );
 });

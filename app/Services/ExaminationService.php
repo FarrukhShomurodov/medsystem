@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\ExaminationMapMedication;
-use App\Models\Institution;
 use App\Models\ExaminationMap;
-use App\Models\Medication;
+use App\Models\Institution;
 use Illuminate\Support\Facades\DB;
 
 class ExaminationService
@@ -14,8 +12,11 @@ class ExaminationService
     private PatientServiceAssignService $patientService;
     private SurveyResponseService $surveyResponseService;
 
-    public function __construct(AnalyzeService $service, PatientServiceAssignService $patientService, SurveyResponseService $surveyResponseService)
-    {
+    public function __construct(
+        AnalyzeService $service,
+        PatientServiceAssignService $patientService,
+        SurveyResponseService $surveyResponseService
+    ) {
         $this->service = $service;
         $this->patientService = $patientService;
         $this->surveyResponseService = $surveyResponseService;
@@ -34,6 +35,12 @@ class ExaminationService
             $map = ExaminationMap::query()->create($validated);
 
             $patient = $map->patient;
+
+            $patient->documentResponse()->where('document_id', 1)->latest()->first()->update(
+                [
+                    'examination_map_id' => $map->id
+                ]
+            );
 
 //            if (isset($validated['laboratory_id'])) {
 //                $analyzeData = [
@@ -131,7 +138,6 @@ class ExaminationService
     public function update(ExaminationMap $map, array $validated)
     {
         return DB::transaction(function () use ($validated, $map) {
-
             if (!is_numeric($validated['department_id'])) {
                 $validated['department_id'] = Institution::query()->create(['name' => $validated['department_id']])->id;
             }
@@ -139,6 +145,12 @@ class ExaminationService
             $map->update($validated);
 
             $patient = $map->patient;
+
+            $patient->documentResponse()->where('document_id', 1)->latest()->first()->update(
+                [
+                    'examination_map_id' => $map->id
+                ]
+            );
 
 //            if (isset($validated['laboratory_id'])) {
 //                $analyzeData = [
