@@ -8,6 +8,7 @@ use App\Models\Allegory;
 use App\Models\ChronicDisease;
 use App\Models\City;
 use App\Models\Department;
+use App\Models\Document;
 use App\Models\MedicalDevice;
 use App\Models\Patient;
 use App\Models\Region;
@@ -44,7 +45,19 @@ class PatientController extends Controller
         $staffs = $this->scopeAvailableStaffOnDate(1);
 
         $patients = Patient::query()
-            ->select(['id', 'first_name', 'last_name', 'middle_name', 'birth_date', 'gender', 'citizenship', 'passport_series', 'created_at'])
+            ->select(
+                [
+                    'id',
+                    'first_name',
+                    'last_name',
+                    'middle_name',
+                    'birth_date',
+                    'gender',
+                    'citizenship',
+                    'passport_series',
+                    'created_at'
+                ]
+            )
             ->with('examinationMaps')
             ->orderBy('id', 'desc')
             ->when($request->filled('id'), function ($query) use ($request) {
@@ -52,7 +65,11 @@ class PatientController extends Controller
             })
             ->when($request->filled('full_name'), function ($query) use ($request) {
                 $term = $request->input('full_name');
-                $query->where(\DB::raw("CONCAT_WS(' ', first_name, last_name, middle_name)"), 'ILIKE', '%' . $term . '%');
+                $query->where(
+                    \DB::raw("CONCAT_WS(' ', first_name, last_name, middle_name)"),
+                    'ILIKE',
+                    '%' . $term . '%'
+                );
             })
             ->when($request->filled('birth_date'), function ($query) use ($request) {
                 $query->where('birth_date', '>=', $request->input('birth_date'));
@@ -81,7 +98,6 @@ class PatientController extends Controller
             $lastViewsQuery = $admin->lastViewed();
 
             if (!$lastViewsQuery->where('patient_id', $patient->id)->exists()) {
-
                 $lastViewsCount = $lastViewsQuery->count();
 
                 if ($lastViewsCount >= 10) {
@@ -258,10 +274,11 @@ class PatientController extends Controller
 
         // Сортировка по дате
         $patientDetails['timeline'] = $timeline->sortByDesc('sort_date');
-
         $departments = Department::query()->select(['id', 'name'])->get();
 
-        return view('admin.patients.show', compact('patientDetails', 'lastViews', 'departments'));
+        $documents = Document::query()->where('id', '!=', 1)->get();
+
+        return view('admin.patients.show', compact('patientDetails', 'lastViews', 'departments', 'documents'));
     }
 
     public function create(): View
@@ -292,7 +309,10 @@ class PatientController extends Controller
         $diseases = ChronicDisease::query()->get();
         $maps = $patient->examinationMaps;
 
-        return view('admin.patients.edit', compact('patient', 'regions', 'cities', 'allegories', 'devices', 'diseases', 'maps'));
+        return view(
+            'admin.patients.edit',
+            compact('patient', 'regions', 'cities', 'allegories', 'devices', 'diseases', 'maps')
+        );
     }
 
     public function update(PatientRequest $request, Patient $patient): RedirectResponse

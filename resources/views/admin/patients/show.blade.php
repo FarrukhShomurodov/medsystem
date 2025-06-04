@@ -212,6 +212,23 @@
                     data-bs-target="#filtersCollapse">
                 <i class="bx bx-filter-alt"></i> Фильтры
             </button>
+
+            <div class="ms-4">
+                <form method="GET" action="{{ route('patients.index') }}">
+                    <div class="row g-3">
+                        <div class="col-md-2 form-group">
+                            <label for="document_id">Выберите документ</label>
+                            <select id="document_id" name="document_id"
+                                    class="form-control select2">
+                                @foreach($documents as $document)
+                                    <option value="{{ $document->id }}">{{ $document->title }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Добавить документ</button>
+                </form>
+            </div>
         </div>
 
         <div id="filtersCollapse"
