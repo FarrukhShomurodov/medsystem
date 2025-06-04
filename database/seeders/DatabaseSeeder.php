@@ -5,11 +5,9 @@ namespace Database\Seeders;
 use App\Models\Admin;
 use App\Models\DayOfWeek;
 use App\Models\ServiceType;
-use App\Models\Staff;
 use App\Models\StaffPosition;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Database\Seeders\PermissionSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -83,6 +81,6 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->call(PermissionSeeder::class);
-
+        $this->call(DocumentSeeder::class);
     }
 }

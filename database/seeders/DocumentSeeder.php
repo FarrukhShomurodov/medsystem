@@ -354,7 +354,7 @@ class DocumentSeeder extends Seeder
             ],
             [
                 'question' => 'Дата рождения',
-                'type' => 'date',
+                'type' => 'text',
             ],
 
             // Morse Scale questions
@@ -416,11 +416,11 @@ class DocumentSeeder extends Seeder
             // Follow-up assessments
             [
                 'question' => 'Дата повторной оценки',
-                'type' => 'date',
+                'type' => 'text',
             ],
             [
                 'question' => 'Время повторной оценки',
-                'type' => 'time',
+                'type' => 'text',
             ],
             [
                 'question' => 'Балл при повторной оценке',
@@ -442,7 +442,7 @@ class DocumentSeeder extends Seeder
             // Interventions
             [
                 'question' => 'Меры при 0-24 баллах (нет риска)',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'Сообщить членам семьи/пациенту о его/ее риске падения',
                     'Ознакомить пациента с местностью',
@@ -452,7 +452,7 @@ class DocumentSeeder extends Seeder
             ],
             [
                 'question' => 'Меры при 25-50 баллах (низкий риск)',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'Установить высоту кровати на нижнем положении',
                     'Закрепить кроватные колеса, ходунки, инвалидное кресло в устойчивом положении',
@@ -465,7 +465,7 @@ class DocumentSeeder extends Seeder
             ],
             [
                 'question' => 'Меры при 51+ баллах (высокий риск)',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'Наклеить красный знак на браслет или одеть красный браслет',
                     'Разместить наклейку о риске падения на двери палаты',
@@ -504,7 +504,7 @@ class DocumentSeeder extends Seeder
             ],
             [
                 'question' => 'Дата рождения',
-                'type' => 'date',
+                'type' => 'text',
             ],
 
             // Humpty Dumpty Scale questions
@@ -586,11 +586,11 @@ class DocumentSeeder extends Seeder
             // Follow-up assessments
             [
                 'question' => 'Дата повторной оценки',
-                'type' => 'date',
+                'type' => 'text',
             ],
             [
                 'question' => 'Время повторной оценки',
-                'type' => 'time',
+                'type' => 'text',
             ],
             [
                 'question' => 'Балл при повторной оценке',
@@ -612,7 +612,7 @@ class DocumentSeeder extends Seeder
             // General preventive measures
             [
                 'question' => 'Общие профилактические меры для всех пациентов',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'Сообщить членам семьи/пациенту о риске падения',
                     'Установить кнопку вызова в пределах досягаемости',
@@ -624,7 +624,7 @@ class DocumentSeeder extends Seeder
             // Low risk measures
             [
                 'question' => 'Меры при низком риске (7–11 баллов)',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'Поднять боковые борты кровати',
                     'Закрепить кроватные колеса, ходунки, инвалидное кресло',
@@ -638,7 +638,7 @@ class DocumentSeeder extends Seeder
             // High risk measures
             [
                 'question' => 'Меры при высоком риске (12 баллов и выше)',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'Наклеить красный знак на браслет пациента',
                     'Установить красный знак на двери палаты',
@@ -658,7 +658,7 @@ class DocumentSeeder extends Seeder
             // Reasons for reassessment
             [
                 'question' => 'Причины для повторной оценки риска',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'Выявлен высокий риск (12 и выше)',
                     'Произошло падение',
@@ -694,7 +694,7 @@ class DocumentSeeder extends Seeder
             ],
             [
                 'question' => 'Дата рождения',
-                'type' => 'date',
+                'type' => 'text',
             ],
 
             // Assessment questions
@@ -739,7 +739,7 @@ class DocumentSeeder extends Seeder
             // Clinical judgment factors
             [
                 'question' => 'Клинические факторы риска (сестринское суждение)',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'Импульсивный и беспокойный',
                     'Жалуется на головокружение, слабость',
@@ -752,11 +752,11 @@ class DocumentSeeder extends Seeder
             // Follow-up assessments
             [
                 'question' => 'Дата повторной оценки',
-                'type' => 'date',
+                'type' => 'text',
             ],
             [
                 'question' => 'Время повторной оценки',
-                'type' => 'time',
+                'type' => 'text',
             ],
             [
                 'question' => 'Балл при повторной оценке',
@@ -778,7 +778,7 @@ class DocumentSeeder extends Seeder
             // Preventive measures - no risk
             [
                 'question' => 'Профилактические меры (нет риска)',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'Сообщить членам семьи/пациенту о риске падения',
                     'Ознакомить пациента с местностью',
@@ -790,7 +790,7 @@ class DocumentSeeder extends Seeder
             // High risk measures
             [
                 'question' => 'Меры при высоком риске',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'Выдать памятку по профилактике и снижению риска падения',
                     'Обучить пациента о предотвращении падения',
@@ -802,7 +802,7 @@ class DocumentSeeder extends Seeder
             // Patient education topics
             [
                 'question' => 'Темы обучения пациента',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'Вызывать мед.персонал при необходимости',
                     'Держаться за поручни, обращать внимание на знаки',
@@ -835,7 +835,7 @@ class DocumentSeeder extends Seeder
             ],
             [
                 'question' => 'Дата рождения',
-                'type' => 'date',
+                'type' => 'text',
             ],
 
             // Pain scale selection
@@ -874,13 +874,13 @@ class DocumentSeeder extends Seeder
             ],
             [
                 'question' => 'Схематичное расположение боли (отметить на схеме)',
-                'type' => 'image-map', // You'll need to implement this custom type
+                'type' => 'text', // You'll need to implement this custom type
             ],
 
             // Pain characteristics
             [
                 'question' => 'Характер боли',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'Ж - жгучая',
                     'Р - режущая',
@@ -900,7 +900,7 @@ class DocumentSeeder extends Seeder
             // Pain interventions
             [
                 'question' => 'Оказанная помощь (медикаментозная)',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'НР - наркотические анальгетики',
                     'НН - ненаркотические анальгетики',
@@ -911,7 +911,7 @@ class DocumentSeeder extends Seeder
             ],
             [
                 'question' => 'Оказанная помощь (немедикаментозная)',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'п - психологическая помощь, обучение',
                     'у - упражнения, массаж',
@@ -924,7 +924,7 @@ class DocumentSeeder extends Seeder
             // Side effects
             [
                 'question' => 'Побочные эффекты',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'Аллергическая реакция',
                     'Привыкание',
@@ -938,11 +938,11 @@ class DocumentSeeder extends Seeder
             // Follow-up assessments
             [
                 'question' => 'Дата оценки',
-                'type' => 'date',
+                'type' => 'text',
             ],
             [
                 'question' => 'Время оценки',
-                'type' => 'time',
+                'type' => 'text',
             ],
             [
                 'question' => 'Интенсивность боли при повторной оценке',
@@ -971,14 +971,14 @@ class DocumentSeeder extends Seeder
             ],
 
             // Pain assessment grid (simplified)
-            [
-                'question' => 'Динамика оценки боли',
-                'type' => 'grid',
-                'options' => [
-                    'columns' => ['Дата', 'Время', 'Интенсивность', 'Характер', 'Помощь', 'Побочные эффекты'],
-                    'rows' => 10 // Number of assessment entries
-                ],
-            ]
+//            [
+//                'question' => 'Динамика оценки боли',
+//                'type' => 'grid',
+//                'options' => [
+//                    'columns' => ['Дата', 'Время', 'Интенсивность', 'Характер', 'Помощь', 'Побочные эффекты'],
+//                    'rows' => 10 // Number of assessment entries
+//                ],
+//            ]
         ];
 
         foreach ($painAssessmentQuestions as $q) {
@@ -1004,7 +1004,7 @@ class DocumentSeeder extends Seeder
             ],
             [
                 'question' => 'Дата рождения',
-                'type' => 'date',
+                'type' => 'text',
             ],
 
             // FLACC assessment components
@@ -1071,7 +1071,7 @@ class DocumentSeeder extends Seeder
             // Pain interventions
             [
                 'question' => 'Примененные методы обезболивания',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'Фармакологические (указать препарат)',
                     'Нефармакологические (отвлечение, успокоение)',
@@ -1083,11 +1083,11 @@ class DocumentSeeder extends Seeder
             // Follow-up assessments
             [
                 'question' => 'Дата оценки',
-                'type' => 'date',
+                'type' => 'text',
             ],
             [
                 'question' => 'Время оценки',
-                'type' => 'time',
+                'type' => 'text',
             ],
             [
                 'question' => 'Подпись или инициалы оценивающего',
@@ -1099,24 +1099,24 @@ class DocumentSeeder extends Seeder
             ],
 
             // Assessment grid for multiple entries
-            [
-                'question' => 'Динамика оценки по шкале FLACC',
-                'type' => 'grid',
-                'options' => [
-                    'columns' => [
-                        'Дата',
-                        'Время',
-                        'Лицо',
-                        'Ноги',
-                        'Активность',
-                        'Плач',
-                        'Успокаиваемость',
-                        'Общий балл',
-                        'Подпись'
-                    ],
-                    'rows' => 10 // Number of assessment entries
-                ],
-            ]
+//            [
+//                'question' => 'Динамика оценки по шкале FLACC',
+//                'type' => 'grid',
+//                'options' => [
+//                    'columns' => [
+//                        'Дата',
+//                        'Время',
+//                        'Лицо',
+//                        'Ноги',
+//                        'Активность',
+//                        'Плач',
+//                        'Успокаиваемость',
+//                        'Общий балл',
+//                        'Подпись'
+//                    ],
+//                    'rows' => 10 // Number of assessment entries
+//                ],
+//            ]
         ];
 
         foreach ($flaccQuestions as $q) {
@@ -1140,7 +1140,7 @@ class DocumentSeeder extends Seeder
             ],
             [
                 'question' => 'Дата рождения',
-                'type' => 'date',
+                'type' => 'text',
             ],
 
             // NIPS assessment components
@@ -1220,7 +1220,7 @@ class DocumentSeeder extends Seeder
             // Pain interventions
             [
                 'question' => 'Примененные методы обезболивания',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'Фармакологические (указать препарат)',
                     'Нефармакологические (пеленание, пустышка)',
@@ -1232,11 +1232,11 @@ class DocumentSeeder extends Seeder
             // Follow-up assessments
             [
                 'question' => 'Дата оценки',
-                'type' => 'date',
+                'type' => 'text',
             ],
             [
                 'question' => 'Время оценки',
-                'type' => 'time',
+                'type' => 'text',
             ],
             [
                 'question' => 'Подпись или инициалы оценивающего',
@@ -1248,25 +1248,25 @@ class DocumentSeeder extends Seeder
             ],
 
             // Assessment grid for multiple entries
-            [
-                'question' => 'Динамика оценки по шкале NIPS',
-                'type' => 'grid',
-                'options' => [
-                    'columns' => [
-                        'Дата',
-                        'Время',
-                        'Выражение лица',
-                        'Крик/плач',
-                        'Дыхание',
-                        'Руки',
-                        'Ноги',
-                        'Возбуждение',
-                        'Общий балл',
-                        'Подпись'
-                    ],
-                    'rows' => 10
-                ],
-            ]
+//            [
+//                'question' => 'Динамика оценки по шкале NIPS',
+//                'type' => 'grid',
+//                'options' => [
+//                    'columns' => [
+//                        'Дата',
+//                        'Время',
+//                        'Выражение лица',
+//                        'Крик/плач',
+//                        'Дыхание',
+//                        'Руки',
+//                        'Ноги',
+//                        'Возбуждение',
+//                        'Общий балл',
+//                        'Подпись'
+//                    ],
+//                    'rows' => 10
+//                ],
+//            ]
         ];
 
         foreach ($nipsQuestions as $q) {
@@ -1290,7 +1290,7 @@ class DocumentSeeder extends Seeder
             ],
             [
                 'question' => 'Дата рождения',
-                'type' => 'date',
+                'type' => 'text',
             ],
 
             // CPOT assessment components
@@ -1367,7 +1367,7 @@ class DocumentSeeder extends Seeder
             // Pain interventions
             [
                 'question' => 'Оказанная помощь (медикаментозная)',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'НР - наркотические анальгетики',
                     'НН - ненаркотические анальгетики',
@@ -1378,7 +1378,7 @@ class DocumentSeeder extends Seeder
             ],
             [
                 'question' => 'Оказанная помощь (немедикаментозная)',
-                'type' => 'multi-choice',
+                'type' => 'choice',
                 'options' => [
                     'У - упражнения, массаж, поглаживание',
                     'М - местная терапия',
@@ -1389,11 +1389,11 @@ class DocumentSeeder extends Seeder
             // Follow-up assessments
             [
                 'question' => 'Дата оценки',
-                'type' => 'date',
+                'type' => 'text',
             ],
             [
                 'question' => 'Время оценки',
-                'type' => 'time',
+                'type' => 'text',
             ],
             [
                 'question' => 'Подпись медсестры',
@@ -1405,25 +1405,25 @@ class DocumentSeeder extends Seeder
             ],
 
             // Assessment grid for multiple entries
-            [
-                'question' => 'Динамика оценки по шкале CPOT',
-                'type' => 'grid',
-                'options' => [
-                    'columns' => [
-                        'Дата',
-                        'Время',
-                        'Выражение лица',
-                        'Движения тела',
-                        'Толерантность к ИВЛ/Звуки',
-                        'Мышечное напряжение',
-                        'Общий балл',
-                        'Контекст',
-                        'Оказанная помощь',
-                        'Подпись'
-                    ],
-                    'rows' => 10 // Number of assessment entries
-                ],
-            ],
+//            [
+//                'question' => 'Динамика оценки по шкале CPOT',
+//                'type' => 'grid',
+//                'options' => [
+//                    'columns' => [
+//                        'Дата',
+//                        'Время',
+//                        'Выражение лица',
+//                        'Движения тела',
+//                        'Толерантность к ИВЛ/Звуки',
+//                        'Мышечное напряжение',
+//                        'Общий балл',
+//                        'Контекст',
+//                        'Оказанная помощь',
+//                        'Подпись'
+//                    ],
+//                    'rows' => 10 // Number of assessment entries
+//                ],
+//            ],
 
             // Special instructions
             [
