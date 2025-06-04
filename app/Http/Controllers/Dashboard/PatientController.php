@@ -162,6 +162,13 @@ class PatientController extends Controller
                         $diagnosis->created_at = Carbon::parse($diagnosis->created_at);
                     });
             },
+            'documentResponse' => function ($query) {
+                $query->orderByDesc('created_at')
+                    ->get()
+                    ->each(function ($document) {
+                        $document->created_at = Carbon::parse($document->created_at);
+                    });
+            },
         ]);
 
         $patientDetails = [
@@ -269,6 +276,15 @@ class PatientController extends Controller
                 'date' => $diagnosis->created_at,
                 'data' => $diagnosis,
                 'sort_date' => $diagnosis->created_at
+            ]);
+        }
+
+        foreach ($patient->documentResponse as $document) {
+            $timeline->push([
+                'type' => 'document',
+                'date' => $document->created_at,
+                'data' => $document,
+                'sort_date' => $document->created_at
             ]);
         }
 

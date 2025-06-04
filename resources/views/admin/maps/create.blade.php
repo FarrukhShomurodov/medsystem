@@ -314,8 +314,7 @@
                         <div>
                             <a href="{{ route('documents.show', ['document' => 1, 'patient_id' => $patient->id]) }}"
                                class="btn btn-success @if($firstDocExist) disabled @endif"
-                               style="@if($firstDocExist) pointer-events: none; @endif"
-                               target="_blank">Первичный сестринский
+                               style="@if($firstDocExist) pointer-events: none; @endif">Первичный сестринский
                                 осмотр</a>
 
                             @if($firstDocExist)

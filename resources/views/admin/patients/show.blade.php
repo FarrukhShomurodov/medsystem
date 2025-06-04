@@ -214,18 +214,23 @@
             </button>
 
             <div class="ms-4">
-                <form method="GET" action="{{ route('patients.index') }}">
+                <form id="select-document-form" method="GET" action="">
                     <div class="row g-3">
                         <div class="col-md-2 form-group">
                             <label for="document_id">Выберите документ</label>
-                            <select id="document_id" name="document_id"
-                                    class="form-control select2">
+                            <select id="document_id" name="document_id" class="form-control select2">
+                                <option disabled selected>— выберите —</option>
                                 @foreach($documents as $document)
-                                    <option value="{{ $document->id }}">{{ $document->title }}</option>
+                                    <option value="{{ $document->id }}">
+                                        {{ $document->title }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
+
+                    <input type="hidden" id="patient_id" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
+
                     <button type="submit" class="btn btn-primary mt-3">Добавить документ</button>
                 </form>
             </div>
@@ -354,6 +359,16 @@
                                         'parent_id' => $event['data']->id
                                     ]);
                                 }
+
+                                  foreach ($event['data']->documentResponse as $response) {
+                                    $groupedTimeline->push([
+                                        'type' => 'document',
+                                        'date' => $response->created_at,
+                                        'data' => $response,
+                                        'is_main' => false,
+                                        'parent_id' => $event['data']->id
+                                    ]);
+                                }
                             } else {
                                 // Добавляем независимые элементы
                                 $groupedTimeline->push($item);
@@ -389,6 +404,7 @@
                                                 @case('service') Услуга @break
                                                 @case('patient_med_document') Мед. Документ @break
                                                 @case('reception') Прием @break
+                                                @case('document') Документ @break
                                             @endswitch
                                         </span>
                                                 <span class="history-date">
@@ -1026,5 +1042,33 @@
             content.classList.toggle('show');
             icon.classList.toggle('rotated');
         }
+    </script>
+
+
+    <script>
+        $(function () {
+            $('#select-document-form').on('submit', function (e) {
+                e.preventDefault();
+
+                let documentId = $('#document_id').val();
+                let patientId = $('#patient_id').val();
+
+                if (!documentId) {
+                    alert('Пожалуйста, выберите документ');
+                    return;
+                }
+                if (!patientId) {
+                    alert('Не найден patient_id');
+                    return;
+                }
+
+                let url = '/dashboard/documents/'
+                    + encodeURIComponent(documentId)
+                    + '?patient_id='
+                    + encodeURIComponent(patientId);
+
+                window.location.href = url;
+            });
+        });
     </script>
 @endsection

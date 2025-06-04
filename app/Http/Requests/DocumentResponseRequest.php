@@ -15,6 +15,7 @@ class DocumentResponseRequest extends FormRequest
             'document_id' => 'required|int|exists:documents,id',
             'patient_id' => 'required|int|exists:patients,id',
             'answers' => 'required|array',
+            'previous_url' => 'required|string',
         ];
     }
 }

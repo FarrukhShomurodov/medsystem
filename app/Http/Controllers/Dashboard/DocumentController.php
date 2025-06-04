@@ -10,7 +10,6 @@ use App\Services\DocumentResponseService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 
 class DocumentController extends Controller
 {
@@ -42,17 +41,17 @@ class DocumentController extends Controller
         $validated = $request->validated();
         $this->service->store($validated);
 
-        $previousUrl = url()->previous();
-        $currentRoute = Route::currentRouteName();
+//        $previousUrl = url()->previous();
+//        $currentRoute = Route::currentRouteName();
+//
+//        $previousRoute = app('router')->getRoutes()->match(request()->create($previousUrl))->getName();
+//
+//        if ('document.response.store' === $currentRoute) {
+//            return redirect()->route('patient.map.create', $validated['patient_id'])
+//                ->with('success', 'Мед. документ назначен!');
+//        }
 
-        $previousRoute = app('router')->getRoutes()->match(request()->create($previousUrl))->getName();
-
-        if ($previousRoute === $currentRoute) {
-            return redirect()->back()->with('success', 'Мед. документ назначен!');
-        }
-
-        return redirect()->route('patient.map.create', $validated['patient_id'])
-            ->with('success', 'Мед. документ назначен!');
+        return redirect($validated['previous_url'])->with('success', 'Мед. документ назначен!');
     }
 
     public function delete(DocumentResponse $documentResponse): RedirectResponse

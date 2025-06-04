@@ -22,6 +22,8 @@
             <input type="hidden" name="document_id" value="{{ $document->id }}">
             <input type="hidden" name="patient_id" value="{{ $patientId }}">
 
+            <input type="hidden" name="previous_url" value="{{ url()->previous() }}">
+
             @foreach($document->questions as $question)
                 <div class="mb-4">
                     <label class="form-label fw-bold">

@@ -232,6 +232,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // documents
     Route::get('documents/{document}', [DocumentController::class, 'show'])->name('documents.show');
+
     Route::post('document/response', [DocumentController::class, 'store'])->name('document.response.store');
     Route::get('document/response/answers/{documentResponse}', [DocumentController::class, 'showAnswer'])->name(
         'documents.show.answer'

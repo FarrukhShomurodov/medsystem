@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\DocumentResponse;
 use App\Models\ExaminationMap;
 use App\Models\PatientAssignment;
 use App\Models\PatientDiagnosis;
@@ -41,6 +42,9 @@ class PatientHistoryController extends Controller
                 break;
             case 'diagnosis':
                 $data = PatientDiagnosis::find($id);
+                break;
+            case 'document':
+                $data = DocumentResponse::find($id);
                 break;
             default:
                 return response()->json(['error' => 'Unknown type'], 400);

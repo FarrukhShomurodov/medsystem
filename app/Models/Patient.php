@@ -127,7 +127,8 @@ class Patient extends Model
 
     public function documentResponse(): HasMany
     {
-        return $this->hasMany(DocumentResponse::class, 'patient_id');
+        return $this->hasMany(DocumentResponse::class, 'patient_id')
+            ->whereNull('examination_map_id');
     }
 
 //    public function analyzes(): HasMany
