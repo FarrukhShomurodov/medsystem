@@ -461,7 +461,7 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="card mt-3">
         <div class="card-header">
             <h5>Общая информация</h5>
         </div>
