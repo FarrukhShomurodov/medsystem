@@ -30,55 +30,6 @@
         @endif
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h5>Общая информация</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>ФИО:</strong> {{ $patientDetails['basic_info']['full_name'] }}</p>
-            <p><strong>Дата рождения:</strong> {{ $patientDetails['basic_info']['birth_date'] }}</p>
-            <p><strong>Пол:</strong> {{ $patientDetails['basic_info']['gender'] }}</p>
-            <p><strong>Гражданство:</strong> {{ $patientDetails['basic_info']['citizenship'] }}</p>
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-header">
-            <h5>Контактная информация</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Телефон:</strong> {{ $patientDetails['contact_info']['phone'] }}</p>
-            <p><strong>Доп. телефон:</strong> {{ $patientDetails['contact_info']['additional_phone'] }}</p>
-            <p><strong>Email:</strong> {{ $patientDetails['contact_info']['email'] }}</p>
-            <p><strong>Адрес проживания:</strong> {{ $patientDetails['contact_info']['residential_address'] }}</p>
-            <p><strong>Адрес регистрации:</strong> {{ $patientDetails['contact_info']['registered_address'] }}</p>
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-header">
-            <h5>Страховая информация</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Номер полиса:</strong> {{ $patientDetails['insurance_info']['policy_number'] }}</p>
-            <p><strong>Компания:</strong> {{ $patientDetails['insurance_info']['company'] }}</p>
-            <p><strong>Тип:</strong> {{ $patientDetails['insurance_info']['type'] }}</p>
-            <p><strong>Срок действия:</strong> {{ $patientDetails['insurance_info']['expiry_date'] }}</p>
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-header">
-            <h5>Экстренный контакт</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>ФИО:</strong> {{ $patientDetails['emergency_contact']['full_name'] }}</p>
-            <p><strong>Отношение:</strong> {{ $patientDetails['emergency_contact']['relation'] }}</p>
-            <p><strong>Телефон:</strong> {{ $patientDetails['emergency_contact']['phone'] }}</p>
-            <p><strong>Адрес:</strong> {{ $patientDetails['emergency_contact']['address'] }}</p>
-        </div>
-    </div>
-
     <div class="card mt-3">
         <div class="card-header">
             <h5>Последние пациенты</h5>
@@ -106,7 +57,7 @@
             @endphp
 
             @foreach($lastViews as $patient)
-                <tr>
+                <tr class="cursor-pointer" onclick="location.href='{{ route('patients.show', $patient->id) }}'">
                     <td>{{ $count++ }}</td>
                     <td>{{ $patient->created_at }}</td>
                     <td>
@@ -125,18 +76,8 @@
                     <td>
                         <div class="d-inline-block text-nowrap">
                             <button class="btn btn-sm btn-icon"
-                                    onclick="location.href='{{ route('patients.show', $patient->id) }}'"><i
-                                    class="bx bx-show"></i></button>
-                            <button class="btn btn-sm btn-icon"
                                     onclick="location.href='{{ route('patients.edit', $patient->id) }}'"><i
                                     class="bx bx-edit"></i></button>
-                            <form action="{{ route('patients.destroy', $patient->id) }}" method="POST"
-                                  style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
-                                </button>
-                            </form>
                         </div>
                     </td>
                 </tr>
@@ -483,6 +424,54 @@
         </div>
     </div>
 
+    <div class="card mt-3">
+        <div class="card-header">
+            <h5>Контактная информация</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Телефон:</strong> {{ $patientDetails['contact_info']['phone'] }}</p>
+            <p><strong>Доп. телефон:</strong> {{ $patientDetails['contact_info']['additional_phone'] }}</p>
+            <p><strong>Email:</strong> {{ $patientDetails['contact_info']['email'] }}</p>
+            <p><strong>Адрес проживания:</strong> {{ $patientDetails['contact_info']['residential_address'] }}</p>
+            <p><strong>Адрес регистрации:</strong> {{ $patientDetails['contact_info']['registered_address'] }}</p>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header">
+            <h5>Страховая информация</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Номер полиса:</strong> {{ $patientDetails['insurance_info']['policy_number'] }}</p>
+            <p><strong>Компания:</strong> {{ $patientDetails['insurance_info']['company'] }}</p>
+            <p><strong>Тип:</strong> {{ $patientDetails['insurance_info']['type'] }}</p>
+            <p><strong>Срок действия:</strong> {{ $patientDetails['insurance_info']['expiry_date'] }}</p>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header">
+            <h5>Экстренный контакт</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>ФИО:</strong> {{ $patientDetails['emergency_contact']['full_name'] }}</p>
+            <p><strong>Отношение:</strong> {{ $patientDetails['emergency_contact']['relation'] }}</p>
+            <p><strong>Телефон:</strong> {{ $patientDetails['emergency_contact']['phone'] }}</p>
+            <p><strong>Адрес:</strong> {{ $patientDetails['emergency_contact']['address'] }}</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Общая информация</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>ФИО:</strong> {{ $patientDetails['basic_info']['full_name'] }}</p>
+            <p><strong>Дата рождения:</strong> {{ $patientDetails['basic_info']['birth_date'] }}</p>
+            <p><strong>Пол:</strong> {{ $patientDetails['basic_info']['gender'] }}</p>
+            <p><strong>Гражданство:</strong> {{ $patientDetails['basic_info']['citizenship'] }}</p>
+        </div>
+    </div>
     <!-- Modal for creating direction -->
     <div class="modal fade" id="createMapModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
