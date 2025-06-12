@@ -8,6 +8,12 @@
     <h6 class="py-3 breadcrumb-wrapper mb-4">
         <span class="text-muted fw-light"><a class="text-muted"
                                              href="{{ route('patients.index') }}">Пациент</a> /</span> {{ $patientDetails['basic_info']['full_name'] }}
+
+        <div class="d-flex w-100 justify-content-end align-items-end">
+            <a class="btn btn-sm btn-primary mt-2 " href="{{ url()->previous() }}">
+                Вернуться в отделение
+            </a>
+        </div>
     </h6>
 
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
@@ -160,7 +166,7 @@
                         <div class="col-md-2 form-group">
                             <label for="document_id">Выберите документ</label>
                             <select id="document_id" name="document_id" class="form-control select2">
-                                <option disabled selected>— выберите —</option>
+                                <option disabled selected>Выберите</option>
                                 @foreach($documents as $document)
                                     <option value="{{ $document->id }}">
                                         {{ $document->title }}
@@ -168,11 +174,20 @@
                                 @endforeach
                             </select>
                         </div>
+
+                        <div class="col-md-2 form-group">
+                            <input type="hidden" id="patient_id" name="patient_id"
+                                   value="{{ $patientDetails['patient_id'] }}">
+
+
+                            <label class="form-label" for="basic-icon-birth-date"></label>
+                            <div class="input-group input-group-merge">
+                                <button type="submit" class="btn btn-primary">Добавить документ</button>
+                            </div>
+                        </div>
                     </div>
 
-                    <input type="hidden" id="patient_id" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
 
-                    <button type="submit" class="btn btn-primary mt-3">Добавить документ</button>
                 </form>
             </div>
         </div>
@@ -181,7 +196,7 @@
              class="collapse @if(request('department_id') || request('birth_date') || request('staff_id') || request('full_name')  || request('id')) show @endif">
             <div class="card-body">
                 <form method="GET" action="{{ route('patients.index') }}">
-                    <div class="row g-3">
+                    <div class="row g-3 align-items-center">
                         <div class="col-md-2 form-group">
                             <label class="form-label" for="id">ID</label>
                             <div class="input-group input-group-merge">
@@ -235,8 +250,14 @@
                                 </select>
                             </div>
                         @endforeach
+
+                        <div class="col-md-2">
+                            <label class="form-label" for="basic-icon-birth-date"></label>
+                            <div class="input-group input-group-merge">
+                                <button type="submit" class="btn btn-primary">Поиск</button>
+                            </div>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-3">Все отделения</button>
                 </form>
             </div>
         </div>
@@ -414,12 +435,6 @@
                     @endforelse
                     </tbody>
                 </table>
-
-                <div class="d-flex w-100 justify-content-end align-items-end">
-                    <a class="btn btn-sm btn-primary mt-2 " href="{{ url()->previous() }}">
-                        Вернуться в отделение
-                    </a>
-                </div>
             </div>
         </div>
     </div>
