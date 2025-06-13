@@ -112,7 +112,8 @@
                 </thead>
                 <tbody>
                 @foreach($medications as $medication)
-                    <tr>
+                    <tr onclick="location.href='{{ route('medications.show', $medication->id) }}'"
+                        class="cursor-pointer">
                         <td>{{ $medication->id }}</td>
                         <td>{{ $medication->name }}</td>
                         <td>{{ $medication->release_form }}</td>
@@ -123,17 +124,16 @@
 
                         <td>
                             <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('medications.show', $medication->id) }}'">
-                                    <i class="bx bx-show"></i></button>
-                                <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('medications.edit', $medication->id) }}'"><i
-                                        class="bx bx-edit"></i></button>
+                                <button class="btn btn-sm btn-warning"
+                                        onclick="location.href='{{ route('medications.edit', $medication->id) }}'">
+                                    Редактировать
+                                </button>
                                 <form action="{{ route('medications.destroy', $medication->id) }}" method="POST"
                                       style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
+                                    <button class="btn btn-sm btn-danger">
+                                        Удалить
                                     </button>
                                 </form>
                             </div>

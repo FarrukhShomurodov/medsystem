@@ -8,12 +8,6 @@
     <h6 class="py-3 breadcrumb-wrapper mb-4">
         <span class="text-muted fw-light"><a class="text-muted"
                                              href="{{ route('patients.index') }}">Пациент</a> /</span> {{ $patientDetails['basic_info']['full_name'] }}
-
-        <div class="d-flex w-100 justify-content-end align-items-end">
-            <a class="btn btn-sm btn-primary mt-2 " href="{{ url()->previous() }}">
-                Вернуться в отделение
-            </a>
-        </div>
     </h6>
 
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
@@ -81,9 +75,10 @@
 
                     <td>
                         <div class="d-inline-block text-nowrap">
-                            <button class="btn btn-sm btn-icon"
-                                    onclick="location.href='{{ route('patients.edit', $patient->id) }}'"><i
-                                    class="bx bx-edit"></i></button>
+                            <button class="btn btn-sm btn-warning"
+                                    onclick="location.href='{{ route('patients.edit', $patient->id) }}'">
+                                Редактировать
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -155,11 +150,6 @@
         </div>
 
         <div>
-            <button class="btn btn-link collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#filtersCollapse">
-                <i class="bx bx-filter-alt"></i> Фильтры
-            </button>
-
             <div class="ms-4">
                 <form id="select-document-form" method="GET" action="">
                     <div class="row g-3">
@@ -192,74 +182,75 @@
             </div>
         </div>
 
-        <div id="filtersCollapse"
-             class="collapse @if(request('department_id') || request('birth_date') || request('staff_id') || request('full_name')  || request('id')) show @endif">
-            <div class="card-body">
-                <form method="GET" action="{{ route('patients.index') }}">
-                    <div class="row g-3 align-items-center">
-                        <div class="col-md-2 form-group">
-                            <label class="form-label" for="id">ID</label>
-                            <div class="input-group input-group-merge">
-                                <input type="text" name="id" value="{{ request("id") }}"
-                                       id="id"
-                                       class="form-control"
-                                       placeholder="ID"/>
-                            </div>
-                        </div>
-
-                        <div class="col-md-2 form-group">
-                            <label class="form-label" for="full_name">ФИО</label>
-                            <div class="input-group input-group-merge">
-                                <input type="text" name="full_name" value="{{ request("full_name") }}"
-                                       id="full_name"
-                                       class="form-control"
-                                       placeholder="ФИО"/>
-                            </div>
-                        </div>
-
-                        <div class="col-md-2 form-group">
-                            <label class="form-label" for="basic-icon-birth-date">Дата рождения </label>
-                            <div class="input-group input-group-merge">
-                                    <span id="basic-icon-birth-date2" class="input-group-text"><i
-                                            class="bx bx-calendar"></i></span>
-                                <input type="text" name="birth_date" value="{{ request("birth_date") }}"
-                                       id="basic-icon-birth-date"
-                                       class="form-control flatpickr-date"
-                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2"/>
-                            </div>
-                        </div>
-
-                        @php
-                            $filters = [
-                                ['id' => 'department', 'label' => 'Отделения', 'items' => $departments],
-                            ];
-                        @endphp
-
-                        @foreach($filters as $filter)
-                            <div class="col-md-2 form-group">
-                                <label for="{{ $filter['id'] }}">{{ $filter['label'] }}</label>
-                                <select id="{{ $filter['id'] }}" name="{{ $filter['id'] }}_id"
-                                        class="form-control select2">
-                                    <option value="">Все</option>
-                                    @foreach($filter['items'] as $item)
-                                        <option value="{{ $item->id }}"
-                                            @selected(request("{$filter['id']}_id") == $item->id)>
-                                            {{ $item->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        @endforeach
-
-                        <div class="col-md-2">
-                            <label class="form-label" for="basic-icon-birth-date"></label>
-                            <div class="input-group input-group-merge">
-                                <button type="submit" class="btn btn-primary">Поиск</button>
-                            </div>
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <form method="GET" action="{{ route('patients.index') }}">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-2 form-group">
+                        <label class="form-label" for="id">ID</label>
+                        <div class="input-group input-group-merge">
+                            <input type="text" name="id" value="{{ request("id") }}"
+                                   id="id"
+                                   class="form-control"
+                                   placeholder="ID"/>
                         </div>
                     </div>
-                </form>
-            </div>
+
+                    <div class="col-md-2 form-group">
+                        <label class="form-label" for="full_name">ФИО</label>
+                        <div class="input-group input-group-merge">
+                            <input type="text" name="full_name" value="{{ request("full_name") }}"
+                                   id="full_name"
+                                   class="form-control"
+                                   placeholder="ФИО"/>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 form-group">
+                        <label class="form-label" for="basic-icon-birth-date">Дата рождения </label>
+                        <div class="input-group input-group-merge">
+                                    <span id="basic-icon-birth-date2" class="input-group-text"><i
+                                            class="bx bx-calendar"></i></span>
+                            <input type="text" name="birth_date" value="{{ request("birth_date") }}"
+                                   id="basic-icon-birth-date"
+                                   class="form-control flatpickr-date"
+                                   placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2"/>
+                        </div>
+                    </div>
+
+                    @php
+                        $filters = [
+                            ['id' => 'department', 'label' => 'Отделения', 'items' => $departments],
+                        ];
+                    @endphp
+
+                    @foreach($filters as $filter)
+                        <div class="col-md-2 form-group">
+                            <label for="{{ $filter['id'] }}">{{ $filter['label'] }}</label>
+                            <select id="{{ $filter['id'] }}" name="{{ $filter['id'] }}_id"
+                                    class="form-control select2">
+                                <option value="">Все</option>
+                                @foreach($filter['items'] as $item)
+                                    <option value="{{ $item->id }}"
+                                        @selected(request("{$filter['id']}_id") == $item->id)>
+                                        {{ $item->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endforeach
+
+                    <div class="col-md-2">
+                        <label class="form-label" for="basic-icon-birth-date"></label>
+                        <div class="input-group input-group-merge">
+                            <button type="submit" class="btn btn-primary">Поиск</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <a class="btn btn-sm btn-primary" href="{{ url()->previous() }}">
+                Вернуться в отделение
+            </a>
         </div>
 
         <div class="card-body">
@@ -342,7 +333,7 @@
                     @endphp
 
                     @forelse($groupedTimeline as $index => $event)
-                        <tr class="@if(!$event['is_main']) nested-item @endif">
+                        <tr class="@if(!$event['is_main'] || $event['type'] == 'examination_map') nested-item @endif">
                             <td>
                                 @if($event['is_main'])
                                     {{ $loop->iteration }}
@@ -352,7 +343,8 @@
                             <!-- Записи -->
                             <td>
                                 @if($event['type'] != 'diagnosis')
-                                    <div class="history-item" @if(!$event['is_main']) style="margin-left: 20px;" @endif>
+                                    <div class="history-item"
+                                         @if($event['is_main'] && $event['type'] !== 'examination_map') style="margin-left: 20px;" @endif>
                                         <div class="history-header"
                                              data-bs-toggle="modal"
                                              data-bs-target="#eventDetailModal"
@@ -361,7 +353,7 @@
                                             <div>
                                         <span class="history-title">
                                             @switch($event['type'])
-                                                @case('examination_map') Госпитализация @break
+                                                @case('examination_map') {{ $event['type'] === 'examination_map' && is_null($event['data']->end_date) ?  'Госпитализация (начало)' : 'Госпитализация (конец)' }} @break
                                                 @case('assignment') Направление @break
                                                 @case('service') Услуга @break
                                                 @case('patient_med_document') Мед. Документ @break

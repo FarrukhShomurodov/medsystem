@@ -54,14 +54,16 @@
 
                         <td>
                             <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('diseases.edit', $disease->id) }}'"><i
-                                        class="bx bx-edit"></i></button>
+                                <button class="btn btn-sm btn-warning"
+                                        onclick="location.href='{{ route('diseases.edit', $disease->id) }}'">
+                                    Редактировать
+                                </button>
                                 <form action="{{ route('diseases.destroy', $disease->id) }}" method="POST"
                                       style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
+                                    <button class="btn btn-sm btn-danger">
+                                        Удалить
                                     </button>
                                 </form>
                             </div>

@@ -75,14 +75,16 @@
                         </td>
                         <td>
                             <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('services.edit', $service->id) }}'"><i
-                                        class="bx bx-edit"></i></button>
+                                <button class="btn btn-sm btn-warning"
+                                        onclick="location.href='{{ route('services.edit', $service->id) }}'">
+                                    Редактировать
+                                </button>
                                 <form action="{{ route('services.destroy', $service->id) }}" method="POST"
                                       style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
+                                    <button class="btn btn-sm btn-danger">
+                                        Удалить
                                     </button>
                                 </form>
                             </div>

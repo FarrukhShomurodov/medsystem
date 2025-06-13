@@ -51,7 +51,7 @@
                 </thead>
                 <tbody>
                 @foreach($staffs as $staff)
-                    <tr>
+                    <tr onclick="location.href='{{ route('staffs.show', $staff->id) }}'" class="cursor-pointer">
                         <td>{{ $staff->id }}</td>
                         <td>{{ $staff->name }}</td>
                         <td>{{ $staff->last_name }}</td>
@@ -68,17 +68,16 @@
                         </td>
                         <td>
                             <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('staffs.show', $staff->id) }}'"><i
-                                        class="bx bx-show"></i></button>
-                                <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('staffs.edit', $staff->id) }}'"><i
-                                        class="bx bx-edit"></i></button>
+                                <button class="btn btn-sm btn-warning"
+                                        onclick="location.href='{{ route('staffs.edit', $staff->id) }}'">
+                                    Редактировать
+                                </button>
                                 <form action="{{ route('staffs.destroy', $staff->id) }}" method="POST"
                                       style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
+                                    <button class="btn btn-sm btn-danger">
+                                        Удалить
                                     </button>
                                 </form>
                             </div>

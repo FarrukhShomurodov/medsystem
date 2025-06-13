@@ -43,19 +43,22 @@
                     <tr class="{{ $rowClass }}">
                         <td>{{ $accounting->id }}</td>
                         <td>
-                            <a class="text-primary" href="{{ route('warehouses.show', $accounting->warehouse->id) }}">{{ $accounting->warehouse->name }}</a>
+                            <a class="text-primary"
+                               href="{{ route('warehouses.show', $accounting->warehouse->id) }}">{{ $accounting->warehouse->name }}</a>
                         </td>
                         <td>
-                            <a class="text-primary" href="{{ route('medications.show', $accounting->medication->id) }}">{{ $accounting->medication->name }}</a>
+                            <a class="text-primary"
+                               href="{{ route('medications.show', $accounting->medication->id) }}">{{ $accounting->medication->name }}</a>
                         </td>
                         <td>{{ $accounting->quantity }}</td>
                         <td>{{ $accounting->expiration_date }}</td>
                         <td>{{ $accounting->date_of_receipt }}</td>
                         <td>{{ $accounting->batch_number }}</td>
                         <td>
-                            <button class="btn btn-sm {{ $rowClass }} btn-icon"
+                            <button class="btn btn-sm btn-secondary"
                                     onclick="location.href='{{ route('warehouse.medication.show', $accounting->id) }}'">
-                                <i class="bx bx-show"></i></button>
+                                Просмотреть
+                            </button>
                         </td>
                     </tr>
                 @endforeach

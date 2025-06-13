@@ -55,14 +55,16 @@
                         <td>
                             @if(!collect(range(1, 21))->contains($type->id))
                                 <div class="d-inline-block text-nowrap">
-                                    <button class="btn btn-sm btn-icon"
-                                            onclick="location.href='{{ route('service.types.edit', $type->id) }}'"><i
-                                            class="bx bx-edit"></i></button>
+                                    <button class="btn btn-sm btn-warning"
+                                            onclick="location.href='{{ route('service.types.edit', $type->id) }}'">
+                                        Редактировать
+                                    </button>
                                     <form action="{{ route('service.types.destroy', $type->id) }}" method="POST"
                                           style="display:inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
+                                        <button class="btn btn-sm btn-danger">
+                                            Удалить
                                         </button>
                                     </form>
                                 </div>

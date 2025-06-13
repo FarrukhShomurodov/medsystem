@@ -128,7 +128,7 @@
                 </thead>
                 <tbody>
                 @foreach($patients as $patient)
-                    <tr>
+                    <tr onclick="location.href='{{ route('patients.show', $patient->id) }}'" class="cursor-pointer">
                         <td>{{ $patient->id }}</td>
                         <td>{{ $patient->created_at }}</td>
                         <td>{{ $patient->examinationMaps()->first()?->department->name ?? '-' }}</td>
@@ -144,20 +144,19 @@
 
                         <td>
                             <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('patients.show', $patient->id) }}'"><i
-                                        class="bx bx-show"></i></button>
-                                <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('patients.edit', $patient->id) }}'"><i
-                                        class="bx bx-edit"></i></button>
-                                <form action="{{ route('patients.destroy', $patient->id) }}" method="POST"
-                                      style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
-                                    </button>
-                                </form>
+                                <button class="btn btn-sm btn-warning"
+                                        onclick="location.href='{{ route('patients.edit', $patient->id) }}'">
+                                    Редактировать
+                                </button>
                             </div>
+
+                            {{--                                <form action="{{ route('patients.destroy', $patient->id) }}" method="POST"--}}
+                            {{--                                      style="display:inline;">--}}
+                            {{--                                    @csrf--}}
+                            {{--                                    @method('DELETE')--}}
+                            {{--                                    <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>--}}
+                            {{--                                    </button>--}}
+                            {{--                                </form>--}}
                         </td>
                     </tr>
                 @endforeach

@@ -49,23 +49,22 @@
                 </thead>
                 <tbody>
                 @foreach($warehouses as $warehouse)
-                    <tr>
+                    <tr onclick="location.href='{{ route('warehouses.show', $warehouse->id) }}'" class="cursor-pointer">
                         <td>{{ $warehouse->id }}</td>
                         <td>{{ $warehouse->name }}</td>
                         <td>{{ $warehouse->type->name }}</td>
                         <td>
                             <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('warehouses.show', $warehouse->id) }}'">
-                                    <i class="bx bx-show"></i></button>
-                                <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('warehouses.edit', $warehouse->id) }}'"><i
-                                        class="bx bx-edit"></i></button>
+                                <button class="btn btn-sm btn-warning"
+                                        onclick="location.href='{{ route('warehouses.edit', $warehouse->id) }}'">
+                                    Редактировать
+                                </button>
                                 <form action="{{ route('warehouses.destroy', $warehouse->id) }}" method="POST"
                                       style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
+                                    <button class="btn btn-sm btn-danger">
+                                        Удалить
                                     </button>
                                 </form>
                             </div>

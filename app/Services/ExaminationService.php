@@ -35,12 +35,14 @@ class ExaminationService
             $map = ExaminationMap::query()->create($validated);
 
             $patient = $map->patient;
-
-            $patient->documentResponse()->where('document_id', 1)->latest()->first()->update(
-                [
-                    'examination_map_id' => $map->id
-                ]
-            );
+            
+            if ($patient->documentResponse()->where('document_id', 1)->latest()->first()) {
+                $patient->documentResponse()->where('document_id', 1)->latest()->first()->update(
+                    [
+                        'examination_map_id' => $map->id
+                    ]
+                );
+            }
 
 //            if (isset($validated['laboratory_id'])) {
 //                $analyzeData = [

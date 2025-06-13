@@ -55,97 +55,53 @@
     </div>
 
 
-    <div class="card mt-3">
-        <div class="card-datatable table-responsive col-12">
-            <div class="card-header">
-                <h5>Обследования</h5>
-            </div>
-            @if($mapDetails['examinations']['analyzes']->isNotEmpty())
-                @foreach($mapDetails['examinations']['analyzes'] as $analyze)
-                    @if(!empty($analyze['results']))
-                        <table class="datatables-users table border-top">
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Тип анализа</th>
-                                <th>Единица измерения</th>
-                                <th>Значение</th>
-                                <th>Референсный диапазон</th>
-                                <th>Комментарий</th>
-                                <th>Дата</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($analyze['results'] as $result)
-                                <tr>
-                                    <td>{{ $result['id'] }}</td>
-                                    <td>{{ $result['type']->name }}</td>
-                                    <td>{{ $result['unit'] }}</td>
-                                    <td>{{ $result['value'] }}</td>
-                                    <td>{{ $result['reference_range'] }}</td>
-                                    <td>{{ $result['comment'] }}</td>
-                                    <td>{{ $analyze['date'] }}</td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    @else
-                        <div class="card-body">
-                            <p>Нет данных</p>
-                        </div>
-                    @endif
-                @endforeach
-            @else
-                <div class="card-body">
-                    <p>Данные обследований отсутствуют.</p>
-                </div>
-            @endif
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-datatable table-responsive col-12">
-            <div class="card-header">
-                <h5>Услуги</h5>
-            </div>
-            @if($mapDetails['examinations']['services']->isNotEmpty())
-                <table class="datatables-users table border-top">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Услуга</th>
-                        <th>Дата услуги</th>
-                        <th>Время услуги</th>
-                        <th>Место оказания</th>
-                        <th>Результаты</th>
-                        <th>Статус</th>
-                        <th>Статус оплаты</th>
-                        <th>Страховая компания</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($mapDetails['examinations']['services'] as $service)
-                        <tr>
-                            <td>{{ $service->id }}</td>
-                            <td>{{ $service->service->name }}</td>
-                            <td>{{ $service->service_date }}</td>
-                            <td>{{ $service->service_time }}</td>
-                            <td>{{ $service->place }}</td>
-                            <td>{{ $service->result }}</td>
-                            <td> {!! $service->getStatusBadge() !!} </td>
-                            <td>{{ $service->payment }}</td>
-                            <td>{{ $service->insurance_policy }}</td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            @else
-                <div class="card-body">
-                    <p>Данные услуги отсутствуют.</p>
-                </div>
-            @endif
-        </div>
-    </div>
+    {{--    <div class="card mt-3">--}}
+    {{--        <div class="card-datatable table-responsive col-12">--}}
+    {{--            <div class="card-header">--}}
+    {{--                <h5>Обследования</h5>--}}
+    {{--            </div>--}}
+    {{--            @if($mapDetails['examinations']['analyzes']->isNotEmpty())--}}
+    {{--                @foreach($mapDetails['examinations']['analyzes'] as $analyze)--}}
+    {{--                    @if(!empty($analyze['results']))--}}
+    {{--                        <table class="datatables-users table border-top">--}}
+    {{--                            <thead>--}}
+    {{--                            <tr>--}}
+    {{--                                <th>ID</th>--}}
+    {{--                                <th>Тип анализа</th>--}}
+    {{--                                <th>Единица измерения</th>--}}
+    {{--                                <th>Значение</th>--}}
+    {{--                                <th>Референсный диапазон</th>--}}
+    {{--                                <th>Комментарий</th>--}}
+    {{--                                <th>Дата</th>--}}
+    {{--                            </tr>--}}
+    {{--                            </thead>--}}
+    {{--                            <tbody>--}}
+    {{--                            @foreach($analyze['results'] as $result)--}}
+    {{--                                <tr>--}}
+    {{--                                    <td>{{ $result['id'] }}</td>--}}
+    {{--                                    <td>{{ $result['type']->name }}</td>--}}
+    {{--                                    <td>{{ $result['unit'] }}</td>--}}
+    {{--                                    <td>{{ $result['value'] }}</td>--}}
+    {{--                                    <td>{{ $result['reference_range'] }}</td>--}}
+    {{--                                    <td>{{ $result['comment'] }}</td>--}}
+    {{--                                    <td>{{ $analyze['date'] }}</td>--}}
+    {{--                                </tr>--}}
+    {{--                            @endforeach--}}
+    {{--                            </tbody>--}}
+    {{--                        </table>--}}
+    {{--                    @else--}}
+    {{--                        <div class="card-body">--}}
+    {{--                            <p>Нет данных</p>--}}
+    {{--                        </div>--}}
+    {{--                    @endif--}}
+    {{--                @endforeach--}}
+    {{--            @else--}}
+    {{--                <div class="card-body">--}}
+    {{--                    <p>Данные обследований отсутствуют.</p>--}}
+    {{--                </div>--}}
+    {{--            @endif--}}
+    {{--        </div>--}}
+    {{--    </div>--}}
 
     <div class="card mt-3">
         <div class="card-datatable table-responsive col-12">

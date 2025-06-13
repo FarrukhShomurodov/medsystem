@@ -49,23 +49,23 @@
                 </thead>
                 <tbody>
                 @foreach($surveys as $survey)
-                    <tr style="background-color: {{ $survey->color }}">
+                    <tr style="background-color: {{ $survey->color }}"
+                        onclick="location.href='{{ route('surveys.show', $survey->id) }}'" class="cursor-pointer">
                         <td>{{ $survey->id }}</td>
                         <td>{{ $survey->title }}</td>
                         <td>{{ $survey->type->name }}</td>
                         <td>
                             <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('surveys.show', $survey->id) }}'">
-                                    <i class="bx bx-show"></i></button>
-                                <button class="btn btn-sm btn-icon"
-                                        onclick="location.href='{{ route('surveys.edit', $survey->id) }}'"><i
-                                        class="bx bx-edit"></i></button>
+                                <button class="btn btn-sm btn-warning"
+                                        onclick="location.href='{{ route('surveys.edit', $survey->id) }}'">
+                                    Редактировать
+                                </button>
                                 <form action="{{ route('surveys.destroy', $survey->id) }}" method="POST"
                                       style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>
+                                    <button class="btn btn-sm btn-danger">
+                                        Удалить
                                     </button>
                                 </form>
                             </div>

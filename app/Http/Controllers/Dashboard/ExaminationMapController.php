@@ -80,14 +80,14 @@ class ExaminationMapController
                 'general_anamnesises' => $map->general_anamnesises,
             ],
             'examinations' => [
-                'analyzes' => $map->analyze->map(function ($analyze) {
-                    return [
-                        'id' => $analyze->id,
-                        'type' => $analyze->type,
-                        'date' => $analyze->created_at->format('d.m.Y'),
-                        'results' => $analyze->results,
-                    ];
-                }),
+//                'analyzes' => $map->analyze->map(function ($analyze) {
+//                    return [
+//                        'id' => $analyze->id,
+//                        'type' => $analyze->type,
+//                        'date' => $analyze->created_at->format('d.m.Y'),
+//                        'results' => $analyze->results,
+//                    ];
+//                }),
                 'services' => $map->services,
                 'surveyResponses' => $map->surveyResponses,
                 'medications' => $map->medications,
@@ -115,8 +115,22 @@ class ExaminationMapController
         $staffs = $this->scopeAvailableStaffOnDate();
         $services = Service::query()->where('is_active', true)->get();
 
-        return view('admin.maps.create', compact('doctors', 'institutions', 'patient', 'laboratories', 'types', 'equipments', 'methods', 'procedures', 'medications', 'staffs',
-            'services'));
+        return view(
+            'admin.maps.create',
+            compact(
+                'doctors',
+                'institutions',
+                'patient',
+                'laboratories',
+                'types',
+                'equipments',
+                'methods',
+                'procedures',
+                'medications',
+                'staffs',
+                'services'
+            )
+        );
     }
 
     public function store(ExaminationMapRequest $request): RedirectResponse
@@ -124,7 +138,10 @@ class ExaminationMapController
         $validated = $request->validated();
         $this->service->store((array)$validated);
 
-        return redirect()->route('patients.show', $validated['patient_id'])->with('success', 'Карта обследования успешно добавлена!');
+        return redirect()->route('patients.show', $validated['patient_id'])->with(
+            'success',
+            'Карта обследования успешно добавлена!'
+        );
     }
 
     public function edit(ExaminationMap $map): View
@@ -146,8 +163,24 @@ class ExaminationMapController
         $surveys = Survey::query()->get();
         $services = Service::query()->where('is_active', true)->get();
 
-        return view('admin.maps.edit', compact('map', 'doctors', 'surveys', 'institutions', 'patients', 'laboratories', 'types', 'equipments', 'methods', 'procedures', 'medications', 'staffs',
-            'services'));
+        return view(
+            'admin.maps.edit',
+            compact(
+                'map',
+                'doctors',
+                'surveys',
+                'institutions',
+                'patients',
+                'laboratories',
+                'types',
+                'equipments',
+                'methods',
+                'procedures',
+                'medications',
+                'staffs',
+                'services'
+            )
+        );
     }
 
     public function update(ExaminationMapRequest $request, ExaminationMap $map): RedirectResponse
@@ -161,12 +194,17 @@ class ExaminationMapController
         $allFieldsFilled = collect($requiredFields)->every(fn($field) => !empty($validated[$field]));
 
         if ($anyFieldFilled && !$allFieldsFilled) {
-            return redirect()->back()->withErrors('Заполните все обязательные поля, кроме медицинского персонала, или не заполняйте их вообще!');
+            return redirect()->back()->withErrors(
+                'Заполните все обязательные поля, кроме медицинского персонала, или не заполняйте их вообще!'
+            );
         }
 
         $this->service->update($map, (array)$validated);
 
-        return redirect()->route('patients.show', $validated['patient_id'])->with('success', 'Карта обследования  успешно обновлена!');
+        return redirect()->route('patients.show', $validated['patient_id'])->with(
+            'success',
+            'Карта обследования  успешно обновлена!'
+        );
     }
 
     public function destroy(ExaminationMap $map): RedirectResponse
