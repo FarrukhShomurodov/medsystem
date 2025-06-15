@@ -430,7 +430,7 @@
                             </td>
 
                             <!-- Диагноз -->
-                            <td>
+                            <td class="@if(!$event['is_main']) nested-item @endif">
                                 @if($event['type'] == 'diagnosis')
                                     <div class="history-item" @if(!$event['is_main']) style="margin-left: 20px;" @endif>
                                         <div class="history-header"
@@ -440,7 +440,7 @@
                                              data-type='{{ $event['type'] }}'>
                                             <div>
                                                 <span class="history-title">
-                                                    {{ \Illuminate\Support\Str::limit($event['data']->description, 10, '...')}}
+                                                    {{ \Illuminate\Support\Str::limit($event['data']->description, 10, '...') }}
                                                 </span>
                                             </div>
                                         </div>
