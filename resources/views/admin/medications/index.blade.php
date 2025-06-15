@@ -112,15 +112,14 @@
                 </thead>
                 <tbody>
                 @foreach($medications as $medication)
-                    <tr onclick="location.href='{{ route('medications.show', $medication->id) }}'"
-                        class="cursor-pointer">
-                        <td>{{ $medication->id }}</td>
-                        <td>{{ $medication->name }}</td>
-                        <td>{{ $medication->release_form }}</td>
-                        <td>{{ $medication->dosage }}</td>
-                        <td>{{ $medication->manufacturer->name }}</td>
-                        <td>{{ $medication->group->name }}</td>
-                        <td>{{ $medication->registration_number }}</td>
+                    <tr class="cursor-pointer">
+                        <td onclick="location.href='{{ route('medications.show', $medication->id) }}'">{{ $medication->id }}</td>
+                        <td onclick="location.href='{{ route('medications.show', $medication->id) }}'">{{ $medication->name }}</td>
+                        <td onclick="location.href='{{ route('medications.show', $medication->id) }}'">{{ $medication->release_form }}</td>
+                        <td onclick="location.href='{{ route('medications.show', $medication->id) }}'">{{ $medication->dosage }}</td>
+                        <td onclick="location.href='{{ route('medications.show', $medication->id) }}'">{{ $medication->manufacturer->name }}</td>
+                        <td onclick="location.href='{{ route('medications.show', $medication->id) }}'">{{ $medication->group->name }}</td>
+                        <td onclick="location.href='{{ route('medications.show', $medication->id) }}'">{{ $medication->registration_number }}</td>
 
                         <td>
                             <div class="d-inline-block text-nowrap">

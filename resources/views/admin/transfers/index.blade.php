@@ -39,10 +39,10 @@
                 <tbody>
                 @foreach($transfers as $transfer)
                     <tr>
-                        <td>{{ $transfer->id }}</td>
-                        <td>{{ $transfer->fromWarehouse->name }}</td>
-                        <td>{{ $transfer->toPharmacy->name }}</td>
-                        <td>
+                        <td onclick="location.href='{{ route('transfer.medications', $transfer->id) }}'">{{ $transfer->id }}</td>
+                        <td onclick="location.href='{{ route('transfer.medications', $transfer->id) }}'">{{ $transfer->fromWarehouse->name }}</td>
+                        <td onclick="location.href='{{ route('transfer.medications', $transfer->id) }}'">{{ $transfer->toPharmacy->name }}</td>
+                        <td onclick="location.href='{{ route('transfer.medications', $transfer->id) }}'">
                             <select class="form-select update-status"
                                     data-transfer-id="{{ $transfer->id }}">
                                 <option value="pending" {{ $transfer->status == 'pending' ? 'selected' : '' }}>В
@@ -53,12 +53,6 @@
                                 </option>
                                 {{--                                <option value="canceled" {{ $transfer->status == 'canceled' ? 'selected' : '' }}>Отменен</option>--}}
                             </select>
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-secondary"
-                                    onclick="location.href='{{ route('transfer.medications', $transfer->id) }}'">
-                                Просмотреть
-                            </button>
                         </td>
                         <td>
                             <div class="d-inline-block text-nowrap">

@@ -128,19 +128,22 @@
                 </thead>
                 <tbody>
                 @foreach($patients as $patient)
-                    <tr onclick="location.href='{{ route('patients.show', $patient->id) }}'" class="cursor-pointer">
-                        <td>{{ $patient->id }}</td>
-                        <td>{{ $patient->created_at }}</td>
-                        <td>{{ $patient->examinationMaps()->first()?->department->name ?? '-' }}</td>
-                        <td>
-                            <a href="{{ route('patients.show', $patient->id) }}"> {{ $patient->first_name }} {{ $patient->last_name }} {{ $patient->middle_name }} </a>
+                    <tr class="cursor-pointer">
+                        <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $count++ }}</td>
+                        <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $patient->created_at }}</td>
+                        <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
+                            {{ $patient->examinationMaps()->first()?->department->name ?? '-' }}
                         </td>
-                        <td>{{ $patient->birth_date }} / {{ \Carbon\Carbon::parse($patient->birth_date)->age }}</td>
-                        <td>-</td>
-                        <td>{{ $patient->examinationMaps()->first()?->admission_diagnosis_description ?? '-' }}</td>
-                        <td>-</td>
-                        <td>{{ $patient->examinationMaps()->first()?->doctor->name ?? '-' }}</td>
-                        <td>{{ \Carbon\Carbon::parse($patient->examinationMaps()->first()?->admission_date)->age }}</td>
+                        <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
+                            {{ $patient->first_name }} {{ $patient->last_name }} {{ $patient->middle_name }}
+                        </td>
+                        <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $patient->birth_date }}
+                            / {{ \Carbon\Carbon::parse($patient->birth_date)->age }}</td>
+                        <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">-</td>
+                        <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $patient->examinationMaps()->first()?->admission_diagnosis_description ?? '-' }}</td>
+                        <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">-</td>
+                        <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $patient->examinationMaps()->first()?->doctor->name ?? '-' }}</td>
+                        <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ \Carbon\Carbon::parse($patient->examinationMaps()->first()?->admission_date)->age }}</td>
 
                         <td>
                             <div class="d-inline-block text-nowrap">

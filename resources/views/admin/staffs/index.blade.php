@@ -51,7 +51,7 @@
                 </thead>
                 <tbody>
                 @foreach($staffs as $staff)
-                    <tr onclick="location.href='{{ route('staffs.show', $staff->id) }}'" class="cursor-pointer">
+                    <tr class="cursor-pointer">
                         <td>{{ $staff->id }}</td>
                         <td>{{ $staff->name }}</td>
                         <td>{{ $staff->last_name }}</td>

@@ -49,10 +49,10 @@
                 </thead>
                 <tbody>
                 @foreach($warehouses as $warehouse)
-                    <tr onclick="location.href='{{ route('warehouses.show', $warehouse->id) }}'" class="cursor-pointer">
-                        <td>{{ $warehouse->id }}</td>
-                        <td>{{ $warehouse->name }}</td>
-                        <td>{{ $warehouse->type->name }}</td>
+                    <tr class="cursor-pointer">
+                        <td onclick="location.href='{{ route('warehouses.show', $warehouse->id) }}'">{{ $warehouse->id }}</td>
+                        <td onclick="location.href='{{ route('warehouses.show', $warehouse->id) }}'">{{ $warehouse->name }}</td>
+                        <td onclick="location.href='{{ route('warehouses.show', $warehouse->id) }}'">{{ $warehouse->type->name }}</td>
                         <td>
                             <div class="d-inline-block text-nowrap">
                                 <button class="btn btn-sm btn-warning"

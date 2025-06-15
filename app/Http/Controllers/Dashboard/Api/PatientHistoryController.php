@@ -23,6 +23,8 @@ class PatientHistoryController extends Controller
             return response()->json(['error' => 'Type and ID parameters are required'], 400);
         }
 
+        $type = ($type == 'examination_map_start' || $type == 'examination_map_end') ? 'examination_map' : 'examination_map';
+
         // Получаем данные в зависимости от типа
         switch ($type) {
             case 'examination_map':

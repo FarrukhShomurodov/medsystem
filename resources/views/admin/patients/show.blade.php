@@ -57,21 +57,22 @@
             @endphp
 
             @foreach($lastViews as $patient)
-                <tr class="cursor-pointer" onclick="location.href='{{ route('patients.show', $patient->id) }}'">
-                    <td>{{ $count++ }}</td>
-                    <td>{{ $patient->created_at }}</td>
-                    <td>
+                <tr class="cursor-pointer">
+                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $count++ }}</td>
+                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $patient->created_at }}</td>
+                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
                         {{ $patient->examinationMaps()->first()?->department->name ?? '-' }}
                     </td>
-                    <td>
-                        <a href="{{ route('patients.show', $patient->id) }}"> {{ $patient->first_name }} {{ $patient->last_name }} {{ $patient->middle_name }} </a>
+                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
+                        {{ $patient->first_name }} {{ $patient->last_name }} {{ $patient->middle_name }}
                     </td>
-                    <td>{{ $patient->birth_date }} / {{ \Carbon\Carbon::parse($patient->birth_date)->age }}</td>
-                    <td>-</td>
-                    <td>{{ $patient->examinationMaps()->first()?->admission_diagnosis_description ?? '-' }}</td>
-                    <td>-</td>
-                    <td>{{ $patient->examinationMaps()->first()?->doctor->name ?? '-' }}</td>
-                    <td>{{ \Carbon\Carbon::parse($patient->examinationMaps()->first()?->admission_date)->age }}</td>
+                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $patient->birth_date }}
+                        / {{ \Carbon\Carbon::parse($patient->birth_date)->age }}</td>
+                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">-</td>
+                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $patient->examinationMaps()->first()?->admission_diagnosis_description ?? '-' }}</td>
+                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">-</td>
+                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $patient->examinationMaps()->first()?->doctor->name ?? '-' }}</td>
+                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ \Carbon\Carbon::parse($patient->examinationMaps()->first()?->admission_date)->age }}</td>
 
                     <td>
                         <div class="d-inline-block text-nowrap">
@@ -280,7 +281,23 @@
 
                             // Если это госпитализация, добавляем ее первой
                             if ($event['type'] === 'examination_map') {
-                                $groupedTimeline->push($item);
+                                  $groupedTimeline->push([
+                                        'type'       => 'examination_map_start',
+                                        'date'       => $event['date'],
+                                        'data'       => $event['data'],
+                                        'is_main'    => true,
+                                        'parent_id'  => null,
+                                    ]);
+
+                                 if ($event['end_date']) {
+                                    $groupedTimeline->push([
+                                        'type'       => 'examination_map_end',
+                                        'date'       => $event['end_date'],
+                                        'data'       => $event['data'],
+                                        'is_main'    => true,
+                                        'parent_id'  => null,
+                                    ]);
+                                }
 
                                 // Добавляем связанные элементы как дочерние
                                 foreach ($event['data']->services as $service) {
@@ -333,7 +350,7 @@
                     @endphp
 
                     @forelse($groupedTimeline as $index => $event)
-                        <tr class="@if(!$event['is_main'] || $event['type'] == 'examination_map') nested-item @endif">
+                        <tr class="@if(!$event['is_main'] || $event['type'] == 'examination_map_start' || $event['type'] == 'examination_map_end') nested-item @endif">
                             <td>
                                 @if($event['is_main'])
                                     {{ $loop->iteration }}
@@ -343,30 +360,44 @@
                             <!-- Записи -->
                             <td>
                                 <div class="history-item"
-                                     @if($event['is_main'] && $event['type'] !== 'examination_map') style="margin-left: 20px;" @endif>
+                                     @if(!$event['is_main'] || $event['type'] !== 'examination_map_start' || $event['type'] !== 'examination_map_end') style="margin-left: 20px;" @endif>
                                     <div class="history-header"
                                          data-bs-toggle="modal"
                                          data-bs-target="#eventDetailModal"
                                          data-id='{{ $event['data']->id }}'
                                          data-type='{{ $event['type'] }}'>
                                         <div>
-                                        <span class="history-title">
-                                            @switch($event['type'])
-                                                @case('examination_map') {{ $event['type'] === 'examination_map' && is_null($event['data']->end_date) ?  'Госпитализация (начало)' : 'Госпитализация (конец)' }} @break
-                                                @case('assignment') Направление @break
-                                                @case('service') Услуга @break
-                                                @case('patient_med_document') Мед. Документ @break
-                                                @case('reception') Прием @break
-                                                @case('document') Документ @break
-                                                @case('diagnosis') {{ $event['data']->date }} @break
-                                            @endswitch
-                                        </span>
+                        <span class="history-title">
+                            @switch($event['type'])
+                                @case('examination_map_start')
+                                    Госпитализация (начало)
+                                    @break
+                                @case('examination_map_end')
+                                    Госпитализация (конец)
+                                    @break
+                                @case('assignment')
+                                    Направление
+                                    @break
+                                @case('service')
+                                    Услуга
+                                    @break
+                                @case('patient_med_document')
+                                    Мед. Документ
+                                    @break
+                                @case('reception')
+                                    Прием
+                                    @break
+                                @case('document')
+                                    Документ
+                                    @break
+                                @case('diagnosis')
+                                    {{ \Illuminate\Support\Str::limit($event['data']->description, 10, '...') }}
+                                    @break
+                            @endswitch
+                        </span>
                                             <span class="history-date">
-                                            {{ \Carbon\Carbon::parse($event['date'])->format('d.m.Y') }}
-                                                @if($event['type'] === 'examination_map' && $event['data']->end_date)
-                                                    - {{ \Carbon\Carbon::parse($event['data']->end_date)->format('d.m.Y') }}
-                                                @endif
-                                        </span>
+                            {{ \Carbon\Carbon::parse($event['date'])->format('d.m.Y') }}
+                        </span>
                                         </div>
                                     </div>
                                 </div>
