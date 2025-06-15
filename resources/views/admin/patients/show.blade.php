@@ -342,15 +342,14 @@
 
                             <!-- Записи -->
                             <td>
-                                @if($event['type'] != 'diagnosis')
-                                    <div class="history-item"
-                                         @if($event['is_main'] && $event['type'] !== 'examination_map') style="margin-left: 20px;" @endif>
-                                        <div class="history-header"
-                                             data-bs-toggle="modal"
-                                             data-bs-target="#eventDetailModal"
-                                             data-id='{{ $event['data']->id }}'
-                                             data-type='{{ $event['type'] }}'>
-                                            <div>
+                                <div class="history-item"
+                                     @if($event['is_main'] && $event['type'] !== 'examination_map') style="margin-left: 20px;" @endif>
+                                    <div class="history-header"
+                                         data-bs-toggle="modal"
+                                         data-bs-target="#eventDetailModal"
+                                         data-id='{{ $event['data']->id }}'
+                                         data-type='{{ $event['type'] }}'>
+                                        <div>
                                         <span class="history-title">
                                             @switch($event['type'])
                                                 @case('examination_map') {{ $event['type'] === 'examination_map' && is_null($event['data']->end_date) ?  'Госпитализация (начало)' : 'Госпитализация (конец)' }} @break
@@ -359,18 +358,18 @@
                                                 @case('patient_med_document') Мед. Документ @break
                                                 @case('reception') Прием @break
                                                 @case('document') Документ @break
+                                                @case('diagnosis') {{ $event['data']->date }} @break
                                             @endswitch
                                         </span>
-                                                <span class="history-date">
+                                            <span class="history-date">
                                             {{ \Carbon\Carbon::parse($event['date'])->format('d.m.Y') }}
-                                                    @if($event['type'] === 'examination_map' && $event['data']->end_date)
-                                                        - {{ \Carbon\Carbon::parse($event['data']->end_date)->format('d.m.Y') }}
-                                                    @endif
+                                                @if($event['type'] === 'examination_map' && $event['data']->end_date)
+                                                    - {{ \Carbon\Carbon::parse($event['data']->end_date)->format('d.m.Y') }}
+                                                @endif
                                         </span>
-                                            </div>
                                         </div>
                                     </div>
-                                @endif
+                                </div>
                             </td>
 
                             <!-- Физические показатели -->
@@ -410,7 +409,7 @@
                                              data-type='{{ $event['type'] }}'>
                                             <div>
                                                 <span class="history-title">
-                                                    Диагноз
+                                                    {{ \Illuminate\Support\Str::limit($event['data']->description, 10, '...')}}
                                                 </span>
                                             </div>
                                         </div>
