@@ -128,7 +128,7 @@
                 </thead>
                 <tbody>
                 @foreach($patients as $patient)
-                    <tr>
+                    <tr class="pointer-event">
                         <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $patient->created_at }}</td>
                         <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
                             {{ $patient->examinationMaps()->first()?->department->name ?? '-' }}

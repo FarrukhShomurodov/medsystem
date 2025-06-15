@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Patient;
 use App\Models\PatientDiagnosis;
 
 class PatientDiagnosisService
@@ -11,6 +12,14 @@ class PatientDiagnosisService
      */
     public function store(array $validated): PatientDiagnosis
     {
+        $patient = Patient::find($validated['patient_id']);
+
+        if ($patient->examinationMaps->where('is_active', true)->isEmpty()) {
+            unset($validated['examination_map_id']);
+        } else {
+            $validated['examination_map_id'] = $patient->examinationMaps()->where('is_active', true)->first()->id;
+        }
+
         return PatientDiagnosis::query()->create($validated);
     }
 

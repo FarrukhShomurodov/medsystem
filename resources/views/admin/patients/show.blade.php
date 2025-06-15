@@ -310,6 +310,16 @@
                                     ]);
                                 }
 
+                                foreach ($event['data']->diagnosises as $diagnosis) {
+                                    $groupedTimeline->push([
+                                        'type' => 'diagnosis',
+                                        'date' => $diagnosis->created_at,
+                                        'data' => $diagnosis,
+                                        'is_main' => false,
+                                        'parent_id' => $event['data']->id
+                                    ]);
+                                }
+
                                 foreach ($event['data']->receptions as $reception) {
                                     $groupedTimeline->push([
                                         'type' => 'reception',
@@ -330,14 +340,14 @@
                                     ]);
                                 }
 
-                                  foreach ($event['data']->documentResponse as $response) {
-                                    $groupedTimeline->push([
-                                        'type' => 'document',
-                                        'date' => $response->created_at,
-                                        'data' => $response,
-                                        'is_main' => false,
-                                        'parent_id' => $event['data']->id
-                                    ]);
+                              foreach ($event['data']->documentResponse as $response) {
+                                $groupedTimeline->push([
+                                    'type' => 'document',
+                                    'date' => $response->created_at,
+                                    'data' => $response,
+                                    'is_main' => false,
+                                    'parent_id' => $event['data']->id
+                                ]);
                                 }
                             } else {
                                 // Добавляем независимые элементы
@@ -367,37 +377,37 @@
                                          data-id='{{ $event['data']->id }}'
                                          data-type='{{ $event['type'] }}'>
                                         <div>
-                        <span class="history-title">
-                            @switch($event['type'])
-                                @case('examination_map_start')
-                                    Госпитализация (начало)
-                                    @break
-                                @case('examination_map_end')
-                                    Госпитализация (конец)
-                                    @break
-                                @case('assignment')
-                                    Направление
-                                    @break
-                                @case('service')
-                                    Услуга
-                                    @break
-                                @case('patient_med_document')
-                                    Мед. Документ
-                                    @break
-                                @case('reception')
-                                    Прием
-                                    @break
-                                @case('document')
-                                    Документ
-                                    @break
-                                @case('diagnosis')
-                                    {{ \Illuminate\Support\Str::limit($event['data']->description, 10, '...') }}
-                                    @break
-                            @endswitch
-                        </span>
+                                <span class="history-title">
+                                    @switch($event['type'])
+                                        @case('examination_map_start')
+                                            Госпитализация (начало)
+                                            @break
+                                        @case('examination_map_end')
+                                            Госпитализация (конец)
+                                            @break
+                                        @case('assignment')
+                                            Направление
+                                            @break
+                                        @case('service')
+                                            Услуга
+                                            @break
+                                        @case('patient_med_document')
+                                            Мед. Документ
+                                            @break
+                                        @case('reception')
+                                            Прием
+                                            @break
+                                        @case('document')
+                                            Документ
+                                            @break
+                                        @case('diagnosis')
+                                            sdfsa
+                                            @break
+                                    @endswitch
+                                </span>
                                             <span class="history-date">
-                            {{ \Carbon\Carbon::parse($event['date'])->format('d.m.Y') }}
-                        </span>
+                                    {{ \Carbon\Carbon::parse($event['date'])->format('d.m.Y') }}
+                                </span>
                                         </div>
                                     </div>
                                 </div>
@@ -430,8 +440,8 @@
                             </td>
 
                             <!-- Диагноз -->
-                            <td class="@if(!$event['is_main']) nested-item @endif">
-                                @if($event['type'] == 'diagnosis')
+                            <td>
+                                @if(!$event['is_main'] && $event['type'] == 'diagnosis')
                                     <div class="history-item" @if(!$event['is_main']) style="margin-left: 20px;" @endif>
                                         <div class="history-header"
                                              data-bs-toggle="modal"
