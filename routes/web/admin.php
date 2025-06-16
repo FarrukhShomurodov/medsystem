@@ -18,6 +18,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     PatientAssignmentController,
     PatientController,
     PatientDiagnosisController,
+    PatientInspectionController,
     PatientServiceController,
     PharmacyController,
     PharmacyTypeController,
@@ -241,4 +242,6 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::get('document/response/answers/delete/{documentResponse}', [DocumentController::class, 'delete'])->name(
         'documents.show.answer.delete'
     );
+
+    Route::post('patient-inspection', [PatientInspectionController::class, 'store'])->name('patient.inspection.store');
 });

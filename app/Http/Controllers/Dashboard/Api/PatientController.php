@@ -12,4 +12,10 @@ class PatientController
         $patients = Patient::query()->get();
         return response()->json($patients);
     }
+
+    public function show(Patient $patient): JsonResponse
+    {
+        $patient->load('examinationMaps');
+        return response()->json($patient);
+    }
 }

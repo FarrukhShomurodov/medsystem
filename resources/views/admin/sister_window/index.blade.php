@@ -9,145 +9,220 @@
         <span class="text-muted fw-light">Сестринское окно</span>
     </h6>
 
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
-
-        @if(session()->has('success'))
-            <div class="alert alert-solid-success alert-dismissible d-flex align-items-center" role="alert">
-                <i class="bx bx-check-circle fs-4 me-2"></i>
-                {{ session()->get('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-    </div>
-
-    <div id="errors_alert"></div>
-
-    <div class="card shadow-sm">
+    {{-- Блок со списком пациентов --}}
+    <div class="card shadow-sm" id="patientListCard">
         <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Сестринское окно </h5>
-            <div>
-                <button class="btn btn-link collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#filtersCollapse">
-                    <i class="bx bx-filter-alt"></i> Фильтры
-                </button>
-            </div>
+            <h5 class="card-header">Пациенты </h5>
         </div>
-
-        <div id="filtersCollapse"
-             class="collapse @if(request('full_name')  || request('id')) show @endif">
-            <div class="card-body">
-                <form method="GET" action="{{ route('patients.index') }}">
-                    <div class="row g-3">
-                        <div class="col-md-2 form-group">
-                            <label class="form-label" for="id">ID</label>
-                            <div class="input-group input-group-merge">
-                                <input type="text" name="id" value="{{ request("id") }}"
-                                       id="id"
-                                       class="form-control"
-                                       placeholder="ID"/>
-                            </div>
-                        </div>
-
-                        <div class="col-md-2 form-group">
-                            <label class="form-label" for="full_name">ФИО</label>
-                            <div class="input-group input-group-merge">
-                                <input type="text" name="full_name" value="{{ request("full_name") }}"
-                                       id="full_name"
-                                       class="form-control"
-                                       placeholder="ФИО"/>
-                            </div>
-                        </div>
-
-                        {{--                        @php--}}
-                        {{--                            $filters = [--}}
-                        {{--                            ];--}}
-                        {{--                        @endphp--}}
-
-                        {{--                        @foreach($filters as $filter)--}}
-                        {{--                            <div class="col-md-2 form-group">--}}
-                        {{--                                <label for="{{ $filter['id'] }}">{{ $filter['label'] }}</label>--}}
-                        {{--                                <select id="{{ $filter['id'] }}" name="{{ $filter['id'] }}_id"--}}
-                        {{--                                        class="form-control select2">--}}
-                        {{--                                    <option value="">Все</option>--}}
-                        {{--                                    @foreach($filter['items'] as $item)--}}
-                        {{--                                        <option value="{{ $item->id }}"--}}
-                        {{--                                            @selected(request("{$filter['id']}_id") == $item->id)>--}}
-                        {{--                                            {{ $item->name }}--}}
-                        {{--                                        </option>--}}
-                        {{--                                    @endforeach--}}
-                        {{--                                </select>--}}
-                        {{--                            </div>--}}
-                        {{--                        @endforeach--}}
-                    </div>
-                    <button type="submit" class="btn btn-primary mt-3">Применить фильтр</button>
-                </form>
-            </div>
-        </div>
-
         <div class="card-datatable table-responsive">
-            <table class="datatables-users table border-top">
+            <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th>#</th>
-                    <th>№Палаты</th>
-                    <th>АД</th>
-                    <th>Пульс</th>
-                    <th>Сатурация</th>
-                    <th>Тумпература</th>
-                    <th>Баланс</th>
-                    <th>Дата и название операции</th>
-                    <th></th>
+                    <th>ФИО / ID</th>
+                    <th>ШРПУ</th>
+                    <th>Лист Назначений</th>
+                    <th>План лечения</th>
+                    <th>Приход / Списание</th>
                 </tr>
                 </thead>
                 <tbody>
-{{--               @foreach($patients as $patient)--}}
-{{--                    <tr>--}}
-{{--                        <td>{{ $patient->id }}</td>--}}
-{{--                        <td>{{ $patient->created_at }}</td>--}}
-{{--                        <td>{{ $patient->examinationMaps()->first()?->department->name ?? '-' }}</td>--}}
-{{--                        <td>--}}
-{{--                            <a href="{{ route('patients.show', $patient->id) }}"> {{ $patient->first_name }} {{ $patient->last_name }} {{ $patient->middle_name }} </a>--}}
-{{--                        </td>--}}
-{{--                        <td>{{ $patient->birth_date }} / {{ \Carbon\Carbon::parse($patient->birth_date)->age }}</td>--}}
-{{--                        <td>-</td>--}}
-{{--                        <td>{{ $patient->examinationMaps()->first()?->admission_diagnosis_description ?? '-' }}</td>--}}
-{{--                        <td>-</td>--}}
-{{--                        <td>{{ $patient->examinationMaps()->first()?->doctor->name ?? '-' }}</td>--}}
-{{--                        <td>{{ \Carbon\Carbon::parse($patient->examinationMaps()->first()?->admission_date)->age }}</td>--}}
-
-{{--                        <td>--}}
-{{--                            <div class="d-inline-block text-nowrap">--}}
-{{--                                <button class="btn btn-sm btn-icon"--}}
-{{--                                        onclick="location.href='{{ route('patients.show', $patient->id) }}'"><i--}}
-{{--                                        class="bx bx-show"></i></button>--}}
-{{--                                <button class="btn btn-sm btn-icon"--}}
-{{--                                        onclick="location.href='{{ route('patients.edit', $patient->id) }}'"><i--}}
-{{--                                        class="bx bx-edit"></i></button>--}}
-{{--                                <form action="{{ route('patients.destroy', $patient->id) }}" method="POST"--}}
-{{--                                      style="display:inline;">--}}
-{{--                                    @csrf--}}
-{{--                                    @method('DELETE')--}}
-{{--                                    <button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i>--}}
-{{--                                    </button>--}}
-{{--                                </form>--}}
-{{--                            </div>--}}
-{{--                        </td>--}}
-{{--                    </tr>--}}
-{{--                @endforeach--}}
+                @foreach($patients as $patient)
+                    <tr class="patient-row cursor-pointer" data-id="{{ $patient->id }}">
+                        <td>{{ $patient->first_name }} {{ $patient->last_name }} {{ $patient->middle_name }}
+                            ID{{ $patient->id }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                @endforeach
                 </tbody>
             </table>
-{{--            <div class="mt-4 p-1">--}}
-{{--                {{ $patients->links('pagination::bootstrap-5') }}--}}
-{{--            </div>--}}
         </div>
     </div>
+
+    {{-- Блок подробной таблицы пациента --}}
+    <div class="card shadow-sm d-none" id="patientDetailsCard">
+        <div class="card-datatable table-responsive">
+            <table class="table table-bordered">
+                <thead id="tableHead"></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createServiceModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Назначение услуги</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('patient.inspection.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="bp" class="form-label">АД</label>
+                                <input type="text" name="bp" id="bp" class="form-control" placeholder="Напр. 120/80">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="pulse" class="form-label">Пульс</label>
+                                <input type="number" name="pulse" id="pulse" class="form-control"
+                                       placeholder="Напр. 72">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="saturation" class="form-label">Сатурация</label>
+                                <input type="number" name="saturation" id="saturation" class="form-control"
+                                       placeholder="Напр. 98">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="temperature" class="form-label">Температура</label>
+                                <input type="text" name="temperature" id="temperature" class="form-control"
+                                       placeholder="Напр. 36.6">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="chdd" class="form-label">ЧДД</label>
+                                <input type="number" name="chdd" id="chdd" class="form-control"
+                                       placeholder="Частота дыхания">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="consciousness_level" class="form-label">Уровень сознания</label>
+                                <input type="text" name="consciousness_level" id="consciousness_level"
+                                       class="form-control" placeholder="Напр. ясное">
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label for="oxygen_status" class="form-label">Кислород или на воздухе</label>
+                                <input type="text" name="oxygen_status" id="oxygen_status" class="form-control"
+                                       placeholder="Напр. на воздухе">
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="patient_id" id="modalPatientId">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="submit" class="btn btn-primary">Создать</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('scripts')
+    <script>
+        $(document).on('click', '.open-examination-modal', function () {
+            const patientId = $(this).data('patient-id');
+            $('#modalPatientId').val(patientId);
+        });
+
+        let activePatientId = null;
+
+        function calculateAge(birthDateStr) {
+            if (!birthDateStr) return '-';
+
+            const birthDate = new Date(birthDateStr);
+            const today = new Date();
+
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+
+            // Уменьшаем возраст, если день рождения ещё не наступил в этом году
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            return `${age} лет`;
+        }
+
+        function calculateAgeInDays(birthDateStr) {
+            if (!birthDateStr) return '-';
+
+            const birthDate = new Date(birthDateStr);
+            const today = new Date();
+
+            const timeDiff = today.getTime() - birthDate.getTime();
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+            return `${days} дней`;
+        }
+
+        $(document).on('click', '.patient-row', function () {
+            const patientId = $(this).data('id');
+
+            // Если повторно нажали — вернуть обратно
+            if (activePatientId === patientId) {
+                $('#patientDetailsCard').addClass('d-none');
+                $('#patientListCard').removeClass('d-none');
+                activePatientId = null;
+                return;
+            }
+
+            fetch(`/api/patient/${patientId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Ошибка при загрузке пациента');
+                    return response.json();
+                })
+                .then(patient => {
+                    const tableHead = `
+                    <tr>
+                        <th class="cursor-pointer">ФИО</th>
+                        <th>Возраст</th>
+                        <th>№ Палаты</th>
+                        <th>Лист Назначений</th>
+                        <th>План лечения</th>
+                        <th>Приход / Списание</th>
+                        <th>Дней в стационаре</th>
+                        <th></th>
+                    </tr>`;
+
+                    const tableBody = `
+                    <tr>
+                        <td>${patient.first_name} ${patient.last_name} ${patient.middle_name}</td>
+                        <td>${calculateAge(patient.birth_date)}</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>${patient.examination_maps ? calculateAgeInDays(patient.examination_maps[patient.examination_maps.length - 1].admission_date) : '-'}</td>
+                        <td>
+                            <button type="button"
+                                    class="btn btn-primary me-3 open-examination-modal"
+                                    data-bs-toggle="modal"
+                                    data-patient-id="${patient.id}"
+                                    data-bs-target="#createServiceModal">
+                                Добавить осмотр
+                            </button>
+                        </td>
+                    </tr>`;
+
+                    $('#tableHead').html(tableHead);
+                    $('#tableBody').html(tableBody);
+
+                    $('#patientListCard').addClass('d-none');
+                    $('#patientDetailsCard').removeClass('d-none');
+
+                    activePatientId = patientId;
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Не удалось загрузить данные пациента.');
+                });
+        });
+
+        // Назад при клике по ячейке
+        $(document).on('click', '#tableBody td:first-child', function () {
+            $('#patientDetailsCard').addClass('d-none');
+            $('#patientListCard').removeClass('d-none');
+            activePatientId = null;
+        });
+    </script>
 @endsection

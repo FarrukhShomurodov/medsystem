@@ -54,6 +54,7 @@ Route::get('staff-availability-week/{id}', [StaffController::class, 'availabilit
 
 // patients
 Route::get('/patients', [PatientController::class, 'get']);
+Route::get('/patient/{patient}', [PatientController::class, 'show']);
 
 // patients
 Route::get('patient/service/update-status/{service}', [PatientServiceController::class, 'changeStatus']);
