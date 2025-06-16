@@ -219,7 +219,10 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::post('patient-assignment', [PatientAssignmentController::class, 'store'])->name('patient.assignment.store');
 
     // sister-window
-    Route::get('sister-window', [SisterWindowController::class, 'index'])->name('sister.window.index');
+    Route::get('sister-window', [SisterWindowController::class, 'index'])->name('sister.window.index')
+        ->middleware('permission:sister_window_show');;
+    Route::post('patient-inspection', [PatientInspectionController::class, 'store'])->name('patient.inspection.store')
+        ->middleware('permission:patient_inspection_store');;
 
     // permissions
     Route::resource('maps', ExaminationMapController::class)
@@ -242,6 +245,4 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::get('document/response/answers/delete/{documentResponse}', [DocumentController::class, 'delete'])->name(
         'documents.show.answer.delete'
     );
-
-    Route::post('patient-inspection', [PatientInspectionController::class, 'store'])->name('patient.inspection.store');
 });

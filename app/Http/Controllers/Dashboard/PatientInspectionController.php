@@ -13,11 +13,6 @@ class PatientInspectionController extends Controller
 
     public function __construct(PatientInspectionService $service)
     {
-//        $this->middleware(['permission:view_patient_services'])->only('index');
-//        $this->middleware(['permission:create_patient_services'])->only(['create', 'store']);
-//        $this->middleware(['permission:edit_patient_services'])->only(['edit', 'update']);
-//        $this->middleware(['permission:delete_patient_services'])->only('destroy');
-
         $this->service = $service;
     }
 

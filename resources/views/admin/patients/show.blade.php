@@ -249,7 +249,7 @@
                 </div>
             </form>
 
-            <a class="btn btn-sm btn-primary" href="{{ url()->previous() }}">
+            <a class="btn btn-primary" href="{{ url()->previous() }}">
                 Вернуться в отделение
             </a>
         </div>

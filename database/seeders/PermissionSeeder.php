@@ -205,6 +205,9 @@ class PermissionSeeder extends Seeder
             'edit_patients',
             'delete_patients',
 
+            'sister_window_show',
+            'patient_inspection_store',
+
             'edit_maps',
             'update_maps',
             'delete_maps',

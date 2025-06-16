@@ -29,4 +29,9 @@ class Department extends Model
     {
         return $this->hasMany(StaffProfessionalData::class);
     }
+
+    public function examinationMaps(): HasMany
+    {
+        return $this->hasMany(ExaminationMap::class)->where('is_active', true);
+    }
 }

@@ -24,7 +24,8 @@ class StaffPositionController extends Controller
 
         $this->service = $service;
 
-        $this->permissionsRu = ['view_dashboard' => 'Просмотр панели управления',
+        $this->permissionsRu = [
+            'view_dashboard' => 'Просмотр панели управления',
 
             'view_admins' => 'Просмотр администраторов',
             'create_admins' => 'Создание администраторов',
@@ -222,6 +223,9 @@ class StaffPositionController extends Controller
             'delete_maps' => 'Удаление карт',
 
             'create_patient_map' => 'Создание карты пациента',
+
+            'sister_window_show' => 'Просмотр сестринского окна',
+            'patient_inspection_store' => 'Создание осмотра',
         ];
     }
 
