@@ -26,7 +26,9 @@ class ReceptionController
         $staff = Staff::whereHas('services', function ($query) use ($serviceId) {
             $query->where('staff_service_id', $serviceId);
             $query->where('is_appointment', true);
-        })->with('professionalData')->get();
+        })->whereHas('professionalData', function ($q) {
+            $q->where('position_id', 1);
+        })->get();
 
         return $staff->map(function ($s) {
             return [
@@ -40,7 +42,14 @@ class ReceptionController
 
     public function show(Reception $reception)
     {
-        $reception->load('patient', 'map', 'map.patient', 'staff', 'staff.professionalData', 'staff.professionalData.position');
+        $reception->load(
+            'patient',
+            'map',
+            'map.patient',
+            'staff',
+            'staff.professionalData',
+            'staff.professionalData.position'
+        );
 
         return response()->json($reception);
     }

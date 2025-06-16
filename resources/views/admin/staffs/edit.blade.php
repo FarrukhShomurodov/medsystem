@@ -73,11 +73,11 @@
                     <div class="row g-3">
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-company">Имя <span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                             <span id="basic-icon-default-company2"
                                                   class="input-group-text @error('name') text-danger icon-border @enderror"><i
-                                                        class="bx bx-rename"></i></span>
+                                                    class="bx bx-rename"></i></span>
                                 <input type="text" id="basic-icon-default-company"
                                        class="form-control @error('name') is-invalid @enderror"
                                        placeholder="Имя" aria-label="Имя"
@@ -92,11 +92,11 @@
 
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-company">Фамилия <span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                             <span id="basic-icon-default-company2"
                                                   class="input-group-text @error('last_name') text-danger icon-border @enderror"><i
-                                                        class="bx bx-rename"></i></span>
+                                                    class="bx bx-rename"></i></span>
                                 <input type="text" id="basic-icon-default-company"
                                        class="form-control @error('last_name') is-invalid @enderror"
                                        placeholder="Фамилия" aria-label="Фамилия"
@@ -111,11 +111,11 @@
 
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-company">Отчество <span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                             <span id="basic-icon-default-company2"
                                                   class="input-group-text @error('middle_name') text-danger icon-border @enderror"><i
-                                                        class="bx bx-rename"></i></span>
+                                                    class="bx bx-rename"></i></span>
                                 <input type="text" id="basic-icon-default-company"
                                        class="form-control @error('middle_name') is-invalid @enderror"
                                        placeholder="Отчество" aria-label="Отчество"
@@ -130,7 +130,7 @@
 
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-date_birthday">Дата рождение <span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                                 <span id="basic-icon-birth-date2"
                                                       class="input-group-text @error('date_birthday') text-danger icon-border @enderror">
@@ -155,12 +155,12 @@
                         @endphp
                         <div class="col-sm-4">
                             <label class="form-label" for="type">Пол <span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
                             <select id="type" name="gender"
                                     class="form-control select2 @error('gender') is-invalid @enderror" required>
                                 @foreach(\App\Models\Staff::GENDER as $gender)
                                     <option
-                                            value="{{ $gender }}" @selected(old('gender', $staff->gender) == $gender)>
+                                        value="{{ $gender }}" @selected(old('gender', $staff->gender) == $gender)>
                                         {{ $genderRu[$gender] }}
                                     </option>
                                 @endforeach
@@ -171,7 +171,7 @@
 
                         <div class="col-sm-4">
                             <label class="form-label" for="citizenship">Гражданство <span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span id="citizenship"
                                       class="input-group-text @error('citizenship') text-danger icon-border @enderror">
@@ -191,7 +191,7 @@
                         {{-- Staff Auth --}}
                         <div class="mb-3 col-6">
                             <label class="form-label" for="login_email ">Email <span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
                             <input type="email" name="login_email"
                                    class="form-control @error('login_email ') is-invalid @enderror"
                                    id="login_email " placeholder="Email"
@@ -236,7 +236,7 @@
                             <div class="input-group input-group-merge">
                                             <span id="basic-icon-default-phone2"
                                                   class="input-group-text @error('phone') text-danger icon-border @enderror"><i
-                                                        class="bx bx-phone"></i></span>
+                                                    class="bx bx-phone"></i></span>
                                 <input type="text" id="basic-icon-default-phone"
                                        class="form-control phone @error('phone') is-invalid @enderror"
                                        name="phone"
@@ -254,8 +254,8 @@
                             <label class="form-label" for="basic-icon-default-email">Email</label>
                             <div class="input-group input-group-merge">
                                             <span
-                                                    class="input-group-text @error('email') text-danger icon-border @enderror"><i
-                                                        class="bx bx-envelope"></i></span>
+                                                class="input-group-text @error('email') text-danger icon-border @enderror"><i
+                                                    class="bx bx-envelope"></i></span>
                                 <input type="email" id="basic-icon-default-email"
                                        class="form-control @error('email') is-invalid @enderror" placeholder="Email"
                                        name="email"
@@ -296,8 +296,8 @@
                             <label class="form-label" for="basic-icon-default-email">Экстраный кантакт (ФИО)</label>
                             <div class="input-group input-group-merge">
                                             <span
-                                                    class="input-group-text @error('emergency_contact_name') text-danger icon-border @enderror"><i
-                                                        class="bx bx-envelope"></i></span>
+                                                class="input-group-text @error('emergency_contact_name') text-danger icon-border @enderror"><i
+                                                    class="bx bx-envelope"></i></span>
                                 <input type="text" id="basic-icon-default-emergency_contact_name"
                                        class="form-control @error('emergency_contact_name') is-invalid @enderror"
                                        placeholder="Экстраный кантакт (ФИО)"
@@ -317,7 +317,7 @@
                             <div class="input-group input-group-merge">
                                             <span id="basic-icon-default-emergency_contact_phone"
                                                   class="input-group-text @error('emergency_contact_phone') text-danger icon-border @enderror"><i
-                                                        class="bx bx-phone"></i></span>
+                                                    class="bx bx-phone"></i></span>
                                 <input type="text" id="basic-icon-default-emergency_contact_phone"
                                        class="form-control phone @error('emergency_contact_phone') is-invalid @enderror"
                                        name="emergency_contact_phone"
@@ -374,13 +374,13 @@
                     <div class="row g-3">
                         <div class="col-sm-4">
                             <label class="form-label" for="position">Должность<span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
 
                             <select id="position" name="position_id"
                                     class="form-control select2 @error('position_id') is-invalid @enderror" required>
                                 @foreach($positions as $position)
                                     <option
-                                            value="{{ $position->id }}" @selected($position->id == $staff->id)>
+                                        value="{{ $position->id }}" @selected($position->id == $staff->professionalData->position_id)>
                                         {{ $position->name }}
                                     </option>
                                 @endforeach
@@ -399,7 +399,7 @@
                                 <option value="">---</option>
                                 @foreach($positions as $position)
                                     <option
-                                            value="{{ $position->id }}" @selected($position->id == old('addition_position_id'))>
+                                        value="{{ $position->id }}" @selected($position->id == old('addition_position_id'))>
                                         {{ $position->name }}
                                     </option>
                                 @endforeach
@@ -412,13 +412,13 @@
 
                         <div class="col-sm-4">
                             <label class="form-label" for="speciality">Специальность<span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
 
                             <select id="speciality" name="speciality_id"
                                     class="form-control select2 @error('speciality_id') is-invalid @enderror" required>
                                 @foreach($specialties as $specialty)
                                     <option
-                                            value="{{ $specialty->id }}" @selected($specialty == old('speciality_id', $staff->speciality_id))>
+                                        value="{{ $specialty->id }}" @selected($specialty == old('speciality_id', $staff->speciality_id))>
                                         {{ $specialty->name }}
                                     </option>
                                 @endforeach
@@ -437,13 +437,13 @@
                         @endphp
                         <div class="col-sm-6">
                             <label class="form-label" for="category">Категория<span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
 
                             <select id="category" name="category"
                                     class="form-control select2 @error('category') is-invalid @enderror" required>
                                 @foreach(\App\Models\StaffProfessionalData::CATEGORY as $category)
                                     <option
-                                            value="{{ $category }}" @selected($category == old('category', $staff->category))>
+                                        value="{{ $category }}" @selected($category == old('category', $staff->category))>
                                         {{ $categoryRu[$category] }}
                                     </option>
                                 @endforeach
@@ -456,13 +456,13 @@
 
                         <div class="col-sm-6">
                             <label class="form-label" for="department_id">Отделения<span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
 
                             <select id="department_id" name="department_id"
                                     class="form-control select2 @error('department_id') is-invalid @enderror" required>
                                 @foreach($departments as $department)
                                     <option
-                                            value="{{ $department->id }}" @selected($department->id == old('department_id', $staff->department_id))>
+                                        value="{{ $department->id }}" @selected($department->id == old('department_id', $staff->department_id))>
                                         {{ $department->name }}
                                     </option>
                                 @endforeach
@@ -475,14 +475,14 @@
 
                         <div class="col-12">
                             <label class="form-label" for="services">Услуги<span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
 
                             <select id="services" name="services[]"
                                     class="form-control select2 @error('services') is-invalid @enderror" required
                                     multiple>
                                 @foreach($services as $service)
                                     <option
-                                            value="{{ $service->id }}" @selected(in_array($service->id, old('services', $staff->services->pluck('id')->toArray())) )>
+                                        value="{{ $service->id }}" @selected(in_array($service->id, old('services', $staff->services->pluck('id')->toArray())) )>
                                         {{ $service->name }}
                                     </option>
                                 @endforeach
@@ -517,10 +517,10 @@
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-education_graduation_year">Дата окончание обучения
                                 <span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                                        <span
-                                                               class="input-group-text @error('education_graduation_year') text-danger icon-border @enderror">
+                                                           class="input-group-text @error('education_graduation_year') text-danger icon-border @enderror">
                             <i class="bx bx-calendar"></i>
                         </span>
                                 <input type="text" name="education_graduation_year"
@@ -540,7 +540,7 @@
                                    for="basic-icon-default-certificate_name">Название сертификата</label>
                             <div class="input-group input-group-merge">
                                                     <span
-                                                            class="input-group-text @error('certificate_name') text-danger icon-border @enderror">
+                                                        class="input-group-text @error('certificate_name') text-danger icon-border @enderror">
                             <i class="bx bx-certification"></i>
                         </span>
                                 <input type="text" id="basic-icon-default-education_name"
@@ -579,10 +579,10 @@
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-certificate_issue_date">Дата выдачи
                                 <span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                         <span
-                                class="input-group-text @error('certificate_issue_date') text-danger icon-border @enderror">
+                            class="input-group-text @error('certificate_issue_date') text-danger icon-border @enderror">
                             <i class="bx bx-calendar"></i>
                         </span>
                                 <input type="text" name="certificate_issue_date"
@@ -599,10 +599,10 @@
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-certificate_validity_period">Срок действия
                                 <span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                            <span
-                                   class="input-group-text @error('certificate_validity_period') text-danger icon-border @enderror">
+                               class="input-group-text @error('certificate_validity_period') text-danger icon-border @enderror">
                             <i class="bx bx-time-five"></i>
                         </span>
                                 <input type="text" name="certificate_validity_period"
@@ -859,7 +859,7 @@
                                     multiple>
                                 @foreach($surveys as $survey)
                                     <option
-                                            value="{{ $survey->id }}" @selected(in_array($survey->id, old('surveys', $staff->surveys->pluck('id')->toArray())))> {{ $survey->title }} </option>
+                                        value="{{ $survey->id }}" @selected(in_array($survey->id, old('surveys', $staff->surveys->pluck('id')->toArray())))> {{ $survey->title }} </option>
                                 @endforeach
                             </select>
 
@@ -896,7 +896,8 @@
                         </div>
                         <div id="weekly-schedule">
                             @foreach(\App\Models\DayOfWeek::query()->get() as $i => $day)
-                                <div class="days-schedule mb-4 {{ $staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'work')->count() == 0 ? 'disabled-day' : '' }}">
+                                <div
+                                    class="days-schedule mb-4 {{ $staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'work')->count() == 0 ? 'disabled-day' : '' }}">
                                     <h5>{{ $day->name }}</h5>
 
                                     <input type="hidden" name="days[{{ $i }}][id]" value="{{ $day->id }}">
@@ -958,7 +959,9 @@
                                     <!-- График приема -->
                                     <h6 class="px-2 py-1 bg-light border-start border-4 border-success mt-4">График
                                         приёма</h6>
-                                    <div class="time-ranges reception-schedule {{ $staff->schedule()->where('type', 'reception')->count() == 0 ? 'disabled-day' : '' }}" data-index="{{ $i }}">
+                                    <div
+                                        class="time-ranges reception-schedule {{ $staff->schedule()->where('type', 'reception')->count() == 0 ? 'disabled-day' : '' }}"
+                                        data-index="{{ $i }}">
                                         @foreach($staff->schedule()->where('day_of_week_id', $day->id)->where('type', 'reception')->get() as $index => $time)
                                             <div class="time-range row g-2" data-range-index="0">
                                                 <div class="col-md-5">
@@ -1033,7 +1036,7 @@
                                                     class="form-control select2 select-reason">
                                                 @foreach(\App\Models\StaffAbsence::REASON as $reason)
                                                     <option
-                                                            value="{{ $reason }}" @selected($absence->reason == $reason)>
+                                                        value="{{ $reason }}" @selected($absence->reason == $reason)>
                                                         {{ \App\Models\StaffAbsence::getReasonLabel($reason) }}
                                                     </option>
                                                 @endforeach
@@ -1056,7 +1059,7 @@
 
                         <div class="col-12">
                             <label class="form-label" for="admission_period">Период приема (Минуты) <span
-                                        class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
                             <input type="number" name="admission_period" id="admission_period" class="form-control"
                                    required
                                    value="{{ old('admission_period', $staff->professionalData->admission_period) }}">
