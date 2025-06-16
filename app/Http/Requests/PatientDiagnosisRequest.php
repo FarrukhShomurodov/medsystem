@@ -13,7 +13,7 @@ class PatientDiagnosisRequest extends FormRequest
     {
         return [
             'patient_id' => 'required|int|exists:patients,id',
-            'examination_map_id' => 'required|int|exists:examination_maps,id',
+            'examination_map_id' => 'nullable|int|exists:examination_maps,id',
             'description' => 'required|string'
         ];
     }
