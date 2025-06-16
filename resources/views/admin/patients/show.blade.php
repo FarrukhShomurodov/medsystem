@@ -401,7 +401,7 @@
                                             Документ
                                             @break
                                         @case('diagnosis')
-                                            sdfsa
+
                                             @break
                                     @endswitch
                                 </span>
