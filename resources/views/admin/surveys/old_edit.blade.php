@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Медицинская система | Редактировать мед. документ</title>
+    <title>MED ERA | Редактировать мед. документ</title>
 @endsection
 
 @section('content')
@@ -37,7 +37,8 @@
                             id="survey_type"
                             required>
                         @foreach($types as $type)
-                            <option value="{{ $type->id }}" @selected($type->id == old('survey_type_id', $survey->survey_type_id))> {{ $type->name }} </option>
+                            <option
+                                value="{{ $type->id }}" @selected($type->id == old('survey_type_id', $survey->survey_type_id))> {{ $type->name }} </option>
                         @endforeach
                     </select>
                     @error('survey_type_id')
@@ -54,7 +55,8 @@
                         </span>
                         <input type="text" id="title"
                                class="form-control @error('title') is-invalid @enderror"
-                               placeholder="Заголовок" aria-label="Заголовок" name="title" value="{{ old('title', $survey->title) }}"
+                               placeholder="Заголовок" aria-label="Заголовок" name="title"
+                               value="{{ old('title', $survey->title) }}"
                                aria-describedby="title" required/>
                     </div>
                     @error('title')
@@ -84,29 +86,40 @@
                                     aria-controls="tab-content-{{ $group->title }}" aria-selected="false">
                                 {{ $group->title }}
                             </button>
-                            <button type="button" class="btn-close position-absolute top-50 translate-middle-y end-0 remove-group-tab"
-                                    data-tab-id="tab-{{ $group->title }}" data-content-id="tab-content-{{ $group->title }}" aria-label="Удалить"></button>
-                            <input type="hidden" name="groups[{{ $loop->index }}][title]" value="{{ $group->title }}" required>
+                            <button type="button"
+                                    class="btn-close position-absolute top-50 translate-middle-y end-0 remove-group-tab"
+                                    data-tab-id="tab-{{ $group->title }}"
+                                    data-content-id="tab-content-{{ $group->title }}" aria-label="Удалить"></button>
+                            <input type="hidden" name="groups[{{ $loop->index }}][title]" value="{{ $group->title }}"
+                                   required>
                         </li>
                     @endforeach
                 </ul>
 
                 <div class="tab-content border border-top-0 p-3" id="questionTabContent">
-                    <div class="tab-pane fade show active" id="tab-content-general" role="tabpanel" aria-labelledby="tab-general">
+                    <div class="tab-pane fade show active" id="tab-content-general" role="tabpanel"
+                         aria-labelledby="tab-general">
                         <div class="tab-questions-container mt-3" data-group="general">
                             @foreach($survey->questions as $question)
                                 <div class="question-item border p-3 mb-3">
                                     <button type="button" class="btn-close float-end remove-question"></button>
-                                    <input type="hidden" name="groups[general][questions][{{ $loop->index }}][id]" value="{{ $question->id }}">
+                                    <input type="hidden" name="groups[general][questions][{{ $loop->index }}][id]"
+                                           value="{{ $question->id }}">
                                     <div class="mb-2">
                                         <label class="form-label">Вопрос <span class="text-danger">*</span></label>
-                                        <input type="text" name="groups[general][questions][{{ $loop->index }}][question]" class="form-control" value="{{ old('question', $question->question) }}" required>
+                                        <input type="text"
+                                               name="groups[general][questions][{{ $loop->index }}][question]"
+                                               class="form-control" value="{{ old('question', $question->question) }}"
+                                               required>
                                     </div>
                                     <div class="mb-2">
                                         <label class="form-label">Тип вопроса</label>
-                                        <select name="groups[general][questions][{{ $loop->index }}][type]" class="form-control question-type" required>
-                                            <option value="boolean" @selected($question->type == 'boolean')>Да / Нет</option>
-                                            <option value="choice" @selected($question->type == 'choice')>Список</option>
+                                        <select name="groups[general][questions][{{ $loop->index }}][type]"
+                                                class="form-control question-type" required>
+                                            <option value="boolean" @selected($question->type == 'boolean')>Да / Нет
+                                            </option>
+                                            <option value="choice" @selected($question->type == 'choice')>Список
+                                            </option>
                                             <option value="text" @selected($question->type == 'text')>Текст</option>
                                         </select>
                                     </div>
@@ -115,15 +128,23 @@
                                         <div class="option-list">
                                             @foreach($question->options ?? [] as $optionIndex => $option)
                                                 <div class="d-flex align-items-center mb-2 option-item">
-                                                    <input type="text" name="groups[general][questions][{{ $loop->parent->index }}][options][{{ $optionIndex }}][text]"
-                                                           value="{{ $option['text'] }}" class="form-control me-2" placeholder="Опция" required>
-                                                    <input type="number" name="groups[general][questions][{{ $loop->parent->index }}][options][{{ $optionIndex }}][score]"
-                                                           value="{{ $option['score'] }}" class="form-control" placeholder="Баллы" min="0">
-                                                    <button type="button" class="btn btn-sm btn-danger ms-1 remove-option">✖</button>
+                                                    <input type="text"
+                                                           name="groups[general][questions][{{ $loop->parent->index }}][options][{{ $optionIndex }}][text]"
+                                                           value="{{ $option['text'] }}" class="form-control me-2"
+                                                           placeholder="Опция" required>
+                                                    <input type="number"
+                                                           name="groups[general][questions][{{ $loop->parent->index }}][options][{{ $optionIndex }}][score]"
+                                                           value="{{ $option['score'] }}" class="form-control"
+                                                           placeholder="Баллы" min="0">
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-danger ms-1 remove-option">✖
+                                                    </button>
                                                 </div>
                                             @endforeach
                                         </div>
-                                        <button type="button" class="btn btn-sm btn-outline-primary add-option">Добавить опцию</button>
+                                        <button type="button" class="btn btn-sm btn-outline-primary add-option">Добавить
+                                            опцию
+                                        </button>
                                     </div>
                                 </div>
                             @endforeach
@@ -131,21 +152,32 @@
                     </div>
 
                     @foreach($survey->groups as $group)
-                        <div class="tab-pane fade" id="tab-content-{{ $group->title }}" role="tabpanel" aria-labelledby="tab-{{ $group->title }}">
+                        <div class="tab-pane fade" id="tab-content-{{ $group->title }}" role="tabpanel"
+                             aria-labelledby="tab-{{ $group->title }}">
                             <div class="tab-questions-container mt-3">
                                 @foreach($group->questions as $question)
                                     <div class="question-item border p-3 mb-3">
                                         <button type="button" class="btn-close float-end remove-question"></button>
-                                        <input type="hidden" name="groups[{{ $loop->parent->index }}][questions][{{ $loop->index }}][id]" value="{{ $question->id }}">
+                                        <input type="hidden"
+                                               name="groups[{{ $loop->parent->index }}][questions][{{ $loop->index }}][id]"
+                                               value="{{ $question->id }}">
                                         <div class="mb-2">
                                             <label class="form-label">Вопрос <span class="text-danger">*</span></label>
-                                            <input type="text" name="groups[{{ $loop->parent->index }}][questions][{{ $loop->index }}][question]" class="form-control" value="{{ old('question', $question->question) }}" required>
+                                            <input type="text"
+                                                   name="groups[{{ $loop->parent->index }}][questions][{{ $loop->index }}][question]"
+                                                   class="form-control"
+                                                   value="{{ old('question', $question->question) }}" required>
                                         </div>
                                         <div class="mb-2">
                                             <label class="form-label">Тип вопроса</label>
-                                            <select name="groups[{{ $loop->parent->index }}][questions][{{ $loop->index }}][type]" class="form-control question-type" required>
-                                                <option value="boolean" @selected($question->type == 'boolean')>Да / Нет</option>
-                                                <option value="choice" @selected($question->type == 'choice')>Список</option>
+                                            <select
+                                                name="groups[{{ $loop->parent->index }}][questions][{{ $loop->index }}][type]"
+                                                class="form-control question-type" required>
+                                                <option value="boolean" @selected($question->type == 'boolean')>Да /
+                                                    Нет
+                                                </option>
+                                                <option value="choice" @selected($question->type == 'choice')>Список
+                                                </option>
                                                 <option value="text" @selected($question->type == 'text')>Текст</option>
                                             </select>
                                         </div>
@@ -154,15 +186,23 @@
                                             <div class="option-list">
                                                 @foreach($question->options ?? [] as $optionIndex => $option)
                                                     <div class="d-flex align-items-center mb-2 option-item">
-                                                        <input type="text" name="groups[{{ $loop->parent->index }}][questions][{{ $loop->index }}][options][{{ $optionIndex }}][text]"
-                                                               value="{{ $option['text'] }}" class="form-control me-2" placeholder="Опция" required>
-                                                        <input type="number" name="groups[{{ $loop->parent->index }}][questions][{{ $loop->index }}][options][{{ $optionIndex }}][score]"
-                                                               value="{{ $option['score'] }}" class="form-control" placeholder="Баллы" min="0">
-                                                        <button type="button" class="btn btn-sm btn-danger ms-1 remove-option">✖</button>
+                                                        <input type="text"
+                                                               name="groups[{{ $loop->parent->index }}][questions][{{ $loop->index }}][options][{{ $optionIndex }}][text]"
+                                                               value="{{ $option['text'] }}" class="form-control me-2"
+                                                               placeholder="Опция" required>
+                                                        <input type="number"
+                                                               name="groups[{{ $loop->parent->index }}][questions][{{ $loop->index }}][options][{{ $optionIndex }}][score]"
+                                                               value="{{ $option['score'] }}" class="form-control"
+                                                               placeholder="Баллы" min="0">
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-danger ms-1 remove-option">✖
+                                                        </button>
                                                     </div>
                                                 @endforeach
                                             </div>
-                                            <button type="button" class="btn btn-sm btn-outline-primary add-option">Добавить опцию</button>
+                                            <button type="button" class="btn btn-sm btn-outline-primary add-option">
+                                                Добавить опцию
+                                            </button>
                                         </div>
                                     </div>
                                 @endforeach

@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Медицинская система | Пациент</title>
+    <title>MED ERA | Пациент</title>
 @endsection
 
 @section('content')
@@ -115,7 +115,7 @@
                 class="btn btn-primary me-3"
                 data-bs-toggle="modal"
                 data-type-id="5"
-                data-bs-target="#createServiceModal">
+                data-bs-target="#indicativeModal">
                 Лаборатория
             </button>
 
@@ -525,17 +525,26 @@
         </div>
     </div>
 
-    <div class="card mt-3">
-        <div class="card-header">
-            <h5>Общая информация</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>ФИО:</strong> {{ $patientDetails['basic_info']['full_name'] }}</p>
-            <p><strong>Дата рождения:</strong> {{ $patientDetails['basic_info']['birth_date'] }}</p>
-            <p><strong>Пол:</strong> {{ $patientDetails['basic_info']['gender'] }}</p>
-            <p><strong>Гражданство:</strong> {{ $patientDetails['basic_info']['citizenship'] }}</p>
+    <div class="accordion mt-3" id="patientInfoAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingInfo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo">
+                    Общая информация
+                </button>
+            </h2>
+            <div id="collapseInfo" class="accordion-collapse collapse" aria-labelledby="headingInfo"
+                 data-bs-parent="#patientInfoAccordion">
+                <div class="accordion-body">
+                    <p><strong>ФИО:</strong> {{ $patientDetails['basic_info']['full_name'] }}</p>
+                    <p><strong>Дата рождения:</strong> {{ $patientDetails['basic_info']['birth_date'] }}</p>
+                    <p><strong>Пол:</strong> {{ $patientDetails['basic_info']['gender'] }}</p>
+                    <p><strong>Гражданство:</strong> {{ $patientDetails['basic_info']['citizenship'] }}</p>
+                </div>
+            </div>
         </div>
     </div>
+
     <!-- Modal for creating direction -->
     <div class="modal fade" id="createMapModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -586,7 +595,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
-                            <div class="col-12 mb-3">
+                            <div class="col-sm-6 mb-3">
                                 <label for="service_create" class="form-label">Услуга</label>
                                 <select id="service_create" class="form-control select2" name="service_id" required>
                                     <option disabled selected>Выберите услугу</option>
@@ -609,19 +618,19 @@
                             </div>
 
                             <!-- Place -->
-                            <div class="col-sm-6">
-                                <label class="form-label" for="place">Место оказания </label>
-                                <select id="place" name="place"
-                                        class="form-control select2 @error('place') is-invalid @enderror">
-                                    @foreach(\App\Models\PatientService::PLACE as $value)
-                                        <option value="{{ $value }}" @selected(old('place') == $value)>
-                                            {{ $value == 'institution' ? 'Учреждение' : 'Кабинет' }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('place')
-                                <div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
+                            {{--                            <div class="col-sm-6">--}}
+                            {{--                                <label class="form-label" for="place">Место оказания </label>--}}
+                            {{--                                <select id="place" name="place"--}}
+                            {{--                                        class="form-control select2 @error('place') is-invalid @enderror">--}}
+                            {{--                                    @foreach(\App\Models\PatientService::PLACE as $value)--}}
+                            {{--                                        <option value="{{ $value }}" @selected(old('place') == $value)>--}}
+                            {{--                                            {{ $value == 'institution' ? 'Учреждение' : 'Кабинет' }}--}}
+                            {{--                                        </option>--}}
+                            {{--                                    @endforeach--}}
+                            {{--                                </select>--}}
+                            {{--                                @error('place')--}}
+                            {{--                                <div class="invalid-feedback">{{ $message }}</div>@enderror--}}
+                            {{--                            </div>--}}
                         </div>
                     </div>
                     <div class="modal-footer">

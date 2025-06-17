@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Медицинская система | Просмотр мед. документа</title>
+    <title>MED ERA | Просмотр мед. документа</title>
 @endsection
 
 @section('content')
@@ -40,7 +40,8 @@
                             <div class="mt-2">
                                 @foreach($question->options as $option)
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="question_{{ $question['id'] }}"
+                                        <input class="form-check-input" type="radio"
+                                               name="question_{{ $question['id'] }}"
                                                id="option_{{ $loop->index }}" value="{{ $option['text'] }}">
                                         <label class="form-check-label" for="option_{{ $loop->index }}">
                                             {{ $option['text'] }} <small>(Бал: {{ $option['score'] }})</small>

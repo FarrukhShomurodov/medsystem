@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Медицинская система | Редактировать медицинское устройство</title>
+    <title>MED ERA | Редактировать медицинское устройство</title>
 @endsection
 
 @section('content')

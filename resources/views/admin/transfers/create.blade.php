@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Создать перевод</title>
+    <title>MED ERA | Создать перевод</title>
 @endsection
 
 @section('content')

@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>Медицинская система | Медикаменты склада</title>
+    <title>MED ERA | Медикаменты склада</title>
 @endsection
 
 @section('content')
@@ -35,7 +35,7 @@
                             <td>{{ $supply->name }}</td>
                             <td>{{ $warehouse->pivot->quantity }}</td>
                         </tr>
-                  @endforeach
+                @endforeach
                 @endforeach
             </table>
             <div class="mt-4 p-1">

@@ -6,7 +6,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
 
-    <title>Медицинская система | Вход</title>
+    <title>MED ERA | Вход</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="{{ asset('vendor/css/rtl/core.css') }}" class="template-customizer-core-css"/>
@@ -38,11 +38,11 @@
         <div class="authentication-inner py-4">
             <div class="card">
                 <div class="card-body">
-{{--                    <div class="app-brand justify-content-center">--}}
-{{--                        <a href="{{ route('dashboard') }}" class="app-brand-link gap-2">--}}
-{{--                            <span class="app-brand-text demo h3 mb-0 fw-bold">Медицинская система</span>--}}
-{{--                        </a>--}}
-{{--                    </div>--}}
+                    {{--                    <div class="app-brand justify-content-center">--}}
+                    {{--                        <a href="{{ route('dashboard') }}" class="app-brand-link gap-2">--}}
+                    {{--                            <span class="app-brand-text demo h3 mb-0 fw-bold">Медицинская система</span>--}}
+                    {{--                        </a>--}}
+                    {{--                    </div>--}}
                     <!-- /Logo -->
                     <h4 class="mb-2">Добро пожаловать в Медицинскую систему! 👋</h4>
                     <p class="mb-4">Пожалуйста, войдите в свою учетную запись и начните приключение
