@@ -89,65 +89,82 @@
     </div>
 
     <div class="card mt-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">История посещений клиники</h5>
-            <div>
-                <button
-                    type="button"
-                    class="btn btn-primary me-3"
-                    data-bs-toggle="modal"
-                    data-type-id="4"
-                    data-bs-target="#createServiceModal">
-                    Инструментальные исследования
-                </button>
+        <div>
+            <h5 class="card-header">История посещений</h5>
+        </div>
 
-                <button
-                    type="button"
-                    class="btn btn-primary me-3"
-                    data-bs-toggle="modal"
-                    data-type-id="5"
-                    data-bs-target="#createServiceModal">
-                    Лаборатория
-                </button>
+        <div class="d-flex justify-content-start align-items-start mb-3" style="margin-left: 1.375rem">
+            <button
+                type="button"
+                class="btn btn-primary me-3"
+                data-bs-toggle="modal"
+                data-bs-target="#indicativeModal">
+                Инструментальные исследования
+            </button>
 
-                <a
-                    type="button"
-                    class="btn btn-primary me-3"
-                    target="_blank"
-                    href="{{ route('receptions.appointment') }}">
-                    Консультация
-                </a>
+            <button
+                type="button"
+                class="btn btn-primary me-3"
+                data-bs-toggle="modal"
+                data-bs-target="#createServiceModal">
+                +
+            </button>
 
-                <button
-                    type="button"
-                    class="btn btn-primary me-3"
-                    data-bs-toggle="modal"
-                    data-bs-target="#diagnosisesModal">
-                    Добавить диагноз
-                </button>
+            <button
+                type="button"
+                class="btn btn-primary me-3"
+                data-bs-toggle="modal"
+                data-type-id="5"
+                data-bs-target="#createServiceModal">
+                Лаборатория
+            </button>
 
-                {{--                <button--}}
-                {{--                    type="button"--}}
-                {{--                    class="btn btn-primary me-3"--}}
-                {{--                    data-bs-toggle="modal"--}}
-                {{--                    data-bs-target="#createDocumentModal">--}}
-                {{--                    Мед Документ--}}
-                {{--                </button>--}}
+            <button
+                type="button"
+                class="btn btn-primary me-3"
+                data-bs-toggle="modal"
+                data-type-id="5"
+                data-bs-target="#createServiceModal">
+                +
+            </button>
 
-                {{--                <button--}}
-                {{--                    type="button"--}}
-                {{--                    class="btn btn-primary me-3"--}}
-                {{--                    data-bs-toggle="modal"--}}
-                {{--                    data-bs-target="#createMapModal">--}}
-                {{--                    Направление--}}
-                {{--                </button>--}}
+            <a
+                type="button"
+                class="btn btn-primary me-3"
+                target="_blank"
+                href="{{ route('receptions.appointment') }}">
+                Консультация
+            </a>
 
-                <button
-                    onclick="window.location.href='{{ route('patient.map.create', $patientDetails['patient_id']) }}'"
-                    class="btn btn-primary me-3"
-                    @disabled(!$patientDetails['history']['map_is_active'])>Создать госпитализацию
-                </button>
-            </div>
+            <button
+                type="button"
+                class="btn btn-primary me-3"
+                data-bs-toggle="modal"
+                data-bs-target="#diagnosisesModal">
+                Добавить диагноз
+            </button>
+
+            {{--                <button--}}
+            {{--                    type="button"--}}
+            {{--                    class="btn btn-primary me-3"--}}
+            {{--                    data-bs-toggle="modal"--}}
+            {{--                    data-bs-target="#createDocumentModal">--}}
+            {{--                    Мед Документ--}}
+            {{--                </button>--}}
+
+            {{--                <button--}}
+            {{--                    type="button"--}}
+            {{--                    class="btn btn-primary me-3"--}}
+            {{--                    data-bs-toggle="modal"--}}
+            {{--                    data-bs-target="#createMapModal">--}}
+            {{--                    Направление--}}
+            {{--                </button>--}}
+
+            <button
+                onclick="window.location.href='{{ route('patient.map.create', $patientDetails['patient_id']) }}'"
+                class="btn btn-primary me-3"
+                @disabled(!$patientDetails['history']['map_is_active'])>Создать госпитализацию
+            </button>
         </div>
 
         <div>
@@ -720,6 +737,168 @@
             </div>
         </div>
     </div>
+
+
+    {{-- indicativeModal --}}
+    <div class="modal fade" id="indicativeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Результаты медицинских анализов</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <style>
+                        table {
+                            border-collapse: collapse;
+                            width: 100%;
+                            margin: 20px 0;
+                            font-family: Arial, sans-serif;
+                            font-size: 14px;
+                        }
+
+                        th, td {
+                            border: 1px solid #ddd;
+                            padding: 8px;
+                            text-align: left;
+                        }
+
+                        th {
+                            background-color: #f2f2f2;
+                            font-weight: bold;
+                        }
+
+                        .analysis-header {
+                            background-color: #e6f7ff;
+                            font-weight: bold;
+                        }
+
+                        .parameter-name {
+                            font-weight: bold;
+                            background-color: #f9f9f9;
+                        }
+                    </style>
+
+                    <table>
+                        <!-- Биохимический анализ крови -->
+                        <tr class="analysis-header">
+                            <td colspan="6">Биохимический анализ крови</td>
+                        </tr>
+                        <tr>
+                            <th>Показатель</th>
+                            <th>15.01.2023</th>
+                            <th>20.03.2023</th>
+                            <th>10.05.2023</th>
+                            <th>25.08.2023</th>
+                            <th>12.11.2023</th>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">Глюкоза (ммоль/л)</td>
+                            <td>5.2</td>
+                            <td>5.4</td>
+                            <td>5.1</td>
+                            <td>5.7</td>
+                            <td>5.3</td>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">АЛТ (Ед/л)</td>
+                            <td>22</td>
+                            <td>25</td>
+                            <td>28</td>
+                            <td>20</td>
+                            <td>23</td>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">АСТ (Ед/л)</td>
+                            <td>18</td>
+                            <td>20</td>
+                            <td>19</td>
+                            <td>17</td>
+                            <td>21</td>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">Креатинин (мкмоль/л)</td>
+                            <td>78</td>
+                            <td>82</td>
+                            <td>80</td>
+                            <td>85</td>
+                            <td>79</td>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">Мочевина (ммоль/л)</td>
+                            <td>5.5</td>
+                            <td>5.8</td>
+                            <td>5.6</td>
+                            <td>6.0</td>
+                            <td>5.7</td>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">Билирубин общий (мкмоль/л)</td>
+                            <td>12.5</td>
+                            <td>13.2</td>
+                            <td>11.8</td>
+                            <td>14.0</td>
+                            <td>12.7</td>
+                        </tr>
+
+                        <!-- Общий анализ крови -->
+                        <tr class="analysis-header">
+                            <td colspan="6">Общий анализ крови</td>
+                        </tr>
+                        <tr>
+                            <th>Показатель</th>
+                            <th>10.02.2023</th>
+                            <th>05.04.2023</th>
+                            <th>20.06.2023</th>
+                            <th>15.09.2023</th>
+                            <th>30.12.2023</th>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">Гемоглобин (г/л)</td>
+                            <td>135</td>
+                            <td>138</td>
+                            <td>132</td>
+                            <td>140</td>
+                            <td>136</td>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">Лейкоциты (×10⁹/л)</td>
+                            <td>6.2</td>
+                            <td>6.5</td>
+                            <td>6.8</td>
+                            <td>6.0</td>
+                            <td>6.3</td>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">Эритроциты (×10¹²/л)</td>
+                            <td>4.5</td>
+                            <td>4.6</td>
+                            <td>4.4</td>
+                            <td>4.7</td>
+                            <td>4.5</td>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">Тромбоциты (×10⁹/л)</td>
+                            <td>220</td>
+                            <td>230</td>
+                            <td>210</td>
+                            <td>240</td>
+                            <td>225</td>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">СОЭ (мм/ч)</td>
+                            <td>8</td>
+                            <td>10</td>
+                            <td>9</td>
+                            <td>7</td>
+                            <td>8</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('scripts')
