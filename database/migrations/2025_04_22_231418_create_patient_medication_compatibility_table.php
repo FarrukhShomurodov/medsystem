@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('patient_medication_compatibility', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('examination_map_medication_id')->constrained('examination_map_medications')->cascadeOnDelete();
+            $table->foreignId('patient_medication_id')->constrained('patient_medications')->cascadeOnDelete();
             $table->foreignId('compatible_medication_id')->constrained('medications')->cascadeOnDelete();
             $table->string('dosage');
             $table->timestamps();

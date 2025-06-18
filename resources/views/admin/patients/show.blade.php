@@ -425,6 +425,9 @@
                                         @case('document')
                                             Документ
                                             @break
+                                        @case('medication')
+                                            Медикамент
+                                            @break
                                         @case('diagnosis')
 
                                             @break
@@ -654,21 +657,6 @@
                                 @error('service_date')
                                 <div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
-
-                            <!-- Place -->
-                            {{--                            <div class="col-sm-6">--}}
-                            {{--                                <label class="form-label" for="place">Место оказания </label>--}}
-                            {{--                                <select id="place" name="place"--}}
-                            {{--                                        class="form-control select2 @error('place') is-invalid @enderror">--}}
-                            {{--                                    @foreach(\App\Models\PatientService::PLACE as $value)--}}
-                            {{--                                        <option value="{{ $value }}" @selected(old('place') == $value)>--}}
-                            {{--                                            {{ $value == 'institution' ? 'Учреждение' : 'Кабинет' }}--}}
-                            {{--                                        </option>--}}
-                            {{--                                    @endforeach--}}
-                            {{--                                </select>--}}
-                            {{--                                @error('place')--}}
-                            {{--                                <div class="invalid-feedback">{{ $message }}</div>@enderror--}}
-                            {{--                            </div>--}}
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -954,10 +942,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="" method="post">
-                        <div class="mb-3">
-                            <div id="medications-container">
-                            </div>
+                    <form action="{{ route('patient.medication.store') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
+
+                        <div class="mb_3">
+                            <div id="medications-container"></div>
 
                             <div class="text-end">
                                 <button type="button" class="btn btn-primary" id="btn-add-medication">
@@ -978,7 +968,7 @@
                                         <!-- Основной медикамент -->
                                         <div class="mb-3">
                                             <label class="form-label">Основной медикамент</label>
-                                            <select name="medications[]" class="form-control medication-select select2"
+                                            <select name="medications[]" class="form-control medication-select"
                                                     required>
                                                 @foreach($medications as $medication)
                                                     <option value="{{ $medication->id }}"
@@ -1024,6 +1014,7 @@
                                                 </div>
                                                 <div class="admission-times-list d-flex flex-wrap gap-2"></div>
                                                 <input type="hidden" name="admission_periods[]"
+                                                       required
                                                        class="admission-hidden-input">
                                             </div>
                                         </div>
@@ -1035,7 +1026,7 @@
 
                                             <div class="row g-2 mt-2">
                                                 <div class="col-md-6">
-                                                    <select class="form-control compatible-medication-select select2">
+                                                    <select class="form-control compatible-medication-select">
                                                         <option value="" disabled selected>Выберите медикамент</option>
                                                     </select>
                                                 </div>
@@ -1055,6 +1046,9 @@
                                 </div>
                             </template>
                         </div>
+                        <button type="submit" class="btn btn-outline-primary w-100 mt-3">
+                            Сохранить
+                        </button>
                     </form>
                 </div>
             </div>
@@ -1420,7 +1414,6 @@
         }
     </script>
 
-
     <script>
         $(function () {
             $('#select-document-form').on('submit', function (e) {
@@ -1448,223 +1441,186 @@
         });
     </script>
 
-
     <script>
-        $(document).ready(function () {
-            // medications
-            const containerMedicaments = document.getElementById('medications-container');
-            const templateMedicaments = document.getElementById('medication-template');
+        // medications
+        const containerMedicaments = document.getElementById('medications-container');
+        const templateMedicaments = document.getElementById('medication-template');
 
-            $('.medication-select').each(function () {
-                initMedicationSelect(this);
-            });
+        // Удалена инициализация Select2
 
-            function initCompatibleSelect(element) {
-                $(element).select2({
-                    placeholder: 'Выберите совместимые медикаменты',
-                    data: {!! json_encode($medications->map(fn($m) => ['id' => $m->id, 'text' => $m->name])) !!},
-                });
-            }
+        $('.admission-hidden-input').each(function () {
+            const $input = $(this);
+            const $wrapper = $input.closest('.admission-period-wrapper');
+            const $list = $wrapper.find('.admission-times-list');
 
-
-            $('.admission-hidden-input').each(function () {
-                const $input = $(this);
-                const $wrapper = $input.closest('.admission-period-wrapper');
-                const $list = $wrapper.find('.admission-times-list');
-
-                const times = ($input.data('times') || '').split(',');
-                times.forEach(function (time) {
-                    if (!time) return;
-                    const $chip = $(`
+            const times = ($input.data('times') || '').split(',');
+            times.forEach(function (time) {
+                if (!time) return;
+                const $chip = $(`
                 <span class="badge bg-secondary d-flex align-items-center gap-1" data-time="${time}">
                     ${time}
                     <button type="button" class="btn-close btn-close-white btn-sm ms-1" aria-label="Удалить"></button>
                 </span>
             `);
-                    $list.append($chip);
-                });
+                $list.append($chip);
             });
+        });
 
-            // Добавление совместимого медикамента
-            $(document).on('click', '.btn-add-compatible', function () {
-                const $wrapper = $(this).closest('.compatible-medications-wrapper');
-                const $medicationRow = $(this).closest('.medication-row');
-                const index = $('.medication-row').index($medicationRow);
+        // Добавление совместимого медикамента
+        $(document).on('click', '.btn-add-compatible', function () {
+            const $wrapper = $(this).closest('.compatible-medications-wrapper');
+            const $medicationRow = $(this).closest('.medication-row');
+            const index = $('.medication-row').index($medicationRow);
 
-                const $select = $wrapper.find('.compatible-medication-select');
-                const selectedId = $select.val();
-                const selectedText = $select.find('option:selected').text();
-                const dosage = $wrapper.find('.compatible-dosage').val();
+            const $select = $wrapper.find('.compatible-medication-select');
+            const selectedId = $select.val();
+            const selectedText = $select.find('option:selected').text();
+            const dosage = $wrapper.find('.compatible-dosage').val();
 
-                if (!selectedId || !dosage) {
-                    alert('Пожалуйста, выберите медикамент и введите дозу');
-                    return;
-                }
-
-                const item = `
-                    <div class="input-group compatible-item mb-1">
-                        <input type="hidden" name="compatible_medications[${index}][]" value="${selectedId}">
-                        <input type="hidden" name="compatible_dosages[${index}][]" value="${dosage}">
-                        <span class="input-group-text">${selectedText} (${dosage})</span>
-                        <button type="button" class="btn btn-outline-danger btn-remove-compatible">×</button>
-                    </div>
-                `;
-                $wrapper.find('.compatible-list').append(item);
-                $select.val(null).trigger('change');
-                $wrapper.find('.compatible-dosage').val('');
-            });
-
-            $(containerMedicaments).on('click', '.btn-add-time', function () {
-                const $wrapper = $(this).closest('.admission-period-wrapper');
-                const hour = $wrapper.find('.admission-hour').val();
-                const minute = $wrapper.find('.admission-minute').val();
-                const time = `${hour}:${minute}`;
-
-                const $timesList = $wrapper.find('.admission-times-list');
-
-                // Если уже есть такое время — не добавлять
-                if ($timesList.find(`[data-time="${time}"]`).length > 0) return;
-
-                const $chip = $(`
-                    <span class="badge bg-secondary d-flex align-items-center gap-1" data-time="${time}">
-                        ${time}
-                        <button type="button" class="btn-close btn-close-white btn-sm ms-1" aria-label="Удалить"></button>
-                    </span>
-                `);
-
-                $timesList.append($chip);
-
-                updateHiddenAdmissionInput($wrapper);
-            });
-
-            // Удаление совместимого медикамента
-            $(containerMedicaments).on('click', '.btn-remove-compatible', function () {
-                $(this).closest('.compatible-item').remove();
-            });
-
-            // Удаление времени
-            $(containerMedicaments).on('click', '.admission-times-list .btn-close', function () {
-                const $wrapper = $(this).closest('.admission-period-wrapper');
-                $(this).closest('[data-time]').remove();
-                updateHiddenAdmissionInput($wrapper);
-            });
-
-            // Обновление скрытого input
-            function updateHiddenAdmissionInput($wrapper) {
-                const times = [];
-                $wrapper.find('.admission-times-list [data-time]').each(function () {
-                    times.push($(this).data('time'));
-                });
-
-                $wrapper.find('.admission-hidden-input').val(times.join(','));
+            if (!selectedId || !dosage) {
+                alert('Пожалуйста, выберите медикамент и введите дозу');
+                return;
             }
 
-            function initMedicationSelect(element) {
-                $(element).select2({
-                    tags: false,
-                    placeholder: 'Выберите медикамент',
-                });
+            const item = `
+            <div class="input-group compatible-item mb-1">
+                <input type="hidden" name="compatible_medications[${index}][]" value="${selectedId}">
+                <input type="hidden" name="compatible_dosages[${index}][]" value="${dosage}">
+                <span class="input-group-text">${selectedText} (${dosage})</span>
+                <button type="button" class="btn btn-outline-danger btn-remove-compatible">×</button>
+            </div>
+        `;
+            $wrapper.find('.compatible-list').append(item);
+            $select.val(''); // Сбрасываем значение
+            $wrapper.find('.compatible-dosage').val('');
+        });
 
-                bindMedicationChange(element);
-            }
+        $(containerMedicaments).on('click', '.btn-add-time', function () {
+            const $wrapper = $(this).closest('.admission-period-wrapper');
+            const hour = $wrapper.find('.admission-hour').val();
+            const minute = $wrapper.find('.admission-minute').val();
+            const time = `${hour}:${minute}`;
 
-            function bindMedicationChange(select) {
-                $(select).on('select2:select', function (e) {
-                    const selectedId = e.params.data.id;
-                    const activeSubstance = $(e.params.data.element).data('active-substance');
+            const $timesList = $wrapper.find('.admission-times-list');
 
-                    const $row = $(this).closest('.medication-row');
-                    const $dosageInput = $row.find('input[name="dosages[]"]');
-                    const $medicationInformation = $row.find('.medication_information');
-                    const $compatibleSelect = $row.find('.compatible-medication-select');
+            // Если уже есть такое время — не добавлять
+            if ($timesList.find(`[data-time="${time}"]`).length > 0) return;
 
-                    if (isNaN(selectedId)) {
-                        $dosageInput.val('');
-                        $compatibleSelect.empty().append('<option selected disabled>Выберите медикамент</option>').trigger('change');
-                        return;
-                    }
+            const $chip = $(`
+            <span class="badge bg-secondary d-flex align-items-center gap-1" data-time="${time}">
+                ${time}
+                <button type="button" class="btn-close btn-close-white btn-sm ms-1" aria-label="Удалить"></button>
+            </span>
+        `);
 
-                    // Заполняем дозировку
-                    fetch(`/api/medication/show/${selectedId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            $dosageInput.val(data.dosage ?? '');
+            $timesList.append($chip);
 
-                            console.log(data);
-                            console.log(data.group);
+            updateHiddenAdmissionInput($wrapper);
+        });
 
-                            // med. info.
-                            let medicationInformationHtml = `<p>Группа: <small> ${data.group.name ?? ''}</small></p>
-                            <p>Активное вешество: <small> ${data.composition.active_substance_name ?? ''}</small></p>`;
+        // Удаление совместимого медикамента
+        $(containerMedicaments).on('click', '.btn-remove-compatible', function () {
+            $(this).closest('.compatible-item').remove();
+        });
 
-                            $medicationInformation.html(medicationInformationHtml);
-                        })
-                        .catch(() => {
-                            $dosageInput.val('');
+        // Удаление времени
+        $(containerMedicaments).on('click', '.admission-times-list .btn-close', function () {
+            const $wrapper = $(this).closest('.admission-period-wrapper');
+            $(this).closest('[data-time]').remove();
+            updateHiddenAdmissionInput($wrapper);
+        });
+
+        // Обновление скрытого input
+        function updateHiddenAdmissionInput($wrapper) {
+            const times = [];
+            $wrapper.find('.admission-times-list [data-time]').each(function () {
+                times.push($(this).data('time'));
+            });
+
+            $wrapper.find('.admission-hidden-input').val(times.join(','));
+        }
+
+        function bindMedicationChange(select) {
+            $(select).on('change', function (e) {
+                const selectedOption = this.options[this.selectedIndex];
+                const selectedId = selectedOption.value;
+                const activeSubstance = $(selectedOption).data('active-substance');
+                const $row = $(this).closest('.medication-row');
+                const $compatibleSelect = $row.find('.compatible-medication-select');
+
+                // Загрузка совместимых медикаментов
+                fetch(`/api/medication/active-substance/${activeSubstance}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Ошибка загрузки');
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Сохраняем текущее значение
+                        const currentValue = $compatibleSelect.val();
+
+                        // Очищаем и добавляем новые опции
+                        $compatibleSelect.empty();
+                        $compatibleSelect.append(
+                            '<option value="" disabled selected>Выберите медикамент</option>'
+                        );
+
+                        data.forEach(item => {
+                            const option = new Option(
+                                `${item.name} (${item.composition.active_substance_name})`,
+                                item.id
+                            );
+                            $compatibleSelect.append(option);
                         });
 
-                    // Загружаем совместимые медикаменты и вставляем в select
-                    fetch(`/api/medication/active-substance/${activeSubstance}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            // Удаляем предыдущую select2 (если она есть)
-                            if ($compatibleSelect.hasClass('select2-hidden-accessible')) {
-                                $compatibleSelect.select2('destroy');
-                            }
-
-                            // Чистим и добавляем новые option
-                            $compatibleSelect.empty();
-                            $compatibleSelect.append('<option selected disabled>Выберите медикамент</option>');
-
-                            data.forEach(item => {
-                                $compatibleSelect.append(`
-                                <option value="${item.id}" data-dosage="${item.dosage}">
-                                    ${item.name} (${item.composition.active_substance_name})
-                                </option>
-                            `);
-                            });
-
-                            // Инициализируем select2 заново
-                            $compatibleSelect.select2({
-                                placeholder: 'Выберите медикамент',
-                                width: '100%',
-                            });
-                        })
-                        .catch(() => {
-                            $compatibleSelect.empty().append('<option selected disabled>Ошибка загрузки</option>');
-                        });
-                });
-            }
-
-            // Добавление новой строки
-            let medicationCount = 0;
-            $('#btn-add-medication').click(function () {
-                const clone = templateMedicaments.content.cloneNode(true);
-                containerMedicaments.appendChild(clone);
-
-                // Увеличиваем счетчик
-                medicationCount++;
-
-                // Обновляем номер в заголовке
-                $(containerMedicaments).find('.medication-row').last().find('.medication-title').text(`медикамент # ${medicationCount}`);
-
-                // Инициализируем select2 на новом select с классом .medication-select
-                const $lastMedicationSelect = $('.medication-select').last();
-                initMedicationSelect($lastMedicationSelect[0]);
+                        // Восстанавливаем значение
+                        if (currentValue) {
+                            $compatibleSelect.val(currentValue);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка:', error);
+                        $compatibleSelect.empty().append(
+                            '<option value="" disabled selected>Ошибка загрузки</option>'
+                        );
+                    });
             });
+        }
 
-            // Удаление строки
-            $(containerMedicaments).on('click', '.btn-remove-medication', function () {
-                $(this).closest('.medication-row').remove();
+        // Добавление новой строки
+        let medicationCount = 0;
+        $('#btn-add-medication').click(function () {
+            const clone = templateMedicaments.content.cloneNode(true);
+            containerMedicaments.appendChild(clone);
+            medicationCount++;
 
-                // Пересчитываем количество медикаментов после удаления
-                medicationCount = 0;
-                $('.medication-row').each(function (index) {
-                    $(this).find('.medication-title').text(`медикамент # ${index + 1}`);
-                    medicationCount = index + 1;
-                });
+            const $lastRow = $(containerMedicaments).find('.medication-row').last();
+            $lastRow.find('.medication-title').text(`медикамент #${medicationCount}`);
+
+            // Инициализация основного медикамента
+            const $medicationSelect = $lastRow.find('.medication-select');
+            bindMedicationChange($medicationSelect[0]);
+
+            // Инициализация события change для совместимых медикаментов
+            $medicationSelect.trigger('change');
+        });
+
+        // Удаление строки
+        $(containerMedicaments).on('click', '.btn-remove-medication', function () {
+            $(this).closest('.medication-row').remove();
+
+            // Пересчитываем количество медикаментов после удаления
+            medicationCount = 0;
+            $('.medication-row').each(function (index) {
+                $(this).find('.medication-title').text(`медикамент # ${index + 1}`);
+                medicationCount = index + 1;
             });
+        });
 
-        })
+        // Инициализация существующих элементов
+        $(document).ready(function () {
+            $('.medication-select').each(function () {
+                bindMedicationChange(this);
+            });
+        });
     </script>
 @endsection

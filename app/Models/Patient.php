@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
@@ -130,6 +131,18 @@ class Patient extends Model
     {
         return $this->hasMany(DocumentResponse::class, 'patient_id')
             ->whereNull('examination_map_id');
+    }
+
+
+    public function medications(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Medication::class,
+            'patient_medications',
+            'patient_id',
+            'medication_id'
+        )->using(PatientMedication::class)
+            ->withPivot('dosage', 'admission_period', 'id');
     }
 
 //    public function analyzes(): HasMany

@@ -12,6 +12,7 @@ use App\Models\Document;
 use App\Models\MedicalDevice;
 use App\Models\Medication;
 use App\Models\Patient;
+use App\Models\PatientMedication;
 use App\Models\Region;
 use App\Models\Service;
 use App\Models\Survey;
@@ -170,6 +171,13 @@ class PatientController extends Controller
                         $document->created_at = Carbon::parse($document->created_at);
                     });
             },
+            'medications' => function ($query) {
+                $query->orderByDesc('created_at')
+                    ->get()
+                    ->each(function ($medication) {
+                        $medication->created_at = Carbon::parse($medication->created_at);
+                    });
+            },
         ]);
 
         $patientDetails = [
@@ -286,6 +294,15 @@ class PatientController extends Controller
                 'date' => $document->created_at,
                 'data' => $document,
                 'sort_date' => $document->created_at
+            ]);
+        }
+
+        foreach (PatientMedication::query()->where('patient_id', $patient->id)->get() as $medication) {
+            $timeline->push([
+                'type' => 'medication',
+                'date' => $medication->created_at,
+                'data' => $medication,
+                'sort_date' => $medication->created_at
             ]);
         }
 

@@ -19,6 +19,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     PatientController,
     PatientDiagnosisController,
     PatientInspectionController,
+    PatientMedicationController,
     PatientServiceController,
     PharmacyController,
     PharmacyTypeController,
@@ -212,6 +213,9 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::resource('diseases', ChronicDiseaseController::class);
     Route::resource('devices', MedicalDeviceController::class);
     Route::resource('patients', PatientController::class);
+
+    // medication
+    Route::post('patient-medication', [PatientMedicationController::class, 'store'])->name('patient.medication.store');
 
     // diagnosises
     Route::post('diagnosises', [PatientDiagnosisController::class, 'store'])->name('diagnosises.store');
