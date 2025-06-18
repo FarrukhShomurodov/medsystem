@@ -10,6 +10,7 @@ use App\Models\City;
 use App\Models\Department;
 use App\Models\Document;
 use App\Models\MedicalDevice;
+use App\Models\Medication;
 use App\Models\Patient;
 use App\Models\Region;
 use App\Models\Service;
@@ -294,7 +295,12 @@ class PatientController extends Controller
 
         $documents = Document::query()->where('id', '!=', 1)->get();
 
-        return view('admin.patients.show', compact('patientDetails', 'lastViews', 'departments', 'documents'));
+        $medications = Medication::query()->get();
+
+        return view(
+            'admin.patients.show',
+            compact('patientDetails', 'lastViews', 'departments', 'documents', 'medications')
+        );
     }
 
     public function create(): View
