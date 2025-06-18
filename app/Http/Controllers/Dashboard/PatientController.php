@@ -65,13 +65,22 @@ class PatientController extends Controller
             ->when($request->filled('id'), function ($query) use ($request) {
                 $query->where('id', 'ILIKE', '%' . $request->input('id') . '%');
             })
-            ->when($request->filled('full_name'), function ($query) use ($request) {
-                $term = $request->input('full_name');
-                $query->where(
-                    \DB::raw("CONCAT_WS(' ', first_name, last_name, middle_name)"),
-                    'ILIKE',
-                    '%' . $term . '%'
-                );
+//            ->when($request->filled('full_name'), function ($query) use ($request) {
+//                $term = $request->input('full_name');
+//                $query->where(
+//                    \DB::raw("CONCAT_WS(' ', first_name, last_name, middle_name)"),
+//                    'ILIKE',
+//                    '%' . $term . '%'
+//                );
+//            })
+            ->when($request->filled('first_name'), function ($query) use ($request) {
+                $query->where('first_name', 'ILIKE', $request->input('first_name'));
+            })
+            ->when($request->filled('second_name'), function ($query) use ($request) {
+                $query->where('last_name', 'ILIKE', $request->input('second_name'));
+            })
+            ->when($request->filled('middle_name'), function ($query) use ($request) {
+                $query->where('middle_name', 'ILIKE', $request->input('middle_name'));
             })
             ->when($request->filled('birth_date'), function ($query) use ($request) {
                 $query->where('birth_date', '>=', $request->input('birth_date'));
@@ -224,6 +233,8 @@ class PatientController extends Controller
             'patient_id' => $patient->id,
             'services' => Service::query()->get(),
             'surveys' => Survey::query()->get(),
+
+            'diagnosises' => $patient->diagnosises,
         ];
 
         $timeline = collect();

@@ -45,7 +45,7 @@
         </div>
 
         <div id="filtersCollapse"
-             class="collapse @if(request('department_id') || request('birth_date') || request('staff_id') || request('full_name')  || request('id')) show @endif">
+             class="collapse @if(request('department_id') || request('birth_date') || request('staff_id') || request('first_name') || request('second_name') || request('middle_name')  || request('id')) show @endif">
             <div class="card-body">
                 <form method="GET" action="{{ route('patients.index') }}">
                     <div class="row g-3">
@@ -60,12 +60,32 @@
                         </div>
 
                         <div class="col-md-2 form-group">
-                            <label class="form-label" for="full_name">ФИО</label>
+                            <label class="form-label" for="first_name">Имя</label>
                             <div class="input-group input-group-merge">
-                                <input type="text" name="full_name" value="{{ request("full_name") }}"
-                                       id="full_name"
+                                <input type="text" name="first_name" value="{{ request("first_name") }}"
+                                       id="first_name"
                                        class="form-control"
-                                       placeholder="ФИО"/>
+                                       placeholder="Имя"/>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 form-group">
+                            <label class="form-label" for="second_name">Фамилия</label>
+                            <div class="input-group input-group-merge">
+                                <input type="text" name="second_name" value="{{ request("second_name") }}"
+                                       id="second_name"
+                                       class="form-control"
+                                       placeholder="Фамилия"/>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 form-group">
+                            <label class="form-label" for="middle_name">Отчество</label>
+                            <div class="input-group input-group-merge">
+                                <input type="text" name="middle_name" value="{{ request("middle_name") }}"
+                                       id="middle_name"
+                                       class="form-control"
+                                       placeholder="Отчество"/>
                             </div>
                         </div>
 

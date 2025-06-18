@@ -94,39 +94,44 @@
         </div>
 
         <div class="d-flex justify-content-start align-items-start mb-3" style="margin-left: 1.375rem">
-            <button
-                type="button"
-                class="btn btn-primary me-3"
-                data-bs-toggle="modal"
-                data-bs-target="#indicativeModal">
-                Инструментальные исследования
-            </button>
+            <div>
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#instrumentalModal">
+                    Инструментальные исследования
+                </button>
 
-            <button
-                type="button"
-                class="btn btn-primary me-3"
-                data-bs-toggle="modal"
-                data-bs-target="#createServiceModal">
-                +
-            </button>
+                <button
+                    type="button"
+                    class="btn btn-primary me-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#createServiceModal">
+                    +
+                </button>
+            </div>
 
-            <button
-                type="button"
-                class="btn btn-primary me-3"
-                data-bs-toggle="modal"
-                data-type-id="5"
-                data-bs-target="#indicativeModal">
-                Лаборатория
-            </button>
+            <div>
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-type-id="5"
+                    data-bs-target="#indicativeModal">
+                    Лаборатория
+                </button>
 
-            <button
-                type="button"
-                class="btn btn-primary me-3"
-                data-bs-toggle="modal"
-                data-type-id="5"
-                data-bs-target="#createServiceModal">
-                +
-            </button>
+                <button
+                    type="button"
+                    class="btn btn-primary me-3"
+                    data-bs-toggle="modal"
+                    data-type-id="5"
+                    data-bs-target="#createServiceModal">
+                    +
+                </button>
+            </div>
+
 
             <a
                 type="button"
@@ -136,13 +141,24 @@
                 Консультация
             </a>
 
-            <button
-                type="button"
-                class="btn btn-primary me-3"
-                data-bs-toggle="modal"
-                data-bs-target="#diagnosisesModal">
-                Добавить диагноз
-            </button>
+            <div>
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#showDiagnosisesModal">
+                    Диагноз
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-primary me-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#diagnosisesModal">
+                    +
+                </button>
+            </div>
+
 
             <button
                 type="button"
@@ -222,12 +238,32 @@
                     </div>
 
                     <div class="col-md-2 form-group">
-                        <label class="form-label" for="full_name">ФИО</label>
+                        <label class="form-label" for="first_name">Имя</label>
                         <div class="input-group input-group-merge">
-                            <input type="text" name="full_name" value="{{ request("full_name") }}"
-                                   id="full_name"
+                            <input type="text" name="first_name" value="{{ request("first_name") }}"
+                                   id="first_name"
                                    class="form-control"
-                                   placeholder="ФИО"/>
+                                   placeholder="Имя"/>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 form-group">
+                        <label class="form-label" for="second_name">Фамилия</label>
+                        <div class="input-group input-group-merge">
+                            <input type="text" name="second_name" value="{{ request("second_name") }}"
+                                   id="second_name"
+                                   class="form-control"
+                                   placeholder="Фамилия"/>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 form-group">
+                        <label class="form-label" for="middle_name">Отчество</label>
+                        <div class="input-group input-group-merge">
+                            <input type="text" name="middle_name" value="{{ request("middle_name") }}"
+                                   id="middle_name"
+                                   class="form-control"
+                                   placeholder="Отчество"/>
                         </div>
                     </div>
 
@@ -265,18 +301,18 @@
                         </div>
                     @endforeach
 
-                    <div class="col-md-2">
+                    <div class="w-100">
                         <label class="form-label" for="basic-icon-birth-date"></label>
-                        <div class="input-group input-group-merge">
+                        <div class="d-flex flex-row justify-content-between align-items-center w-100">
                             <button type="submit" class="btn btn-primary">Поиск</button>
+
+                            <a class="btn btn-primary" href="{{ url()->previous() }}">
+                                Вернуться в отделение
+                            </a>
                         </div>
                     </div>
                 </div>
             </form>
-
-            <a class="btn btn-primary" href="{{ url()->previous() }}">
-                Вернуться в отделение
-            </a>
         </div>
 
         <div class="card-body">
@@ -414,7 +450,7 @@
                                             Направление
                                             @break
                                         @case('service')
-                                            Услуга
+                                            <Услуга></Услуга>
                                             @break
                                         @case('patient_med_document')
                                             Мед. Документ
@@ -469,7 +505,7 @@
 
                             <!-- Диагноз -->
                             <td>
-                                @if(!$event['is_main'] && $event['type'] == 'diagnosis')
+                                @if($event['type'] == 'diagnosis')
                                     <div class="history-item" @if(!$event['is_main']) style="margin-left: 20px;" @endif>
                                         <div class="history-header"
                                              data-bs-toggle="modal"
@@ -773,6 +809,55 @@
         </div>
     </div>
 
+    <div class="modal fade" id="showDiagnosisesModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    @foreach($patientDetails['diagnosises'] as $data)
+                        <div class="border-bottom pb-4 mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-clipboard-data me-2 text-info"></i>
+                                    {{ $data->date }}
+                                </h5>
+                                <div>
+                            <span class="text-muted">
+                                {{ \Carbon\Carbon::parse($data->created_at)->format('d.m.Y') }}
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <small class="text-muted d-block">
+                                        <i class="bx bx-time-five text-info me-1"></i>
+                                        Время</small>
+                                    <div class="fs-5">
+                                        {{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d H:i') }}
+                                    </div>
+                                </div>
+
+                                <!-- Комментарий -->
+                                @if($data->description)
+                                    <div class="col-12 mt-3">
+                                        <div class="medical-comment-block">
+                                            <div class="comment-header">
+                                                <h6 class="mb-0"><i class="bx bx-comment-detail me-1"></i>Диагноз</h6>
+                                            </div>
+                                            <div class="fs-5">
+                                                {{ $data->description }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     {{-- indicativeModal --}}
     <div class="modal fade" id="indicativeModal" tabindex="-1" aria-hidden="true">
@@ -829,51 +914,51 @@
                         </tr>
                         <tr>
                             <td class="parameter-name">Глюкоза (ммоль/л)</td>
-                            <td>5.2</td>
+                            <td>5.2 (ммоль/л)</td>
                             <td>5.4</td>
                             <td>5.1</td>
                             <td>5.7</td>
-                            <td>5.3</td>
+                            <td>5.3 норма (20)</td>
                         </tr>
                         <tr>
                             <td class="parameter-name">АЛТ (Ед/л)</td>
-                            <td>22</td>
+                            <td>22 (ммоль/л)</td>
                             <td>25</td>
                             <td>28</td>
                             <td>20</td>
-                            <td>23</td>
+                            <td>23 норма (20)</td>
                         </tr>
                         <tr>
                             <td class="parameter-name">АСТ (Ед/л)</td>
-                            <td>18</td>
+                            <td>18 (ммоль/л)</td>
                             <td>20</td>
                             <td>19</td>
                             <td>17</td>
-                            <td>21</td>
+                            <td>21 норма (20)</td>
                         </tr>
                         <tr>
                             <td class="parameter-name">Креатинин (мкмоль/л)</td>
-                            <td>78</td>
+                            <td>78 (ммоль/л)</td>
                             <td>82</td>
                             <td>80</td>
                             <td>85</td>
-                            <td>79</td>
+                            <td>79 норма (20)</td>
                         </tr>
                         <tr>
                             <td class="parameter-name">Мочевина (ммоль/л)</td>
-                            <td>5.5</td>
+                            <td>5.5 (ммоль/л)</td>
                             <td>5.8</td>
                             <td>5.6</td>
                             <td>6.0</td>
-                            <td>5.7</td>
+                            <td>5.7 норма (20)</td>
                         </tr>
                         <tr>
                             <td class="parameter-name">Билирубин общий (мкмоль/л)</td>
-                            <td>12.5</td>
+                            <td>12.5 (ммоль/л)</td>
                             <td>13.2</td>
                             <td>11.8</td>
                             <td>14.0</td>
-                            <td>12.7</td>
+                            <td>12.7 норма (20)</td>
                         </tr>
 
                         <!-- Общий анализ крови -->
@@ -927,6 +1012,141 @@
                             <td>9</td>
                             <td>7</td>
                             <td>8</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="instrumentalModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Инструментальные исследования</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <style>
+                        table {
+                            border-collapse: collapse;
+                            width: 100%;
+                            margin: 20px 0;
+                            font-family: Arial, sans-serif;
+                            font-size: 14px;
+                        }
+
+                        th, td {
+                            border: 1px solid #ddd;
+                            padding: 8px;
+                            text-align: left;
+                        }
+
+                        th {
+                            background-color: #f2f2f2;
+                            font-weight: bold;
+                        }
+
+                        .analysis-header {
+                            background-color: #e6f7ff;
+                            font-weight: bold;
+                        }
+
+                        .parameter-name {
+                            font-weight: bold;
+                            background-color: #f9f9f9;
+                        }
+                    </style>
+
+                    <table>
+                        <!-- УЗИ органов брюшной полости -->
+                        <tr class="analysis-header">
+                            <td colspan="6">УЗИ органов брюшной полости</td>
+                        </tr>
+                        <tr>
+                            <th>Исследование</th>
+                            <th>01.02.2023</th>
+                            <th>10.04.2023</th>
+                            <th>15.07.2023</th>
+                            <th>20.10.2023</th>
+                            <th>05.12.2023</th>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">Печень</td>
+                            <td>Не увеличена</td>
+                            <td>Не изменена</td>
+                            <td>Умеренная жировая инфильтрация</td>
+                            <td>Не увеличена</td>
+                            <td>В норме</td>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">Желчный пузырь</td>
+                            <td>Без изменений</td>
+                            <td>Перегиб шейки</td>
+                            <td>Холестериноз</td>
+                            <td>Без конкрементов</td>
+                            <td>В норме</td>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">Поджелудочная железа</td>
+                            <td>Четкие контуры</td>
+                            <td>Слегка увеличена</td>
+                            <td>Нормальная эхогенность</td>
+                            <td>Без патологии</td>
+                            <td>Без изменений</td>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">Селезёнка</td>
+                            <td>Размер 110 мм</td>
+                            <td>Размер 112 мм</td>
+                            <td>Размер 108 мм</td>
+                            <td>Размер 113 мм</td>
+                            <td>Размер 109 мм</td>
+                        </tr>
+
+                        <!-- ЭКГ -->
+                        <tr class="analysis-header">
+                            <td colspan="6">ЭКГ (электрокардиограмма)</td>
+                        </tr>
+                        <tr>
+                            <th>Параметр</th>
+                            <th>05.01.2023</th>
+                            <th>15.03.2023</th>
+                            <th>10.06.2023</th>
+                            <th>25.09.2023</th>
+                            <th>01.12.2023</th>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">Ритм</td>
+                            <td>Синусовый</td>
+                            <td>Синусовый</td>
+                            <td>Синусовая тахикардия</td>
+                            <td>Синусовый</td>
+                            <td>Синусовая брадикардия</td>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">ЧСС (уд/мин)</td>
+                            <td>78</td>
+                            <td>80</td>
+                            <td>98</td>
+                            <td>76</td>
+                            <td>62</td>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">QT интервал</td>
+                            <td>0.38 с</td>
+                            <td>0.36 с</td>
+                            <td>0.40 с</td>
+                            <td>0.39 с</td>
+                            <td>0.37 с</td>
+                        </tr>
+                        <tr>
+                            <td class="parameter-name">Отклонение электрической оси</td>
+                            <td>Норма</td>
+                            <td>Норма</td>
+                            <td>Умеренное отклонение влево</td>
+                            <td>Норма</td>
+                            <td>Норма</td>
                         </tr>
                     </table>
                 </div>
