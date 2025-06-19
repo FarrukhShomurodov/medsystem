@@ -255,4 +255,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::get('service/calendar/{type}/patient/{patient}', [ServiceCalendarController::class, 'index'])->name(
         'service.calendar.index'
     );
+
+    Route::get('/services/import', [ServiceController::class, 'showImportServices'])->name('services.import.show');
+    Route::post('/services/import', [ServiceController::class, 'importServices'])->name('services.import');
 });

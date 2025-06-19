@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceRequest;
+use App\Imports\ServicesImport;
 use App\Models\Service;
 use App\Models\ServiceGroup;
 use App\Models\ServiceType;
 use App\Services\ServiceService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ServiceController extends Controller
 {
@@ -29,7 +32,18 @@ class ServiceController extends Controller
     public function index(): View
     {
         $services = Service::query()
-            ->select(['id', 'name', 'price', 'discount', 'service_group_id', 'is_active', 'service_type_id', 'is_appointment'])
+            ->select(
+                [
+                    'id',
+                    'name',
+                    'price',
+                    'discount',
+                    'service_group_id',
+                    'is_active',
+                    'service_type_id',
+                    'is_appointment'
+                ]
+            )
             ->with('group')
             ->with('type')
             ->orderBy('id', 'desc')
@@ -75,5 +89,21 @@ class ServiceController extends Controller
         $this->service->destroy($service);
 
         return redirect()->route('services.index')->with('success', 'Услуга успешно удалена!');
+    }
+
+    public function showImportServices(): View
+    {
+        return view('admin.services.import');
+    }
+
+    public function importServices(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,csv,xls',
+        ]);
+
+        Excel::import(new ServicesImport, $request->file('file'));
+
+        return back()->with('success', 'Услуги успешно импортированы.');
     }
 }

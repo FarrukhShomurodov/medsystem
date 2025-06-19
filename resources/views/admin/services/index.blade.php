@@ -34,8 +34,13 @@
     <div class="card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-header">Услуги </h5>
-            <a href="{{ route('services.create') }}" class="btn btn-primary "
-               style="margin-right: 22px;">Создать</a>
+
+            <div>
+                <a href="{{ route('services.create') }}" class="btn btn-primary "
+                   style="margin-right: 22px;">Создать</a>
+                <a href="{{ route('services.import.show') }}" class="btn btn-primary "
+                   style="margin-right: 22px;">Импорт</a>
+            </div>
         </div>
         <div class="card-datatable table-responsive">
             <table class="datatables-users table border-top">
