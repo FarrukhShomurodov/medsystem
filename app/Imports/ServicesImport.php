@@ -4,6 +4,8 @@ namespace App\Imports;
 
 use App\Exceptions\ServiceImportValidationException;
 use App\Models\Service;
+use App\Models\ServiceGroup;
+use App\Models\ServiceType;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -29,6 +31,18 @@ class ServicesImport implements ToCollection, WithHeadingRow
                 !is_numeric($row['gruppa_id'])
             ) {
                 throw new ServiceImportValidationException('Неверный тип данных!');
+            }
+
+            if (is_numeric($row['tip_id']) && !ServiceType::query()->where('id', is_numeric($row['tip_id']))->exists(
+                )) {
+                throw new ServiceImportValidationException('Такого типа не существует!');
+            }
+
+            if (is_numeric($row['gruppa_id']) && !ServiceGroup::query()->where(
+                    'id',
+                    is_numeric($row['group_id'])
+                )->exists()) {
+                throw new ServiceImportValidationException('Такой группы не существует!');
             }
 
             Service::create([
