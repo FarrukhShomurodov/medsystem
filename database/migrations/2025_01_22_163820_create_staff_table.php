@@ -15,6 +15,8 @@ return new class extends Migration {
             $table->date('date_birthday');
             $table->enum('gender', ['female', 'male']);
             $table->string('citizenship');
+            $table->string('avatar_url')->nullable();
+            $table->string('sign_url')->nullable();
             $table->timestamps();
         });
     }

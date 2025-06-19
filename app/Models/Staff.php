@@ -18,6 +18,8 @@ class Staff extends Model
         'date_birthday',
         'gender',
         'citizenship',
+        'avatar_url',
+        'sign_url',
     ];
 
     const GENDER = ['male', 'female'];

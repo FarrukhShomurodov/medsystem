@@ -6,7 +6,6 @@ use App\Models\Staff;
 use App\Models\StaffProfessionalData;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Password;
 
 class StaffRequest extends FormRequest
 {
@@ -23,6 +22,9 @@ class StaffRequest extends FormRequest
             'date_birthday' => 'required|date',
             'gender' => ['required', Rule::in(Staff::GENDER)],
             'citizenship' => 'required|string',
+
+            'avatar_url' => 'sometimes|image|mimes:jpg,png,webp',
+            'sign_url' => 'sometimes|image|mimes:jpg,png,webp',
 
 
             'phone' => 'required|string|max:255',
@@ -74,7 +76,10 @@ class StaffRequest extends FormRequest
             // reception[]
             'days.*.reception' => ['nullable', 'array'],
             'days.*.reception.*.start_time' => ['required_with:day.*.reception.*.end_time'],
-            'days.*.reception.*.end_time' => ['required_with:day.*.reception.*.start_time', 'after:day.*.reception.*.start_time'],
+            'days.*.reception.*.end_time' => [
+                'required_with:day.*.reception.*.start_time',
+                'after:day.*.reception.*.start_time'
+            ],
 
 
             // absence[]

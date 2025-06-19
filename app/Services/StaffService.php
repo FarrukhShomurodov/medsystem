@@ -6,6 +6,7 @@ use App\Models\Staff;
 use App\Models\StaffPosition;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 
 class StaffService
@@ -17,6 +18,18 @@ class StaffService
     {
         return DB::transaction(function () use ($validated) {
             $staff = Staff::query()->create($validated);
+
+            if (isset($validated['avatar_url'])) {
+                $photoPath = $validated['avatar_url']->store('staff_photo', 'public');
+                $staff->update(['avatar_url' => $photoPath]);
+            }
+
+            if (isset($validated['sign_url'])) {
+                $photoPath = $validated['sign_url']->store('staff_photo', 'public');
+                $staff->update(['sign_url' => $photoPath]);
+            }
+
+
             $validated['staff_id'] = $staff->id;
 
             // Создание связанных записей
@@ -72,6 +85,23 @@ class StaffService
     {
         return DB::transaction(function () use ($validated, $staff) {
             $staff->update($validated);
+
+            if (isset($validated['avatar_url'])) {
+                if (Storage::disk('public')->exists($validated['avatar_url'])) {
+                    Storage::disk('public')->delete($validated['avatar_url']);
+                }
+                $photoPath = $validated['avatar_url']->store('staff_photo', 'public');
+                $staff->update(['avatar_url' => $photoPath]);
+            }
+
+            if (isset($validated['sign_url'])) {
+                if (Storage::disk('public')->exists($validated['sign_url'])) {
+                    Storage::disk('public')->delete($validated['sign_url']);
+                }
+                $photoPath = $validated['sign_url']->store('staff_photo', 'public');
+                $staff->update(['sign_url' => $photoPath]);
+            }
+
             $validated['staff_id'] = $staff->id;
 
             // Создание связанных записей
@@ -191,8 +221,9 @@ class StaffService
      * @return void
      */
     public
-    function destroy(Staff $staff): void
-    {
+    function destroy(
+        Staff $staff
+    ): void {
         $staff->delete();
     }
 }

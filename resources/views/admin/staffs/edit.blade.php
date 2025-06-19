@@ -212,6 +212,34 @@
                             @enderror
                         </div>
 
+                        <div class="mb-3 col-6">
+                            <label for="avatar_url" class="form-label">Фото</label>
+                            <input class="form-control @error('avatar_url') is-invalid @enderror" type="file"
+                                   name="avatar_url" id="avatar_url" accept="image/*"
+                                   onchange="previewImage(this, 'avatarPreview')">
+                            @error('avatar_url')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <img id="avatarPreview"
+                                 src="/storage/{{ $staff->avatar_url }}"
+                                 alt="Предпросмотр фото"
+                                 style="display: block; max-height: 150px; margin-top: 10px;">
+                        </div>
+
+                        <div class="mb-3 col-6">
+                            <label for="sign_url" class="form-label">Подпись</label>
+                            <input class="form-control @error('sign_url') is-invalid @enderror" type="file"
+                                   name="sign_url" id="sign_url" accept="image/*"
+                                   onchange="previewImage(this, 'signPreview')">
+                            @error('sign_url')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <img id="signPreview"
+                                 src="/storage/{{ $staff->sign_url }}"
+                                 alt="Предпросмотр подписи"
+                                 style="display: block; max-height: 150px; margin-top: 10px;">
+                        </div>
+
                         <!-- Navigation -->
                         <div class="col-12 d-flex justify-content-between">
                             <button class="btn btn-label-secondary btn-prev" disabled>
@@ -1313,5 +1341,26 @@
                 $(this).closest('.absence-item').remove();
             });
         });
+    </script>
+
+    <script>
+        function previewImage(input, previewId) {
+            const file = input.files[0];
+            const preview = document.getElementById(previewId);
+
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '#';
+                preview.style.display = 'none';
+            }
+        }
     </script>
 @endsection
