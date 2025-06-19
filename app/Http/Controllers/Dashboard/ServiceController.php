@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Exceptions\ServiceImportValidationException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceRequest;
 use App\Imports\ServicesImport;
@@ -102,8 +103,12 @@ class ServiceController extends Controller
             'file' => 'required|file|mimes:xlsx,csv,xls',
         ]);
 
-        Excel::import(new ServicesImport, $request->file('file'));
+        try {
+            Excel::import(new ServicesImport, $request->file('file'));
+        } catch (ServiceImportValidationException $e) {
+            return back()->withErrors(['import_error' => $e->getMessage()]);
+        }
 
-        return back()->with('success', 'Услуги успешно импортированы.');
+        return redirect()->route('services.index')->with('success', 'Услуги успешно импортированы.');
     }
 }
