@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
             $table->foreignId('examination_map_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->text('description');
+            $table->text('diagnosis_id');
             $table->timestamps();
         });
     }

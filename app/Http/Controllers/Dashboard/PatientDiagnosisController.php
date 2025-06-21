@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-
 use App\Http\Requests\PatientDiagnosisRequest;
 use App\Services\PatientDiagnosisService;
-use Illuminate\Http\RedirectResponse;
 
 class PatientDiagnosisController extends Controller
 {
@@ -18,11 +16,18 @@ class PatientDiagnosisController extends Controller
     }
 
 
-    public function store(PatientDiagnosisRequest $request): RedirectResponse
+    public function store(PatientDiagnosisRequest $request)
     {
         $validated = $request->validated();
         $this->service->store((array)$validated);
 
-        return redirect()->route('patients.show', $validated['patient_id'])->with('success', 'Диагноз успешно добавлен!');
+        if ($request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+
+        return redirect()
+            ->route('patients.show', $validated['patient_id'])
+            ->with('success', 'Диагноз успешно добавлен!');
     }
+
 }

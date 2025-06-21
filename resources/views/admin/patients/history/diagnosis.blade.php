@@ -22,14 +22,14 @@
         </div>
 
         <!-- Комментарий -->
-        @if($data->description)
+        @if($data->diagnosis->name)
             <div class="col-12 mt-3">
                 <div class="medical-comment-block">
                     <div class="comment-header">
                         <h6 class="mb-0"><i class="bx bx-comment-detail me-1"></i>Диагноз</h6>
                     </div>
                     <div class="fs-5">
-                        {{ $data->description }}
+                        {{ $data->diagnosis->name }}
                     </div>
                 </div>
             </div>

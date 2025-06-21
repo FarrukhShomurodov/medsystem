@@ -219,7 +219,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::post('patient-medication', [PatientMedicationController::class, 'store'])->name('patient.medication.store');
 
     // diagnosises
-    Route::post('diagnosises', [PatientDiagnosisController::class, 'store'])->name('diagnosises.store');
+    Route::post('patient/diagnoses', [PatientDiagnosisController::class, 'store'])->name('patient.diagnoses.store');
 
     // patient assignment
     Route::post('patient-assignment', [PatientAssignmentController::class, 'store'])->name('patient.assignment.store');

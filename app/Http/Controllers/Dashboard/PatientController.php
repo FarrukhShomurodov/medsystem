@@ -8,6 +8,7 @@ use App\Models\Allegory;
 use App\Models\ChronicDisease;
 use App\Models\City;
 use App\Models\Department;
+use App\Models\Diagnosis;
 use App\Models\Document;
 use App\Models\MedicalDevice;
 use App\Models\Medication;
@@ -324,10 +325,11 @@ class PatientController extends Controller
         $documents = Document::query()->where('id', '!=', 1)->get();
 
         $medications = Medication::query()->get();
+        $diagnoses = Diagnosis::query()->get();
 
         return view(
             'admin.patients.show',
-            compact('patientDetails', 'lastViews', 'departments', 'documents', 'medications')
+            compact('patientDetails', 'lastViews', 'departments', 'documents', 'medications', 'diagnoses')
         );
     }
 

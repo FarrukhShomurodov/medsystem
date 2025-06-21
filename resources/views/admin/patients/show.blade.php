@@ -514,7 +514,7 @@
                                              data-type='{{ $event['type'] }}'>
                                             <div>
                                                 <span class="history-title">
-                                                    {{ \Illuminate\Support\Str::limit($event['data']->description, 10, '...') }}
+                                                    {{ \Illuminate\Support\Str::limit($event['data']->diagnosis->name, 10, '...') }}
                                                 </span>
                                             </div>
                                         </div>
@@ -789,15 +789,17 @@
                     <h5 class="modal-title">Создать диагноз</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('diagnosises.store') }}" method="POST">
+                <form action="{{ route('patient.diagnoses.store') }}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
-                        <div class="row">
-                            <div class="col-12">
-                                <textarea id="basic-icon-default-history" class="form-control" placeholder="Диагноз"
-                                          name="description"></textarea>
-                            </div>
+                        <div class="list-group">
+                            @foreach($diagnoses as $diagnosis)
+                                <a href="#" class="list-group-item list-group-item-action diagnosis-item"
+                                   data-diagnosis-id="{{ $diagnosis->id }}">
+                                    {{ $diagnosis->name }}
+                                </a>
+                            @endforeach
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -805,6 +807,7 @@
                         <button type="submit" class="btn btn-primary">Создать</button>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
@@ -838,14 +841,14 @@
                                 </div>
 
                                 <!-- Комментарий -->
-                                @if($data->description)
+                                @if($data->diagnosis->name)
                                     <div class="col-12 mt-3">
                                         <div class="medical-comment-block">
                                             <div class="comment-header">
                                                 <h6 class="mb-0"><i class="bx bx-comment-detail me-1"></i>Диагноз</h6>
                                             </div>
                                             <div class="fs-5">
-                                                {{ $data->description }}
+                                                {{ $data->diagnosis->name }}
                                             </div>
                                         </div>
                                     </div>
@@ -1840,6 +1843,44 @@
         $(document).ready(function () {
             $('.medication-select').each(function () {
                 bindMedicationChange(this);
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('.diagnosis-item').on('click', function (e) {
+                e.preventDefault();
+
+                let diagnosisId = $(this).data('diagnosis-id');
+                let patientId = $('#patient_id').val();
+
+                $.ajax({
+                    url: "{{ route('patient.diagnoses.store') }}",
+                    method: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify({
+                        patient_id: patientId,
+                        diagnosis_id: diagnosisId
+                    }),
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Диагноз успешно добавлен");
+
+                            window.location.reload();
+                        } else {
+                            alert("Ошибка: " + (response.message || 'Неизвестная ошибка'));
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error(xhr.responseText);
+                        alert("Произошла ошибка при добавлении диагноза.");
+                    }
+                });
             });
         });
     </script>
