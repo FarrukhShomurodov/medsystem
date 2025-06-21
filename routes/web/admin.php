@@ -7,6 +7,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     CityController,
     DashboardController,
     DepartmentController,
+    DiagnosisController,
     DocumentController,
     EquipmentController,
     ExaminationMapController,
@@ -258,4 +259,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     Route::get('/services/import', [ServiceController::class, 'showImportServices'])->name('services.import.show');
     Route::post('/services/import', [ServiceController::class, 'importServices'])->name('services.import');
+
+    // diagnosis
+    Route::resource('/diagnoses', DiagnosisController::class)->names('diagnoses');
 });

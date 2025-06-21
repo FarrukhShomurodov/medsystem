@@ -227,6 +227,16 @@
             </li>
         @endcan
 
+        @can('view_diagnoses')
+            <li class="menu-item {{ Request::is('dashboard/diagnoses*') ? 'active' : '' }}">
+                <a href="{{ route('diagnoses.index') }}" class="menu-link">
+                    <i class="menu-icon bx bx-buildings"></i>
+                    <div data-i18n="Производители">Диагнозы</div>
+                </a>
+            </li>
+        @endcan
+
+
         @can('view_patients')
             <li class="menu-item {{ Request::is('dashboard/patients*') || Request::is('dashboard/maps*') || Request::is('dashboard/survey-response*') ? 'active' : '' }}">
                 <a href="{{ route('patients.index') }}" class="menu-link">

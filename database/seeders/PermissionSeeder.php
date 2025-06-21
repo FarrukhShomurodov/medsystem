@@ -213,6 +213,11 @@ class PermissionSeeder extends Seeder
             'delete_maps',
 
             'create_patient_map',
+
+            'view_diagnoses',
+            'create_diagnoses',
+            'edit_diagnoses',
+            'delete_diagnoses',
         ];
 
         $role = Role::firstOrCreate([

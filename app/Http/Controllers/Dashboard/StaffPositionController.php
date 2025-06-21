@@ -226,6 +226,12 @@ class StaffPositionController extends Controller
 
             'sister_window_show' => 'Просмотр сестринского окна',
             'patient_inspection_store' => 'Создание осмотра',
+
+
+            'view_diagnoses' => 'Просмотр диагноза',
+            'create_diagnoses' => 'Создание диагноза',
+            'edit_diagnoses' => 'Редактирование диагноза',
+            'delete_diagnoses' => 'Удаление диагноза',
         ];
     }
 
