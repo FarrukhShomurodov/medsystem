@@ -192,7 +192,7 @@
                         <td>-</td>
                         <td>-</td>
                         <td>-</td>
-                        <td>${patient.examination_maps ? calculateAgeInDays(patient.examination_maps[patient.examination_maps.length - 1].admission_date) : '-'}</td>
+                        <td>${patient.examination_maps.length > 0 ? calculateAgeInDays(patient.examination_maps[patient.examination_maps.length - 1].admission_date) : '-'}</td>
                         <td>
                             <button type="button"
                                     class="btn btn-primary me-3 open-examination-modal"
