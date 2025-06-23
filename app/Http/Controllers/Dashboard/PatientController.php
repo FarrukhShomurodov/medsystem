@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PatientRequest;
+use App\Models\AdminSelectedDiagnosis;
 use App\Models\Allegory;
 use App\Models\ChronicDisease;
 use App\Models\City;
@@ -23,6 +24,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class PatientController extends Controller
 {
@@ -325,11 +327,29 @@ class PatientController extends Controller
         $documents = Document::query()->where('id', '!=', 1)->get();
 
         $medications = Medication::query()->get();
-        $diagnoses = Diagnosis::query()->get();
+
+        $admin = Auth::guard('admin')->user();
+
+        $favoriteDiagnosisIds = AdminSelectedDiagnosis::where('admin_id', $admin->id)
+            ->pluck('diagnosis_id')
+            ->toArray();
+
+        $favoriteDiagnoses = Diagnosis::whereIn('id', $favoriteDiagnosisIds)->get();
+
+        $regularDiagnoses = Diagnosis::whereNotIn('id', $favoriteDiagnosisIds)->get();
+
 
         return view(
             'admin.patients.show',
-            compact('patientDetails', 'lastViews', 'departments', 'documents', 'medications', 'diagnoses')
+            compact(
+                'patientDetails',
+                'lastViews',
+                'departments',
+                'documents',
+                'medications',
+                'favoriteDiagnoses',
+                'regularDiagnoses'
+            )
         );
     }
 

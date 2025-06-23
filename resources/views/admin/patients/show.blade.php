@@ -792,22 +792,55 @@
                 <form action="{{ route('patient.diagnoses.store') }}" method="POST">
                     @csrf
                     <div class="modal-body">
-                        <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
-                        <div class="list-group">
-                            @foreach($diagnoses as $diagnosis)
-                                <a href="#" class="list-group-item list-group-item-action diagnosis-item"
-                                   data-diagnosis-id="{{ $diagnosis->id }}">
-                                    {{ $diagnosis->name }}
-                                </a>
-                            @endforeach
+                        <input type="hidden" id="patient_id" name="patient_id"
+                               value="{{ $patientDetails['patient_id'] }}">
+
+                        {{-- Избранные диагнозы --}}
+                        @if($favoriteDiagnoses->count())
+                            <div class="mb-3">
+                                <h6 class="text-warning fw-bold">⭐ Избранные диагнозы</h6>
+                                <div class="list-group">
+                                    @foreach($favoriteDiagnoses as $diagnosis)
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <a href="#"
+                                               class="list-group-item list-group-item-action diagnosis-item"
+                                               data-diagnosis-id="{{ $diagnosis->id }}">
+                                                {{ $diagnosis->name }}
+                                            </a>
+                                            <span class="ms-2 diagnosis-favorite text-warning cursor-pointer"
+                                                  data-diagnosis-id="{{ $diagnosis->id }}"
+                                                  title="Убрать из избранного"
+                                                  style="font-size: 28px;">★</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Все остальные диагнозы --}}
+                        <div>
+                            <h6 class="text-secondary fw-bold">Все диагнозы</h6>
+                            <div class="list-group">
+                                @foreach($regularDiagnoses as $diagnosis)
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <a href="#"
+                                           class="list-group-item list-group-item-action diagnosis-item"
+                                           data-diagnosis-id="{{ $diagnosis->id }}">
+                                            {{ $diagnosis->name }}
+                                        </a>
+                                        <span class="ms-2 diagnosis-favorite text-muted cursor-pointer"
+                                              data-diagnosis-id="{{ $diagnosis->id }}"
+                                              title="Добавить в избранное"
+                                              style="font-size: 28px;">★</span>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Закрыть</button>
-                        <button type="submit" class="btn btn-primary">Создать</button>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>
@@ -1849,6 +1882,7 @@
 
     <script>
         $(document).ready(function () {
+            // Добавление/удаление диагноза пациенту
             $('.diagnosis-item').on('click', function (e) {
                 e.preventDefault();
 
@@ -1868,17 +1902,38 @@
                         diagnosis_id: diagnosisId
                     }),
                     success: function (response) {
-                        if (response.success) {
-                            alert("Диагноз успешно добавлен");
-
-                            window.location.reload();
-                        } else {
-                            alert("Ошибка: " + (response.message || 'Неизвестная ошибка'));
-                        }
+                        alert("Диагноз успешно добавлен");
+                        location.reload();
                     },
                     error: function (xhr) {
+                        alert("Ошибка при добавлении диагноза.");
                         console.error(xhr.responseText);
-                        alert("Произошла ошибка при добавлении диагноза.");
+                    }
+                });
+            });
+
+            // Добавление/удаление из избранного
+            $('.diagnosis-favorite').on('click', function (e) {
+                e.stopPropagation(); // Не даём сработать родительскому click
+
+                const star = $(this);
+                const diagnosisId = star.data('diagnosis-id');
+
+                $.ajax({
+                    url: '/api/selected-diagnosis', // твой API
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    data: {
+                        diagnosis_id: diagnosisId,
+                        admin_id: {{ auth()->user()->id }}
+                    },
+                    success: function () {
+                        location.reload(); // Можно заменить на DOM-обновление без reload
+                    },
+                    error: function () {
+                        alert("Ошибка при обновлении избранных.");
                     }
                 });
             });
