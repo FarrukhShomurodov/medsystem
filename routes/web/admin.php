@@ -21,6 +21,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     PatientDiagnosisController,
     PatientInspectionController,
     PatientMedicationController,
+    PatientParameterController,
     PatientServiceController,
     PharmacyController,
     PharmacyTypeController,
@@ -227,6 +228,10 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     // sister-window
     Route::get('sister-window', [SisterWindowController::class, 'index'])->name('sister.window.index')
         ->middleware('permission:sister_window_show');
+
+    Route::get('sister-window/show/{patient}', [SisterWindowController::class, 'show'])->name('sister.window.show')
+        ->middleware('permission:sister_window_show');
+
     Route::post('patient-inspection', [PatientInspectionController::class, 'store'])->name('patient.inspection.store')
         ->middleware('permission:patient_inspection_store');
 
@@ -267,4 +272,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::post('/patient-parameter', [PatientController::class, 'storeNormalParameter'])->name(
         'patient.store.normal.parameter'
     );
+
+    Route::post('/patients/{patient}/parameters', [PatientParameterController::class, 'store'])
+        ->name('patient.parameters.store');
 });
