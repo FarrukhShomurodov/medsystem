@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Admin;
 use App\Models\DayOfWeek;
-use App\Models\NormalParameter;
 use App\Models\ServiceType;
 use App\Models\StaffPosition;
+use App\Models\VitalParameter;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -84,28 +84,40 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionSeeder::class);
         $this->call(DocumentSeeder::class);
 
-        NormalParameter::query()->create([
-            'name' => 'Систолическое АД (SYS)'
+        VitalParameter::query()->create([
+            'name' => 'Систолическое АД'
         ]);
 
-        NormalParameter::query()->create([
-            'name' => 'Диастолическое АД (DIAS)'
+        VitalParameter::query()->create([
+            'name' => 'Диастолическое АД'
         ]);
 
-        NormalParameter::query()->create([
-            'name' => 'Пульс (PULSE)'
+        VitalParameter::query()->create([
+            'name' => 'Пульс'
         ]);
 
-        NormalParameter::query()->create([
-            'name' => 'Температура (TEMP)'
+        VitalParameter::query()->create([
+            'name' => 'Температура'
         ]);
 
-        NormalParameter::query()->create([
-            'name' => 'Сатурация SPO2'
+        VitalParameter::query()->create([
+            'name' => 'Сатурация (SPO₂)'
         ]);
 
-        NormalParameter::query()->create([
+        VitalParameter::query()->create([
             'name' => 'Частота дыхания (ЧДД)'
+        ]);
+
+        VitalParameter::query()->create([
+            'name' => 'Уровень сознания'
+        ]);
+
+        VitalParameter::query()->create([
+            'name' => 'Кислород/воздух'
+        ]);
+
+        VitalParameter::query()->create([
+            'name' => 'Диурез / Баланс'
         ]);
     }
 }

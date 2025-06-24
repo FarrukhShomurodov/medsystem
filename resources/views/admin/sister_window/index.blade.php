@@ -9,12 +9,12 @@
         <span class="text-muted fw-light">Сестринское окно</span>
     </h6>
 
-    <div class="card shadow-sm" id="patientListCard">
+    <div class="card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-header">Пациенты </h5>
         </div>
         <div class="card-datatable table-responsive">
-            <table class="table table-bordered">
+            <table class="datatables-users table border-top">
                 <thead>
                 <tr>
                     <th>ФИО / ID</th>
@@ -28,7 +28,7 @@
                 </thead>
                 <tbody>
                 @foreach($patients as $patient)
-                    <tr class="patient-row cursor-pointer" data-id="{{ $patient->id }}"
+                    <tr class="patient-row cursor-pointer"
                         onclick="window.location.href='{{ route('sister.window.show',$patient->id) }}'">
                         <td>{{ $patient->first_name }} {{ $patient->last_name }} {{ $patient->middle_name }}
                             ID{{ $patient->id }}</td>

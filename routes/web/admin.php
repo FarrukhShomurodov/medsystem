@@ -268,11 +268,11 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     // diagnosis
     Route::resource('/diagnoses', DiagnosisController::class)->names('diagnoses');
 
-
-    Route::post('/patient-parameter', [PatientController::class, 'storeNormalParameter'])->name(
-        'patient.store.normal.parameter'
+    // patient vital parameters
+    Route::post('/patient-parameter/{patient}', [PatientParameterController::class, 'storeNormalVitalParameter'])->name(
+        'patient.normal.vital.parameter.store'
     );
 
     Route::post('/patients/{patient}/parameters', [PatientParameterController::class, 'store'])
-        ->name('patient.parameters.store');
+        ->name('patient.vital.parameters.store');
 });

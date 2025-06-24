@@ -540,35 +540,37 @@
             <h5 class="mb-0">Нормальные показатели пациента</h5>
         </div>
         <div class="card-body">
-            <form action="{{ route('patient.store.normal.parameter') }}" method="POST">
+            <form action="{{ route('patient.normal.vital.parameter.store', $patientDetails['patient_id']) }}"
+                  method="POST">
                 @csrf
-
-                <input type="hidden" id="patient_id" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
 
                 <table class="table table-bordered align-middle">
                     <thead>
                     <tr>
                         <th>Параметр</th>
-                        <th>Значение</th>
+                        <th>Норма</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($normalParameters as $normalParameter)
+                    @php
+                        $normMap = $patient->vitalNormalParameters
+                            ->pluck('pivot.normal', 'id');
+                    @endphp
+
+                    @foreach($vitalParameters as $param)
                         @php
-                            $existingValue = $patientNormalParameters
-                                ->where('normal_parameter_id', $normalParameter->id)
-                                ->first()
-                                ->normal ?? '';
+                            $existingValue = old('parameters.' . $param->id, $normMap->get($param->id, ''));
                         @endphp
                         <tr>
-                            <td>{{ $normalParameter->name }}</td>
+                            <td>{{ $param->name }}</td>
                             <td>
                                 <input
                                     type="number"
-                                    name="parameters[{{ $normalParameter->id }}]"
+                                    step="0.1"
+                                    name="parameters[{{ $param->id }}]"
                                     class="form-control"
                                     placeholder="Норма"
-                                    value="{{ old('parameters.' . $normalParameter->id, $existingValue) }}"
+                                    value="{{ $existingValue }}"
                                 >
                             </td>
                         </tr>

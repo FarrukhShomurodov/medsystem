@@ -2,23 +2,26 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class PatientParameter extends Model
+class PatientVitalParameter extends Pivot
 {
+    protected $table = 'patient_vital_parameters';
+
     protected $fillable = [
         'patient_id',
-        'systolic',
-        'diastolic',
-        'pulse',
-        'temperature',
-        'saturation',
-        'breathing_rate',
-        'consciousness',
-        'oxygen_type',
-        'pain_score',
-        'fall_risk',
-        'urine_balance',
-        'total_score',
+        'vital_parameter_id',
+        'value',
     ];
+
+    public function vitalParameter(): BelongsTo
+    {
+        return $this->belongsTo(VitalParameter::class);
+    }
+
+    public function patient(): BelongsTo
+    {
+        return $this->belongsTo(Patient::class);
+    }
 }

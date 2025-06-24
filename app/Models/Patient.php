@@ -145,6 +145,32 @@ class Patient extends Model
             ->withPivot('dosage', 'admission_period', 'id');
     }
 
+    public function vitalNormalParameters(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(
+                VitalParameter::class,
+                'patient_normal_vital_parameters',
+                'patient_id',
+                'vital_parameter_id'
+            )
+            ->using(PatientNormalVitalParameter::class)
+            ->withPivot('normal', 'created_at');
+    }
+
+    public function vitalParameters(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(
+                VitalParameter::class,
+                'patient_vital_parameters',
+                'patient_id',
+                'vital_parameter_id'
+            )
+            ->using(PatientVitalParameter::class)
+            ->withPivot('value', 'created_at');
+    }
+
 //    public function analyzes(): HasMany
 //    {
 //        return $this->hasMany(Analyze::class);
