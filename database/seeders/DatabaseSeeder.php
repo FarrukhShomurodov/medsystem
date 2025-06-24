@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Admin;
 use App\Models\DayOfWeek;
+use App\Models\NormalParameter;
 use App\Models\ServiceType;
 use App\Models\StaffPosition;
 use Illuminate\Database\Seeder;
@@ -82,5 +83,29 @@ class DatabaseSeeder extends Seeder
 
         $this->call(PermissionSeeder::class);
         $this->call(DocumentSeeder::class);
+
+        NormalParameter::query()->create([
+            'name' => 'Систолическое АД (SYS)'
+        ]);
+
+        NormalParameter::query()->create([
+            'name' => 'Диастолическое АД (DIAS)'
+        ]);
+
+        NormalParameter::query()->create([
+            'name' => 'Пульс (PULSE)'
+        ]);
+
+        NormalParameter::query()->create([
+            'name' => 'Температура (TEMP)'
+        ]);
+
+        NormalParameter::query()->create([
+            'name' => 'Сатурация SPO2'
+        ]);
+
+        NormalParameter::query()->create([
+            'name' => 'Частота дыхания (ЧДД)'
+        ]);
     }
 }

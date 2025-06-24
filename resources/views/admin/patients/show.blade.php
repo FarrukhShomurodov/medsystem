@@ -535,6 +535,55 @@
         </div>
     </div>
 
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">Нормальные показатели пациента</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('patient.store.normal.parameter') }}" method="POST">
+                @csrf
+
+                <input type="hidden" id="patient_id" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
+
+                <table class="table table-bordered align-middle">
+                    <thead>
+                    <tr>
+                        <th>Параметр</th>
+                        <th>Значение</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($normalParameters as $normalParameter)
+                        @php
+                            $existingValue = $patientNormalParameters
+                                ->where('normal_parameter_id', $normalParameter->id)
+                                ->first()
+                                ->normal ?? '';
+                        @endphp
+                        <tr>
+                            <td>{{ $normalParameter->name }}</td>
+                            <td>
+                                <input
+                                    type="number"
+                                    name="parameters[{{ $normalParameter->id }}]"
+                                    class="form-control"
+                                    placeholder="Норма"
+                                    value="{{ old('parameters.' . $normalParameter->id, $existingValue) }}"
+                                >
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary mt-2">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
     @php $accordionId = uniqid('accordion_'); @endphp
 
     <div class="accordion mt-3" id="{{ $accordionId }}">

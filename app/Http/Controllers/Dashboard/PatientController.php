@@ -13,8 +13,10 @@ use App\Models\Diagnosis;
 use App\Models\Document;
 use App\Models\MedicalDevice;
 use App\Models\Medication;
+use App\Models\NormalParameter;
 use App\Models\Patient;
 use App\Models\PatientMedication;
+use App\Models\PatientNormalParameter;
 use App\Models\Region;
 use App\Models\Service;
 use App\Models\Survey;
@@ -338,6 +340,8 @@ class PatientController extends Controller
 
         $regularDiagnoses = Diagnosis::whereNotIn('id', $favoriteDiagnosisIds)->get();
 
+        $normalParameters = NormalParameter::query()->get();
+        $patientNormalParameters = PatientNormalParameter::where('patient_id', $patientDetails['patient_id'])->get();
 
         return view(
             'admin.patients.show',
@@ -348,7 +352,9 @@ class PatientController extends Controller
                 'documents',
                 'medications',
                 'favoriteDiagnoses',
-                'regularDiagnoses'
+                'regularDiagnoses',
+                'normalParameters',
+                'patientNormalParameters'
             )
         );
     }
@@ -400,5 +406,33 @@ class PatientController extends Controller
         $this->service->destroy($patient);
 
         return redirect()->route('patients.index')->with('success', 'Пациент устройство успешно удалена!');
+    }
+
+    public function storeNormalParameter(Request $request)
+    {
+        $validated = $request->validate([
+            'patient_id' => 'required|exists:patients,id',
+            'parameters' => 'required|array',
+        ]);
+
+        $patientId = $validated['patient_id'];
+
+        foreach ($validated['parameters'] as $normalParameterId => $normalValue) {
+            if ($normalValue === null) {
+                continue; // Пропускаем пустые
+            }
+
+            PatientNormalParameter::updateOrCreate(
+                [
+                    'patient_id' => $patientId,
+                    'normal_parameter_id' => $normalParameterId,
+                ],
+                [
+                    'normal' => $normalValue,
+                ]
+            );
+        }
+
+        return redirect()->back()->with('success', 'Показатели успешно сохранены!');
     }
 }

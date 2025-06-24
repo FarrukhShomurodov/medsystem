@@ -262,4 +262,9 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // diagnosis
     Route::resource('/diagnoses', DiagnosisController::class)->names('diagnoses');
+
+
+    Route::post('/patient-parameter', [PatientController::class, 'storeNormalParameter'])->name(
+        'patient.store.normal.parameter'
+    );
 });
