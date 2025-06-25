@@ -133,6 +133,11 @@ class Patient extends Model
             ->whereNull('examination_map_id');
     }
 
+    public function documentResponseAll(): HasMany
+    {
+        return $this->hasMany(DocumentResponse::class, 'patient_id');
+    }
+
 
     public function medications(): BelongsToMany
     {

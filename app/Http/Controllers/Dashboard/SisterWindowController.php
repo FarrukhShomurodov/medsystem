@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Document;
 use App\Models\Patient;
 use App\Models\PatientVitalParameter;
 use App\Models\Staff;
@@ -118,6 +119,9 @@ class SisterWindowController extends Controller
             return $item;
         })->toArray();
 
+
+        $documents = Document::query()->where('id', '!=', 1)->get();
+        
         return view(
             'admin.sister_window.show',
             compact(
@@ -127,7 +131,8 @@ class SisterWindowController extends Controller
                 'vitalParameters',
                 'chartData',
                 'records',
-                'jsChartData'
+                'jsChartData',
+                'documents',
             )
         );
     }

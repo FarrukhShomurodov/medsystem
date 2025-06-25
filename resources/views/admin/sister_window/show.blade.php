@@ -188,6 +188,39 @@
         </div>
     </div>
 
+    <div class="card mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-header">Документы</h5>
+        </div>
+        <div class="card-datatable table-responsive">
+            <table class="datatables-users table border-top">
+                <thead>
+                <tr>
+                    <th></th>
+                    @foreach($patient->documentResponseAll as $response)
+                        <th>д/в</th>
+                    @endforeach
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($documents as $document)
+                    <tr>
+                        <td>
+                            <a href="{{ route('documents.show', ['document' => $document->id , 'patient_id' => $patient->id] ) }}">
+                                <strong>{{ $document->title }}</strong>
+                            </a>
+                        </td>
+
+                        @foreach($patient->documentResponseAll as $response)
+                            <td>56</td>
+                        @endforeach
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="modal fade" id="addParameterModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
