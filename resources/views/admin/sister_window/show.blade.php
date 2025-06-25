@@ -279,8 +279,21 @@
                     chart: {
                         type: 'line',
                         height: 350,
-                        toolbar: {show: false},
-                        zoom: {enabled: false}
+                        toolbar: {
+                            show: false,
+                            tools: {
+                                zoom: true,
+                                zoomin: true,
+                                zoomout: true,
+                                pan: true,
+                                reset: true,
+                            }
+                        },
+                        zoom: {
+                            enabled: true,
+                            type: 'x', // можно x, y или xy
+                            autoScaleYaxis: true // автоматически масштабирует ось Y при зуме
+                        },
                     },
                     title: {
                         text: title,
@@ -328,6 +341,7 @@
                             text: title
                         }
                     },
+
                     series: series
                 };
 
