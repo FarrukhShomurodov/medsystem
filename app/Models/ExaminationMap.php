@@ -79,6 +79,19 @@ class ExaminationMap extends Model
         return $this->hasMany(PatientDiagnosis::class, 'examination_map_id');
     }
 
+    public function vitalParameters(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(
+                VitalParameter::class,
+                'examination_map_vital_parameters',
+                'examination_map_id',
+                'vital_parameter_id'
+            )
+            ->using(ExaminationMapVitalParameter::class)
+            ->withPivot('value', 'created_at');
+    }
+
 //    public function analyze(): HasMany
 //    {
 //        return $this->hasMany(Analyze::class);

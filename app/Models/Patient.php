@@ -133,11 +133,6 @@ class Patient extends Model
             ->whereNull('examination_map_id');
     }
 
-    public function documentResponseAll(): HasMany
-    {
-        return $this->hasMany(DocumentResponse::class, 'patient_id');
-    }
-
 
     public function medications(): BelongsToMany
     {
@@ -163,18 +158,6 @@ class Patient extends Model
             ->withPivot('normal', 'created_at');
     }
 
-    public function vitalParameters(): BelongsToMany
-    {
-        return $this
-            ->belongsToMany(
-                VitalParameter::class,
-                'patient_vital_parameters',
-                'patient_id',
-                'vital_parameter_id'
-            )
-            ->using(PatientVitalParameter::class)
-            ->withPivot('value', 'created_at');
-    }
 
 //    public function analyzes(): HasMany
 //    {

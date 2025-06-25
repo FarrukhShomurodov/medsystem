@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class PatientVitalParameter extends Pivot
+class ExaminationMapVitalParameter extends Pivot
 {
-    protected $table = 'patient_vital_parameters';
+    protected $table = 'examination_map_vital_parameters';
 
     protected $fillable = [
-        'patient_id',
+        'examination_map_id',
         'vital_parameter_id',
         'value',
     ];
@@ -20,8 +20,8 @@ class PatientVitalParameter extends Pivot
         return $this->belongsTo(VitalParameter::class);
     }
 
-    public function patient(): BelongsTo
+    public function examinationMap(): BelongsTo
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsTo(ExaminationMap::class);
     }
 }

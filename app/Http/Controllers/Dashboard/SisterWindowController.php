@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Document;
+use App\Models\ExaminationMapVitalParameter;
 use App\Models\Patient;
-use App\Models\PatientVitalParameter;
 use App\Models\Staff;
 use App\Models\VitalParameter;
 use Illuminate\Contracts\View\View;
@@ -78,8 +78,8 @@ class SisterWindowController extends Controller
         ]);
 
         // Получение всех замеров для пациента
-        $pvps = PatientVitalParameter::with('vitalParameter')
-            ->where('patient_id', $patient->id)
+        $pvps = ExaminationMapVitalParameter::with('vitalParameter')
+            ->where('examination_map_id', $patient->examinationMaps->where('is_active', true)->first()->id)
             ->orderBy('created_at')
             ->get();
 
@@ -121,7 +121,8 @@ class SisterWindowController extends Controller
 
 
         $documents = Document::query()->where('id', '!=', 1)->get();
-        
+        $examinationMap = $patient->examinationMaps->where('is_active', true)->first();
+
         return view(
             'admin.sister_window.show',
             compact(
@@ -133,6 +134,7 @@ class SisterWindowController extends Controller
                 'records',
                 'jsChartData',
                 'documents',
+                'examinationMap',
             )
         );
     }

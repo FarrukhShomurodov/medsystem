@@ -197,7 +197,7 @@
                 <thead>
                 <tr>
                     <th></th>
-                    @foreach($patient->documentResponseAll as $response)
+                    @foreach($examinationMap->documentResponse as $response)
                         <th>д/в</th>
                     @endforeach
                 </tr>
@@ -211,7 +211,7 @@
                             </a>
                         </td>
 
-                        @foreach($patient->documentResponseAll as $response)
+                        @foreach($examinationMap->documentResponse as $response)
                             <td>56</td>
                         @endforeach
                     </tr>

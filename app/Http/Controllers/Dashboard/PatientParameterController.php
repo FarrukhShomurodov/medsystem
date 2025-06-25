@@ -37,12 +37,15 @@ class PatientParameterController extends Controller
         ]);
 
         $now = now();
+
+        $examinationMap = $patient->examinationMaps->where('is_active', true)->first();
+
         foreach ($data['parameters'] as $paramId => $value) {
             if ($value === null || $value === '') {
                 continue;
             }
 
-            $patient->vitalParameters()->attach($paramId, [
+            $examinationMap->vitalParameters()->attach($paramId, [
                 'value' => $value,
                 'created_at' => $now,
                 'updated_at' => $now,
