@@ -43,6 +43,11 @@
                 data-bs-target="#addParameterModal">
             Добавить данные
         </button>
+
+        <button type="button" class="btn btn-primary mt-4" data-bs-toggle="modal"
+                data-bs-target="#treatmentPlanModal">
+            План лечения
+        </button>
     </div>
 
     {{-- Контейнер со страницей --}}
@@ -253,6 +258,212 @@
                             <button type="submit" class="btn btn-primary">Сохранить</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="treatmentPlanModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавить данные пациента</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="tabs">
+                            <div class="tab active" onclick="switchTab('medications')">Препараты</div>
+                            <div class="tab" onclick="switchTab('procedures')">Манипуляции</div>
+                        </div>
+
+                        <div id="medications" class="tab-content active">
+                            <table class="compact-table">
+                                <thead>
+                                <tr>
+                                    <th class="time-col">Время</th>
+                                    <th>Препарат</th>
+                                    <th>Дозировка</th>
+                                    <th class="status-col">Статус</th>
+                                    <th class="actions-col">Действия</th>
+                                    <th class="actions-col"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>07:00</td>
+                                    <td>Омепразол</td>
+                                    <td>20 мг</td>
+                                    <td class="status">
+                                        <span class="status-indicator pending"></span>
+                                        Ожидает
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
+                                        <input type="text" class="reason-input" placeholder="Причина отказа...">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>08:00</td>
+                                    <td>Амоксициллин</td>
+                                    <td>500 мг</td>
+                                    <td class="status">
+                                        <span class="status-indicator completed"></span>
+                                        Принято
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
+                                        <input type="text" class="reason-input" placeholder="Причина отказа...">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>12:00</td>
+                                    <td>Парацетамол</td>
+                                    <td>325 мг</td>
+                                    <td class="status">
+                                        <span class="status-indicator not-completed"></span>
+                                        Отказ: аллергия
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
+                                        <input type="text" class="reason-input" placeholder="Причина отказа...">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>20:00</td>
+                                    <td>Амоксициллин</td>
+                                    <td>500 мг</td>
+                                    <td class="status">
+                                        <span class="status-indicator pending"></span>
+                                        Ожидает
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
+                                        <input type="text" class="reason-input" placeholder="Причина отказа...">
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="procedures" class="tab-content">
+                            <table class="compact-table">
+                                <thead>
+                                <tr>
+                                    <th class="time-col">Время</th>
+                                    <th>Манипуляция</th>
+                                    <th class="status-col">Статус</th>
+                                    <th class="actions-col">Действия</th>
+                                    <th class="actions-col"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>07:30</td>
+                                    <td>Забор крови на биохимию</td>
+                                    <td class="status">
+                                        <span class="status-indicator completed"></span>
+                                        Выполнено
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
+                                        <input type="text" class="reason-input" placeholder="Причина отказа...">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>08:00</td>
+                                    <td>Инъекция цефтриаксона</td>
+                                    <td class="status">
+                                        <span class="status-indicator completed"></span>
+                                        Выполнено
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
+                                        <input type="text" class="reason-input" placeholder="Причина отказа...">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>09:00</td>
+                                    <td>Перевязка послеоперационной раны</td>
+                                    <td class="status">
+                                        <span class="status-indicator not-completed"></span>
+                                        Отказ: пациент отказался
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
+                                        <input type="text" class="reason-input" placeholder="Причина отказа...">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>10:00</td>
+                                    <td>ЭКГ</td>
+                                    <td class="status">
+                                        <span class="status-indicator pending"></span>
+                                        Ожидает
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
+                                        <input type="text" class="reason-input" placeholder="Причина отказа...">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>20:00</td>
+                                    <td>Инъекция цефтриаксона</td>
+                                    <td class="status">
+                                        <span class="status-indicator pending"></span>
+                                        Ожидает
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
+                                        <input type="text" class="reason-input" placeholder="Причина отказа...">
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="save-btn">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-save"></i> Сохранить изменения
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -471,5 +682,75 @@
                 $('#general').html('<p class="text-danger text-center p-4">Ошибка при создании графиков: ' + e.message + '</p>');
             }
         });
+
+        // treatment plan modal
+        // Переключение между табами
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Отметка как выполненного
+        function markCompleted(button) {
+            const row = button.closest('tr');
+            const statusCell = row.querySelector('.status');
+
+            statusCell.innerHTML = `
+                <span class="status-indicator completed"></span>
+                ${statusCell.textContent.includes('Отказ') ? 'Выполнено' : statusCell.textContent.replace('Ожидает', 'Выполнено')}
+            `;
+
+            // Скрываем поле для причины отказа
+            const reasonInput = row.querySelector('.reason-input');
+            reasonInput.style.display = 'none';
+        }
+
+        // Показать поле для причины отказа
+        function showReason(button) {
+            const row = button.closest('tr');
+            const statusCell = row.querySelector('.status');
+            const reasonInput = row.querySelector('.reason-input');
+
+            reasonInput.style.display = 'block';
+            reasonInput.focus();
+
+            reasonInput.onblur = function () {
+                if (reasonInput.value.trim() !== '') {
+                    statusCell.innerHTML = `
+                        <span class="status-indicator not-completed"></span>
+                        Отказ: ${reasonInput.value}
+                    `;
+                }
+                reasonInput.style.display = 'none';
+            };
+        }
+
+        // Сортировка таблиц по времени при загрузке
+        document.addEventListener('DOMContentLoaded', function () {
+            sortTableByTime('medications');
+            sortTableByTime('procedures');
+        });
+
+        function sortTableByTime(tabId) {
+            const table = document.getElementById(tabId).querySelector('tbody');
+            const rows = Array.from(table.querySelectorAll('tr'));
+
+            rows.sort((a, b) => {
+                const timeA = a.cells[0].textContent;
+                const timeB = b.cells[0].textContent;
+                return timeA.localeCompare(timeB);
+            });
+
+            // Очищаем и перезаполняем таблицу
+            table.innerHTML = '';
+            rows.forEach(row => table.appendChild(row));
+        }
     </script>
 @endsection

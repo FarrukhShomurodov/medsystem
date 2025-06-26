@@ -2,6 +2,101 @@
 * demo.css
 * File include item demo only specific css only
 ******************************************************************************/
+
+
+.tabs {
+    display: flex;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.tab {
+    padding: 8px 16px;
+    cursor: pointer;
+    background: #f1f1f1;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+    margin-right: 5px;
+    font-size: 0.9em;
+}
+
+.tab.active {
+    background: #2980b9;
+    color: white;
+    border-color: #2980b9;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.compact-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85em;
+}
+
+.compact-table th {
+    background: #2980b9;
+    color: white;
+    padding: 8px 10px;
+    text-align: left;
+}
+
+.compact-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.compact-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.time-col {
+    width: 70px;
+}
+
+.actions-col {
+    width: 140px;
+}
+
+
+.status-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.completed {
+    background: #27ae60;
+}
+
+.not-completed {
+    background: #e74c3c;
+}
+
+.pending {
+    background: #f39c12;
+}
+
+.reason-input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-top: 5px;
+    font-size: 0.85em;
+    display: none;
+}
+
 .table-active {
     background-color: #d1ecf1 !important;
 }
@@ -152,6 +247,7 @@
 }
 
 .tab-content {
+    padding: 0px !important;
     border-radius: 0px !important;
 }
 
