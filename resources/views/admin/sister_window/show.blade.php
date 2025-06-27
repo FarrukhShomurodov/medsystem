@@ -529,8 +529,8 @@
                         enabled: false
                     },
                     legend: {
-                        position: 'top',
-                        fontSize: '14px'
+                        position: 'left',
+                        fontSize: '14px',
                     },
                     grid: {
                         borderColor: '#eee',

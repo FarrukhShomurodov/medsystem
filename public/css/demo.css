@@ -2,6 +2,11 @@
 * demo.css
 * File include item demo only specific css only
 ******************************************************************************/
+.apexcharts-legend.apx-legend-position-left {
+    display: flex;
+    height: 100%;
+    justify-content: space-around !important;
+}
 
 
 .tabs {
