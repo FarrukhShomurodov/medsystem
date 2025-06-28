@@ -116,16 +116,6 @@ class PatientService extends Model
         return $this->belongsToMany(Staff::class, 'patient_service_to_staffs_assignment', 'patient_service_id', 'service_staff_id');
     }
 
-    public function procedures(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            Procedure::class,
-            'patient_service_to_procedures_assignment',
-            'patient_service_id',
-            'procedure_id'
-        )->withPivot('procedure_date');
-    }
-
     public function surveyResponses(): HasMany
     {
         return $this->hasMany(SurveyResponses::class);

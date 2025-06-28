@@ -18,21 +18,21 @@ class PatientMedicationRequest extends FormRequest
             'medications' => 'nullable|array',
             'medications.*' => 'required|string',
             'dosages' => [
-                'nullable',
+                'required',
                 'array',
                 Rule::when($this->has('procedures'), [
                     'size:' . count($this->input('medications', []))
                 ])
             ],
-            'dosages.*' => 'nullable|string|max:50',
+            'dosages.*' => 'required|string|max:50',
             'admission_periods' => [
-                'nullable',
+                'required',
                 'array',
                 Rule::when($this->has('procedures'), [
                     'size:' . count($this->input('medications', []))
                 ])
             ],
-            'admission_periods.*' => 'nullable|string|max:100',
+            'admission_periods.*' => 'required|string|max:100',
             'medication_notes' => 'nullable|array',
             'medication_notes.*' => 'nullable|string|max:500',
 

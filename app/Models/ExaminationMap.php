@@ -41,10 +41,10 @@ class ExaminationMap extends Model
     {
         return $this->belongsToMany(
             Medication::class,
-            'examination_map_medications',
+            'patient_medications',
             'examination_map_id',
             'medication_id'
-        )->using(ExaminationMapMedication::class)
+        )->using(PatientMedication::class)
             ->withPivot('dosage', 'admission_period', 'id');
     }
 
@@ -90,6 +90,16 @@ class ExaminationMap extends Model
             )
             ->using(ExaminationMapVitalParameter::class)
             ->withPivot('value', 'created_at');
+    }
+
+    public function procedures(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Procedure::class,
+            'patient_procedures',
+            'patient_id',
+            'medication_id'
+        )->using(PatientProcedure::class);
     }
 
 //    public function analyze(): HasMany

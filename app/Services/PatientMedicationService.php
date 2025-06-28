@@ -14,6 +14,9 @@ class PatientMedicationService
      */
     public function store(array $validated): void
     {
+        $patient = Patient::query()->find($validated['patient_id']);
+        $map = Patient::find($validated['patient_id'])->examinationMaps()->where('is_active', true);
+
         if (isset($validated['medications'])) {
             $medicationData = [];
             $medicationIndexMap = [];
@@ -27,12 +30,12 @@ class PatientMedicationService
                 $medicationData[$medicationModel->id] = [
                     'dosage' => $validated['dosages'][$index] ?? null,
                     'admission_period' => $validated['admission_periods'][$index] ?? null,
+                    'examination_map_id' => $map->exists() ? $map->first()->id : null,
                 ];
                 $medicationIndexMap[$medicationModel->id] = $index;
             }
 
-            $patient = Patient::query()->find($validated['patient_id']);
-            $patient->medications()->sync($medicationData);
+            $patient->medications()->attach($medicationData);
 
             foreach ($patient->medications as $pivotedMedication) {
                 $pivotId = $pivotedMedication->pivot->id;

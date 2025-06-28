@@ -401,6 +401,17 @@
                                     ]);
                                 }
 
+                                foreach ($event['data']->medications as $response) {
+                                    $groupedTimeline->push([
+                                        'type' => 'medication',
+                                        'date' => $response->created_at,
+                                        'data' => $response,
+                                        'is_main' => false,
+                                        'parent_id' => $event['data']->id
+                                    ]);
+                                }
+
+
                               foreach ($event['data']->documentResponse as $response) {
                                 $groupedTimeline->push([
                                     'type' => 'document',

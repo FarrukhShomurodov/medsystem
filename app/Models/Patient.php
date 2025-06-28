@@ -142,7 +142,8 @@ class Patient extends Model
             'patient_id',
             'medication_id'
         )->using(PatientMedication::class)
-            ->withPivot('dosage', 'admission_period', 'id');
+            ->withPivot('dosage', 'admission_period', 'id')
+            ->whereNull('examination_map_id');
     }
 
     public function vitalNormalParameters(): BelongsToMany
@@ -158,6 +159,17 @@ class Patient extends Model
             ->withPivot('normal', 'created_at');
     }
 
+
+    public function procedures(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Procedure::class,
+            'patient_procedures',
+            'patient_id',
+            'medication_id'
+        )->using(PatientProcedure::class)
+            ->whereNull('examination_map_id');
+    }
 
 //    public function analyzes(): HasMany
 //    {

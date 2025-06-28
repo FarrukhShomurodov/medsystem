@@ -8,9 +8,10 @@ return new class extends Migration {
 
     public function up(): void
     {
-        Schema::create('patient_service_to_procedures_assignment', function (Blueprint $table) {
+        Schema::create('patient_procedures', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_service_id')->constrained('patient_services')->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('examination_map_id')->constrained()->cascadeOnDelete();
             $table->foreignId('procedure_id')->constrained('procedures')->cascadeOnDelete();
             $table->date('procedure_date')->nullable();
             $table->timestamps();
@@ -19,6 +20,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('patient_service_to_procedures_assignment');
+        Schema::dropIfExists('patient_procedures');
     }
 };

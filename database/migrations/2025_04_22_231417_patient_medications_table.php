@@ -11,6 +11,7 @@ return new class extends Migration {
         Schema::create('patient_medications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->constrained('patients')->cascadeOnDelete();
+            $table->foreignId('examination_map_id')->constrained()->cascadeOnDelete();
             $table->foreignId('medication_id')->constrained('medications')->cascadeOnDelete();
             $table->string('dosage');
             $table->string('admission_period');

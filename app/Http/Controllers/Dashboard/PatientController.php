@@ -131,7 +131,7 @@ class PatientController extends Controller
 
         $patient->load([
             'examinationMaps' => function ($query) {
-                $query->with(['department', 'doctor', 'services', 'diagnosises'])
+                $query->with(['department', 'doctor', 'services', 'diagnosises', 'medications'])
                     ->orderByDesc('admission_date')
                     ->get()
                     ->each(function ($map) {
@@ -312,7 +312,10 @@ class PatientController extends Controller
             ]);
         }
 
-        foreach (PatientMedication::query()->where('patient_id', $patient->id)->get() as $medication) {
+        foreach (
+            PatientMedication::query()->where('patient_id', $patient->id)->where('examination_map_id', null)->get(
+            ) as $medication
+        ) {
             $timeline->push([
                 'type' => 'medication',
                 'date' => $medication->created_at,

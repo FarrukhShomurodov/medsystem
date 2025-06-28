@@ -2,12 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Equipment;
-use App\Models\Institution;
 use App\Models\Patient;
 use App\Models\PatientService;
-use App\Models\Procedure;
-use App\Models\ServiceMethod;
 use Illuminate\Support\Facades\DB;
 
 class PatientServiceAssignService
@@ -51,25 +47,6 @@ class PatientServiceAssignService
             // staff
 //            $service->staffs()->sync($validated['staffs']);
 
-            // procedures
-//            if (isset($validated['procedures'])) {
-//                $procedureData = [];
-//
-//                foreach ($validated['procedures'] as $index => $procedure) {
-//                    if (!is_numeric($procedure)) {
-//                        $procedureModel = Procedure::firstOrCreate(['name' => trim($procedure)]);
-//                    } else {
-//                        $procedureModel = Procedure::findOrFail($procedure);
-//                    }
-//
-//                    $procedureData[$procedureModel->id] = [
-//                        'procedure_date' => $validated['procedure_dates'][$index]
-//                    ];
-//                }
-//
-//                $service->procedures()->sync($procedureData);
-//            }
-
             return $service;
         });
 
@@ -107,25 +84,6 @@ class PatientServiceAssignService
 
             // staff
 //            $service->staffs()->sync($validated['staffs']);
-
-            // procedures
-//            if (isset($validated['procedures'])) {
-//                $procedureData = [];
-//
-//                foreach ($validated['procedures'] as $index => $procedure) {
-//                    if (!is_numeric($procedure)) {
-//                        $procedureModel = Procedure::firstOrCreate(['name' => trim($procedure)]);
-//                    } else {
-//                        $procedureModel = Procedure::findOrFail($procedure);
-//                    }
-//
-//                    $procedureData[$procedureModel->id] = [
-//                        'procedure_date' => $validated['procedure_dates'][$index]
-//                    ];
-//                }
-//
-//                $service->procedures()->sync($procedureData);
-//            }
 
             return $service;
         });
