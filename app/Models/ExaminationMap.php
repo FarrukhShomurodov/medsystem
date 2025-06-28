@@ -98,7 +98,7 @@ class ExaminationMap extends Model
             Procedure::class,
             'patient_procedures',
             'patient_id',
-            'medication_id'
+            'procedure_id'
         )->using(PatientProcedure::class);
     }
 

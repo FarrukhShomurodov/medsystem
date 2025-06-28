@@ -8,6 +8,7 @@ use App\Models\ExaminationMap;
 use App\Models\PatientAssignment;
 use App\Models\PatientDiagnosis;
 use App\Models\PatientMedication;
+use App\Models\PatientProcedure;
 use App\Models\PatientService;
 use App\Models\Reception;
 use App\Models\SurveyResponses;
@@ -53,6 +54,9 @@ class PatientHistoryController extends Controller
                 break;
             case 'medication':
                 $data = PatientMedication::find($id);
+                break;
+            case 'procedure':
+                $data = PatientProcedure::find($id);
                 break;
             default:
                 return response()->json(['error' => 'Unknown type'], 400);

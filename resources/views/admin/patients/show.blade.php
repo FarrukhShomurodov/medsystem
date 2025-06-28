@@ -93,138 +93,130 @@
             <h5 class="card-header">История посещений</h5>
         </div>
 
-        <div class="d-flex justify-content-start align-items-start mb-3" style="margin-left: 1.375rem">
-            <div>
+        <div class="card-body">
+            <!-- flex-wrap вместо btn-toolbar -->
+            <div class="d-flex flex-wrap gap-3 mb-3">
+                <!-- Инструментальные исследования -->
+                <div class="d-flex">
+                    <button
+                        type="button"
+                        class="btn btn-primary d-flex align-items-center"
+                        data-bs-toggle="modal"
+                        data-bs-target="#instrumentalModal"
+                    >
+                        <i class="bi bi-activity me-2"></i>Инструментальные
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-outline-primary d-flex align-items-center ms-1"
+                        data-bs-toggle="modal"
+                        data-bs-target="#createServiceModal"
+                    >
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Лаборатория -->
+                <div class="d-flex">
+                    <button
+                        type="button"
+                        class="btn btn-primary d-flex align-items-center"
+                        data-bs-toggle="modal"
+                        data-type-id="5"
+                        data-bs-target="#indicativeModal"
+                    >
+                        <i class="bi bi-beaker me-2"></i>Лаборатория
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-outline-primary d-flex align-items-center ms-1"
+                        data-bs-toggle="modal"
+                        data-type-id="5"
+                        data-bs-target="#createServiceModal"
+                    >
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Консультация -->
+                <a
+                    class="btn btn-primary d-flex align-items-center"
+                    target="_blank"
+                    href="{{ route('receptions.appointment') }}"
+                >
+                    <i class="bi bi-chat-dots me-2"></i>Консультация
+                </a>
+
+                <!-- Диагноз -->
+                <div class="d-flex">
+                    <button
+                        type="button"
+                        class="btn btn-primary d-flex align-items-center"
+                        data-bs-toggle="modal"
+                        data-bs-target="#showDiagnosisesModal"
+                    >
+                        <i class="bi bi-journal-medical me-2"></i>Диагноз
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-outline-primary d-flex align-items-center ms-1"
+                        data-bs-toggle="modal"
+                        data-bs-target="#diagnosisesModal"
+                    >
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Медикамент -->
                 <button
                     type="button"
-                    class="btn btn-primary"
+                    class="btn btn-primary d-flex align-items-center"
                     data-bs-toggle="modal"
-                    data-bs-target="#instrumentalModal">
-                    Инструментальные исследования
+                    data-bs-target="#medicationModal"
+                >
+                    <i class="bi bi-capsule me-2"></i>Медикамент
                 </button>
 
+
+                <!-- Процедуры -->
                 <button
                     type="button"
-                    class="btn btn-primary me-3"
+                    class="btn btn-primary d-flex align-items-center"
                     data-bs-toggle="modal"
-                    data-bs-target="#createServiceModal">
-                    +
+                    data-bs-target="#proceduresModal"
+                >
+                    <i class="bi bi-tools me-2"></i>Процедуры
+                </button>
+
+                <!-- Госпитализация -->
+                <button
+                    onclick="window.location.href='{{ route('patient.map.create', $patientDetails['patient_id']) }}'"
+                    class="btn btn-primary d-flex align-items-center"
+                    @disabled(!$patientDetails['history']['map_is_active'])
+                >
+                    <i class="bi bi-hospital me-2"></i>Госпитализация
                 </button>
             </div>
 
-            <div>
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-type-id="5"
-                    data-bs-target="#indicativeModal">
-                    Лаборатория
-                </button>
-
-                <button
-                    type="button"
-                    class="btn btn-primary me-3"
-                    data-bs-toggle="modal"
-                    data-type-id="5"
-                    data-bs-target="#createServiceModal">
-                    +
-                </button>
-            </div>
-
-
-            <a
-                type="button"
-                class="btn btn-primary me-3"
-                target="_blank"
-                href="{{ route('receptions.appointment') }}">
-                Консультация
-            </a>
-
-            <div>
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#showDiagnosisesModal">
-                    Диагноз
-                </button>
-
-                <button
-                    type="button"
-                    class="btn btn-primary me-3"
-                    data-bs-toggle="modal"
-                    data-bs-target="#diagnosisesModal">
-                    +
-                </button>
-            </div>
-
-
-            <button
-                type="button"
-                class="btn btn-primary me-3"
-                data-bs-toggle="modal"
-                data-bs-target="#medicationModal">
-                Медикамент
-            </button>
-
-            {{--                <button--}}
-            {{--                    type="button"--}}
-            {{--                    class="btn btn-primary me-3"--}}
-            {{--                    data-bs-toggle="modal"--}}
-            {{--                    data-bs-target="#createDocumentModal">--}}
-            {{--                    Мед Документ--}}
-            {{--                </button>--}}
-
-            {{--                <button--}}
-            {{--                    type="button"--}}
-            {{--                    class="btn btn-primary me-3"--}}
-            {{--                    data-bs-toggle="modal"--}}
-            {{--                    data-bs-target="#createMapModal">--}}
-            {{--                    Направление--}}
-            {{--                </button>--}}
-
-            <button
-                onclick="window.location.href='{{ route('patient.map.create', $patientDetails['patient_id']) }}'"
-                class="btn btn-primary me-3"
-                @disabled(!$patientDetails['history']['map_is_active'])>Создать госпитализацию
-            </button>
-        </div>
-
-        <div>
-            <div class="ms-4">
-                <form id="select-document-form" method="GET" action="">
-                    <div class="row g-3">
-                        <div class="col-md-2 form-group">
-                            <label for="document_id">Выберите документ</label>
-                            <select id="document_id" name="document_id" class="form-control select2">
-                                <option disabled selected>Выберите</option>
-                                @foreach($documents as $document)
-                                    <option value="{{ $document->id }}">
-                                        {{ $document->title }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-2 form-group">
-                            <input type="hidden" id="patient_id" name="patient_id"
-                                   value="{{ $patientDetails['patient_id'] }}">
-
-
-                            <label class="form-label" for="basic-icon-birth-date"></label>
-                            <div class="input-group input-group-merge">
-                                <button type="submit" class="btn btn-primary">Добавить документ</button>
-                            </div>
-                        </div>
+            <!-- Форма выбора документа -->
+            <form id="select-document-form" method="GET" action=""  class="mb-3">
+                <div class="row g-3 align-items-end">
+                    <div class="col-auto">
+                        <label for="document_id" class="form-label">Выберите документ</label>
+                        <select id="document_id" name="document_id" class="form-select select2">
+                            <option disabled selected>Выберите</option>
+                            @foreach($documents as $document)
+                                <option value="{{ $document->id }}">{{ $document->title }}</option>
+                            @endforeach
+                        </select>
                     </div>
+                    <div class="col-auto">
+                        <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
+                        <button type="submit" class="btn btn-primary">Добавить документ</button>
+                    </div>
+                </div>
+            </form>
 
-
-                </form>
-            </div>
-        </div>
-
-        <div class="card-body d-flex justify-content-between align-items-center">
             <form method="GET" action="{{ route('patients.index') }}">
                 <div class="row g-3 align-items-center">
                     <div class="col-md-2 form-group">
@@ -401,7 +393,21 @@
                                     ]);
                                 }
 
-                                foreach ($event['data']->medications as $response) {
+
+                                foreach (\App\Models\PatientProcedure::query()->where('patient_id', $patientDetails['patient_id'])->where('examination_map_id', $event['data']->id)->get(
+                                ) as $response) {
+                                    $groupedTimeline->push([
+                                        'type' => 'procedure',
+                                        'date' => $response->created_at,
+                                        'data' => $response,
+                                        'is_main' => false,
+                                        'parent_id' => $event['data']->id
+                                    ]);
+                                }
+
+                                foreach (\App\Models\PatientMedication::query()->where('patient_id', $patientDetails['patient_id'])->where('examination_map_id', $event['data']->id)->get(
+                                    ) as $response
+                                ) {
                                     $groupedTimeline->push([
                                         'type' => 'medication',
                                         'date' => $response->created_at,
@@ -474,6 +480,9 @@
                                             @break
                                         @case('medication')
                                             Медикамент
+                                            @break
+                                        @case('procedure')
+                                            Процедура
                                             @break
                                         @case('diagnosis')
 
@@ -1372,6 +1381,59 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade" id="proceduresModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавить медикамент</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('patient.procedures.store') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
+
+                        <div class="mb-3">
+                            <label class="form-label">Процедуры</label>
+                            <div id="procedures-container">
+                            </div>
+
+                            <button type="button" class="btn btn-primary mt-2" id="btn-add-procedure">
+                                <i class="fas fa-plus me-2"></i> Добавить процедуру
+                            </button>
+
+                            <template id="procedure-template">
+                                <div class="row mb-2 procedure-row">
+                                    <div class="col-sm-5">
+                                        <select name="procedures[]" class="form-control procedure-select"
+                                                data-placeholder="Выберите или введите новую процедуру" required>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input type="date" name="procedure_dates[]"
+                                               class="form-control"
+                                               value="{{ now()->format('Y-m-d') }}"
+                                               required>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button type="button" class="btn btn-danger btn-remove-procedure">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <button type="submit" class="btn btn-outline-primary w-100 mt-3">
+                            Сохранить
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -1999,6 +2061,41 @@
                     }
                 });
             });
+        });
+
+
+        const container = document.getElementById('procedures-container');
+        const template = document.getElementById('procedure-template');
+
+        function initSelect2(element) {
+            const procedureData = {!! json_encode($procedures->map(function($procedure) {
+                    return ['id' => $procedure->id, 'text' => $procedure->name];
+                })) !!};
+
+            $(element).select2({
+                tags: true,
+                placeholder: $(element).data('placeholder'),
+                data: procedureData,
+                createTag: function (params) {
+                    return {
+                        id: params.term,
+                        text: params.term + ' (новая)'
+                    };
+                }
+            });
+        }
+
+        document.getElementById('btn-add-procedure').addEventListener('click', function () {
+            const clone = template.content.cloneNode(true);
+            const select = clone.querySelector('.procedure-select');
+            container.appendChild(clone);
+            initSelect2(select);
+        });
+
+        container.addEventListener('click', function (e) {
+            if (e.target.closest('.btn-remove-procedure')) {
+                e.target.closest('.procedure-row').remove();
+            }
         });
     </script>
 @endsection

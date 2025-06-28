@@ -15,6 +15,8 @@ use App\Models\MedicalDevice;
 use App\Models\Medication;
 use App\Models\Patient;
 use App\Models\PatientMedication;
+use App\Models\PatientProcedure;
+use App\Models\Procedure;
 use App\Models\Region;
 use App\Models\Service;
 use App\Models\Survey;
@@ -191,6 +193,13 @@ class PatientController extends Controller
                         $medication->created_at = Carbon::parse($medication->created_at);
                     });
             },
+            'procedures' => function ($query) {
+                $query->orderByDesc('created_at')
+                    ->get()
+                    ->each(function ($procedure) {
+                        $procedure->created_at = Carbon::parse($procedure->created_at);
+                    });
+            },
         ]);
 
         $patientDetails = [
@@ -312,6 +321,16 @@ class PatientController extends Controller
             ]);
         }
 
+        foreach (PatientProcedure::query()->where('patient_id', $patient->id)->where('examination_map_id', null)->get(
+        ) as $procedure) {
+            $timeline->push([
+                'type' => 'procedure',
+                'date' => $procedure->created_at,
+                'data' => $procedure,
+                'sort_date' => $procedure->created_at
+            ]);
+        }
+
         foreach (
             PatientMedication::query()->where('patient_id', $patient->id)->where('examination_map_id', null)->get(
             ) as $medication
@@ -331,6 +350,7 @@ class PatientController extends Controller
         $documents = Document::query()->where('id', '!=', 1)->get();
 
         $medications = Medication::query()->get();
+        $procedures = Procedure::query()->get();
 
         $admin = Auth::guard('admin')->user();
 
@@ -355,6 +375,7 @@ class PatientController extends Controller
                 'favoriteDiagnoses',
                 'regularDiagnoses',
                 'vitalParameters',
+                'procedures',
             )
         );
     }
