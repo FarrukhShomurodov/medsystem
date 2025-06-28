@@ -32,23 +32,44 @@
                 @csrf
                 @method('put')
 
-                <div class="mb-3">
-                    <label class="form-label" for="basic-icon-default-company">Название <span
-                            class="text-danger">*</span></label>
-                    <div class="input-group input-group-merge">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="basic-icon-default-company">Название <span
+                                class="text-danger">*</span></label>
+                        <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
                                   class="input-group-text @error('name') text-danger icon-border @enderror"><i
                                     class="bx bx-rename"></i></span>
-                        <input type="text" id="basic-icon-default-company"
-                               class="form-control @error('name') is-invalid @enderror"
-                               placeholder="Название" aria-label="Название"
-                               name="name"
-                               value="{{ old('name', $procedure->name) }}"
-                               aria-describedby="basic-icon-default-company2" required/>
+                            <input type="text" id="basic-icon-default-company"
+                                   class="form-control @error('name') is-invalid @enderror"
+                                   placeholder="Название" aria-label="Название"
+                                   name="name"
+                                   value="{{ old('name', $procedure->name) }}"
+                                   aria-describedby="basic-icon-default-company2" required/>
+                        </div>
+                        @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
-                    @error('name')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="basic-icon-default-price">Стоимость <span
+                                class="text-danger">*</span></label>
+                        <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-middle-name2"
+                                  class="input-group-text @error('price') text-danger icon-border @enderror">
+                                <i class="bx bx-dollar"></i>
+                            </span>
+                            <input type="number" id="basic-icon-default-price"
+                                   class="form-control @error('price') is-invalid @enderror"
+                                   placeholder="Стоимость" aria-label="price" name="price"
+                                   required
+                                   value="{{ old('price', round($procedure->price)) }}" aria-describedby="basic-icon-default-middle-name2"/>
+                        </div>
+                        @error('price')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-warning ">Редактировать</button>

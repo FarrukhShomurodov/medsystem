@@ -43,6 +43,7 @@
                 <tr>
                     <th>#</th>
                     <th>Название</th>
+                    <th>Стоимость</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -51,6 +52,7 @@
                     <tr>
                         <td>{{ $procedure->id }}</td>
                         <td>{{ $procedure->name }}</td>
+                        <td>{{ round($procedure->price) }}</td>
 
                         <td>
                             <div class="d-inline-block text-nowrap">

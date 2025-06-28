@@ -27,7 +27,7 @@ class ProcedureController extends Controller
     public function index(): View
     {
         $procedures = Procedure::query()
-            ->select(['id', 'name'])
+            ->select(['id', 'name', 'price'])
             ->orderBy('id', 'desc')
             ->paginate(10);
 
