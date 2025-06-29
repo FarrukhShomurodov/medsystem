@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('vital_parameter_id')->constrained()->cascadeOnDelete();
             $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
-            $table->integer('normal');
+            $table->decimal('normal', 8, 1);
             $table->timestamps();
         });
     }

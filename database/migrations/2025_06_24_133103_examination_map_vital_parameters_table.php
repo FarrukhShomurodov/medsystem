@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('examination_map_id')->constrained()->cascadeOnDelete();
             $table->foreignId('vital_parameter_id')->constrained()->cascadeOnDelete();
-            $table->integer('value');
+            $table->decimal('value', 8, 1);
             $table->timestamps();
         });
     }
