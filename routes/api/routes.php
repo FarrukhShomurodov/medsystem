@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dashboard\Api\DocumentScoreController;
 use App\Http\Controllers\Dashboard\Api\ExaminationMapController;
 use App\Http\Controllers\Dashboard\Api\FileController;
 use App\Http\Controllers\Dashboard\Api\MedicationController;
@@ -68,3 +69,6 @@ Route::get('service/by-type/{type}', [ServiceController::class, 'getByType']);
 
 // selected diagnosis
 Route::post('/selected-diagnosis', [SelectedDiagnosisController::class, 'store']);
+
+// document score
+Route::get('/document-scores/{document}/{score}', [DocumentScoreController::class, 'getActions']);

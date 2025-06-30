@@ -216,10 +216,19 @@
                             </a>
                         </td>
 
+
                         @foreach($examinationMap->documentResponse as $response)
-                            <td class="cursor-pointer" data-bs-toggle="modal"
-                                data-bs-target="#recommendActionModal">56
-                            </td>
+                            @if($response->document_id == $document->id)
+                                <td class="cursor-pointer"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#recommendActionModal"
+                                    data-document-id="{{ $response->document_id }}"
+                                    data-total-score="{{ $response->total_score }}">
+                                    {{ $response->total_score }}
+                                </td>
+                            @else
+                                <td></td>
+                            @endif
                         @endforeach
                     </tr>
                 @endforeach
@@ -475,11 +484,11 @@
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Добавить данные пациента</h5>
+                    <h5 class="modal-title">Действия</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
                 <div class="modal-body">
-                    Действия
+                    <div id="recommendation-content">Загрузка...</div>
                 </div>
             </div>
         </div>
@@ -768,5 +777,33 @@
             table.innerHTML = '';
             rows.forEach(row => table.appendChild(row));
         }
+
+
+        // document score
+        $(document).on('show.bs.modal', '#recommendActionModal', function (event) {
+            const button = $(event.relatedTarget);
+            const documentId = button.data('document-id');
+            const totalScore = button.data('total-score');
+            const $container = $('#recommendation-content');
+
+            $container.html('Загрузка...');
+
+            $.ajax({
+                url: `/api/document-scores/${documentId}/${totalScore}`,
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.actions && data.actions.length > 0) {
+                        const listItems = data.actions.map(action => `<li>${action}</li>`).join('');
+                        $container.html(`<ul>${listItems}</ul>`);
+                    } else {
+                        $container.html('Рекомендации не найдены.');
+                    }
+                },
+                error: function () {
+                    $container.html('Ошибка при загрузке рекомендаций.');
+                }
+            });
+        });
     </script>
 @endsection

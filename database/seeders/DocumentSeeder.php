@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Document;
 use App\Models\DocumentQuestion;
+use App\Models\DocumentScore;
 use Illuminate\Database\Seeder;
 
 class DocumentSeeder extends Seeder
@@ -341,22 +342,11 @@ class DocumentSeeder extends Seeder
             DocumentQuestion::query()->create($questionData);
         }
 
-
         $morseFallScale = Document::query()->create([
             'title' => 'Лист оценки риска падения по шкале Морзе',
         ]);
 
         $morseQuestions = [
-            // Basic patient info
-            [
-                'question' => 'Ф.И.О. пациента',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Дата рождения',
-                'type' => 'text',
-            ],
-
             // Morse Scale questions
             [
                 'question' => 'Падал ли в последние 3 мес.?',
@@ -399,51 +389,25 @@ class DocumentSeeder extends Seeder
                     'Не знает или забывает, что нужна помощь при движении'
                 ],
             ],
-            [
-                'question' => 'Общее количество баллов',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Уровень риска',
-                'type' => 'choice',
-                'options' => [
-                    '0-24 — нет риска',
-                    '25-50 — низкий риск',
-                    '51 и выше — высокий риск'
-                ],
-            ],
 
-            // Follow-up assessments
-            [
-                'question' => 'Дата повторной оценки',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Время повторной оценки',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Балл при повторной оценке',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Риск при повторной оценке',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Комментарии к повторной оценке',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Фамилия, подпись',
-                'type' => 'text',
-            ],
+        ];
 
-            // Interventions
+        foreach ($morseQuestions as $q) {
+            $questionData = [
+                'document_id' => $morseFallScale->id,
+                'question' => $q['question'],
+                'type' => $q['type'],
+                'options' => $q['options'] ?? null,
+            ];
+
+            DocumentQuestion::query()->create($questionData);
+        }
+
+        $morseScoreAction = [
             [
-                'question' => 'Меры при 0-24 баллах (нет риска)',
-                'type' => 'choice',
-                'options' => [
+                'from_score' => '0',
+                'to_score' => '24',
+                'actions' => [
                     'Сообщить членам семьи/пациенту о его/ее риске падения',
                     'Ознакомить пациента с местностью',
                     'Обучить родителей/пациента о предотвращении падения',
@@ -451,9 +415,9 @@ class DocumentSeeder extends Seeder
                 ],
             ],
             [
-                'question' => 'Меры при 25-50 баллах (низкий риск)',
-                'type' => 'choice',
-                'options' => [
+                'from_score' => '25',
+                'to_score' => '50',
+                'actions' => [
                     'Установить высоту кровати на нижнем положении',
                     'Закрепить кроватные колеса, ходунки, инвалидное кресло в устойчивом положении',
                     'Поставить коляску и др. вспомогательные предметы рядом с пациентом',
@@ -464,9 +428,9 @@ class DocumentSeeder extends Seeder
                 ],
             ],
             [
-                'question' => 'Меры при 51+ баллах (высокий риск)',
-                'type' => 'choice',
-                'options' => [
+                'from_score' => '51',
+                'to_score' => null,
+                'actions' => [
                     'Наклеить красный знак на браслет или одеть красный браслет',
                     'Разместить наклейку о риске падения на двери палаты',
                     'Совершать обходы в палату каждые 2 часа',
@@ -481,15 +445,16 @@ class DocumentSeeder extends Seeder
             ],
         ];
 
-        foreach ($morseQuestions as $q) {
+        // score action
+        foreach ($morseScoreAction as $q) {
             $questionData = [
                 'document_id' => $morseFallScale->id,
-                'question' => $q['question'],
-                'type' => $q['type'],
-                'options' => $q['options'] ?? null,
+                'from_score' => (int)$q['from_score'],
+                'to_score' => (int)$q['to_score'],
+                'actions' => $q['actions'] ?? null,
             ];
 
-            DocumentQuestion::query()->create($questionData);
+            DocumentScore::query()->create($questionData);
         }
 
         $humptyDumptyScale = Document::query()->create([
@@ -497,16 +462,6 @@ class DocumentSeeder extends Seeder
         ]);
 
         $humptyDumptyQuestions = [
-            // Basic patient info
-            [
-                'question' => 'ФИО пациента',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Дата рождения',
-                'type' => 'text',
-            ],
-
             // Humpty Dumpty Scale questions
             [
                 'question' => 'Возраст',
@@ -570,104 +525,18 @@ class DocumentSeeder extends Seeder
                     'Не принимает / другие'
                 ],
             ],
-            [
-                'question' => 'Общее количество баллов',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Уровень риска',
-                'type' => 'choice',
-                'options' => [
-                    '7–11 - Низкий риск (Н)',
-                    '12–23 - Высокий риск (В)'
-                ],
-            ],
-
-            // Follow-up assessments
-            [
-                'question' => 'Дата повторной оценки',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Время повторной оценки',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Балл при повторной оценке',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Риск при повторной оценке',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Комментарии к повторной оценке',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'ФИО / Подпись',
-                'type' => 'text',
-            ],
 
             // General preventive measures
-            [
-                'question' => 'Общие профилактические меры для всех пациентов',
-                'type' => 'choice',
-                'options' => [
-                    'Сообщить членам семьи/пациенту о риске падения',
-                    'Установить кнопку вызова в пределах досягаемости',
-                    'Ознакомить пациента с местностью',
-                    'Обучить родителей/пациента о предотвращении падения'
-                ],
-            ],
-
-            // Low risk measures
-            [
-                'question' => 'Меры при низком риске (7–11 баллов)',
-                'type' => 'choice',
-                'options' => [
-                    'Поднять боковые борты кровати',
-                    'Закрепить кроватные колеса, ходунки, инвалидное кресло',
-                    'Поставить коляску и др. вспомогательные предметы рядом',
-                    'Обеспечить хорошее освещение',
-                    'Сообщать персоналу при сопровождении',
-                    'Документировать обучение по профилактике падения'
-                ],
-            ],
-
-            // High risk measures
-            [
-                'question' => 'Меры при высоком риске (12 баллов и выше)',
-                'type' => 'choice',
-                'options' => [
-                    'Наклеить красный знак на браслет пациента',
-                    'Установить красный знак на двери палаты',
-                    'Совершать обходы в палату каждые 2 часа',
-                    'Сопровождение в туалет',
-                    'Сопровождение после процедур',
-                    'Разместить пациента ближе к посту',
-                    'Держать дверь палаты открытой',
-                    'Обеспечить присутствие члена семьи или санитарки',
-                    'Вовлекать пациента и семью в профилактику',
-                    'Обучить о влиянии лекарств на падение',
-                    'Установить боковые ограждения/борты койки',
-                    'Документировать обучение и изменения риска'
-                ],
-            ],
-
-            // Reasons for reassessment
-            [
-                'question' => 'Причины для повторной оценки риска',
-                'type' => 'choice',
-                'options' => [
-                    'Выявлен высокий риск (12 и выше)',
-                    'Произошло падение',
-                    'После процедур (первые 24 ч)',
-                    'Прием медикаментов, повышающих риск',
-                    'Изменения состояния (заторможенность, делирий)',
-                    'Недержание мочи, учащенное мочеиспускание'
-                ],
-            ],
+//            [
+//                'question' => 'Общие профилактические меры для всех пациентов',
+//                'type' => 'choice',
+//                'options' => [
+//                    'Сообщить членам семьи/пациенту о риске падения',
+//                    'Установить кнопку вызова в пределах досягаемости',
+//                    'Ознакомить пациента с местностью',
+//                    'Обучить родителей/пациента о предотвращении падения'
+//                ],
+//            ],
         ];
 
         foreach ($humptyDumptyQuestions as $q) {
@@ -681,22 +550,60 @@ class DocumentSeeder extends Seeder
             DocumentQuestion::query()->create($questionData);
         }
 
+        $humptyDumptyScaleAction = [
+            // Low risk measures
+            [
+                'from_score' => '7',
+                'to_score' => 11,
+                'actions' => [
+                    'Поднять боковые борты кровати',
+                    'Закрепить кроватные колеса, ходунки, инвалидное кресло',
+                    'Поставить коляску и др. вспомогательные предметы рядом',
+                    'Обеспечить хорошее освещение',
+                    'Сообщать персоналу при сопровождении',
+                    'Документировать обучение по профилактике падения'
+                ],
+            ],
+
+            // High risk measures
+            [
+                'from_score' => 12,
+                'to_score' => null,
+                'actions' => [
+                    'Наклеить красный знак на браслет пациента',
+                    'Установить красный знак на двери палаты',
+                    'Совершать обходы в палату каждые 2 часа',
+                    'Сопровождение в туалет',
+                    'Сопровождение после процедур',
+                    'Разместить пациента ближе к посту',
+                    'Держать дверь палаты открытой',
+                    'Обеспечить присутствие члена семьи или санитарки',
+                    'Вовлекать пациента и семью в профилактику',
+                    'Обучить о влиянии лекарств на падение',
+                    'Установить боковые ограждения/борты койки',
+                    'Документировать обучение и изменения риска',
+                    'Повторной оценки риска'
+                ],
+            ],
+        ];
+
+        foreach ($humptyDumptyScaleAction as $q) {
+            $questionData = [
+                'document_id' => $humptyDumptyScale->id,
+                'from_score' => (int)$q['from_score'],
+                'to_score' => (int)$q['to_score'],
+                'actions' => $q['actions'] ?? null,
+            ];
+
+            DocumentScore::query()->create($questionData);
+        }
+
         // Create new document for Outpatient Fall Risk Assessment
         $outpatientFallRisk = Document::query()->create([
             'title' => 'Лист оценки риска падения амбулаторного пациента (КДО)',
         ]);
 
         $outpatientQuestions = [
-            // Basic patient info
-            [
-                'question' => 'ФИО пациента',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Дата рождения',
-                'type' => 'text',
-            ],
-
             // Assessment questions
             [
                 'question' => 'Падали ли вы в последние 3 мес.? (При повторной оценке: падал/а ли за последние сутки?)',
@@ -723,93 +630,6 @@ class DocumentSeeder extends Seeder
                 'type' => 'boolean',
                 'options' => ['Нет', 'Да'],
             ],
-            [
-                'question' => 'Общее количество баллов',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Уровень риска',
-                'type' => 'choice',
-                'options' => [
-                    'Нет риска (0-2 балла)',
-                    'Высокий риск (3-5 баллов)'
-                ],
-            ],
-
-            // Clinical judgment factors
-            [
-                'question' => 'Клинические факторы риска (сестринское суждение)',
-                'type' => 'choice',
-                'options' => [
-                    'Импульсивный и беспокойный',
-                    'Жалуется на головокружение, слабость',
-                    'Под действием анестетиков',
-                    'Передвигается с помощью кого-то, опираясь о стену или предметы',
-                    'На ваш взгляд может упасть'
-                ],
-            ],
-
-            // Follow-up assessments
-            [
-                'question' => 'Дата повторной оценки',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Время повторной оценки',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Балл при повторной оценке',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Риск при повторной оценке',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Комментарии (что сделано)',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Фамилия, подпись',
-                'type' => 'text',
-            ],
-
-            // Preventive measures - no risk
-            [
-                'question' => 'Профилактические меры (нет риска)',
-                'type' => 'choice',
-                'options' => [
-                    'Сообщить членам семьи/пациенту о риске падения',
-                    'Ознакомить пациента с местностью',
-                    'Обучить пациента о предотвращении падения',
-                    'Напомнить о нескользкой обуви'
-                ],
-            ],
-
-            // High risk measures
-            [
-                'question' => 'Меры при высоком риске',
-                'type' => 'choice',
-                'options' => [
-                    'Выдать памятку по профилактике и снижению риска падения',
-                    'Обучить пациента о предотвращении падения',
-                    'Сопровождать пациента после процедур до родственников',
-                    'Обучить о влиянии лекарств на падение'
-                ],
-            ],
-
-            // Patient education topics
-            [
-                'question' => 'Темы обучения пациента',
-                'type' => 'choice',
-                'options' => [
-                    'Вызывать мед.персонал при необходимости',
-                    'Держаться за поручни, обращать внимание на знаки',
-                    'Не вставать без посторонней помощи при головокружении',
-                    'Носить нескользкую обувь'
-                ],
-            ]
         ];
 
         foreach ($outpatientQuestions as $q) {
@@ -823,31 +643,49 @@ class DocumentSeeder extends Seeder
             DocumentQuestion::query()->create($questionData);
         }
 
+        $outpatientFallRiskScore = [
+            // Preventive measures - no risk
+            [
+                'from_score' => 0,
+                'to_score' => 2,
+                'actions' => [
+                    'Сообщить членам семьи/пациенту о риске падения',
+                    'Ознакомить пациента с местностью',
+                    'Обучить пациента о предотвращении падения',
+                    'Напомнить о нескользкой обуви'
+                ],
+            ],
+
+            // High risk measures
+            [
+                'from_score' => 3,
+                'to_score' => 5,
+                'actions' => [
+                    'Выдать памятку по профилактике и снижению риска падения',
+                    'Обучить пациента о предотвращении падения',
+                    'Сопровождать пациента после процедур до родственников',
+                    'Обучить о влиянии лекарств на падение'
+                ],
+            ],
+        ];
+
+        foreach ($outpatientFallRiskScore as $q) {
+            $questionData = [
+                'document_id' => $outpatientFallRisk->id,
+                'from_score' => (int)$q['from_score'],
+                'to_score' => (int)$q['to_score'],
+                'actions' => $q['actions'] ?? null,
+            ];
+
+            DocumentScore::query()->create($questionData);
+        }
+
+
         $painAssessment = Document::query()->create([
             'title' => 'Лист оценки боли (для взрослых и детей от 3 лет)',
         ]);
 
         $painAssessmentQuestions = [
-            // Basic patient info
-            [
-                'question' => 'ФИО пациента',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Дата рождения',
-                'type' => 'text',
-            ],
-
-            // Pain scale selection
-            [
-                'question' => 'Шкала оценки боли',
-                'type' => 'choice',
-                'options' => [
-                    'Цифровая шкала (0-10)',
-                    'Шкала гримас Вонг-Бейкера (для детей)'
-                ],
-            ],
-
             // Pain intensity
             [
                 'question' => 'Интенсивность боли (0-10)',
@@ -935,50 +773,10 @@ class DocumentSeeder extends Seeder
                 ],
             ],
 
-            // Follow-up assessments
-            [
-                'question' => 'Дата оценки',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Время оценки',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Интенсивность боли при повторной оценке',
-                'type' => 'choice',
-                'options' => [
-                    '0 - Боли нет',
-                    '1 - Очень слабая боль',
-                    '2 - Слабая боль',
-                    '3 - Умеренная боль',
-                    '4 - Довольно сильная боль',
-                    '5 - Сильная боль',
-                    '6 - Очень сильная боль',
-                    '7 - Крайне сильная боль',
-                    '8 - Жестокая боль',
-                    '9 - Невыносимая боль',
-                    '10 - Максимально возможная боль'
-                ],
-            ],
             [
                 'question' => 'Комментарии',
                 'type' => 'text',
             ],
-            [
-                'question' => 'ФИО и подпись оценивающего',
-                'type' => 'text',
-            ],
-
-            // Pain assessment grid (simplified)
-//            [
-//                'question' => 'Динамика оценки боли',
-//                'type' => 'grid',
-//                'options' => [
-//                    'columns' => ['Дата', 'Время', 'Интенсивность', 'Характер', 'Помощь', 'Побочные эффекты'],
-//                    'rows' => 10 // Number of assessment entries
-//                ],
-//            ]
         ];
 
         foreach ($painAssessmentQuestions as $q) {
@@ -992,21 +790,102 @@ class DocumentSeeder extends Seeder
             DocumentQuestion::query()->create($questionData);
         }
 
+        $painAssessmentRiskScore = [
+            [
+                'from_score' => 0,
+                'to_score' => null,
+                'actions' => [
+                    'Боли нет',
+                ],
+            ],
+            [
+                'from_score' => 1,
+                'to_score' => null,
+                'actions' => [
+                    'Очень слабая боль',
+                ],
+            ],
+            [
+                'from_score' => 2,
+                'to_score' => null,
+                'actions' => [
+                    'Слабая боль',
+                ],
+            ],
+            [
+                'from_score' => 3,
+                'to_score' => null,
+                'actions' => [
+                    'Умеренная боль',
+                ],
+            ],
+            [
+                'from_score' => 4,
+                'to_score' => null,
+                'actions' => [
+                    'Довольно сильная боль',
+                ],
+            ],
+            [
+                'from_score' => 5,
+                'to_score' => null,
+                'actions' => [
+                    'Сильная боль',
+                ],
+            ],
+            [
+                'from_score' => 6,
+                'to_score' => null,
+                'actions' => [
+                    'Очень сильная боль',
+                ],
+            ],
+            [
+                'from_score' => 7,
+                'to_score' => null,
+                'actions' => [
+                    'Крайне сильная боль',
+                ],
+            ],
+            [
+                'from_score' => 8,
+                'to_score' => null,
+                'actions' => [
+                    'Жестокая боль',
+                ],
+            ],
+            [
+                'from_score' => 9,
+                'to_score' => null,
+                'actions' => [
+                    'Невыносимая боль',
+                ],
+            ],
+            [
+                'from_score' => 10,
+                'to_score' => null,
+                'actions' => [
+                    'Максимально возможная боль'
+                ],
+            ],
+        ];
+
+        foreach ($painAssessmentRiskScore as $q) {
+            $questionData = [
+                'document_id' => $painAssessment->id,
+                'from_score' => (int)$q['from_score'],
+                'to_score' => (int)$q['to_score'],
+                'actions' => $q['actions'] ?? null,
+            ];
+
+            DocumentScore::query()->create($questionData);
+        }
+
         $flaccPainAssessment = Document::query()->create([
             'title' => 'Лист оценки боли FLACC (дети 1-3 года)',
         ]);
 
         $flaccQuestions = [
-            // Basic patient info
-            [
-                'question' => 'ФИО пациента',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Дата рождения',
-                'type' => 'text',
-            ],
-
             // FLACC assessment components
             [
                 'question' => 'Лицо (Face)',
@@ -1053,70 +932,6 @@ class DocumentSeeder extends Seeder
                     '2 - трудно поддается успокоению'
                 ],
             ],
-            [
-                'question' => 'Общий балл FLACC',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Интерпретация баллов FLACC',
-                'type' => 'choice',
-                'options' => [
-                    '0 - спокоен',
-                    '1-3 - небольшой дискомфорт',
-                    '4-6 - небольшая боль',
-                    '7-10 - сильная боль'
-                ],
-            ],
-
-            // Pain interventions
-            [
-                'question' => 'Примененные методы обезболивания',
-                'type' => 'choice',
-                'options' => [
-                    'Фармакологические (указать препарат)',
-                    'Нефармакологические (отвлечение, успокоение)',
-                    'Физические методы (массаж, изменение положения)',
-                    'Другое (указать)'
-                ],
-            ],
-
-            // Follow-up assessments
-            [
-                'question' => 'Дата оценки',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Время оценки',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Подпись или инициалы оценивающего',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Комментарии',
-                'type' => 'text',
-            ],
-
-            // Assessment grid for multiple entries
-//            [
-//                'question' => 'Динамика оценки по шкале FLACC',
-//                'type' => 'grid',
-//                'options' => [
-//                    'columns' => [
-//                        'Дата',
-//                        'Время',
-//                        'Лицо',
-//                        'Ноги',
-//                        'Активность',
-//                        'Плач',
-//                        'Успокаиваемость',
-//                        'Общий балл',
-//                        'Подпись'
-//                    ],
-//                    'rows' => 10 // Number of assessment entries
-//                ],
-//            ]
         ];
 
         foreach ($flaccQuestions as $q) {
@@ -1128,21 +943,53 @@ class DocumentSeeder extends Seeder
             ]);
         }
 
+        $flaccRiskScore = [
+            [
+                'from_score' => 0,
+                'to_score' => null,
+                'actions' => [
+                    'спокоен',
+                ],
+            ],
+            [
+                'from_score' => 1,
+                'to_score' => 3,
+                'actions' => [
+                    'небольшой дискомфорт',
+                ],
+            ],
+            [
+                'from_score' => 4,
+                'to_score' => 6,
+                'actions' => [
+                    'небольшая боль',
+                ],
+            ],
+            [
+                'from_score' => 7,
+                'to_score' => 10,
+                'actions' => [
+                    'сильная боль'
+                ],
+            ],
+        ];
+
+        foreach ($flaccRiskScore as $q) {
+            $questionData = [
+                'document_id' => $flaccPainAssessment->id,
+                'from_score' => (int)$q['from_score'],
+                'to_score' => (int)$q['to_score'],
+                'actions' => $q['actions'] ?? null,
+            ];
+
+            DocumentScore::query()->create($questionData);
+        }
+
         $nipsPainAssessment = Document::query()->create([
             'title' => 'Лист оценки боли NIPS (новорожденные и дети до года)',
         ]);
 
         $nipsQuestions = [
-            // Basic patient info
-            [
-                'question' => 'ФИО пациента',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Дата рождения',
-                'type' => 'text',
-            ],
-
             // NIPS assessment components
             [
                 'question' => 'Выражение лица',
@@ -1193,80 +1040,6 @@ class DocumentSeeder extends Seeder
                     '1 - беспокойный, мечется'
                 ],
             ],
-            [
-                'question' => 'Общий балл NIPS',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Интерпретация баллов NIPS',
-                'type' => 'choice',
-                'options' => [
-                    '0-3 - боль маловероятна',
-                    '4-7 - боль вероятна'
-                ],
-            ],
-
-            // Clinical notes
-            [
-                'question' => 'Особые примечания',
-                'type' => 'text',
-                'options' => [
-                    'Ребенок в тяжелом состоянии',
-                    'Получает парализующие медикаменты',
-                    'Другое (указать)'
-                ],
-            ],
-
-            // Pain interventions
-            [
-                'question' => 'Примененные методы обезболивания',
-                'type' => 'choice',
-                'options' => [
-                    'Фармакологические (указать препарат)',
-                    'Нефармакологические (пеленание, пустышка)',
-                    'Тактильные методы (кенгуру, покачивание)',
-                    'Другое (указать)'
-                ],
-            ],
-
-            // Follow-up assessments
-            [
-                'question' => 'Дата оценки',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Время оценки',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Подпись или инициалы оценивающего',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Комментарии',
-                'type' => 'text',
-            ],
-
-            // Assessment grid for multiple entries
-//            [
-//                'question' => 'Динамика оценки по шкале NIPS',
-//                'type' => 'grid',
-//                'options' => [
-//                    'columns' => [
-//                        'Дата',
-//                        'Время',
-//                        'Выражение лица',
-//                        'Крик/плач',
-//                        'Дыхание',
-//                        'Руки',
-//                        'Ноги',
-//                        'Возбуждение',
-//                        'Общий балл',
-//                        'Подпись'
-//                    ],
-//                    'rows' => 10
-//                ],
-//            ]
         ];
 
         foreach ($nipsQuestions as $q) {
@@ -1278,21 +1051,40 @@ class DocumentSeeder extends Seeder
             ]);
         }
 
+        $nipsRiskScore = [
+            [
+                'from_score' => 0,
+                'to_score' => 3,
+                'actions' => [
+                    'боль маловероятна',
+                ],
+            ],
+            [
+                'from_score' => 4,
+                'to_score' => 7,
+                'actions' => [
+                    'боль вероятна'
+                ],
+            ],
+        ];
+
+        foreach ($nipsRiskScore as $q) {
+            $questionData = [
+                'document_id' => $nipsPainAssessment->id,
+                'from_score' => (int)$q['from_score'],
+                'to_score' => (int)$q['to_score'],
+                'actions' => $q['actions'] ?? null,
+            ];
+
+            DocumentScore::query()->create($questionData);
+        }
+
+
         $cpotPainAssessment = Document::query()->create([
             'title' => 'Лист оценки боли CPOT (невербальные пациенты)',
         ]);
 
         $cpotQuestions = [
-            // Basic patient info
-            [
-                'question' => 'ФИО пациента',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Дата рождения',
-                'type' => 'text',
-            ],
-
             // CPOT assessment components
             [
                 'question' => 'Выражение лица (Facial expressions)',
@@ -1339,10 +1131,7 @@ class DocumentSeeder extends Seeder
                     '2 - Очень напряжены или очень ригидны'
                 ],
             ],
-            [
-                'question' => 'Общий балл CPOT',
-                'type' => 'text',
-            ],
+
             [
                 'question' => 'Интерпретация баллов CPOT',
                 'type' => 'choice',
@@ -1352,89 +1141,6 @@ class DocumentSeeder extends Seeder
                     '6-8 - боль есть, рассмотреть медикаментозную терапию'
                 ],
             ],
-
-            // Assessment context
-            [
-                'question' => 'Контекст оценки',
-                'type' => 'choice',
-                'options' => [
-                    'П - оценка в покое',
-                    'М - во время болезненной манипуляции',
-                    'Р - реакция на помощь'
-                ],
-            ],
-
-            // Pain interventions
-            [
-                'question' => 'Оказанная помощь (медикаментозная)',
-                'type' => 'choice',
-                'options' => [
-                    'НР - наркотические анальгетики',
-                    'НН - ненаркотические анальгетики',
-                    'СП - спазмолитики',
-                    'АН - анестетики',
-                    '0 - покой/выжидательная тактика'
-                ],
-            ],
-            [
-                'question' => 'Оказанная помощь (немедикаментозная)',
-                'type' => 'choice',
-                'options' => [
-                    'У - упражнения, массаж, поглаживание',
-                    'М - местная терапия',
-                    'И - иммобилизация'
-                ],
-            ],
-
-            // Follow-up assessments
-            [
-                'question' => 'Дата оценки',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Время оценки',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Подпись медсестры',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Комментарии',
-                'type' => 'text',
-            ],
-
-            // Assessment grid for multiple entries
-//            [
-//                'question' => 'Динамика оценки по шкале CPOT',
-//                'type' => 'grid',
-//                'options' => [
-//                    'columns' => [
-//                        'Дата',
-//                        'Время',
-//                        'Выражение лица',
-//                        'Движения тела',
-//                        'Толерантность к ИВЛ/Звуки',
-//                        'Мышечное напряжение',
-//                        'Общий балл',
-//                        'Контекст',
-//                        'Оказанная помощь',
-//                        'Подпись'
-//                    ],
-//                    'rows' => 10 // Number of assessment entries
-//                ],
-//            ],
-
-            // Special instructions
-            [
-                'question' => 'Инструкция по применению CPOT',
-                'type' => 'text',
-                'options' => [
-                    '1. Оценить боль в покое (П) 2 раза в сутки',
-                    '2. Оценить во время болезненных манипуляций (М)',
-                    '3. Оценить реакцию (Р) через 15-60 мин после вмешательства'
-                ],
-            ]
         ];
 
         foreach ($cpotQuestions as $q) {
@@ -1444,6 +1150,42 @@ class DocumentSeeder extends Seeder
                 'type' => $q['type'],
                 'options' => $q['options'] ?? null,
             ]);
+        }
+
+        $cpotRiskScore = [
+            [
+                'from_score' => 0,
+                'to_score' => 1,
+                'actions' => [
+                    'Наблюдать за пациентом в течение 1 минуты два раза в сутки',
+                ],
+            ],
+            [
+                'from_score' => 2,
+                'to_score' => 5,
+                'actions' => [
+                    'Смена трахеостомической трубки',
+                    'установка/смена назогастрольного зонда',
+                    'установка/смена мочевого катетера',
+                ],
+            ],
+            [
+                'from_score' => 6,
+                'to_score' => 8,
+                'actions' => [
+                    'Оценить реакцию (Р) через 15-60 мин после вмешательства'
+                ],
+            ]
+        ];
+        foreach ($cpotRiskScore as $q) {
+            $questionData = [
+                'document_id' => $cpotPainAssessment->id,
+                'from_score' => (int)$q['from_score'],
+                'to_score' => (int)$q['to_score'],
+                'actions' => $q['actions'] ?? null,
+            ];
+
+            DocumentScore::query()->create($questionData);
         }
     }
 }

@@ -12,6 +12,7 @@ class DocumentResponse extends Model
         'patient_id',
         'examination_map_id',
         'document_id',
+        'total_score',
     ];
 
     public function document(): BelongsTo

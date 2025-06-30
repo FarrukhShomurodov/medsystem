@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
             $table->foreignId('examination_map_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('document_id')->constrained()->cascadeOnDelete();
+            $table->integer('total_score');
             $table->timestamps();
         });
     }
