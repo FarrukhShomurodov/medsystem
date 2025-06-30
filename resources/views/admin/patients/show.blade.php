@@ -555,62 +555,70 @@
         </div>
     </div>
 
-    <div class="card mt-4">
-        <div class="card-header">
-            <h5 class="mb-0">Нормальные показатели пациента</h5>
-        </div>
-        <div class="card-body">
-            <form action="{{ route('patient.normal.vital.parameter.store', $patientDetails['patient_id']) }}"
-                  method="POST">
-                @csrf
-
-                <table class="table table-bordered align-middle">
-                    <thead>
-                    <tr>
-                        <th>Параметр</th>
-                        <th>Норма</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @php
-                        $normMap = $patient->vitalNormalParameters
-                            ->pluck('pivot.normal', 'id');
-                    @endphp
-
-                    @foreach($vitalParameters as $param)
-                        @php
-                            $existingValue = old('parameters.' . $param->id, $normMap->get($param->id, ''));
-                        @endphp
-                        <tr>
-                            <td>{{ $param->name }}</td>
-                            <td>
-                                <input
-                                    type="number"
-                                    step="0.1"
-                                    name="parameters[{{ $param->id }}]"
-                                    class="form-control"
-                                    placeholder="Норма"
-                                    value="{{ $existingValue }}"
-                                >
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-
-                <div class="text-end">
-                    <button type="submit" class="btn btn-primary mt-2">Сохранить</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-
     @php $accordionId = uniqid('accordion_'); @endphp
 
     <div class="accordion mt-3" id="{{ $accordionId }}">
-        {{-- Контактная информация --}}
+
         <div class="accordion-item">
+            <h2 class="accordion-header" id="{{ $accordionId }}-headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#{{ $accordionId }}-collapseOne" aria-expanded="false"
+                        aria-controls="{{ $accordionId }}-collapseOne">
+                    Нормальные показатели пациента
+                </button>
+            </h2>
+            <div id="{{ $accordionId }}-collapseOne" class="accordion-collapse collapse"
+                 aria-labelledby="{{ $accordionId }}-headingOne" data-bs-parent="#{{ $accordionId }}">
+                <div class="accordion-body">
+                    <form action="{{ route('patient.normal.vital.parameter.store', $patientDetails['patient_id']) }}"
+                          method="POST">
+                        @csrf
+
+                        <table class="table table-bordered align-middle">
+                            <thead>
+                            <tr>
+                                <th>Параметр</th>
+                                <th>Норма</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @php
+                                $normMap = $patient->vitalNormalParameters
+                                    ->pluck('pivot.normal', 'id');
+                            @endphp
+
+                            @foreach($vitalParameters as $param)
+                                @php
+                                    $existingValue = old('parameters.' . $param->id, $normMap->get($param->id, ''));
+                                @endphp
+                                <tr>
+                                    <td>{{ $param->name }}</td>
+                                    <td>
+                                        <input
+                                            type="number"
+                                            step="0.1"
+                                            name="parameters[{{ $param->id }}]"
+                                            class="form-control"
+                                            placeholder="Норма"
+                                            value="{{ $existingValue }}"
+                                        >
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary mt-2">Сохранить</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        {{-- Контактная информация --}}
+        <div class="accordion-item mt-3">
             <h2 class="accordion-header" id="{{ $accordionId }}-headingOne">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#{{ $accordionId }}-collapseOne" aria-expanded="false"

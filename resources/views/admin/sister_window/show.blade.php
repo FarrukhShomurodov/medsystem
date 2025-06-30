@@ -554,7 +554,7 @@
                         enabled: false
                     },
                     legend: {
-                        position: 'left',
+                        position: 'top',
                         fontSize: '14px',
                     },
                     grid: {
@@ -572,11 +572,36 @@
                             text: 'Дата и время'
                         }
                     },
-                    yaxis: {
-                        title: {
-                            text: title
+                    yaxis: [
+                        {
+                            labels: { style: { colors: '#FF7043' } },
+                            axisTicks: { show: true },
+                            axisBorder: { show: true, color: '#FF7043' }
+                        },
+                        {
+                            opposite: true,
+                            labels: { style: { colors: '#29B6F6' } },
+                            axisTicks: { show: true },
+                            axisBorder: { show: true, color: '#29B6F6' }
+                        },
+                        {
+                            labels: { style: { colors: '#66BB6A' } },
+                            axisTicks: { show: true },
+                            axisBorder: { show: true, color: '#66BB6A' }
+                        },
+                        {
+                            opposite: true,
+                            labels: { style: { colors: '#AB47BC' } },
+                            axisTicks: { show: true },
+                            axisBorder: { show: true, color: '#AB47BC' }
+                        },
+                        {
+                            labels: { style: { colors: '#FFA726' } },
+                            axisTicks: { show: true },
+                            axisBorder: { show: true, color: '#FFA726' }
                         }
-                    },
+                    ]
+                    ,
 
                     series: series
                 };
