@@ -223,7 +223,7 @@
                                     data-bs-toggle="modal"
                                     data-bs-target="#recommendActionModal"
                                     data-document-id="{{ $response->document_id }}"
-                                    data-total-score="{{ $response->total_score }}">
+                                    data-response-id="{{ $response->id }}">
                                     {{ $response->total_score }}
                                 </td>
                             @else
@@ -507,7 +507,6 @@
     <script>
         $(function () {
             const records = @json($jsChartData);
-            console.log('Chart data:', records);
 
             // Функция для создания опций графика
             function getChartOptions(title, series, colors, yFormatter = null) {
@@ -574,31 +573,31 @@
                     },
                     yaxis: [
                         {
-                            labels: { style: { colors: '#FF7043' } },
-                            axisTicks: { show: true },
-                            axisBorder: { show: true, color: '#FF7043' }
+                            labels: {style: {colors: '#FF7043'}},
+                            axisTicks: {show: true},
+                            axisBorder: {show: true, color: '#FF7043'}
                         },
                         {
                             opposite: true,
-                            labels: { style: { colors: '#29B6F6' } },
-                            axisTicks: { show: true },
-                            axisBorder: { show: true, color: '#29B6F6' }
+                            labels: {style: {colors: '#29B6F6'}},
+                            axisTicks: {show: true},
+                            axisBorder: {show: true, color: '#29B6F6'}
                         },
                         {
-                            labels: { style: { colors: '#66BB6A' } },
-                            axisTicks: { show: true },
-                            axisBorder: { show: true, color: '#66BB6A' }
+                            labels: {style: {colors: '#66BB6A'}},
+                            axisTicks: {show: true},
+                            axisBorder: {show: true, color: '#66BB6A'}
                         },
                         {
                             opposite: true,
-                            labels: { style: { colors: '#AB47BC' } },
-                            axisTicks: { show: true },
-                            axisBorder: { show: true, color: '#AB47BC' }
+                            labels: {style: {colors: '#AB47BC'}},
+                            axisTicks: {show: true},
+                            axisBorder: {show: true, color: '#AB47BC'}
                         },
                         {
-                            labels: { style: { colors: '#FFA726' } },
-                            axisTicks: { show: true },
-                            axisBorder: { show: true, color: '#FFA726' }
+                            labels: {style: {colors: '#FFA726'}},
+                            axisTicks: {show: true},
+                            axisBorder: {show: true, color: '#FFA726'}
                         }
                     ]
                     ,
@@ -808,25 +807,88 @@
         $(document).on('show.bs.modal', '#recommendActionModal', function (event) {
             const button = $(event.relatedTarget);
             const documentId = button.data('document-id');
-            const totalScore = button.data('total-score');
+            const responseId = button.data('response-id');
+            const $modal = $('#recommendActionModal');
             const $container = $('#recommendation-content');
+
+            // Сохраняем responseId
+            $modal.data('response-id', responseId);
 
             $container.html('Загрузка...');
 
             $.ajax({
-                url: `/api/document-scores/${documentId}/${totalScore}`,
+                url: `/api/document-scores/${documentId}/${responseId}`,
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
                     if (data.actions && data.actions.length > 0) {
-                        const listItems = data.actions.map(action => `<li>${action}</li>`).join('');
-                        $container.html(`<ul>${listItems}</ul>`);
+                        const finishedIds = data.finished.map(el => el.document_action_id);
+
+                        const listUnfinished = data.actions
+                            .filter(action => !finishedIds.includes(action.id))
+                            .map(action => `
+                <li class="d-flex justify-content-between align-items-center mb-2">
+                    <span>${action.action}</span>
+                    <button class="btn btn-sm btn-success mark-done-btn"
+                            data-action-id="${action.id}"
+                            data-score-id="${data.id}">
+                        ✔️
+                    </button>
+                </li>
+            `).join('');
+
+                        const listFinished = data.actions
+                            .filter(action => finishedIds.includes(action.id))
+                            .map(action => `
+                <li class="d-flex justify-content-between align-items-center mb-2">
+                    <span>${action.action}</span>
+                </li>
+            `).join('');
+
+                        $container.html(`
+            <div>
+                <h6>Рекомендованные действия:</h6>
+                <ul id="recommendation-list">${listUnfinished || '<li>Все действия выполнены.</li>'}</ul>
+                <hr>
+                <h6>Выполненные действия:</h6>
+                <ul id="done-list" class="text-muted" style="font-style: italic;">
+                    ${listFinished || '<li>Нет выполненных действий.</li>'}
+                </ul>
+            </div>
+        `);
                     } else {
                         $container.html('Рекомендации не найдены.');
                     }
                 },
                 error: function () {
                     $container.html('Ошибка при загрузке рекомендаций.');
+                }
+            });
+        });
+
+        $(document).on('click', '.mark-done-btn', function () {
+            const $btn = $(this);
+            const $item = $btn.closest('li');
+            const $modal = $('#recommendActionModal');
+            const responseId = $modal.data('response-id');
+            const scoreId = $btn.data('score-id');
+            const actionId = $btn.data('action-id');
+
+            $.ajax({
+                url: '/api/document/finish/action',
+                method: 'POST',
+                data: {
+                    document_response_id: responseId,
+                    document_score_id: scoreId,
+                    document_action_id: actionId,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function () {
+                    $btn.remove();
+                    $('#done-list').append($item);
+                },
+                error: function () {
+                    alert('Ошибка при сохранении. Повторите попытку.');
                 }
             });
         });

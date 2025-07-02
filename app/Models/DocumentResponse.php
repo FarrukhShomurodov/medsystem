@@ -29,4 +29,9 @@ class DocumentResponse extends Model
     {
         return $this->hasMany(DocumentAnswer::class, 'document_response_id', 'id');
     }
+
+    public function finishedScore(): HasMany
+    {
+        return $this->hasMany(PatientDocumentScoreFinished::class);
+    }
 }

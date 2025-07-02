@@ -8,6 +8,7 @@ use App\Http\Controllers\Dashboard\Api\PatientController;
 use App\Http\Controllers\Dashboard\Api\PatientHistoryController;
 use App\Http\Controllers\Dashboard\Api\PatientServiceController;
 use App\Http\Controllers\Dashboard\Api\ReceptionController;
+use App\Http\Controllers\Dashboard\Api\ScoreFinishedController;
 use App\Http\Controllers\Dashboard\Api\SelectedDiagnosisController;
 use App\Http\Controllers\Dashboard\Api\ServiceController;
 use App\Http\Controllers\Dashboard\Api\StaffController;
@@ -72,3 +73,6 @@ Route::post('/selected-diagnosis', [SelectedDiagnosisController::class, 'store']
 
 // document score
 Route::get('/document-scores/{document}/{score}', [DocumentScoreController::class, 'getActions']);
+
+// document finish action
+Route::post('/document/finish/action', [ScoreFinishedController::class, 'finish']);
