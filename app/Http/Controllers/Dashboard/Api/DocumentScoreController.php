@@ -20,10 +20,12 @@ class DocumentScoreController extends Controller
                             ->orWhereNull('to_score');
                     });
             })
+            ->with('finished')
+            ->with('actions')
             ->first();
 
-        return response()->json([
-            'actions' => $matching?->actions ?? [],
-        ]);
+        return response()->json(
+            $matching ?? [],
+        );
     }
 }

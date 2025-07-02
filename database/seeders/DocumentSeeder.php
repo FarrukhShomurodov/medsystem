@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Document;
 use App\Models\DocumentQuestion;
 use App\Models\DocumentScore;
+use App\Models\DocumentScoreAction;
 use Illuminate\Database\Seeder;
 
 class DocumentSeeder extends Seeder
@@ -445,17 +446,21 @@ class DocumentSeeder extends Seeder
             ],
         ];
 
-        // score action
-        foreach ($morseScoreAction as $q) {
-            $questionData = [
+        foreach ($morseScoreAction as $scoreRange) {
+            $scoreModel = DocumentScore::create([
                 'document_id' => $morseFallScale->id,
-                'from_score' => (int)$q['from_score'],
-                'to_score' => (int)$q['to_score'],
-                'actions' => $q['actions'] ?? null,
-            ];
+                'from_score' => (int)$scoreRange['from_score'],
+                'to_score' => $scoreRange['to_score'] !== null ? (int)$scoreRange['to_score'] : null,
+            ]);
 
-            DocumentScore::query()->create($questionData);
+            foreach ($scoreRange['actions'] as $actionText) {
+                DocumentScoreAction::create([
+                    'document_score_id' => $scoreModel->id,
+                    'action' => $actionText,
+                ]);
+            }
         }
+
 
         $humptyDumptyScale = Document::query()->create([
             'title' => 'Лист оценки риска падения детей по шкале "Хампти-Дампти"',
@@ -587,15 +592,19 @@ class DocumentSeeder extends Seeder
             ],
         ];
 
-        foreach ($humptyDumptyScaleAction as $q) {
-            $questionData = [
+        foreach ($humptyDumptyScaleAction as $scoreRange) {
+            $scoreModel = DocumentScore::create([
                 'document_id' => $humptyDumptyScale->id,
-                'from_score' => (int)$q['from_score'],
-                'to_score' => (int)$q['to_score'],
-                'actions' => $q['actions'] ?? null,
-            ];
+                'from_score' => (int)$scoreRange['from_score'],
+                'to_score' => $scoreRange['to_score'] !== null ? (int)$scoreRange['to_score'] : null,
+            ]);
 
-            DocumentScore::query()->create($questionData);
+            foreach ($scoreRange['actions'] as $actionText) {
+                DocumentScoreAction::create([
+                    'document_score_id' => $scoreModel->id,
+                    'action' => $actionText,
+                ]);
+            }
         }
 
         // Create new document for Outpatient Fall Risk Assessment
@@ -669,15 +678,19 @@ class DocumentSeeder extends Seeder
             ],
         ];
 
-        foreach ($outpatientFallRiskScore as $q) {
-            $questionData = [
+        foreach ($outpatientFallRiskScore as $scoreRange) {
+            $scoreModel = DocumentScore::create([
                 'document_id' => $outpatientFallRisk->id,
-                'from_score' => (int)$q['from_score'],
-                'to_score' => (int)$q['to_score'],
-                'actions' => $q['actions'] ?? null,
-            ];
+                'from_score' => (int)$scoreRange['from_score'],
+                'to_score' => $scoreRange['to_score'] !== null ? (int)$scoreRange['to_score'] : null,
+            ]);
 
-            DocumentScore::query()->create($questionData);
+            foreach ($scoreRange['actions'] as $actionText) {
+                DocumentScoreAction::create([
+                    'document_score_id' => $scoreModel->id,
+                    'action' => $actionText,
+                ]);
+            }
         }
 
 
@@ -870,15 +883,20 @@ class DocumentSeeder extends Seeder
             ],
         ];
 
-        foreach ($painAssessmentRiskScore as $q) {
-            $questionData = [
-                'document_id' => $painAssessment->id,
-                'from_score' => (int)$q['from_score'],
-                'to_score' => (int)$q['to_score'],
-                'actions' => $q['actions'] ?? null,
-            ];
 
-            DocumentScore::query()->create($questionData);
+        foreach ($painAssessmentRiskScore as $scoreRange) {
+            $scoreModel = DocumentScore::create([
+                'document_id' => $painAssessment->id,
+                'from_score' => (int)$scoreRange['from_score'],
+                'to_score' => $scoreRange['to_score'] !== null ? (int)$scoreRange['to_score'] : null,
+            ]);
+
+            foreach ($scoreRange['actions'] as $actionText) {
+                DocumentScoreAction::create([
+                    'document_score_id' => $scoreModel->id,
+                    'action' => $actionText,
+                ]);
+            }
         }
 
         $flaccPainAssessment = Document::query()->create([
@@ -974,15 +992,19 @@ class DocumentSeeder extends Seeder
             ],
         ];
 
-        foreach ($flaccRiskScore as $q) {
-            $questionData = [
+        foreach ($flaccRiskScore as $scoreRange) {
+            $scoreModel = DocumentScore::create([
                 'document_id' => $flaccPainAssessment->id,
-                'from_score' => (int)$q['from_score'],
-                'to_score' => (int)$q['to_score'],
-                'actions' => $q['actions'] ?? null,
-            ];
+                'from_score' => (int)$scoreRange['from_score'],
+                'to_score' => $scoreRange['to_score'] !== null ? (int)$scoreRange['to_score'] : null,
+            ]);
 
-            DocumentScore::query()->create($questionData);
+            foreach ($scoreRange['actions'] as $actionText) {
+                DocumentScoreAction::create([
+                    'document_score_id' => $scoreModel->id,
+                    'action' => $actionText,
+                ]);
+            }
         }
 
         $nipsPainAssessment = Document::query()->create([
@@ -1068,17 +1090,20 @@ class DocumentSeeder extends Seeder
             ],
         ];
 
-        foreach ($nipsRiskScore as $q) {
-            $questionData = [
+        foreach ($nipsRiskScore as $scoreRange) {
+            $scoreModel = DocumentScore::create([
                 'document_id' => $nipsPainAssessment->id,
-                'from_score' => (int)$q['from_score'],
-                'to_score' => (int)$q['to_score'],
-                'actions' => $q['actions'] ?? null,
-            ];
+                'from_score' => (int)$scoreRange['from_score'],
+                'to_score' => $scoreRange['to_score'] !== null ? (int)$scoreRange['to_score'] : null,
+            ]);
 
-            DocumentScore::query()->create($questionData);
+            foreach ($scoreRange['actions'] as $actionText) {
+                DocumentScoreAction::create([
+                    'document_score_id' => $scoreModel->id,
+                    'action' => $actionText,
+                ]);
+            }
         }
-
 
         $cpotPainAssessment = Document::query()->create([
             'title' => 'Лист оценки боли CPOT (невербальные пациенты)',
@@ -1177,15 +1202,20 @@ class DocumentSeeder extends Seeder
                 ],
             ]
         ];
-        foreach ($cpotRiskScore as $q) {
-            $questionData = [
-                'document_id' => $cpotPainAssessment->id,
-                'from_score' => (int)$q['from_score'],
-                'to_score' => (int)$q['to_score'],
-                'actions' => $q['actions'] ?? null,
-            ];
 
-            DocumentScore::query()->create($questionData);
+        foreach ($cpotRiskScore as $scoreRange) {
+            $scoreModel = DocumentScore::create([
+                'document_id' => $cpotPainAssessment->id,
+                'from_score' => (int)$scoreRange['from_score'],
+                'to_score' => $scoreRange['to_score'] !== null ? (int)$scoreRange['to_score'] : null,
+            ]);
+
+            foreach ($scoreRange['actions'] as $actionText) {
+                DocumentScoreAction::create([
+                    'document_score_id' => $scoreModel->id,
+                    'action' => $actionText,
+                ]);
+            }
         }
     }
 }

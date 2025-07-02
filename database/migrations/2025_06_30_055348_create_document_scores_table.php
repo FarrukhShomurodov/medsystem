@@ -13,7 +13,6 @@ return new class extends Migration {
             $table->foreignId('document_id')->constrained()->cascadeOnDelete();
             $table->integer('from_score');
             $table->integer('to_score')->nullable();
-            $table->json('actions');
             $table->timestamps();
         });
     }
