@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('document_response_id')->constrained()->cascadeOnDelete();
             $table->foreignId('document_score_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('document_action_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('document_action_id')->constrained('document_score_actions')->cascadeOnDelete();
             $table->timestamps();
         });
     }
