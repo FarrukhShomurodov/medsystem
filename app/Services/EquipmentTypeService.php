@@ -2,65 +2,30 @@
 
 namespace App\Services;
 
-use App\Models\Admin;
-use App\Models\AdminSelectedDiagnosis;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use App\Models\EquipmentType;
 
-class AdminService
+class EquipmentTypeService
 {
     /**
      * @param array<string, mixed> $validated
      */
-    public function store(array $validated): Admin
+    public function store(array $validated): EquipmentType
     {
-        return DB::transaction(function () use ($validated) {
-            $validated['password'] = isset($validated['password'])
-                ? Hash::make((string)$validated['password'])
-                : null;
-
-            return Admin::query()->create($validated);
-        });
+        return EquipmentType::query()->create($validated);
     }
 
     /**
      * @param array<string, mixed> $validated
      */
-    public function update(Admin $admin, array $validated): Admin
+    public function update(EquipmentType $type, array $validated): EquipmentType
     {
-        return DB::transaction(function () use ($admin, $validated) {
-            if (isset($validated['password']) && $validated['password'] !== '') {
-                $validated['password'] = Hash::make((string)$validated['password']);
-            } else {
-                unset($validated['password']);
-            }
+        $type->update($validated);
 
-            $admin->update($validated);
-
-            return $admin->refresh();
-        });
+        return $type->refresh();
     }
 
-    public function destroy(Admin $admin): void
+    public function destroy(EquipmentType $type): void
     {
-        DB::transaction(function () use ($admin) {
-            $admin->delete();
-        });
-    }
-
-    /**
-     * @param array<string, mixed> $validated
-     */
-    public function selectedDiagnosis(array $validated)
-    {
-        $hasDiagnosis = AdminSelectedDiagnosis::query()->where('admin_id', $validated['admin_id'])->where(
-            'diagnosis_id',
-            $validated['diagnosis_id']
-        );
-        if ($hasDiagnosis->exists()) {
-            return $hasDiagnosis->delete();
-        } else {
-            return AdminSelectedDiagnosis::query()->create($validated);
-        }
+        $type->delete();
     }
 }

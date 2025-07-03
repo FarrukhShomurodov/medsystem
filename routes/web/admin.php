@@ -10,6 +10,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     DiagnosisController,
     DocumentController,
     EquipmentController,
+    EquipmentTypeController,
     ExaminationMapController,
     ManufacturerController,
     MedicalDeviceController,
@@ -76,6 +77,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // equipments
     Route::resource('/equipments', EquipmentController::class)->names('equipment');
+    Route::resource('/equipment-types', EquipmentTypeController::class)->names('equipment.types')->parameter('equipment-types', 'type');
 
     // staff
     Route::prefix('staffs')->group(function () {

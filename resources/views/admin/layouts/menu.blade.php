@@ -114,14 +114,30 @@
             </li>
         @endcanany
 
-        @can('view_equipments')
-            <li class="menu-item {{ Request::is('dashboard/equipments*') ? 'active' : '' }}">
-                <a href="{{ route('equipment.index') }}" class="menu-link">
-                    <i class="menu-icon bx bx-first-aid"></i>
+        @canany(['view_equipments', 'view_equipment_types'])
+            <li class="menu-item {{ Request::is('dashboard/equipments*') || Request::is('dashboard/equipment-types*') ? 'open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon bx bx-wrench"></i>
                     <div data-i18n="Оборудование">Оборудование</div>
                 </a>
+                <ul class="menu-sub">
+                    @can('view_departments')
+                        <li class="menu-item {{ Request::is('dashboard/equipments') ? 'active' : '' }}">
+                            <a href="{{route('equipment.index')}}" class="menu-link">
+                                <div data-i18n="Список">Список</div>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('view_equipment_types')
+                        <li class="menu-item {{ Request::is('dashboard/equipment-types*') ? 'active' : '' }}">
+                            <a href="{{route('equipment.types.index')}}" class="menu-link">
+                                <div data-i18n="Типы">Типы</div>
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
             </li>
-        @endcan
+        @endcanany
 
         {{-- Отделение --}}
         @canany(['view_departments', 'view_department_rooms'])

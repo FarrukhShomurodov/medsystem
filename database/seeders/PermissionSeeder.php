@@ -39,6 +39,11 @@ class PermissionSeeder extends Seeder
             'edit_equipments',
             'delete_equipments',
 
+            'view_equipment_types',
+            'create_equipment_types',
+            'edit_equipment_types',
+            'delete_equipment_types',
+
             'view_staffs',
             'create_staffs',
             'edit_staffs',

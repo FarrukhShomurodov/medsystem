@@ -52,6 +52,11 @@ class StaffPositionController extends Controller
             'edit_equipments' => 'Редактирование оборудования',
             'delete_equipments' => 'Удаление оборудования',
 
+            'view_equipment_types' => 'Просмотр типа оборудования',
+            'create_equipment_types' => 'Создание типа оборудования',
+            'edit_equipment_types' => 'Редактирование типа оборудования',
+            'delete_equipment_types' => 'Удаление типа оборудования',
+
             'view_staffs' => 'Просмотр персонала',
             'create_staffs' => 'Добавление персонала',
             'edit_staffs' => 'Редактирование персонала',
