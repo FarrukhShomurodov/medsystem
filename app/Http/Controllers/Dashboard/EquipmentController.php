@@ -6,6 +6,9 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EquipmentRequest;
 use App\Models\Equipment;
+use App\Models\EquipmentType;
+use App\Models\Manufacturer;
+use App\Models\Staff;
 use App\Services\EquipmentService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -36,7 +39,11 @@ class EquipmentController extends Controller
 
     public function create(): View
     {
-        return view('admin.equipments.create');
+        $equipmentTypes = EquipmentType::query()->get();
+        $manufacturers = Manufacturer::query()->get();
+        $staffList = Staff::query()->get();
+
+        return view('admin.equipments.create', compact('equipmentTypes', 'manufacturers', 'staffList'));
     }
 
     public function store(EquipmentRequest $request): RedirectResponse
@@ -49,7 +56,11 @@ class EquipmentController extends Controller
 
     public function edit(Equipment $equipment): View
     {
-        return view('admin.equipments.edit', compact('equipment'));
+        $equipmentTypes = EquipmentType::query()->get();
+        $manufacturers = Manufacturer::query()->get();
+        $staffList = Staff::query()->get();
+
+        return view('admin.equipments.edit', compact('equipment', 'equipmentTypes', 'manufacturers', 'staffList'));
     }
 
     public function update(EquipmentRequest $request, Equipment $equipment): RedirectResponse
