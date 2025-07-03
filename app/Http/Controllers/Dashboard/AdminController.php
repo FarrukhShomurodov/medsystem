@@ -55,13 +55,13 @@ class AdminController extends Controller
     {
         $this->adminService->update($admin, (array) $request->validated());
 
-        return redirect()->route('admins.index')->with('success', 'Админ успешно обнавлен!');
+        return redirect()->route('admins.index')->with('success', 'Админ успешно обновлен!');
     }
 
     public function destroy(Admin $admin): RedirectResponse
     {
         if ($admin->email === 'online@gmail.com') {
-            return redirect()->route('admins.index')->withErrors('Вы неможете удалить админа.');
+            return redirect()->route('admins.index')->withErrors('Вы не можете удалить админа.');
         }
 
         $this->adminService->destroy($admin);
