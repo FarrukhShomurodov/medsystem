@@ -232,11 +232,16 @@ class StaffPositionController extends Controller
             'sister_window_show' => 'Просмотр сестринского окна',
             'patient_inspection_store' => 'Создание осмотра',
 
-
             'view_diagnoses' => 'Просмотр диагноза',
             'create_diagnoses' => 'Создание диагноза',
             'edit_diagnoses' => 'Редактирование диагноза',
             'delete_diagnoses' => 'Удаление диагноза',
+
+
+            'view_household_materials' => 'Просмотр хозяйственного материала',
+            'create_household_materials' => 'Создание хозяйственного материала',
+            'edit_household_materials' => 'Редактирование хозяйственного материала',
+            'delete_household_materials' => 'Удаление хозяйственного материала',
         ];
     }
 

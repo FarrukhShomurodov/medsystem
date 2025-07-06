@@ -223,6 +223,11 @@ class PermissionSeeder extends Seeder
             'create_diagnoses',
             'edit_diagnoses',
             'delete_diagnoses',
+
+            'view_household_materials',
+            'create_household_materials',
+            'edit_household_materials',
+            'delete_household_materials',
         ];
 
         $role = Role::firstOrCreate([

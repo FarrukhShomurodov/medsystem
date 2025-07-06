@@ -12,6 +12,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     EquipmentController,
     EquipmentTypeController,
     ExaminationMapController,
+    HouseholdMaterialController,
     ManufacturerController,
     MedicalDeviceController,
     MedicalSupplyController,
@@ -46,7 +47,8 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     WardRoomController,
     WarehouseAccountingController,
     WarehouseController,
-    WarehouseTypeController};
+    WarehouseTypeController
+};
 use App\Http\Middleware\ExaminationMapIsActive;
 use Illuminate\Support\Facades\Route;
 
@@ -77,7 +79,10 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // equipments
     Route::resource('/equipments', EquipmentController::class)->names('equipment');
-    Route::resource('/equipment-types', EquipmentTypeController::class)->names('equipment.types')->parameter('equipment-types', 'type');
+    Route::resource('/equipment-types', EquipmentTypeController::class)->names('equipment.types')->parameter(
+        'equipment-types',
+        'type'
+    );
 
     // staff
     Route::prefix('staffs')->group(function () {
@@ -281,4 +286,10 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     Route::post('/patients/{patient}/parameters', [PatientParameterController::class, 'store'])
         ->name('patient.vital.parameters.store');
+
+
+    // household materials
+    Route::resource('/household-materials', HouseholdMaterialController::class)->names(
+        'household.materials'
+    )->parameter('household-materials', 'material');
 });

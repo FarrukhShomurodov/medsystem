@@ -434,6 +434,16 @@
                 </a>
             </li>
         @endcan
+
+
+        @can('view_household_materials')
+            <li class="menu-item {{ Request::is('dashboard/household-materials*') ? 'active' : '' }}">
+                <a href="{{ route('household.materials.index') }}" class="menu-link">
+                    <i class="menu-icon bx bx-box"></i>
+                    <div data-i18n="Хозяйственные материалы">Хозяйственные материалы</div>
+                </a>
+            </li>
+        @endcan
     </ul>
 </aside>
 <div class="layout-overlay layout-menu-toggle"></div>
