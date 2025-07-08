@@ -296,6 +296,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // main warehouse
     Route::name('main.warehouse.')->prefix('main-warehouse')->group(function () {
+        Route::get('remains', [MainWarehouseController::class, 'remains'])->name('remains');
         Route::get('receipts-goods', [MainWarehouseController::class, 'receiptsGoods'])->name('receipts.goods.index');
         Route::post('receipts-goods', [MainWarehouseController::class, 'receiptsGoodsStore'])->name('receipts.goods.store');
     });

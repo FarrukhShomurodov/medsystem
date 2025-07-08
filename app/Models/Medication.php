@@ -95,4 +95,9 @@ class Medication extends Model
     {
         return $this->hasOne(MedicationLicenseAndCertification::class);
     }
+
+    public function supplier(): BelongsTo
+    {
+        return $this->belongsTo(Supplier::class);
+    }
 }

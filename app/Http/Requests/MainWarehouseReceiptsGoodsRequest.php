@@ -12,27 +12,34 @@ class MainWarehouseReceiptsGoodsRequest extends FormRequest
      */
     public function rules(): array
     {
-        $medications = array_filter($this->medications, function ($item) {
-            return isset($item['id']) && $item['id'] !== 'ID' && !empty($item['quantity']);
-        });
+        if ($this->medications) {
+            $medications = array_filter($this->medications, function ($item) {
+                return isset($item['id']) && $item['id'] !== 'ID' && !empty($item['quantity']);
+            });
 
-        $this->merge(['medications' => $medications]);
-
-        $supplies = array_filter($this->supplies, function ($item) {
-            return isset($item['id']) && $item['id'] !== 'ID' && !empty($item['quantity']);
-        });
-
-        $this->merge(['supplies' => $supplies]);
+            $this->merge(['medications' => $medications]);
+        }
 
 
-        $household = array_filter($this->household, function ($item) {
-            return isset($item['id']) && $item['id'] !== 'ID' && !empty($item['quantity']);
-        });
+        if ($this->supplies) {
+            $supplies = array_filter($this->supplies, function ($item) {
+                return isset($item['id']) && $item['id'] !== 'ID' && !empty($item['quantity']);
+            });
 
-        $this->merge(['household' => $household]);
+            $this->merge(['supplies' => $supplies]);
+        }
+
+
+        if ($this->household) {
+            $household = array_filter($this->household, function ($item) {
+                return isset($item['id']) && $item['id'] !== 'ID' && !empty($item['quantity']);
+            });
+
+            $this->merge(['household' => $household]);
+        }
 
         return [
-            'medications' => 'required|array',
+            'medications' => 'nullable|array',
             'medications.*.id' => 'required|exists:medications,id',
             'medications.*.quantity' => 'required|integer|min:1',
             'medications.*.expiration_date' => 'required|date',
@@ -47,11 +54,11 @@ class MainWarehouseReceiptsGoodsRequest extends FormRequest
             "medications.*.wholesale_price" => 'required|int',
             "medications.*.supplier_id" => 'required|int',
 
-            'supplies' => 'required|array',
+            'supplies' => 'nullable|array',
             'supplies.*.id' => 'required|int',
             'supplies.*.quantity' => 'required|int',
 
-            'household' => 'required|array',
+            'household' => 'nullable|array',
             'household.*.id' => 'required|int',
             'household.*.quantity' => 'required|int',
         ];

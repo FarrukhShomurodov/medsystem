@@ -39,18 +39,20 @@ class MainWarehouse extends Model
             'main_warehouse_medications',
             'main_warehouse_id',
             'medication_id'
-        )->withPivot([
-            'quantity',
-            'expiration_date',
-            'date_of_receipt',
-            'batch_number',
-            'retail_price',
-            'wholesale_price',
-            'supplier_id',
-            'packaging_type',
-            'quantity_per_package',
-            'package_size',
-            'packaging_date',
-        ]);
+        )
+            ->using(MainWarehouseMedication::class)
+            ->withPivot([
+                'quantity',
+                'expiration_date',
+                'date_of_receipt',
+                'batch_number',
+                'retail_price',
+                'wholesale_price',
+                'supplier_id',
+                'packaging_type',
+                'quantity_per_package',
+                'package_size',
+                'packaging_date',
+            ]);
     }
 }

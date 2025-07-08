@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MainWarehouseReceiptsGoodsRequest;
 use App\Models\HouseholdMaterial;
+use App\Models\MainWarehouse;
 use App\Models\MedicalSupply;
 use App\Models\Medication;
 use App\Models\Supplier;
@@ -21,10 +22,36 @@ class MainWarehouseController extends Controller
         $this->service = $service;
     }
 
-    public function index(): View
+    public function remains(): View
     {
-        return view();
+        $warehouse = MainWarehouse::query()->first();
+        $type = request('type');
+
+        $medications = collect();
+        $supplies = collect();
+        $household = collect();
+
+        if (!$type || $type === 'medications') {
+            $medications = $warehouse->medication()->withPivot([
+                'quantity', 'expiration_date', 'date_of_receipt', 'batch_number',
+                'retail_price', 'wholesale_price', 'supplier_id',
+                'packaging_type', 'quantity_per_package', 'package_size', 'packaging_date'
+            ])->get();
+        }
+
+        if (!$type || $type === 'supplies') {
+            $supplies = $warehouse->medicalSupplies()->get();
+        }
+
+        if (!$type || $type === 'household') {
+            $household = $warehouse->householdMaterial()->get();
+        }
+
+        return view('admin.main_warehouses.remains', compact(
+            'warehouse', 'medications', 'supplies', 'household', 'type'
+        ));
     }
+
 
     public function receiptsGoods(): View
     {
