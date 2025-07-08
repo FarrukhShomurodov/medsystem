@@ -13,6 +13,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     EquipmentTypeController,
     ExaminationMapController,
     HouseholdMaterialController,
+    MainWarehouseController,
     ManufacturerController,
     MedicalDeviceController,
     MedicalSupplyController,
@@ -292,4 +293,10 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::resource('/household-materials', HouseholdMaterialController::class)->names(
         'household.materials'
     )->parameter('household-materials', 'material');
+
+    // main warehouse
+    Route::name('main.warehouse.')->prefix('main-warehouse')->group(function () {
+        Route::get('receipts-goods', [MainWarehouseController::class, 'receiptsGoods'])->name('receipts.goods.index');
+        Route::post('receipts-goods', [MainWarehouseController::class, 'receiptsGoodsStore'])->name('receipts.goods.store');
+    });
 });

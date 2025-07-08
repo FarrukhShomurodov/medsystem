@@ -335,6 +335,39 @@
         {{--            </li>--}}
         {{--        @endcanany--}}
 
+        {{-- Общий склад --}}
+        @canany(['view_warehouses', 'view_warehouse_medications', 'view_warehouse_supplies', 'view_warehouse_types'])
+            <li class="menu-item {{ Request::is('dashboard/main-warehouse*') ? 'open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon bx bx-store"></i>
+                    <div data-i18n="Общий склад">Общий склад</div>
+                </a>
+                <ul class="menu-sub">
+                    @can('view_warehouses')
+                        <li class="menu-item {{ Request::is('dashboard/main-warehouse/receipts-goods') ? 'active' : '' }}">
+                            <a href="{{ route('main.warehouse.receipts.goods.index') }}" class="menu-link">
+                                <div data-i18n="Приход">Приход</div>
+                            </a>
+                        </li>
+                    @endcan
+{{--                    @can('view_warehouse_medications')--}}
+{{--                        <li class="menu-item {{ Request::is('dashboard/warehouses/medications*') ? 'active' : '' }}">--}}
+{{--                            <a href="{{ route('warehouses.medications') }}" class="menu-link">--}}
+{{--                                <div data-i18n="Расход">Расход</div>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
+{{--                    @endcan--}}
+{{--                    @can('view_warehouse_supplies')--}}
+{{--                        <li class="menu-item {{ Request::is('dashboard/warehouses/supplies*') ? 'active' : '' }}">--}}
+{{--                            <a href="{{ route('warehouses.supplies') }}" class="menu-link">--}}
+{{--                                <div data-i18n="Остатки">Остатки</div>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
+{{--                    @endcan--}}
+                </ul>
+            </li>
+        @endcanany
+
         {{-- Склад --}}
         @canany(['view_warehouses', 'view_warehouse_medications', 'view_warehouse_supplies', 'view_warehouse_types'])
             <li class="menu-item {{ Request::is('dashboard/warehouses*') ? 'open' : '' }}">
