@@ -13,35 +13,11 @@ class WarehouseRequest extends FormRequest
      */
     public function rules(): array
     {
-        $medications = array_filter($this->medications, function ($item) {
-            return isset($item['id']) && $item['id'] !== 'ID' && !empty($item['quantity']);
-        });
-
-        $this->merge(['medications' => $medications]);
-
-        $supplies = array_filter($this->supplies, function ($item) {
-            return isset($item['id']) && $item['id'] !== 'ID' && !empty($item['quantity']);
-        });
-
-        $this->merge(['supplies' => $supplies]);
-
         return [
             'name' => 'required',
             'description' => 'required',
             'warehouse_type_id' => 'required',
             'address' => 'required',
-
-            // accounting -> medications
-            'medications' => 'required|array',
-            'medications.*.id' => 'required|exists:medications,id',
-            'medications.*.quantity' => 'required|integer|min:1',
-            'medications.*.expiration_date' => 'required|date',
-            'medications.*.date_of_receipt' => 'required|date',
-            'medications.*.batch_number' => 'required|string|max:255',
-
-            'supplies' => 'required|array',
-            'supplies.*.id' => 'required|int',
-            'supplies.*.quantity' => 'required|int',
 
 
             //packaging

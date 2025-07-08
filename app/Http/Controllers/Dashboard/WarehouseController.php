@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WarehouseRequest;
+use App\Models\HouseholdMaterial;
 use App\Models\MedicalSupply;
 use App\Models\Medication;
 use App\Models\Supplier;
@@ -104,9 +105,11 @@ class WarehouseController extends Controller
 
     public function supplies(Request $request): View
     {
-        $supplies = MedicalSupply::with(['warehouse' => function ($q) {
-            $q->withPivot('quantity');
-        }])
+        $supplies = MedicalSupply::with([
+            'warehouse' => function ($q) {
+                $q->withPivot('quantity');
+            }
+        ])
             ->when($request->filled('warehouse_id'), function ($q) use ($request) {
                 $q->whereHas('warehouse', function ($query) use ($request) {
                     $query->where('warehouses.id', $request->input('warehouse_id'));
@@ -115,5 +118,17 @@ class WarehouseController extends Controller
             ->paginate(30);
 
         return view('admin.warehouses.supplies', compact('supplies'));
+    }
+
+    public function orderShow()
+    {
+        $medications = Medication::query()->get();
+        $suppliers = Supplier::query()->get();
+        $supplies = MedicalSupply::query()->get();
+        $householdMaterial = HouseholdMaterial::query()->get();
+
+        return view(
+            'admin.warehouses.order',
+            compact('medications', 'suppliers', 'supplies', 'householdMaterial'));
     }
 }

@@ -138,6 +138,11 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         Route::get('supplies', [WarehouseController::class, 'supplies'])
             ->name('warehouses.supplies')
             ->middleware('permission:view_warehouse_supplies');
+
+
+        Route::get('order-show/', [WarehouseController::class, 'orderShow'])->name(
+            'warehouse.order'
+        );
     });
 
     // pharmacy

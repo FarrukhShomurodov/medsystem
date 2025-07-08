@@ -371,6 +371,12 @@
                             </a>
                         </li>
                     @endcan
+                    <li class="menu-item {{ Request::is('dashboard/warehouses/order-show*') ? 'active' : '' }}">
+                        <a href="{{ route('warehouse.order') }}" class="menu-link">
+                            <div data-i18n="Заказать">Заказать</div>
+                        </a>
+                    </li>
+
                     @can('view_warehouse_medications')
                         <li class="menu-item {{ Request::is('dashboard/warehouses/medications*') ? 'active' : '' }}">
                             <a href="{{ route('warehouses.medications') }}" class="menu-link">
