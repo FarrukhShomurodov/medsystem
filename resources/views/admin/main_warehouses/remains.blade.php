@@ -34,21 +34,24 @@
     <div class="card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-header">Остатки </h5>
+
+            <form method="GET" class="d-flex align-items-center gap-2">
+                <label for="type" class="form-label mb-0">Тип:</label>
+                <select name="type" id="type" class="form-select w-auto" onchange="this.form.submit()">
+                    <option value="">Все</option>
+                    <option value="medications" {{ request('type') == 'medications' ? 'selected' : '' }}>Медикаменты
+                    </option>
+                    <option value="supplies" {{ request('type') == 'supplies' ? 'selected' : '' }}>Мед. принадлежности
+                    </option>
+                    <option value="household" {{ request('type') == 'household' ? 'selected' : '' }}>Хоз. материалы
+                    </option>
+                </select>
+            </form>
+
+            <a href="{{ route('main.warehouse.receipts.goods.index') }}" class="btn btn-primary "
+               style="margin-right: 22px;">Приход</a>
         </div>
         <div class="card-datatable table-responsive">
-            <div class="me-4">
-                <form method="GET" class="mb-3 d-flex align-items-center gap-2">
-                    <label for="type" class="form-label mb-0">Тип:</label>
-                    <select name="type" id="type" class="form-select w-auto" onchange="this.form.submit()">
-                        <option value="">Все</option>
-                        <option value="medications" {{ request('type') == 'medications' ? 'selected' : '' }}>Медикаменты</option>
-                        <option value="supplies" {{ request('type') == 'supplies' ? 'selected' : '' }}>Мед. принадлежности</option>
-                        <option value="household" {{ request('type') == 'household' ? 'selected' : '' }}>Хоз. материалы</option>
-                    </select>
-                </form>
-            </div>
-
-
             <table class="datatables-users table border-top">
                 <thead>
                 <tr>

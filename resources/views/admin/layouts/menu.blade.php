@@ -342,13 +342,7 @@
                 <div data-i18n="Общий склад">Общий склад</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {{ Request::is('dashboard/main-warehouse/receipts-goods') ? 'active' : '' }}">
-                    <a href="{{ route('main.warehouse.receipts.goods.index') }}" class="menu-link">
-                        <div data-i18n="Приход">Приход</div>
-                    </a>
-                </li>
-
-                <li class="menu-item {{ Request::is('dashboard/main-warehouse/remains') ? 'active' : '' }}">
+                <li class="menu-item {{ Request::is('dashboard/main-warehouse*') ? 'active' : '' }}">
                     <a href="{{ route('main.warehouse.remains') }}" class="menu-link">
                         <div data-i18n="Остатки">Остатки</div>
                     </a>
