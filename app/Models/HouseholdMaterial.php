@@ -12,7 +12,6 @@ class HouseholdMaterial extends Model
         'name',
         'entry_price_total',
         'entry_price_unit',
-        'entry_amount',
     ];
 
     public function warehouse(): BelongsToMany

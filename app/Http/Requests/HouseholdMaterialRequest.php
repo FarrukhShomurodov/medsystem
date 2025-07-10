@@ -16,7 +16,6 @@ class HouseholdMaterialRequest extends FormRequest
             'name' => 'required|string|max:255',
             'entry_price_total' => 'required|numeric',
             'entry_price_unit' => 'required|numeric',
-            'entry_amount' => 'required|numeric',
         ];
     }
 }

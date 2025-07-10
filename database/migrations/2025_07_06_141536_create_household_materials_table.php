@@ -15,7 +15,6 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('entry_price_total');
             $table->decimal('entry_price_unit');
-            $table->decimal('entry_amount');
             $table->timestamps();
         });
     }

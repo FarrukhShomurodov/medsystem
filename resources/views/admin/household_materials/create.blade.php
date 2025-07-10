@@ -99,23 +99,6 @@
                     @enderror
                 </div>
 
-                {{-- Количество --}}
-                <div class="mb-3">
-                    <label class="form-label" for="entry_amount">Количество <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-merge">
-                        <span class="input-group-text @error('entry_amount') text-danger icon-border @enderror"><i class="bx bx-cube"></i></span>
-                        <input type="number" step="1" id="entry_amount"
-                               class="form-control @error('entry_amount') is-invalid @enderror"
-                               placeholder="Количество"
-                               name="entry_amount"
-                               value="{{ old('entry_amount') }}"
-                               required>
-                    </div>
-                    @error('entry_amount')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
                 <button type="submit" class="btn btn-primary">Сохранить</button>
             </form>
 
