@@ -39,15 +39,23 @@ class MainWarehouseService
             }
 
 
-
             if (isset($validated['supplies'])) {
                 $cleanedSupplies = collect($validated['supplies'])->mapWithKeys(function ($item, $key) {
                     return [$item['id'] => ['quantity' => $item['quantity']]];
                 })->toArray();
 
-                $warehouse->medicalSupplies()->attach($cleanedSupplies);
-            }
+                foreach ($cleanedSupplies as $id => $data) {
+                    $existing = $warehouse->medicalSupplies()->wherePivot('medical_supply_id', $id)->first();
 
+                    if ($existing) {
+                        $warehouse->medicalSupplies()->updateExistingPivot($id, [
+                            'quantity' => $existing->pivot->quantity + $data['quantity'],
+                        ]);
+                    } else {
+                        $warehouse->medicalSupplies()->attach([$id => $data]);
+                    }
+                }
+            }
 
 
             if (isset($validated['household'])) {
@@ -55,7 +63,17 @@ class MainWarehouseService
                     return [$item['id'] => ['quantity' => $item['quantity']]];
                 })->toArray();
 
-                $warehouse->householdMaterial()->attach($cleanedHousehold);
+                foreach ($cleanedHousehold as $id => $data) {
+                    $existing = $warehouse->householdMaterial()->wherePivot('household_material_id', $id)->first();
+
+                    if ($existing) {
+                        $warehouse->householdMaterial()->updateExistingPivot($id, [
+                            'quantity' => $existing->pivot->quantity + $data['quantity'],
+                        ]);
+                    } else {
+                        $warehouse->householdMaterial()->attach([$id => $data]);
+                    }
+                }
             }
 
 
