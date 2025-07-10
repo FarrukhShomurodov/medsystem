@@ -25,7 +25,7 @@ class MainWarehouse extends Model
     public function householdMaterial(): BelongsToMany
     {
         return $this->belongsToMany(
-            MedicalSupply::class,
+            HouseholdMaterial::class,
             'main_warehouse_household_materials',
             'main_warehouse_id',
             'household_material_id'

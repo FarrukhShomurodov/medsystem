@@ -15,4 +15,9 @@ class MedicalSupply extends Model
     {
         return $this->belongsToMany(Warehouse::class, 'warehouse_medical_supplies', 'supply_id', 'warehouse_id')->withPivot('quantity');
     }
+
+    public function mainWarehouses(): BelongsToMany
+    {
+        return $this->belongsToMany(MainWarehouse::class, 'main_warehouse_medical_supplies', 'supply_id', 'main_warehouse_id');
+    }
 }

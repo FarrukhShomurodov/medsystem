@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Medication extends Model
@@ -99,5 +100,10 @@ class Medication extends Model
     public function supplier(): BelongsTo
     {
         return $this->belongsTo(Supplier::class);
+    }
+
+    public function mainWarehouses(): BelongsToMany
+    {
+        return $this->belongsToMany(MainWarehouse::class, 'main_warehouse_medications', 'medication_id', 'main_warehouse_id');
     }
 }

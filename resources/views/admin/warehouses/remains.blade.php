@@ -76,22 +76,26 @@
 
                 {{-- Расходники --}}
                 @foreach ($supplies as $item)
-                    <tr>
-                        <td>{{ $index++ }}</td>
-                        <td><span class="badge bg-success">Расходник</span></td>
-                        <td>{{ $item->name }}</td>
-                        <td>{{ $item->warehouse[0]->pivot->quantity }}</td>
-                    </tr>
+                    @foreach ($item->warehouse as $warehouseItem)
+                        <tr>
+                            <td>{{ $index++ }}</td>
+                            <td><span class="badge bg-success">Расходник</span></td>
+                            <td>{{ $item->name }}</td>
+                            <td>{{ $warehouseItem->pivot->quantity }}</td>
+                        </tr>
+                    @endforeach
                 @endforeach
 
                 {{-- Хоз. материалы --}}
                 @foreach($household as $item)
-                    <tr>
-                        <td>{{ $index++ }}</td>
-                        <td><span class="badge bg-warning">Хоз. материал</span></td>
-                        <td>{{ $item->name }}</td>
-                        <td>{{ $item->warehouse[0]->pivot->quantity }}</td>
-                    </tr>
+                    @foreach ($item->warehouse as $warehouseItem)
+                        <tr>
+                            <td>{{ $index++ }}</td>
+                            <td><span class="badge bg-warning">Хоз. материал</span></td>
+                            <td>{{ $item->name }}</td>
+                            <td>{{ $warehouseItem->pivot->quantity }}</td>
+                        </tr>
+                    @endforeach
                 @endforeach
                 </tbody>
             </table>

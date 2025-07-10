@@ -170,15 +170,14 @@ class WarehouseController extends Controller
 
     public function orderShow()
     {
-        $medications = Medication::query()->get();
-        $suppliers = Supplier::query()->get();
-        $supplies = MedicalSupply::query()->get();
-        $householdMaterial = HouseholdMaterial::query()->get();
+        $medications = Medication::query()->whereHas('mainWarehouses')->get();
+        $supplies = MedicalSupply::query()->whereHas('mainWarehouses')->get();
+        $householdMaterial = HouseholdMaterial::query()->whereHas('mainWarehouses')->get();
 
         $warehouses = Warehouse::query()->get();
 
         return view(
             'admin.warehouses.order',
-            compact('medications', 'suppliers', 'supplies', 'householdMaterial', 'warehouses'));
+            compact('medications',  'supplies', 'householdMaterial', 'warehouses'));
     }
 }

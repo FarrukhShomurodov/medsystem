@@ -19,4 +19,9 @@ class HouseholdMaterial extends Model
     {
         return $this->belongsToMany(Warehouse::class, 'warehouse_household_materials', 'household_material_id', 'warehouse_id')->withPivot('quantity');
     }
+
+    public function mainWarehouses(): BelongsToMany
+    {
+        return $this->belongsToMany(MainWarehouse::class, 'main_warehouse_household_materials', 'household_material_id', 'main_warehouse_id');
+    }
 }

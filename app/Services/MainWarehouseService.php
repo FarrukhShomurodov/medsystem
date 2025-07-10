@@ -39,11 +39,23 @@ class MainWarehouseService
             }
 
 
+
             if (isset($validated['supplies'])) {
-                $warehouse->medicalSupplies()->attach($validated['supplies']);
+                $cleanedSupplies = collect($validated['supplies'])->mapWithKeys(function ($item, $key) {
+                    return [$item['id'] => ['quantity' => $item['quantity']]];
+                })->toArray();
+
+                $warehouse->medicalSupplies()->attach($cleanedSupplies);
             }
+
+
+
             if (isset($validated['household'])) {
-                $warehouse->householdMaterial()->attach($validated['household']);
+                $cleanedHousehold = collect($validated['household'])->mapWithKeys(function ($item, $key) {
+                    return [$item['id'] => ['quantity' => $item['quantity']]];
+                })->toArray();
+
+                $warehouse->householdMaterial()->attach($cleanedHousehold);
             }
 
 
