@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WarehouseRequest;
 use App\Models\HouseholdMaterial;
+use App\Models\MainWarehouse;
 use App\Models\MedicalSupply;
 use App\Models\Medication;
 use App\Models\Supplier;
@@ -88,6 +89,47 @@ class WarehouseController extends Controller
         return redirect()->route('warehouses.index')->with('success', 'Склад успешно удален!');
     }
 
+
+    public function remains(Request $request): View
+    {
+        $warehouse = MainWarehouse::query()->first();
+        $type = request('type');
+
+        if (!$type || $type === 'medications') {
+            $medications = WarehouseAccounting::with('medication')
+                ->when($request->filled('warehouse_id'), function ($q) use ($request) {
+                    $q->where('warehouse_id', $request->input('warehouse_id'));
+                })
+                ->with('packaging')
+                ->with('warehouse')
+                ->with('medicationCost')
+                ->orderBy('expiration_date', 'ASC')
+                ->get();
+        }
+
+        if (!$type || $type === 'supplies') {
+            $supplies = MedicalSupply::with([
+                'warehouse' => function ($q) {
+                    $q->withPivot('quantity');
+                }
+            ])
+                ->when($request->filled('warehouse_id'), function ($q) use ($request) {
+                    $q->whereHas('warehouse', function ($query) use ($request) {
+                        $query->where('warehouses.id', $request->input('warehouse_id'));
+                    });
+                })
+                ->get();
+        }
+
+        if (!$type || $type === 'household') {
+            $household = collect();
+        }
+
+        return view('admin.warehouses.remains', compact(
+            'warehouse', 'medications', 'supplies', 'household', 'type'
+        ));
+    }
+
     public function medications(Request $request): View
     {
         $accountings = WarehouseAccounting::with('medication')
@@ -127,8 +169,10 @@ class WarehouseController extends Controller
         $supplies = MedicalSupply::query()->get();
         $householdMaterial = HouseholdMaterial::query()->get();
 
+        $warehouses = Warehouse::query()->get();
+
         return view(
             'admin.warehouses.order',
-            compact('medications', 'suppliers', 'supplies', 'householdMaterial'));
+            compact('medications', 'suppliers', 'supplies', 'householdMaterial', 'warehouses'));
     }
 }

@@ -358,6 +358,12 @@
                     <div data-i18n="Склад">Склад</div>
                 </a>
                 <ul class="menu-sub">
+                    <li class="menu-item {{ Request::is('dashboard/warehouses/remains-show') || Request::is('dashboard/warehouses/order-show') ? 'active' : '' }}">
+                        <a href="{{ route('warehouse.remains') }}" class="menu-link">
+                            <div data-i18n="Остатки">Остатки</div>
+                        </a>
+                    </li>
+
                     @can('view_warehouses')
                         <li class="menu-item {{ Request::is('dashboard/warehouses/list*') ? 'active' : '' }}">
                             <a href="{{ route('warehouses.index') }}" class="menu-link">
@@ -365,11 +371,6 @@
                             </a>
                         </li>
                     @endcan
-                    <li class="menu-item {{ Request::is('dashboard/warehouses/order-show*') ? 'active' : '' }}">
-                        <a href="{{ route('warehouse.order') }}" class="menu-link">
-                            <div data-i18n="Заказать">Заказать</div>
-                        </a>
-                    </li>
 
                     @can('view_warehouse_medications')
                         <li class="menu-item {{ Request::is('dashboard/warehouses/medications*') ? 'active' : '' }}">

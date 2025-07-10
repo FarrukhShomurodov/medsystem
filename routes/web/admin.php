@@ -42,14 +42,14 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     StaffController,
     StaffPositionController,
     SupplierController,
+    SupplyRequestController,
     SurveyController,
     SurveyResponseController,
     TransferController,
     WardRoomController,
     WarehouseAccountingController,
     WarehouseController,
-    WarehouseTypeController
-};
+    WarehouseTypeController};
 use App\Http\Middleware\ExaminationMapIsActive;
 use Illuminate\Support\Facades\Route;
 
@@ -140,8 +140,18 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
             ->middleware('permission:view_warehouse_supplies');
 
 
+        // order
         Route::get('order-show/', [WarehouseController::class, 'orderShow'])->name(
             'warehouse.order'
+        );
+
+        // remains
+        Route::get('remains-show/', [WarehouseController::class, 'remains'])->name(
+            'warehouse.remains'
+        );
+
+        Route::post('supply-requests/', [SupplyRequestController::class, 'store'])->name(
+            'supply-requests.store'
         );
     });
 
