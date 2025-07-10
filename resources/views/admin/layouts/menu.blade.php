@@ -350,7 +350,7 @@
 
                 <li class="menu-item {{ Request::is('dashboard/supply-requests/orders') ? 'active' : '' }}">
                     <a href="{{ route('supply-requests.index') }}" class="menu-link">
-                        <div data-i18n="Заказы">Заказы</div>
+                        <div data-i18n="Переходы">Переходы</div>
                     </a>
                 </li>
             </ul>

@@ -17,9 +17,11 @@
                     </div>
                     <form action="{{ route('supply-requests.approve', $request->id) }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn btn-success">
-                           Принять заказ
-                        </button>
+                        @if($request->status == 'pending')
+                            <button type="submit" class="btn btn-success">
+                                Принять заказ
+                            </button>
+                        @endif
                     </form>
                 </div>
 

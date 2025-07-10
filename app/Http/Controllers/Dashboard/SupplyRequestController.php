@@ -22,7 +22,6 @@ class SupplyRequestController extends Controller
     public function index()
     {
         $requests = SupplyRequest::with(['warehouse'])
-            ->where('status', 'pending')
             ->get();
 
         return view('admin.main_warehouses.orders', compact('requests'));
