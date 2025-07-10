@@ -100,13 +100,9 @@ class WarehouseController extends Controller
                 ->when($request->filled('warehouse_id'), function ($q) use ($request) {
                     $q->where('warehouse_id', $request->input('warehouse_id'));
                 })
-                ->with('packaging')
                 ->with('warehouse')
-                ->with('medicationCost')
-                ->orderBy('expiration_date', 'ASC')
                 ->get();
         }
-
         if (!$type || $type === 'supplies') {
             $supplies = MedicalSupply::with([
                 'warehouse' => function ($q) {
@@ -122,7 +118,17 @@ class WarehouseController extends Controller
         }
 
         if (!$type || $type === 'household') {
-            $household = collect();
+            $household = HouseholdMaterial::with([
+                'warehouse' => function ($q) {
+                    $q->withPivot('quantity');
+                }
+            ])
+                ->when($request->filled('warehouse_id'), function ($q) use ($request) {
+                    $q->whereHas('warehouse', function ($query) use ($request) {
+                        $query->where('warehouses.id', $request->input('warehouse_id'));
+                    });
+                })
+                ->get();
         }
 
         return view('admin.warehouses.remains', compact(

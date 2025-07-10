@@ -336,7 +336,7 @@
         {{--        @endcanany--}}
 
         {{-- Общий склад --}}
-        <li class="menu-item {{ Request::is('dashboard/main-warehouse*') ? 'open' : '' }}">
+        <li class="menu-item {{ Request::is('dashboard/main-warehouse*') || Request::is('dashboard/supply-requests/orders') ? 'open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon bx bx-store"></i>
                 <div data-i18n="Общий склад">Общий склад</div>
@@ -345,6 +345,12 @@
                 <li class="menu-item {{ Request::is('dashboard/main-warehouse*') ? 'active' : '' }}">
                     <a href="{{ route('main.warehouse.remains') }}" class="menu-link">
                         <div data-i18n="Остатки">Остатки</div>
+                    </a>
+                </li>
+
+                <li class="menu-item {{ Request::is('dashboard/supply-requests/orders') ? 'active' : '' }}">
+                    <a href="{{ route('supply-requests.index') }}" class="menu-link">
+                        <div data-i18n="Заказы">Заказы</div>
                     </a>
                 </li>
             </ul>
@@ -358,12 +364,6 @@
                     <div data-i18n="Склад">Склад</div>
                 </a>
                 <ul class="menu-sub">
-                    <li class="menu-item {{ Request::is('dashboard/warehouses/remains-show') || Request::is('dashboard/warehouses/order-show') ? 'active' : '' }}">
-                        <a href="{{ route('warehouse.remains') }}" class="menu-link">
-                            <div data-i18n="Остатки">Остатки</div>
-                        </a>
-                    </li>
-
                     @can('view_warehouses')
                         <li class="menu-item {{ Request::is('dashboard/warehouses/list*') ? 'active' : '' }}">
                             <a href="{{ route('warehouses.index') }}" class="menu-link">
@@ -372,20 +372,12 @@
                         </li>
                     @endcan
 
-                    @can('view_warehouse_medications')
-                        <li class="menu-item {{ Request::is('dashboard/warehouses/medications*') ? 'active' : '' }}">
-                            <a href="{{ route('warehouses.medications') }}" class="menu-link">
-                                <div data-i18n="Препараты">Препараты</div>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('view_warehouse_supplies')
-                        <li class="menu-item {{ Request::is('dashboard/warehouses/supplies*') ? 'active' : '' }}">
-                            <a href="{{ route('warehouses.supplies') }}" class="menu-link">
-                                <div data-i18n="Расходные материалы">Расходные материалы</div>
-                            </a>
-                        </li>
-                    @endcan
+                    <li class="menu-item {{ Request::is('dashboard/warehouses/remains-show') || Request::is('dashboard/warehouses/order-show') ? 'active' : '' }}">
+                        <a href="{{ route('warehouse.remains') }}" class="menu-link">
+                            <div data-i18n="Остатки">Остатки</div>
+                        </a>
+                    </li>
+
                     @can('view_warehouse_types')
                         <li class="menu-item {{ Request::is('dashboard/warehouses/types*') ? 'active' : '' }}">
                             <a href="{{ route('warehouses.type.index') }}" class="menu-link">

@@ -59,16 +59,6 @@
                     <th>Тип</th>
                     <th>Название</th>
                     <th>Количество</th>
-                    <th>Срок годности</th>
-                    <th>Дата поступления</th>
-                    <th>Партия</th>
-                    <th>Упаковка</th>
-                    <th>Кол-во в упаковке</th>
-                    <th>Размер упаковки</th>
-                    <th>Дата упаковки</th>
-                    <th>Розн. цена</th>
-                    <th>Опт. цена</th>
-                    <th>Поставщик</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -76,23 +66,11 @@
 
                 {{-- Медикаменты --}}
                 @foreach ($medications as $item)
-                    <tr class="{{ \Carbon\Carbon::parse($item->expiration_date)->lt(now()->addDays(30)) ? 'bg-danger text-white' : '' }}">
+                    <tr>
                         <td>{{ $index++ }}</td>
                         <td><span class="badge bg-info">Медикамент</span></td>
-                        <td>{{ $item->name }}</td>
+                        <td>{{ $item->medication->name }}</td>
                         <td>{{ $item->quantity }}</td>
-                        <td>
-                            {{ $item->expiration_date?->format('d.m.Y') ?? '—' }}
-                        </td>
-                        <td>{{ $item->date_of_receipt ?? '—' }}</td>
-                        <td>{{ $item->batch_number ?? '—' }}</td>
-                        <td>{{ $item->packaging_type ?? '—' }}</td>
-                        <td>{{ $item->quantity_per_package ?? '—' }}</td>
-                        <td>{{ $item->package_size ?? '—' }}</td>
-                        <td>{{ $item->packaging_date ?? '—' }}</td>
-                        <td>{{ $item->retail_price ?? '—' }}</td>
-                        <td>{{ $item->wholesale_price ?? '—' }}</td>
-                        <td>{{ $item->medication->supplier?->name ?? '—' }}</td>
                     </tr>
                 @endforeach
 
@@ -102,17 +80,7 @@
                         <td>{{ $index++ }}</td>
                         <td><span class="badge bg-success">Расходник</span></td>
                         <td>{{ $item->name }}</td>
-                        <td>{{ $item->quantity }}</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
+                        <td>{{ $item->warehouse[0]->pivot->quantity }}</td>
                     </tr>
                 @endforeach
 
@@ -122,17 +90,7 @@
                         <td>{{ $index++ }}</td>
                         <td><span class="badge bg-warning">Хоз. материал</span></td>
                         <td>{{ $item->name }}</td>
-                        <td>{{ $item->quantity }}</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
+                        <td>{{ $item->warehouse[0]->pivot->quantity }}</td>
                     </tr>
                 @endforeach
                 </tbody>

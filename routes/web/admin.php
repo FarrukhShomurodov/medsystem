@@ -49,7 +49,8 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     WardRoomController,
     WarehouseAccountingController,
     WarehouseController,
-    WarehouseTypeController};
+    WarehouseTypeController
+};
 use App\Http\Middleware\ExaminationMapIsActive;
 use Illuminate\Support\Facades\Route;
 
@@ -315,4 +316,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         Route::get('receipts-goods', [MainWarehouseController::class, 'receiptsGoods'])->name('receipts.goods.index');
         Route::post('receipts-goods', [MainWarehouseController::class, 'receiptsGoodsStore'])->name('receipts.goods.store');
     });
+
+    Route::get('supply-requests/orders', [SupplyRequestController::class, 'index'])->name('supply-requests.index');
+    Route::post('supply-requests/{id}/approve', [SupplyRequestController::class, 'approve'])->name('supply-requests.approve');
 });

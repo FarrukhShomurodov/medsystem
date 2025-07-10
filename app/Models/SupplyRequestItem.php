@@ -25,4 +25,14 @@ class SupplyRequestItem extends Model
     {
         return $this->morphTo();
     }
+
+    public function getTypeAttribute(): string
+    {
+        return match ($this->supplyable_type) {
+            \App\Models\Medication::class => 'medication',
+            \App\Models\MedicalSupply::class => 'medical_supply',
+            \App\Models\HouseholdMaterial::class => 'household_material',
+            default => 'unknown',
+        };
+    }
 }
