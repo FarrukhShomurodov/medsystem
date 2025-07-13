@@ -8,7 +8,6 @@ use App\Models\SupplyRequest;
 use App\Services\SupplyRequestService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class SupplyRequestController extends Controller
 {
@@ -22,6 +21,7 @@ class SupplyRequestController extends Controller
     public function index()
     {
         $requests = SupplyRequest::with(['warehouse'])
+            ->orderBy('id', 'desc')
             ->get();
 
         return view('admin.main_warehouses.orders', compact('requests'));

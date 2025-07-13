@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    <title>MED ERA | Подтверждение заказов</title>
+    <title>MED ERA | Переходы</title>
 @endsection
 
 @section('content')
@@ -26,7 +26,7 @@
     </div>
 
     <div class="container mt-4">
-        <h4>Ожидающие заказы</h4>
+        <h4>Переходы</h4>
 
         @foreach($requests as $request)
             <div class="card mb-4">
@@ -63,7 +63,7 @@
                                         @case('medical_supply') 💉 Расходник @break
                                         @case('household_material') 🧼 Хоз. товар @break
                                         @default ❓ Неизвестно
-                                   @endswitch
+                                    @endswitch
                                 </td>
                                 <td>{{ $item->supplyable->name ?? '—' }}</td>
                                 <td>{{ $item->requested_quantity }}</td>
