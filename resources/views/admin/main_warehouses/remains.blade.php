@@ -51,6 +51,15 @@
             <a href="{{ route('main.warehouse.receipts.goods.index') }}" class="btn btn-primary "
                style="margin-right: 22px;">Приход</a>
         </div>
+
+        <div class="card-header">
+            <ul class="d-flex justify-content-between align-items-center list-unstyled">
+                <li class="mb-1"><span class="badge bg-danger">Красный</span> — срок годности истекает менее чем через 30 дней</li>
+                <li class="mb-1"><span class="badge bg-warning text-dark">Жёлтый</span> — количество меньше 20</li>
+                <li class="mb-1"><span class="badge bg-danger">Красный</span> (приоритет) — если оба условия совпадают</li>
+            </ul>
+        </div>
+
         <div class="card-datatable table-responsive">
             <table class="datatables-users table border-top">
                 <thead>
@@ -76,7 +85,22 @@
 
                 {{-- Медикаменты --}}
                 @foreach ($medications as $item)
-                    <tr class="{{ \Carbon\Carbon::parse($item->pivot->expiration_date)->lt(now()->addDays(30)) ? 'bg-danger text-white' : '' }}">
+                    @php
+                        $class = '';
+
+                        $expirationDate = \Carbon\Carbon::parse($item->pivot->expiration_date);
+                        $isExpiringSoon = $expirationDate->lt(now()->addDays(30));
+                        $isLowStock = $item->pivot->quantity < 20;
+
+                        if ($isExpiringSoon && $isLowStock) {
+                            $class = 'bg-danger text-white';
+                        } elseif ($isExpiringSoon) {
+                            $class = 'bg-danger text-white';
+                        } elseif ($isLowStock) {
+                            $class = 'bg-warning text-dark';
+                        }
+                    @endphp
+                    <tr class="{{ $class }}">
                         <td>{{ $index++ }}</td>
                         <td><span class="badge bg-info">Медикамент</span></td>
                         <td>{{ $item->name }}</td>
@@ -98,7 +122,16 @@
 
                 {{-- Расходники --}}
                 @foreach ($supplies as $item)
-                    <tr>
+                    @php
+                        $class = '';
+                        $isLowStock = $item->pivot->quantity < 20;
+
+                        if ($isLowStock) {
+                            $class = 'bg-warning text-dark';
+                        }
+                    @endphp
+
+                    <tr class="{{ $class }}">
                         <td>{{ $index++ }}</td>
                         <td><span class="badge bg-success">Расходник</span></td>
                         <td>{{ $item->name }}</td>
@@ -118,7 +151,16 @@
 
                 {{-- Хоз. материалы --}}
                 @foreach($household as $item)
-                    <tr>
+                    @php
+                        $class = '';
+                        $isLowStock = $item->pivot->quantity < 20;
+
+                        if ($isLowStock) {
+                            $class = 'bg-warning text-dark';
+                        }
+                    @endphp
+
+                    <tr class="{{ $class }}">
                         <td>{{ $index++ }}</td>
                         <td><span class="badge bg-warning">Хоз. материал</span></td>
                         <td>{{ $item->name }}</td>

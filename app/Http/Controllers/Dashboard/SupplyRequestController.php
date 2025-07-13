@@ -58,9 +58,14 @@ class SupplyRequestController extends Controller
                             ->where('medication_id', $itemId)
                             ->update(['quantity' => $existing->quantity - $quantity, 'updated_at' => now()]);
 
-                        DB::table('warehouse_accountings')->updateOrInsert(
-                            ['warehouse_id' => $warehouse->id, 'medication_id' => $itemId],
-                            ['quantity' => DB::raw("quantity + $quantity"), 'updated_at' => now()]
+                        DB::table('warehouse_accountings')->insert(
+                            [
+                                'warehouse_id' => $warehouse->id,
+                                'medication_id' => $itemId,
+                                'quantity' => $quantity,
+                                'expiration_date' => $existing->expiration_date,
+                                'updated_at' => now(),
+                            ]
                         );
                         break;
 

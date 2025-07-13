@@ -71,6 +71,6 @@ class MainWarehouseController extends Controller
         $validated = $request->validated();
         $this->service->storeGoodsStore((array)$validated);
 
-        return redirect()->back()->with(['success' => 'Товары успешно добавлены!']);
+        return redirect()->route('main.warehouse.remains')->with(['success' => 'Товары успешно добавлены!']);
     }
 }

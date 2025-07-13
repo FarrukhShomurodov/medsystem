@@ -103,6 +103,7 @@ class WarehouseController extends Controller
                 ->with('warehouse')
                 ->get();
         }
+
         if (!$type || $type === 'supplies') {
             $supplies = MedicalSupply::with([
                 'warehouse' => function ($q) {

@@ -11,6 +11,7 @@ class WarehouseAccounting extends Model
     protected $fillable = [
         'warehouse_id',
         'medication_id',
+        'expiration_date',
         'quantity',
     ];
 
