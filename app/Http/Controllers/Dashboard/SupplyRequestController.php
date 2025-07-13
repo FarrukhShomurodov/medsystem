@@ -31,8 +31,9 @@ class SupplyRequestController extends Controller
     public function approve($id)
     {
         $mainWarehouseId = 1;
+        $errors = [];
 
-        DB::transaction(function () use ($id, $mainWarehouseId) {
+        DB::transaction(function () use ($id, $mainWarehouseId, &$errors) {
             $request = SupplyRequest::with('items.supplyable', 'warehouse')->findOrFail($id);
             $warehouse = $request->warehouse;
 
@@ -48,156 +49,78 @@ class SupplyRequestController extends Controller
                             ->where('medication_id', $itemId)
                             ->first();
 
-                        if ($existing) {
-                            $mainTable->where('main_warehouse_id', $mainWarehouseId)
-                                ->where('medication_id', $itemId)
-                                ->update([
-                                    'quantity' => $existing->quantity + $quantity,
-                                    'updated_at' => now(),
-                                ]);
-                        } else {
-                            $mainTable->insert([
-                                'main_warehouse_id' => $mainWarehouseId,
-                                'medication_id' => $itemId,
-                                'quantity' => $quantity,
-                                'expiration_date' => now()->addMonths(6), // временно, если нет данных
-                                'date_of_receipt' => now(),
-                                'batch_number' => Str::uuid(),
-                                'created_at' => now(),
-                                'updated_at' => now(),
-                            ]);
+                        if (!$existing || $existing->quantity < $quantity) {
+                            $errors[] = "Недостаточно медикамента ID: $itemId на главном складе.";
+                            break;
                         }
 
-                        // Маленький склад
-                        $smallTable = DB::table('warehouse_accountings');
-                        $existingSmall = $smallTable->where('warehouse_id', $warehouse->id)
+                        $mainTable->where('main_warehouse_id', $mainWarehouseId)
                             ->where('medication_id', $itemId)
-                            ->first();
+                            ->update(['quantity' => $existing->quantity - $quantity, 'updated_at' => now()]);
 
-                        if ($existingSmall) {
-                            $smallTable->where('warehouse_id', $warehouse->id)
-                                ->where('medication_id', $itemId)
-                                ->update([
-                                    'quantity' => $existingSmall->quantity + $quantity,
-                                    'updated_at' => now(),
-                                ]);
-                        } else {
-                            $smallTable->insert([
-                                'warehouse_id' => $warehouse->id,
-                                'medication_id' => $itemId,
-                                'quantity' => $quantity,
-                                'created_at' => now(),
-                                'updated_at' => now(),
-                            ]);
-                        }
+                        DB::table('warehouse_accountings')->updateOrInsert(
+                            ['warehouse_id' => $warehouse->id, 'medication_id' => $itemId],
+                            ['quantity' => DB::raw("quantity + $quantity"), 'updated_at' => now()]
+                        );
                         break;
 
                     case \App\Models\MedicalSupply::class:
-                        // Главный склад
                         $mainTable = DB::table('main_warehouse_medical_supplies');
                         $existing = $mainTable->where('main_warehouse_id', $mainWarehouseId)
                             ->where('supply_id', $itemId)
                             ->first();
 
-                        if ($existing) {
-                            $mainTable->where('main_warehouse_id', $mainWarehouseId)
-                                ->where('supply_id', $itemId)
-                                ->update([
-                                    'quantity' => $existing->quantity + $quantity,
-                                    'updated_at' => now(),
-                                ]);
-                        } else {
-                            $mainTable->insert([
-                                'main_warehouse_id' => $mainWarehouseId,
-                                'supply_id' => $itemId,
-                                'quantity' => $quantity,
-                                'created_at' => now(),
-                                'updated_at' => now(),
-                            ]);
+                        if (!$existing || $existing->quantity < $quantity) {
+                            $errors[] = "Недостаточно мед. расходника ID: $itemId на главном складе.";
+                            break;
                         }
 
-                        // Маленький склад
-                        $smallTable = DB::table('warehouse_medical_supplies');
-                        $existingSmall = $smallTable->where('warehouse_id', $warehouse->id)
+                        $mainTable->where('main_warehouse_id', $mainWarehouseId)
                             ->where('supply_id', $itemId)
-                            ->first();
+                            ->update(['quantity' => $existing->quantity - $quantity, 'updated_at' => now()]);
 
-                        if ($existingSmall) {
-                            $smallTable->where('warehouse_id', $warehouse->id)
-                                ->where('supply_id', $itemId)
-                                ->update([
-                                    'quantity' => $existingSmall->quantity + $quantity,
-                                    'updated_at' => now(),
-                                ]);
-                        } else {
-                            $smallTable->insert([
-                                'warehouse_id' => $warehouse->id,
-                                'supply_id' => $itemId,
-                                'quantity' => $quantity,
-                                'created_at' => now(),
-                                'updated_at' => now(),
-                            ]);
-                        }
+                        DB::table('warehouse_medical_supplies')->updateOrInsert(
+                            ['warehouse_id' => $warehouse->id, 'supply_id' => $itemId],
+                            ['quantity' => DB::raw("quantity + $quantity"), 'updated_at' => now()]
+                        );
                         break;
 
-
                     case \App\Models\HouseholdMaterial::class:
-                        // Главный склад
                         $mainTable = DB::table('main_warehouse_household_materials');
                         $existing = $mainTable->where('main_warehouse_id', $mainWarehouseId)
                             ->where('household_material_id', $itemId)
                             ->first();
 
-                        if ($existing) {
-                            $mainTable->where('main_warehouse_id', $mainWarehouseId)
-                                ->where('household_material_id', $itemId)
-                                ->update([
-                                    'quantity' => $existing->quantity + $quantity,
-                                    'updated_at' => now(),
-                                ]);
-                        } else {
-                            $mainTable->insert([
-                                'main_warehouse_id' => $mainWarehouseId,
-                                'household_material_id' => $itemId,
-                                'quantity' => $quantity,
-                                'created_at' => now(),
-                                'updated_at' => now(),
-                            ]);
+                        if (!$existing || $existing->quantity < $quantity) {
+                            $errors[] = "Недостаточно хоз. материала ID: $itemId на главном складе.";
+                            break;
                         }
 
-                        // Маленький склад
-                        $smallTable = DB::table('warehouse_household_materials');
-                        $existingSmall = $smallTable->where('warehouse_id', $warehouse->id)
+                        $mainTable->where('main_warehouse_id', $mainWarehouseId)
                             ->where('household_material_id', $itemId)
-                            ->first();
+                            ->update(['quantity' => $existing->quantity - $quantity, 'updated_at' => now()]);
 
-                        if ($existingSmall) {
-                            $smallTable->where('warehouse_id', $warehouse->id)
-                                ->where('household_material_id', $itemId)
-                                ->update([
-                                    'quantity' => $existingSmall->quantity + $quantity,
-                                    'updated_at' => now(),
-                                ]);
-                        } else {
-                            $smallTable->insert([
-                                'warehouse_id' => $warehouse->id,
-                                'household_material_id' => $itemId,
-                                'quantity' => $quantity,
-                                'created_at' => now(),
-                                'updated_at' => now(),
-                            ]);
-                        }
+                        DB::table('warehouse_household_materials')->updateOrInsert(
+                            ['warehouse_id' => $warehouse->id, 'household_material_id' => $itemId],
+                            ['quantity' => DB::raw("quantity + $quantity"), 'updated_at' => now()]
+                        );
                         break;
 
                     default:
-                        throw new \Exception("Неизвестный тип: $modelClass");
+                        $errors[] = "Неизвестный тип: $modelClass";
                 }
             }
 
-            $request->update(['status' => 'approved']);
+            if (empty($errors)) {
+                $request->update(['status' => 'approved']);
+            }
         });
 
-        return redirect()->back()->with('success', 'Заказ принят, материалы добавлены на склад');
+        if (!empty($errors)) {
+            return redirect()->back()->withErrors(implode("\n", $errors));
+        }
+
+        return redirect()->back()->with('success', 'Заказ одобрен и материалы перемещены на склад');
     }
 
     public function store(StoreSupplyRequest $request): RedirectResponse
