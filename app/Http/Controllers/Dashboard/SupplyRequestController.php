@@ -82,12 +82,32 @@ class SupplyRequestController extends Controller
 
                         $mainTable->where('main_warehouse_id', $mainWarehouseId)
                             ->where('supply_id', $itemId)
-                            ->update(['quantity' => $existing->quantity - $quantity, 'updated_at' => now()]);
+                            ->update([
+                                'quantity' => $existing->quantity - $quantity,
+                                'updated_at' => now()
+                            ]);
 
-                        DB::table('warehouse_medical_supplies')->updateOrInsert(
-                            ['warehouse_id' => $warehouse->id, 'supply_id' => $itemId],
-                            ['quantity' => DB::raw("quantity + $quantity"), 'updated_at' => now()]
-                        );
+                        $warehouseTable = DB::table('warehouse_medical_supplies');
+                        $warehouseExisting = $warehouseTable->where('warehouse_id', $warehouse->id)
+                            ->where('supply_id', $itemId)
+                            ->first();
+
+                        if ($warehouseExisting) {
+                            $warehouseTable->where('warehouse_id', $warehouse->id)
+                                ->where('supply_id', $itemId)
+                                ->update([
+                                    'quantity' => $warehouseExisting->quantity + $quantity,
+                                    'updated_at' => now()
+                                ]);
+                        } else {
+                            $warehouseTable->insert([
+                                'warehouse_id' => $warehouse->id,
+                                'supply_id' => $itemId,
+                                'quantity' => $quantity,
+                                'created_at' => now(),
+                                'updated_at' => now()
+                            ]);
+                        }
                         break;
 
                     case \App\Models\HouseholdMaterial::class:
@@ -103,12 +123,32 @@ class SupplyRequestController extends Controller
 
                         $mainTable->where('main_warehouse_id', $mainWarehouseId)
                             ->where('household_material_id', $itemId)
-                            ->update(['quantity' => $existing->quantity - $quantity, 'updated_at' => now()]);
+                            ->update([
+                                'quantity' => $existing->quantity - $quantity,
+                                'updated_at' => now()
+                            ]);
 
-                        DB::table('warehouse_household_materials')->updateOrInsert(
-                            ['warehouse_id' => $warehouse->id, 'household_material_id' => $itemId],
-                            ['quantity' => DB::raw("quantity + $quantity"), 'updated_at' => now()]
-                        );
+                        $warehouseTable = DB::table('warehouse_household_materials');
+                        $warehouseExisting = $warehouseTable->where('warehouse_id', $warehouse->id)
+                            ->where('household_material_id', $itemId)
+                            ->first();
+
+                        if ($warehouseExisting) {
+                            $warehouseTable->where('warehouse_id', $warehouse->id)
+                                ->where('household_material_id', $itemId)
+                                ->update([
+                                    'quantity' => $warehouseExisting->quantity + $quantity,
+                                    'updated_at' => now()
+                                ]);
+                        } else {
+                            $warehouseTable->insert([
+                                'warehouse_id' => $warehouse->id,
+                                'household_material_id' => $itemId,
+                                'quantity' => $quantity,
+                                'created_at' => now(),
+                                'updated_at' => now()
+                            ]);
+                        }
                         break;
 
                     default:
@@ -134,6 +174,6 @@ class SupplyRequestController extends Controller
 
         $this->service->store((array)$validated);
 
-        return redirect()->back()->with('success', 'Заказ успешно создан!');
+        return redirect()->route('warehouse.remains')->with('success', 'Заказ успешно создан!');
     }
 }

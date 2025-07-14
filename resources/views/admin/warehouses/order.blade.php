@@ -33,11 +33,16 @@
 
             <div class="mb-3">
                 <label>Склад</label>
-                <select name="warehouse_id" class="form-control" required>
-                    @foreach($warehouses  as $warehouse)
-                        <option value="{{ $warehouse->id }}"> {{ $warehouse->name }}</option>
+                <select class="form-control warehouse-select" required>
+                    <option value="">Выберите склад</option>
+                    @foreach($warehouses as $warehouse)
+                        <option value="{{ $warehouse->id }}" data-type="{{ $warehouse->warehouse_type_id }}">
+                            {{ $warehouse->name }}
+                        </option>
                     @endforeach
                 </select>
+
+                <input type="hidden" name="warehouse_id" id="warehouse_id" value="">
             </div>
 
             <div id="items-container">
@@ -58,81 +63,92 @@
 @section('scripts')
     <script>
         let itemIndex = 0;
+        let warehouseType = null;
 
+        // Собираем все возможные товары заранее
+        const products = {
+            1: [ // medications
+                @foreach($medications as $med)
+                { id: {{ $med->id }}, name: "{{ $med->name }}" },
+                @endforeach
+            ],
+            2: [ // household
+                @foreach($householdMaterial as $house)
+                { id: {{ $house->id }}, name: "{{ $house->name }}" },
+                @endforeach
+            ],
+            3: [ // medical supplies
+                    @foreach($supplies as $supply)
+                { id: {{ $supply->id }}, name: "{{ $supply->name }}" },
+                @endforeach
+            ]
+        };
+
+        // При выборе склада
+        $(document).on('change', '.warehouse-select', function () {
+            const type = $(this).find('option:selected').data('type');
+            warehouseType = type;
+
+            $('#items-container').empty();
+            itemIndex = 0;
+            addItem();
+
+            $('#warehouse_id').val($(this).val());
+
+            // Блокируем смену склада
+            $(this).prop('disabled', true);
+        });
+
+        // Добавление товара
         const addItem = () => {
+            if (!warehouseType) {
+                alert('Сначала выберите склад!');
+                return;
+            }
+
+            let options = `<option value="">-- Выбрать товар --</option>`;
+            if (products[warehouseType]) {
+                products[warehouseType].forEach(item => {
+                    options += `<option value="${item.id}">${item.name}</option>`;
+                });
+            }
+
             const block = `
         <div class="item-group border rounded p-3 mb-3 bg-light">
             <div class="row mb-2">
-                <div class="col-md-3">
-                    <label>Тип</label>
-                    <select name="items[${itemIndex}][type]" class="form-control type-select" required>
-                        <option value="">-- Выбрать --</option>
-                        <option value="medication">Медикамент</option>
-                        <option value="medical_supply">Мед. расходник</option>
-                        <option value="household_material">Хоз. товар</option>
+                <div class="col-md-5">
+                    <label>Товар</label>
+                    <select name="items[${itemIndex}][id]" class="form-control" required>
+                        ${options}
                     </select>
                 </div>
                 <div class="col-md-5">
-                    <label>Товар</label>
-                    <select name="items[${itemIndex}][id]" class="form-control supply-select" required>
-                        <option value="">-- Сначала выберите тип --</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
                     <label>Кол-во</label>
                     <input type="number" name="items[${itemIndex}][quantity]" class="form-control" min="1" required>
                 </div>
-                <div class="col-md-2 d-flex align-items-end">
+                <div class="col-md-2 d-flex align-items-end mb-2">
                     <button type="button" class="btn btn-danger btn-sm remove-item">✖</button>
                 </div>
             </div>
         </div>`;
+
             $('#items-container').append(block);
             itemIndex++;
         };
 
-        $(document).on('change', '.type-select', function () {
-            const selectedType = $(this).val();
-            const itemGroup = $(this).closest('.item-group');
-            const supplySelect = itemGroup.find('.supply-select');
-            supplySelect.empty().append(`<option value="">-- Выбрать товар --</option>`);
-
-            let options = [];
-
-            switch (selectedType) {
-                case 'medication':
-                    @foreach($medications as $med)
-                    options.push({id: {{ $med->id }}, text: "{{ $med->name }}"});
-                    @endforeach
-                        break;
-                case 'medical_supply':
-                    @foreach($supplies as $supply)
-                    options.push({id: {{ $supply->id }}, text: "{{ $supply->name }}"});
-                    @endforeach
-                        break;
-                case 'household_material':
-                    @foreach($householdMaterial as $house)
-                    options.push({id: {{ $house->id }}, text: "{{ $house->name }}"});
-                    @endforeach
-                        break;
-            }
-
-            options.forEach(opt => {
-                supplySelect.append(`<option value="${opt.id}">${opt.text}</option>`);
-            });
-        });
-
+        // Удаление товара
         $(document).on('click', '.remove-item', function () {
             $(this).closest('.item-group').remove();
         });
 
+        // Кнопка добавления товара
         $('#add-item-btn').on('click', function () {
             addItem();
         });
 
-        // Добавить первый блок по умолчанию
+        // При загрузке
         $(document).ready(function () {
-            addItem();
+            // Ждём выбора склада
         });
     </script>
 @endsection

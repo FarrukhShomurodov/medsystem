@@ -94,6 +94,9 @@ class WarehouseController extends Controller
     {
         $warehouse = MainWarehouse::query()->first();
         $type = request('type');
+        $medications = collect();
+        $supplies = collect();
+        $household = collect();
 
         if (!$type || $type === 'medications') {
             $medications = WarehouseAccounting::with('medication')
@@ -169,7 +172,7 @@ class WarehouseController extends Controller
         return view('admin.warehouses.supplies', compact('supplies'));
     }
 
-    public function orderShow()
+    public function orderShow(): View
     {
         $medications = Medication::query()->whereHas('mainWarehouses')->get();
         $supplies = MedicalSupply::query()->whereHas('mainWarehouses')->get();

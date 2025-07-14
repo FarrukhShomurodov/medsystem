@@ -139,6 +139,7 @@
                             <td>{{ $index++ }}</td>
                             <td><span class="badge bg-warning">Хоз. материал</span></td>
                             <td>{{ $item->name }}</td>
+                            <td>{{ $warehouseItem->pivot->quantity }}</td>
                             <td>-</td>
                         </tr>
                     @endforeach

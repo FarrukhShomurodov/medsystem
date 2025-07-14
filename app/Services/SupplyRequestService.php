@@ -6,6 +6,7 @@ use App\Models\HouseholdMaterial;
 use App\Models\MedicalSupply;
 use App\Models\Medication;
 use App\Models\SupplyRequest;
+use App\Models\Warehouse;
 use Exception;
 
 class SupplyRequestService
@@ -18,9 +19,10 @@ class SupplyRequestService
             'status' => 'pending',
         ]);
 
+        $warehouse = Warehouse::query()->find($validated['warehouse_id']);
         foreach ($validated['items'] as $item) {
             $requestModel->items()->create([
-                'supplyable_type' => $this->resolveType($item['type']),
+                'supplyable_type' => $this->resolveType($warehouse->warehouse_type_id),
                 'supplyable_id' => $item['id'],
                 'requested_quantity' => $item['quantity'],
             ]);
@@ -29,12 +31,12 @@ class SupplyRequestService
         return $requestModel;
     }
 
-    private function resolveType(string $type): string
+    private function resolveType($type): string
     {
         return match ($type) {
-            'medication' => Medication::class,
-            'medical_supply' => MedicalSupply::class,
-            'household_material' => HouseholdMaterial::class,
+            1 => Medication::class,
+            3 => MedicalSupply::class,
+            2 => HouseholdMaterial::class,
             default => throw new Exception("Неверный тип: $type"),
         };
     }
