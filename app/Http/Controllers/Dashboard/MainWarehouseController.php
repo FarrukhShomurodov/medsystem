@@ -55,6 +55,29 @@ class MainWarehouseController extends Controller
 
     public function receiptsGoods(): View
     {
+        $warehouse = MainWarehouse::query()->first();
+        $type = request('type');
+
+        $remainMedications = collect();
+        $remainSupplies = collect();
+        $remainHousehold = collect();
+
+        if (!$type || $type === 'medications') {
+            $remainMedications = $warehouse->medication()->withPivot([
+                'quantity', 'expiration_date', 'date_of_receipt', 'batch_number',
+                'retail_price', 'wholesale_price', 'supplier_id',
+                'packaging_type', 'quantity_per_package', 'package_size', 'packaging_date'
+            ])->wherePivot('quantity', '<', 20)->get();
+        }
+
+        if (!$type || $type === 'supplies') {
+            $remainSupplies = $warehouse->medicalSupplies()->wherePivot('quantity', '<', 20)->get();
+        }
+
+        if (!$type || $type === 'household') {
+            $remainHousehold = $warehouse->householdMaterial()->wherePivot('quantity', '<', 20)->get();
+        }
+
         $medications = Medication::query()->get();
         $suppliers = Supplier::query()->get();
         $supplies = MedicalSupply::query()->get();
@@ -62,7 +85,7 @@ class MainWarehouseController extends Controller
 
         return view(
             'admin.main_warehouses.receipts_goods',
-            compact('medications', 'suppliers', 'supplies', 'householdMaterial')
+            compact('medications', 'suppliers', 'supplies', 'householdMaterial', 'remainMedications', 'remainSupplies', 'remainHousehold')
         );
     }
 

@@ -151,7 +151,80 @@
         @endif
     </div>
 
-    <div class="container py-4">
+    <div class="container">
+
+        <div class="accordion mb-3">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        Заканчивающиейся позиции
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse"
+                     aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <table class="datatables-users table border-top">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Тип</th>
+                                <th>Название</th>
+                                <th>Количество</th>
+                                <th>Срок годности</th>
+                                <th>Дата поступления</th>
+                                <th>Партия</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @php $index = 1; @endphp
+
+                            {{-- Медикаменты --}}
+                            @foreach ($remainMedications as $item)
+                                <tr class="bg-warning text-dark">
+                                    <td>{{ $index++ }}</td>
+                                    <td><span class="badge bg-info">Медикамент</span></td>
+                                    <td>{{ $item->name }}</td>
+                                    <td>{{ $item->pivot->quantity }}</td>
+                                    <td>
+                                        {{ $item->pivot->expiration_date?->format('d.m.Y') ?? '—' }}
+                                    </td>
+                                    <td>{{ $item->pivot->date_of_receipt ?? '—' }}</td>
+                                    <td>{{ $item->pivot->batch_number ?? '—' }}</td>
+                                </tr>
+                            @endforeach
+
+                            {{-- Расходники --}}
+                            @foreach ($remainSupplies as $item)
+                                <tr class="bg-warning text-dark">
+                                    <td>{{ $index++ }}</td>
+                                    <td><span class="badge bg-success">Расходник</span></td>
+                                    <td>{{ $item->name }}</td>
+                                    <td>{{ $item->pivot->quantity }}</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                </tr>
+                            @endforeach
+
+                            {{-- Хоз. материалы --}}
+                            @foreach($remainHousehold as $item)
+                                <tr class="bg-warning text-dark">
+                                    <td>{{ $index++ }}</td>
+                                    <td><span class="badge bg-warning">Хоз. материал</span></td>
+                                    <td>{{ $item->name }}</td>
+                                    <td>{{ $item->pivot->quantity }}</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <form action="{{ route('main.warehouse.receipts.goods.store') }}" method="post">
             @csrf
@@ -519,7 +592,7 @@
                     });
 
                     // Удаляем элементы, которые не выбраны
-                    container.find('.product-details').each(function() {
+                    container.find('.product-details').each(function () {
                         const id = $(this).data('id');
                         if (!selected.includes(id.toString())) {
                             $(this).remove();
@@ -552,7 +625,7 @@
                         }
                     });
 
-                    container.find('.product-details').each(function() {
+                    container.find('.product-details').each(function () {
                         const id = $(this).data('id');
                         if (!selected.includes(id.toString())) {
                             $(this).remove();
@@ -584,7 +657,7 @@
                         }
                     });
 
-                    container.find('.product-details').each(function() {
+                    container.find('.product-details').each(function () {
                         const id = $(this).data('id');
                         if (!selected.includes(id.toString())) {
                             $(this).remove();
