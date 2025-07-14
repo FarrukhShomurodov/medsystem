@@ -55,9 +55,12 @@
 
         <div class="card-header">
             <ul class="d-flex justify-content-between align-items-center list-unstyled">
-                <li class="mb-1"><span class="badge bg-danger">Красный</span> — срок годности истекает менее чем через 30 дней</li>
+                <li class="mb-1"><span class="badge bg-danger">Красный</span> — срок годности истекает менее чем через
+                    30 дней
+                </li>
                 <li class="mb-1"><span class="badge bg-warning text-dark">Жёлтый</span> — количество меньше 20</li>
-                <li class="mb-1"><span class="badge bg-danger">Красный</span> (приоритет) — если оба условия совпадают</li>
+                <li class="mb-1"><span class="badge bg-danger">Красный</span> (приоритет) — если оба условия совпадают
+                </li>
             </ul>
         </div>
 
@@ -70,6 +73,7 @@
                     <th>Название</th>
                     <th>Количество</th>
                     <th>Срок годности</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -79,6 +83,7 @@
                 @foreach ($medications as $item)
                     @php
                         $class = '';
+                        $orderAble = false;
 
                         $expirationDate = \Carbon\Carbon::parse($item->expiration_date);
                         $isExpiringSoon = $expirationDate->lt(now()->addDays(30));
@@ -89,6 +94,7 @@
                         } elseif ($isExpiringSoon) {
                             $class = 'bg-danger text-white';
                         } elseif ($isLowStock) {
+                            $orderAble = true;
                             $class = 'bg-warning text-dark';
                         }
                     @endphp
@@ -98,6 +104,14 @@
                         <td>{{ $item->medication->name }}</td>
                         <td>{{ $item->quantity }}</td>
                         <td>{{ $item->expiration_date }}</td>
+                        <td>
+                            @if($orderAble)
+                                <button class="btn btn-sm btn-primary"
+                                        onclick="window.location.href='{{ route('warehouse.order') }}'">
+                                    Заказать
+                                </button>
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
 
@@ -106,10 +120,13 @@
                     @foreach ($item->warehouse as $warehouseItem)
                         @php
                             $class = '';
+                            $orderAble = false;
+
                             $isLowStock = $warehouseItem->pivot->quantity < 20;
 
                             if ($isLowStock) {
                                 $class = 'bg-warning text-dark';
+                                $orderAble = true;
                             }
                         @endphp
 
@@ -119,6 +136,14 @@
                             <td>{{ $item->name }}</td>
                             <td>{{ $warehouseItem->pivot->quantity }}</td>
                             <td>-</td>
+                            <td>
+                                @if($orderAble)
+                                    <button class="btn btn-sm btn-primary"
+                                            onclick="window.location.href='{{ route('warehouse.order') }}'">
+                                        Заказать
+                                    </button>
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                 @endforeach
@@ -128,10 +153,13 @@
                     @foreach ($item->warehouse as $warehouseItem)
                         @php
                             $class = '';
+                            $orderAble = false;
+
                             $isLowStock = $warehouseItem->pivot->quantity < 20;
 
                             if ($isLowStock) {
                                 $class = 'bg-warning text-dark';
+                                $orderAble = true;
                             }
                         @endphp
 
@@ -141,6 +169,14 @@
                             <td>{{ $item->name }}</td>
                             <td>{{ $warehouseItem->pivot->quantity }}</td>
                             <td>-</td>
+                            <td>
+                                @if($orderAble)
+                                    <button class="btn btn-sm btn-primary"
+                                            onclick="window.location.href='{{ route('warehouse.order') }}'">
+                                        Заказать
+                                    </button>
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                 @endforeach
