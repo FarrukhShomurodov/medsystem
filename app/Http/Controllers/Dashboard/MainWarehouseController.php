@@ -69,8 +69,15 @@ class MainWarehouseController extends Controller
     public function receiptsGoodsStore(MainWarehouseReceiptsGoodsRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $this->service->storeGoodsStore((array)$validated);
+        $this->service->storeGoods((array)$validated);
 
         return redirect()->route('main.warehouse.remains')->with(['success' => 'Товары успешно добавлены!']);
+    }
+
+    public function discardGood(string $type, $id): RedirectResponse
+    {
+        $this->service->discardGood($type, $id);
+
+        return redirect()->route('main.warehouse.remains')->with(['success' => 'Товар был списан со склада!']);
     }
 }

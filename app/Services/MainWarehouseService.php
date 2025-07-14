@@ -10,7 +10,7 @@ class MainWarehouseService
     /**
      * @param array<string, mixed> $validated
      */
-    public function storeGoodsStore(array $validated): MainWarehouse
+    public function storeGoods(array $validated): MainWarehouse
     {
         $warehouse = MainWarehouse::query()->first();
 
@@ -76,8 +76,24 @@ class MainWarehouseService
                 }
             }
 
-
             return $warehouse;
         });
+    }
+
+    public function discardGood($type, $id)
+    {
+        $warehouse = MainWarehouse::query()->first();
+
+        if ($type == 'household') {
+            $warehouse->householdMaterial()->detach($id);
+        }
+
+        if ($type == 'supplies') {
+            $warehouse->medicalSupplies()->detach($id);
+        }
+
+        if ($type == 'medications') {
+            $warehouse->medication()->detach($id);
+        }
     }
 }

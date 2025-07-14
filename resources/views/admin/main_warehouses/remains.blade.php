@@ -78,6 +78,7 @@
                     <th>Розн. цена</th>
                     <th>Опт. цена</th>
                     <th>Поставщик</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -117,6 +118,11 @@
                         <td>{{ $item->pivot->retail_price ?? '—' }}</td>
                         <td>{{ $item->pivot->wholesale_price ?? '—' }}</td>
                         <td>{{ $item->pivot->supplier?->name ?? '—' }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" onclick="window.location.href='{{ route('main.warehouse.receipts.goods.discard', ['type' => 'medications', 'id' => $item->id]) }}'">
+                                Списать
+                            </button>
+                        </td>
                     </tr>
                 @endforeach
 
@@ -146,6 +152,11 @@
                         <td>—</td>
                         <td>—</td>
                         <td>—</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" onclick="window.location.href='{{ route('main.warehouse.receipts.goods.discard', ['type' => 'supplies', 'id' => $item->id]) }}'">
+                                Списать
+                            </button>
+                        </td>
                     </tr>
                 @endforeach
 
@@ -175,6 +186,11 @@
                         <td>—</td>
                         <td>—</td>
                         <td>—</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" onclick="window.location.href='{{ route('main.warehouse.receipts.goods.discard', ['type' => 'household', 'id' => $item->id]) }}'">
+                                Списать
+                            </button>
+                        </td>
                     </tr>
                 @endforeach
                 </tbody>
