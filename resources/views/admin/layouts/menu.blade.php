@@ -334,7 +334,6 @@
         {{--                </ul>--}}
         {{--            </li>--}}
         {{--        @endcanany--}}
-
         {{-- Общий склад --}}
         <li class="menu-item {{ Request::is('dashboard/main-warehouse*') || Request::is('dashboard/supply-requests/orders') ? 'open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -378,13 +377,13 @@
                         </a>
                     </li>
 
-                    @can('view_warehouse_types')
-                        <li class="menu-item {{ Request::is('dashboard/warehouses/types*') ? 'active' : '' }}">
-                            <a href="{{ route('warehouses.type.index') }}" class="menu-link">
-                                <div data-i18n="Типы">Типы</div>
-                            </a>
-                        </li>
-                    @endcan
+{{--                    @can('view_warehouse_types')--}}
+{{--                        <li class="menu-item {{ Request::is('dashboard/warehouses/types*') ? 'active' : '' }}">--}}
+{{--                            <a href="{{ route('warehouses.type.index') }}" class="menu-link">--}}
+{{--                                <div data-i18n="Типы">Типы</div>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
+{{--                    @endcan--}}
                 </ul>
             </li>
         @endcanany
