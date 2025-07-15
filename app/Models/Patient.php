@@ -146,6 +146,16 @@ class Patient extends Model
             ->whereNull('examination_map_id');
     }
 
+    public function medicationsAll(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Medication::class,
+            'patient_medications',
+            'patient_id',
+            'medication_id'
+        )->using(PatientMedication::class);
+    }
+
     public function vitalNormalParameters(): BelongsToMany
     {
         return $this

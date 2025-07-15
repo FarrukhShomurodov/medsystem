@@ -8,6 +8,7 @@ use App\Models\AdminSelectedDiagnosis;
 use App\Models\Allegory;
 use App\Models\ChronicDisease;
 use App\Models\City;
+use App\Models\DangerousCombination;
 use App\Models\Department;
 use App\Models\Diagnosis;
 use App\Models\Document;
@@ -321,8 +322,7 @@ class PatientController extends Controller
             ]);
         }
 
-        foreach (PatientProcedure::query()->where('patient_id', $patient->id)->where('examination_map_id', null)->get(
-        ) as $procedure) {
+        foreach (PatientProcedure::query()->where('patient_id', $patient->id)->where('examination_map_id', null)->get() as $procedure) {
             $timeline->push([
                 'type' => 'procedure',
                 'date' => $procedure->created_at,
@@ -332,8 +332,7 @@ class PatientController extends Controller
         }
 
         foreach (
-            PatientMedication::query()->where('patient_id', $patient->id)->where('examination_map_id', null)->get(
-            ) as $medication
+            PatientMedication::query()->where('patient_id', $patient->id)->where('examination_map_id', null)->get() as $medication
         ) {
             $timeline->push([
                 'type' => 'medication',
@@ -364,6 +363,14 @@ class PatientController extends Controller
 
         $vitalParameters = VitalParameter::query()->get();
 
+
+        $patientMedications = $patient->medicationsAll()->pluck('name')->map(fn($name) => trim($name))->toArray();
+
+        $warnings = DangerousCombination::query()
+            ->whereIn('drug1_ru', $patientMedications)
+            ->whereIn('drug2_ru', $patientMedications)
+            ->get();
+
         return view(
             'admin.patients.show',
             compact(
@@ -376,6 +383,7 @@ class PatientController extends Controller
                 'regularDiagnoses',
                 'vitalParameters',
                 'procedures',
+                'warnings',
             )
         );
     }

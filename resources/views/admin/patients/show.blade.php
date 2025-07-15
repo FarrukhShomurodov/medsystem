@@ -88,6 +88,56 @@
         </table>
     </div>
 
+    <div class="card accordion mt-3" id="warningsAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingWarnings">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseWarnings" aria-expanded="false" aria-controls="collapseWarnings">
+                    Предупреждения о взаимодействии препаратов
+                </button>
+            </h2>
+            <div id="collapseWarnings" class="accordion-collapse collapse" aria-labelledby="headingWarnings"
+                 data-bs-parent="#warningsAccordion">
+                <div class="accordion-body">
+                    @if ($warnings->isEmpty())
+                        <div class="alert alert-success mb-0">
+                            <i class="bx bx-check-circle me-2"></i>
+                            Опасные взаимодействия не обнаружены.
+                        </div>
+                    @else
+                        <div class="list-group list-group-flush">
+                            @foreach ($warnings as $warning)
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <div>
+                                            <strong
+                                                class="text-primary">{{ $warning->drug1_ru ?? $warning->drug1_en }}</strong>
+                                            <span class="mx-2 text-danger">×</span>
+                                            <strong
+                                                class="text-primary">{{ $warning->drug2_ru ?? $warning->drug2_en }}</strong>
+                                        </div>
+                                        <span class="badge bg-danger">
+                                {{ $warning->severity_ru ?? $warning->severity_en }}
+                            </span>
+                                    </div>
+                                    <div class="text-muted small mb-1">
+                                        Механизм: {{ $warning->mechanism_ru ?? $warning->mechanism_en }}
+                                    </div>
+                                    @if ($warning->comment_ru || $warning->comment_en)
+                                        <div class="small text-dark">
+                                            <i class="bx bx-info-circle me-1 text-warning"></i>
+                                            {{ $warning->comment_ru ?? $warning->comment_en }}
+                                        </div>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card mt-3">
         <div>
             <h5 class="card-header">История посещений</h5>
@@ -199,7 +249,7 @@
             </div>
 
             <!-- Форма выбора документа -->
-            <form id="select-document-form" method="GET" action=""  class="mb-3">
+            <form id="select-document-form" method="GET" action="" class="mb-3">
                 <div class="row g-3 align-items-end">
                     <div class="col-auto">
                         <label for="document_id" class="form-label">Выберите документ</label>
@@ -467,7 +517,9 @@
                                             Направление
                                             @break
                                         @case('service')
-                                            Услуга ( {{ \App\Models\PatientService::getStatusTranslate($event['data']->status)  }} )
+                                            Услуга
+                                            ( {{ \App\Models\PatientService::getStatusTranslate($event['data']->status)  }}
+                                            )
                                             @break
                                         @case('patient_med_document')
                                             Мед. Документ
