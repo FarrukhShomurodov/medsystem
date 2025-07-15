@@ -280,22 +280,28 @@
 
                         <div id="additional-substance-wrapper">
                             <div class="row g-3 additional-substance-group mt-1 border p-2 rounded position-relative">
-                                <button type="button" class="btn-close position-absolute top-0 end-0 m-2 remove-substance" aria-label="Удалить"></button>
+                                <button type="button"
+                                        class="btn-close position-absolute top-0 end-0 m-2 remove-substance"
+                                        aria-label="Удалить"></button>
 
                                 <div class="col-sm-6">
-                                    <label class="form-label">Вспомогательные вещества (Название) <span class="text-danger">*</span></label>
+                                    <label class="form-label">Вспомогательные вещества (Название) <span
+                                            class="text-danger">*</span></label>
                                     <div class="input-group input-group-merge">
                                         <span class="input-group-text"><i class="bx bx-list-check"></i></span>
-                                        <input type="text" name="additional_substance[0][substance_name]" class="form-control"
+                                        <input type="text" name="additional_substance[0][substance_name]"
+                                               class="form-control"
                                                placeholder="Название вспомогательного вещества" required>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-6">
-                                    <label class="form-label">Вспомогательные вещества (Дозировка) <span class="text-danger">*</span></label>
+                                    <label class="form-label">Вспомогательные вещества (Дозировка) <span
+                                            class="text-danger">*</span></label>
                                     <div class="input-group input-group-merge">
                                         <span class="input-group-text"><i class="bx bx-sort-alt-2"></i></span>
-                                        <input type="text" name="additional_substance[0][substance_dosage]" class="form-control"
+                                        <input type="text" name="additional_substance[0][substance_dosage]"
+                                               class="form-control"
                                                placeholder="Дозировка вспомогательного вещества" required>
                                     </div>
                                 </div>
@@ -430,21 +436,33 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-storage_conditions">Условия
-                                хранения <span
+                            <label class="form-label" for="storage_conditions">Условия хранения<span
                                     class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-default-storage_conditions"
-                                      class="input-group-text @error('storage_conditions') text-danger icon-border @enderror">
-                                    <i class="bx bx-archive"></i>
-                                </span>
-                                <input type="text" id="basic-icon-default-storage_conditions"
-                                       class="form-control @error('storage_conditions') is-invalid @enderror"
-                                       name="storage_conditions"
-                                       required
-                                       value="{{ old('storage_conditions') }}"
-                                       placeholder="Условия хранения"/>
-                            </div>
+
+                            <select id="storage_conditions" name="storage_conditions"
+                                    class="form-control select2 @error('storage_conditions') is-invalid @enderror"
+                                    required>
+                                <option value="" disabled {{ old('storage_conditions') ? '' : 'selected' }}>Выберите
+                                    условие хранения
+                                </option>
+                                <option
+                                    value="Хранить в холодильнике (2–8°C)" {{ old('storage_conditions') == 'Хранить в холодильнике (2–8°C)' ? 'selected' : '' }}>
+                                    Хранить в холодильнике (2–8°C)
+                                </option>
+                                <option
+                                    value="Комнатная температура (15–25°C)" {{ old('storage_conditions') == 'Комнатная температура (15–25°C)' ? 'selected' : '' }}>
+                                    Комнатная температура (15–25°C)
+                                </option>
+                                <option
+                                    value="Хранить в защищённом от света месте" {{ old('storage_conditions') == 'Хранить в защищённом от света месте' ? 'selected' : '' }}>
+                                    Хранить в защищённом от света месте
+                                </option>
+                                <option
+                                    value="Заморозка (ниже 0°C)" {{ old('storage_conditions') == 'Заморозка (ниже 0°C)' ? 'selected' : '' }}>
+                                    Заморозка (ниже 0°C)
+                                </option>
+                            </select>
+
                             @error('storage_conditions')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

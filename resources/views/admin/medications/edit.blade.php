@@ -454,23 +454,32 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-storage_conditions">Условия
-                                хранения <span
+                            <label class="form-label" for="storage_conditions">Условия хранения<span
                                     class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-storage_conditions"
-                                  class="input-group-text @error('storage_conditions') text-danger icon-border @enderror">
-                                  <i class="bx bx-archive"></i>
-                            </span>
-                                <input type="text" id="basic-icon-default-storage_conditions"
-                                       class="form-control @error('storage_conditions') is-invalid @enderror"
-                                       name="storage_conditions"
-                                       required
-                                       value="{{ old('storage_conditions', $medication->storage->storage_conditions) }}"
-                                       placeholder="Условия хранения"
-                                       aria-label="Условия хранения"
-                                       aria-describedby="basic-icon-default-storage_conditions"/>
-                            </div>
+
+                            <select id="storage_conditions" name="storage_conditions"
+                                    class="form-control select2 @error('storage_conditions') is-invalid @enderror"
+                                    required>
+                                <option value="" disabled {{ old('storage_conditions', $medication->storage->storage_conditions) ? '' : 'selected' }}>Выберите
+                                    условие хранения
+                                </option>
+                                <option
+                                    value="Хранить в холодильнике (2–8°C)" {{ old('storage_conditions', $medication->storage->storage_conditions) == 'Хранить в холодильнике (2–8°C)' ? 'selected' : '' }}>
+                                    Хранить в холодильнике (2–8°C)
+                                </option>
+                                <option
+                                    value="Комнатная температура (15–25°C)" {{ old('storage_conditions', $medication->storage->storage_conditions) == 'Комнатная температура (15–25°C)' ? 'selected' : '' }}>
+                                    Комнатная температура (15–25°C)
+                                </option>
+                                <option
+                                    value="Хранить в защищённом от света месте" {{ old('storage_conditions', $medication->storage->storage_conditions) == 'Хранить в защищённом от света месте' ? 'selected' : '' }}>
+                                    Хранить в защищённом от света месте
+                                </option>
+                                <option
+                                    value="Заморозка (ниже 0°C)" {{ old('storage_conditions', $medication->storage->storage_conditions) == 'Заморозка (ниже 0°C)' ? 'selected' : '' }}>
+                                    Заморозка (ниже 0°C)
+                                </option>
+                            </select>
 
                             @error('storage_conditions')
                             <div class="invalid-feedback">{{ $message }}</div>
