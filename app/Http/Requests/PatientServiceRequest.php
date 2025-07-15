@@ -19,7 +19,6 @@ class PatientServiceRequest extends FormRequest
             'examination_map_id' => 'nullable|int|exists:examination_maps,id',
             'service_date' => 'required|date',
             'service_time' => 'nullable|date_format:H:i',
-            'place' => ['required', Rule::in(PatientService::PLACE)],
             'result' => 'nullable|string',
             'status' => ['required', Rule::in(PatientService::STATUS)],
             'payment' => 'nullable|array',
