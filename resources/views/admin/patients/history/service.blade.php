@@ -82,3 +82,33 @@
         Прикрепить документ
     </button>
 </div>
+
+<script>
+    $('.service_status').on('change', function () {
+        const serviceId = $(this).data('service-id');
+        const newStatus = $(this).val();
+
+        $.ajax({
+            url: `/api/patient/service/update-status/${serviceId}`,
+            method: 'GET',
+            data: {
+                status: newStatus
+            },
+            beforeSend: function () {
+                // Блокировка элемента на время запроса
+                $('#service_status').prop('disabled', true);
+            },
+            success: function (response) {
+
+            },
+            error: function (xhr) {
+
+                // Возвращаем предыдущее значение
+                $('#service_status').val(triggeredStatus).trigger('change');
+            },
+            complete: function () {
+                $('#service_status').prop('disabled', false);
+            }
+        });
+    });
+</script>
