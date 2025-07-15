@@ -18,7 +18,7 @@
             <p><strong>Название:</strong> {{ $medication->name }}</p>
             <p><strong>Форма выпуска:</strong> {{ $medication->release_form }}</p>
             <p><strong>Дозировка:</strong> {{ $medication->dosage }}</p>
-            <p><strong>Группа:</strong> {{ $medication->group->name }}</p>
+            <p><strong>Фармакологическая группа:</strong> {{ $medication->group->name }}</p>
             <p><strong>Производитель:</strong> {{ $medication->manufacturer->name }}</p>
             <p><strong>Регистрационный номер:</strong> {{ $medication->registration_number }}</p>
             <p><strong>Дата регистрации:</strong> {{ $medication->registration_date }}</p>
@@ -36,7 +36,6 @@
             <p><strong>Вспомогательные вещества (Название):</strong> {{ $medication->composition->substance_name }}</p>
             <p><strong>Вспомогательные вещества (Дозировка):</strong> {{ $medication->composition->substance_dosage }}
             </p>
-            <p><strong>Фармакологическая группа:</strong> {{ $medication->composition->pharmacological_group }}</p>
         </div>
     </div>
 
@@ -48,9 +47,6 @@
             <p><strong>Показания к применению:</strong> {{ $medication->application->indications }}</p>
             <p><strong>Способ применения:</strong> {{ $medication->application->administration_method }}</p>
             <p><strong>Режим дозирования:</strong> {{ $medication->application->dosage_regimen }}</p>
-            <p><strong>Противопоказания</strong> {{ $medication->application->contraindications }}</p>
-            <p><strong>Особенности применения:</strong> {{ $medication->application->usage_features }}</p>
-            <p><strong>Побочные эффекты:</strong> {{ $medication->application->side_effects }}</p>
             <p><strong>Взаимодействие с другими
                     препаратами:</strong> {{ $medication->application->drug_interactions }}</p>
         </div>
@@ -63,7 +59,6 @@
         <div class="card-body">
             <p><strong>Температурный режим хранения:</strong> {{ $medication->storage->storage_temperature }}</p>
             <p><strong>Условия хранения:</strong> {{ $medication->storage->storage_conditions }}</p>
-            <p><strong>Специальные условия хранения:</strong> {{ $medication->storage->special_storage_conditions }}</p>
         </div>
     </div>
 
@@ -115,17 +110,6 @@
             <p><strong>Дополнительные условия использования :</strong> {{ $medication->additionalData->additional_usage_conditions }}</p>
             <p><strong>Категория рецепта:</strong> {{ $medication->additionalData->prescription_category }}</p>
             <p><strong>Индивидуальные особенности:</strong> {{ $medication->additionalData->specific_features }}</p>
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-header">
-            <h5>Риск и безопасность</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Оценка риска:</strong> {{ $medication->riskAndSafety->risk_assessment }}</p>
-            <p><strong>Предупреждения:</strong> {{ $medication->riskAndSafety->warnings }}</p>
-            <p><strong>Безопасность в использовании:</strong> {{ $medication->riskAndSafety->safety_in_use }}</p>
         </div>
     </div>
 @endsection
