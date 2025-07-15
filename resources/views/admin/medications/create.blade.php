@@ -278,50 +278,35 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-substance_name">Вспомогательные вещества
-                                (Название) <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-default-substance_name"
-                                      class="input-group-text @error('substance_name') text-danger icon-border @enderror">
-                                    <i class="bx bx-list-check"></i>
-                                </span>
-                                <input type="text" id="basic-icon-default-substance_name"
-                                       class="form-control @error('substance_name') is-invalid @enderror"
-                                       name="substance_name"
-                                       value="{{ old('substance_name') }}"
-                                       placeholder="Вспомогательные вещества (Название)"
-                                       aria-label="Вспомогательные вещества (Название)"
-                                       required
-                                       aria-describedby="basic-icon-default-substance_name"/>
+                        <div id="additional-substance-wrapper">
+                            <div class="row g-3 additional-substance-group mt-1 border p-2 rounded position-relative">
+                                <button type="button" class="btn-close position-absolute top-0 end-0 m-2 remove-substance" aria-label="Удалить"></button>
+
+                                <div class="col-sm-6">
+                                    <label class="form-label">Вспомогательные вещества (Название) <span class="text-danger">*</span></label>
+                                    <div class="input-group input-group-merge">
+                                        <span class="input-group-text"><i class="bx bx-list-check"></i></span>
+                                        <input type="text" name="additional_substance[0][substance_name]" class="form-control"
+                                               placeholder="Название вспомогательного вещества" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label class="form-label">Вспомогательные вещества (Дозировка) <span class="text-danger">*</span></label>
+                                    <div class="input-group input-group-merge">
+                                        <span class="input-group-text"><i class="bx bx-sort-alt-2"></i></span>
+                                        <input type="text" name="additional_substance[0][substance_dosage]" class="form-control"
+                                               placeholder="Дозировка вспомогательного вещества" required>
+                                    </div>
+                                </div>
                             </div>
-                            @error('substance_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
 
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-substance_dosage">Вспомогательные вещества
-                                (Дозировка) <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                                <span id="basic-icon-default-substance_dosage"
-                                      class="input-group-text @error('substance_dosage') text-danger icon-border @enderror">
-                                    <i class="bx bx-sort-alt-2"></i>
-                                </span>
-                                <input type="text" id="basic-icon-default-substance_dosage"
-                                       class="form-control @error('substance_dosage') is-invalid @enderror"
-                                       name="substance_dosage"
-                                       value="{{ old('substance_dosage') }}"
-                                       placeholder="Вспомогательные вещества (Дозировка)"
-                                       aria-label="Вспомогательные вещества (Дозировка)"
-                                       required
-                                       aria-describedby="basic-icon-default-substance_dosage"/>
-                            </div>
-                            @error('substance_dosage')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <!-- Кнопка добавления -->
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-outline-primary" id="add-additional-substance">
+                                <i class="bx bx-plus"></i> Добавить вспомогательное вещество
+                            </button>
                         </div>
 
                         <!-- Navigation -->
@@ -670,6 +655,41 @@
         $(document).ready(function () {
             flatpickr('.flatpickr-date', {dateFormat: 'Y-m-d'});
             flatpickr('.flatpickr-time', {enableTime: true, noCalendar: true, time_24hr: true});
+
+            let additionalSubstanceIndex = 1;
+
+            $('#add-additional-substance').on('click', function () {
+                const newGroup = `
+        <div class="row g-3 additional-substance-group mt-1 border p-2 rounded position-relative">
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-2 remove-substance" aria-label="Удалить"></button>
+
+            <div class="col-sm-6">
+                <label class="form-label">Вспомогательные вещества (Название) <span class="text-danger">*</span></label>
+                <div class="input-group input-group-merge">
+                    <span class="input-group-text"><i class="bx bx-list-check"></i></span>
+                    <input type="text" name="additional_substance[${additionalSubstanceIndex}][substance_name]"
+                           class="form-control" placeholder="Название вспомогательного вещества" required>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <label class="form-label">Вспомогательные вещества (Дозировка) <span class="text-danger">*</span></label>
+                <div class="input-group input-group-merge">
+                    <span class="input-group-text"><i class="bx bx-sort-alt-2"></i></span>
+                    <input type="text" name="additional_substance[${additionalSubstanceIndex}][substance_dosage]"
+                           class="form-control" placeholder="Дозировка вспомогательного вещества" required>
+                </div>
+            </div>
+        </div>
+    `;
+
+                $('#additional-substance-wrapper').append(newGroup);
+                additionalSubstanceIndex++;
+            });
+
+            $(document).on('click', '.remove-substance', function () {
+                $(this).closest('.additional-substance-group').remove();
+            });
         });
     </script>
 @endsection

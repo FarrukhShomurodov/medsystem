@@ -32,8 +32,10 @@ class MedicationRequest extends FormRequest
             //composition
             'active_substance_name' => 'required|string|max:255',
             'active_substance_dosage' => 'required|string|max:255',
-            'substance_name' => 'required|string|max:255',
-            'substance_dosage' => 'required|string|max:255',
+
+            'additional_substance' => 'required|array',
+            'additional_substance.*.substance_name' => 'required|string|max:255',
+            'additional_substance.*.substance_dosage' => 'required|string|max:255',
 
             //application
             'administration_method' => 'required|string|max:255',

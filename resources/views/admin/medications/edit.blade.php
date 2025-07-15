@@ -282,52 +282,47 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-substance_name">Вспомогательные вещества (
-                                Название ) <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-substance_name"
-                                  class="input-group-text @error('substance_name') text-danger icon-border @enderror">
-                                 <i class="bx bx-list-check"></i>
-                            </span>
-                                <input type="text" id="basic-icon-default-substance_name"
-                                       class="form-control @error('substance_name') is-invalid @enderror"
-                                       name="substance_name"
-                                       value="{{ old('substance_name', $medication->composition->substance_name) }}"
-                                       placeholder="Вспомогательные вещества ( Название )"
-                                       required
-                                       aria-label="Вспомогательные вещества ( Название )"
-                                       aria-describedby="basic-icon-default-substance_name"/>
-                            </div>
+                        <div id="additional-substance-wrapper">
+                            @foreach($medication->composition->additionalSubstance as $index => $substance)
+                                <div
+                                    class="row g-3 additional-substance-group mt-3 border p-2 rounded position-relative">
+                                    <button type="button"
+                                            class="btn-close position-absolute top-0 end-0 m-2 remove-substance"
+                                            aria-label="Удалить"></button>
 
-                            @error('substance_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                    <div class="col-sm-6">
+                                        <label class="form-label">Вспомогательные вещества (Название) <span
+                                                class="text-danger">*</span></label>
+                                        <div class="input-group input-group-merge">
+                                            <span class="input-group-text"><i class="bx bx-list-check"></i></span>
+                                            <input type="text" name="additional_substance[{{ $index }}][substance_name]"
+                                                   class="form-control"
+                                                   value="{{ old("additional_substance.$index.substance_name", $substance->substance_name) }}"
+                                                   required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label">Вспомогательные вещества (Дозировка) <span
+                                                class="text-danger">*</span></label>
+                                        <div class="input-group input-group-merge">
+                                            <span class="input-group-text"><i class="bx bx-sort-alt-2"></i></span>
+                                            <input type="text"
+                                                   name="additional_substance[{{ $index }}][substance_dosage]"
+                                                   class="form-control"
+                                                   value="{{ old("additional_substance.$index.substance_dosage", $substance->substance_dosage) }}"
+                                                   required>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
 
-                        <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-substance_dosage">Вспомогательные вещества
-                                ( Дозировка ) <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-substance_dosage"
-                                  class="input-group-text @error('substance_dosage') text-danger icon-border @enderror">
-                                   <i class="bx bx-sort-alt-2"></i>
-                            </span>
-                                <input type="text" id="basic-icon-default-substance_dosage"
-                                       class="form-control @error('substance_dosage') is-invalid @enderror"
-                                       name="substance_dosage"
-                                       required
-                                       value="{{ old('substance_dosage', $medication->composition->substance_dosage) }}"
-                                       placeholder="Вспомогательные вещества ( Дозировка  )"
-                                       aria-label="Вспомогательные вещества ( Дозировка )"
-                                       aria-describedby="basic-icon-default-substance_dosage"/>
-                            </div>
-
-                            @error('substance_dosage')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <!-- Кнопка добавления -->
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-outline-primary" id="add-additional-substance">
+                                <i class="bx bx-plus"></i> Добавить вспомогательное вещество
+                            </button>
                         </div>
 
 
@@ -662,6 +657,40 @@
             // Initialize Flatpickr
             flatpickr('.flatpickr-date', {dateFormat: 'Y-m-d'});
             flatpickr('.flatpickr-time', {enableTime: true, noCalendar: true, time_24hr: true});
+
+            let additionalSubstanceIndex = {{ $medication->composition->additionalSubstance->count() }};
+
+            // Добавление нового блока
+            $('#add-additional-substance').on('click', function () {
+                const newGroup = `
+            <div class="row g-3 additional-substance-group mt-3 border p-2 rounded position-relative">
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-2 remove-substance" aria-label="Удалить"></button>
+
+                <div class="col-sm-6">
+                    <label class="form-label">Вспомогательные вещества (Название) <span class="text-danger">*</span></label>
+                    <div class="input-group input-group-merge">
+                        <span class="input-group-text"><i class="bx bx-list-check"></i></span>
+                        <input type="text" name="additional_substance[${additionalSubstanceIndex}][substance_name]" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label class="form-label">Вспомогательные вещества (Дозировка) <span class="text-danger">*</span></label>
+                    <div class="input-group input-group-merge">
+                        <span class="input-group-text"><i class="bx bx-sort-alt-2"></i></span>
+                        <input type="text" name="additional_substance[${additionalSubstanceIndex}][substance_dosage]" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+        `;
+                $('#additional-substance-wrapper').append(newGroup);
+                additionalSubstanceIndex++;
+            });
+
+            // Удаление блока
+            $(document).on('click', '.remove-substance', function () {
+                $(this).closest('.additional-substance-group').remove();
+            });
         });
     </script>
 @endsection

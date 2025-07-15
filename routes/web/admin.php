@@ -17,6 +17,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     ManufacturerController,
     MedicalDeviceController,
     MedicalSupplyController,
+    MedicationAdditionalSubstanceController,
     MedicationController,
     MedicationGroupController,
     PatientAssignmentController,
@@ -211,6 +212,8 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         Route::resource('/list', MedicationController::class)->names('medications')
             ->parameter('list', 'medication');
         Route::resource('/groups', MedicationGroupController::class)->names('medication.groups');
+
+        Route::delete('/delete-additional-substance/{substance}', [MedicationAdditionalSubstanceController::class, 'delete'])->name('additional.substance.delete');
     });
 
     // services

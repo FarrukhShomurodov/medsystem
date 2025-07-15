@@ -20,7 +20,13 @@ class MedicationService
 
             $medication->application()->create($validated);
             $medication->additionalData()->create($validated);
-            $medication->composition()->create($validated);
+
+            $composition = $medication->composition()->create($validated);
+
+            foreach ($validated['additional_substance'] as $item) {
+                $composition->additionalSubstance()->create($item);
+            }
+
             $medication->storage()->create($validated);
 
             foreach (['sales_license', 'quality_certificate', 'clinical_trials', 'registration_documents'] as $fileField) {
@@ -51,9 +57,19 @@ class MedicationService
             $medication->additionalData()->update(
                 array_intersect_key($validated, array_flip($medication->additionalData->getFillable()))
             );
-            $medication->composition()->update(
-                array_intersect_key($validated, array_flip($medication->composition->getFillable()))
+
+            $composition = $medication->composition;
+
+            $composition->update(
+                array_intersect_key($validated, array_flip($composition->getFillable()))
             );
+
+            $composition->additionalSubstance()->delete();
+
+            foreach ($validated['additional_substance'] as $item) {
+                $composition->additionalSubstance()->create($item);
+            }
+
             $medication->storage()->update(
                 array_intersect_key($validated, array_flip($medication->storage->getFillable()))
             );

@@ -8,7 +8,6 @@
     <h6 class="py-3 breadcrumb-wrapper mb-4">
         <span class="text-muted fw-light">Препараты</span>
     </h6>
-
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
         @if ($errors->any())
             @foreach ($errors->all() as $error)
@@ -28,6 +27,7 @@
             </div>
         @endif
     </div>
+
 
     <div id="errors_alert"></div>
 
