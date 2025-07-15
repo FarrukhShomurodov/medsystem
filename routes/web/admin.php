@@ -5,6 +5,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     AllegoryController,
     ChronicDiseaseController,
     CityController,
+    DangerousCombinationController,
     DashboardController,
     DepartmentController,
     DiagnosisController,
@@ -50,8 +51,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     WardRoomController,
     WarehouseAccountingController,
     WarehouseController,
-    WarehouseTypeController
-};
+    WarehouseTypeController};
 use App\Http\Middleware\ExaminationMapIsActive;
 use Illuminate\Support\Facades\Route;
 
@@ -213,7 +213,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
             ->parameter('list', 'medication');
         Route::resource('/groups', MedicationGroupController::class)->names('medication.groups');
 
-        Route::delete('/delete-additional-substance/{substance}', [MedicationAdditionalSubstanceController::class, 'delete'])->name('additional.substance.delete');
+        Route::delete('/delete-additional-substance/{substance}', [MedicationAdditionalSubstanceController::class, 'delete'])->name('1');
     });
 
     // services
@@ -293,8 +293,13 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         'service.calendar.index'
     );
 
+    // service import
     Route::get('/services/import', [ServiceController::class, 'showImportServices'])->name('services.import.show');
     Route::post('/services/import', [ServiceController::class, 'importServices'])->name('services.import');
+
+    // dangerous combination import
+    Route::get('/dangerous-combination/import', [DangerousCombinationController::class, 'showImportServices'])->name('dangerous.combination.import.show');
+    Route::post('/dangerous-combination/import', [DangerousCombinationController::class, 'importServices'])->name('dangerous.combination.import');
 
     // diagnosis
     Route::resource('/diagnoses', DiagnosisController::class)->names('diagnoses');

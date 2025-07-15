@@ -41,6 +41,8 @@
                 </button>
                 <a href="{{ route('medications.create') }}" class="btn btn-primary"
                    style="margin-right: 22px;">Создать</a>
+                <a href="{{ route('dangerous.combination.import.show') }}" class="btn btn-primary "
+                   style="margin-right: 22px;">Импорт</a>
             </div>
         </div>
 
