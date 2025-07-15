@@ -99,7 +99,7 @@
                 $('#service_status').prop('disabled', true);
             },
             success: function (response) {
-
+                window.location.reload();
             },
             error: function (xhr) {
 
