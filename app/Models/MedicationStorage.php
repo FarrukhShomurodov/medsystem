@@ -10,6 +10,5 @@ class MedicationStorage extends Model
         'medication_id',
         'storage_temperature',
         'storage_conditions',
-        'special_storage_conditions',
     ];
 }

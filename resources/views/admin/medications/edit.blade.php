@@ -65,13 +65,6 @@
                     <span class="bs-stepper-label">Прочие данные</span>
                 </button>
             </div>
-            <div class="line"></div>
-            <div class="step" data-target="#risk">
-                <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">7</span>
-                    <span class="bs-stepper-label">Риск и безопасность</span>
-                </button>
-            </div>
         </div>
 
         <div class="bs-stepper-content">
@@ -145,7 +138,7 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="group">Группы<span
+                            <label class="form-label" for="group">Фармакологическая группы<span
                                     class="text-danger">*</span></label>
 
                             <select id="group" name="group_id"
@@ -337,30 +330,6 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-12">
-                            <label class="form-label" for="basic-icon-default-pharmacological_group">Фармакологическая
-                                группа <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-pharmacological_group"
-                                  class="input-group-text @error('pharmacological_group') text-danger icon-border @enderror">
-                                <i class="bx bx-first-aid"></i>
-                            </span>
-                                <input type="text" id="basic-icon-default-pharmacological_group"
-                                       class="form-control @error('pharmacological_group') is-invalid @enderror"
-                                       name="pharmacological_group"
-                                       required
-                                       value="{{ old('pharmacological_group', $medication->composition->pharmacological_group) }}"
-                                       placeholder="Фармакологическая группа"
-                                       aria-label="Фармакологическая группа"
-                                       aria-describedby="basic-icon-default-pharmacological_group"/>
-                            </div>
-
-                            @error('pharmacological_group')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
 
                         <!-- Navigation -->
                         <div class="col-12 d-flex justify-content-between">
@@ -381,27 +350,6 @@
                                 class="text-danger">*</span></h6>
                     </div>
                     <div class="row g-3">
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-indications">Показания к
-                                применению </label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-indications"
-                                  class="input-group-text @error('indications') text-danger icon-border @enderror">
-                                <i class="bx bx-pulse"></i>
-                            </span>
-                                <input type="text" id="basic-icon-default-indications"
-                                       class="form-control @error('indications') is-invalid @enderror"
-                                       name="indications"
-                                       required
-                                       value="{{ old('indications', $medication->application->indications) }}"
-                                       placeholder="Показания к применению " aria-label="Показания к применению "
-                                       aria-describedby="basic-icon-default-indications"/>
-                            </div>
-                            @error('indications')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-administration_method">Способ
                                 применения <span
@@ -447,72 +395,6 @@
 
                         <div class="col-sm-4">
                             <label class="form-label"
-                                   for="basic-icon-default-contraindications">Противопоказания <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-contraindications"
-                                  class="input-group-text @error('contraindications') text-danger icon-border @enderror">
-                                     <i class="bx bx-error"></i>
-                            </span>
-                                <input type="text" id="basic-icon-default-contraindications"
-                                       class="form-control @error('contraindications') is-invalid @enderror"
-                                       name="contraindications"
-                                       required
-                                       value="{{ old('contraindications', $medication->application->contraindications) }}"
-                                       placeholder="Противопоказания" aria-label="Противопоказания"
-                                       aria-describedby="basic-icon-default-contraindications"/>
-                            </div>
-                            @error('contraindications')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label"
-                                   for="basic-icon-default-usage_features">Особенности применения <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-usage_features"
-                                  class="input-group-text @error('usage_features') text-danger icon-border @enderror">
-                                   <i class="bx bx-info-circle"></i>
-                            </span>
-                                <input type="text" id="basic-icon-default-usage_features"
-                                       class="form-control @error('usage_features') is-invalid @enderror"
-                                       name="usage_features"
-                                       required
-                                       value="{{ old('usage_features', $medication->application->usage_features) }}"
-                                       placeholder="Особенности применения" aria-label="Особенности применения"
-                                       aria-describedby="basic-icon-default-usage_features"/>
-                            </div>
-                            @error('usage_features')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label"
-                                   for="basic-icon-default-side_effects">Побочные эффекты <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-side_effects"
-                                  class="input-group-text @error('side_effects') text-danger icon-border @enderror">
-                                                  <i class="bx bx-bug"></i>
-                            </span>
-                                <input type="text" id="basic-icon-default-side_effects"
-                                       class="form-control @error('side_effects') is-invalid @enderror"
-                                       name="side_effects"
-                                       required
-                                       value="{{ old('side_effects', $medication->application->side_effects) }}"
-                                       placeholder="Побочные эффекты" aria-label="Побочные эффекты"
-                                       aria-describedby="basic-icon-default-side_effects"/>
-                            </div>
-                            @error('side_effects')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label"
                                    for="basic-icon-default-drug_interactions">Взаимодействие с другими
                                 препаратами <span
                                     class="text-danger">*</span></label>
@@ -552,7 +434,7 @@
                         <h6 class="mb-0">Хранение</h6>
                     </div>
                     <div class="row g-3">
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-storage_temperature">Температурный режим
                                 хранения <span
                                     class="text-danger">*</span></label>
@@ -576,7 +458,7 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-storage_conditions">Условия
                                 хранения <span
                                     class="text-danger">*</span></label>
@@ -596,30 +478,6 @@
                             </div>
 
                             @error('storage_conditions')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-special_storage_conditions">Специальные
-                                условия хранения <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-special_storage_conditions"
-                                  class="input-group-text @error('special_storage_conditions') text-danger icon-border @enderror">
-                                     <i class="bx bx-shield-quarter"></i>
-                            </span>
-                                <input type="text" id="basic-icon-default-special_storage_conditions"
-                                       class="form-control @error('special_storage_conditions') is-invalid @enderror"
-                                       name="special_storage_conditions"
-                                       value="{{ old('special_storage_conditions', $medication->storage->special_storage_conditions) }}"
-                                       placeholder="Специальные условия хранения"
-                                       required
-                                       aria-label="Специальные условия хранения"
-                                       aria-describedby="basic-icon-default-special_storage_conditions"/>
-                            </div>
-
-                            @error('special_storage_conditions')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -696,8 +554,7 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-manufacturing_license_number"> Номер
-                                лицензии на производство <span
-                                    class="text-danger">*</span></label>
+                                лицензии на производство </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-manufacturing_license_number"
                                   class="input-group-text @error('manufacturing_license_number') text-danger icon-border @enderror">
@@ -706,7 +563,6 @@
                                 <input type="text" id="basic-icon-default-manufacturing_license_number"
                                        class="form-control @error('manufacturing_license_number') is-invalid @enderror"
                                        name="manufacturing_license_number"
-                                       required
                                        value="{{ old('manufacturing_license_number', $medication->additionalData->manufacturing_license_number) }}"
                                        placeholder="Номер лицензии на производство"
                                        aria-label="Номер лицензии на производство"
@@ -720,8 +576,7 @@
 
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-additional_usage_conditions">Дополнительные
-                                условия использования <span
-                                    class="text-danger">*</span></label>
+                                условия использования </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-additional_usage_conditions"
                                   class="input-group-text @error('additional_usage_conditions') text-danger icon-border @enderror">
@@ -730,7 +585,6 @@
                                 <input type="text" id="basic-icon-default-additional_usage_conditions"
                                        class="form-control @error('additional_usage_conditions') is-invalid @enderror"
                                        name="additional_usage_conditions"
-                                       required
                                        value="{{ old('additional_usage_conditions', $medication->additionalData->additional_usage_conditions) }}"
                                        placeholder="Дополнительные условия использования"
                                        aria-label="Дополнительные условия использования"
@@ -744,8 +598,7 @@
 
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-prescription_category">Категория
-                                рецепта <span
-                                    class="text-danger">*</span></label>
+                                рецепта </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-prescription_category"
                                   class="input-group-text @error('prescription_category') text-danger icon-border @enderror">
@@ -754,7 +607,6 @@
                                 <input type="text" id="basic-icon-default-prescription_category"
                                        class="form-control @error('prescription_category') is-invalid @enderror"
                                        name="prescription_category"
-                                       required
                                        value="{{ old('prescription_category', $medication->additionalData->prescription_category) }}"
                                        placeholder="Категория рецепта"
                                        aria-label="Категория рецепта"
@@ -768,8 +620,7 @@
 
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-specific_features">Индивидуальные
-                                особенности <span
-                                    class="text-danger">*</span></label>
+                                особенности </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-specific_features"
                                   class="input-group-text @error('specific_features') text-danger icon-border @enderror">
@@ -778,7 +629,6 @@
                                 <input type="text" id="basic-icon-default-specific_features"
                                        class="form-control @error('registration_specific_featuresdocuments') is-invalid @enderror"
                                        name="specific_features"
-                                       required
                                        value="{{ old('specific_features', $medication->additionalData->specific_features) }}"
                                        placeholder="Индивидуальные особенности"
                                        aria-label="Индивидуальные особенности"
@@ -786,95 +636,6 @@
                             </div>
 
                             @error('specific_features')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-
-                        <!-- Navigation -->
-                        <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev">
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Риск и безопасность -->
-                <div id="risk" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">Риск и безопасность</h6>
-                    </div>
-                    <div class="row g-3">
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-risk_assessment"> Оценка риска <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-risk_assessment"
-                                  class="input-group-text @error('manufacturisk_assessmentring_license_number') text-danger icon-border @enderror">
-                                   <i class="bx bx-shield"></i>
-                            </span>
-                                <input type="text" id="basic-icon-default-risk_assessment"
-                                       class="form-control @error('risk_assessment') is-invalid @enderror"
-                                       name="risk_assessment"
-                                       required
-                                       value="{{ old('risk_assessment', $medication->riskAndSafety->risk_assessment) }}"
-                                       placeholder="Оценка риска"
-                                       aria-label="Оценка риска"
-                                       aria-describedby="basic-icon-default-risk_assessment"/>
-                            </div>
-
-                            @error('risk_assessment')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-warnings">Предупреждения <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-warnings"
-                                  class="input-group-text @error('warnings') text-danger icon-border @enderror">
-                                      <i class="bx bx-error"></i>
-                            </span>
-                                <input type="text" id="basic-icon-default-warnings"
-                                       class="form-control @error('warnings') is-invalid @enderror"
-                                       name="warnings"
-                                       required
-                                       value="{{ old('warnings', $medication->riskAndSafety->warnings) }}"
-                                       placeholder="Предупреждения"
-                                       aria-label="Предупреждения"
-                                       aria-describedby="basic-icon-default-warnings"/>
-                            </div>
-
-                            @error('warnings')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-safety_in_use">Безопасность в
-                                использовании <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-safety_in_use"
-                                  class="input-group-text @error('safety_in_use') text-danger icon-border @enderror">
-                                 <i class="bx bx-check-shield"></i>
-                            </span>
-                                <input type="text" id="basic-icon-default-safety_in_use"
-                                       class="form-control @error('safety_in_use') is-invalid @enderror"
-                                       name="safety_in_use"
-                                       required
-                                       value="{{ old('safety_in_use', $medication->riskAndSafety->safety_in_use) }}"
-                                       placeholder="Безопасность в использовании"
-                                       aria-label="Безопасность в использовании"
-                                       aria-describedby="basic-icon-default-safety_in_use"/>
-                            </div>
-
-                            @error('safety_in_use')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

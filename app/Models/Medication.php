@@ -77,11 +77,6 @@ class Medication extends Model
         return $this->hasOne(MedicationAdditionalData::class);
     }
 
-    public function riskAndSafety(): HasOne
-    {
-        return $this->hasOne(MedicationRiskAndSafety::class);
-    }
-
     public function composition(): HasOne
     {
         return $this->hasOne(MedicationComposition::class);

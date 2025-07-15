@@ -20,7 +20,6 @@ class MedicationService
 
             $medication->application()->create($validated);
             $medication->additionalData()->create($validated);
-            $medication->riskAndSafety()->create($validated);
             $medication->composition()->create($validated);
             $medication->storage()->create($validated);
 
@@ -51,9 +50,6 @@ class MedicationService
             );
             $medication->additionalData()->update(
                 array_intersect_key($validated, array_flip($medication->additionalData->getFillable()))
-            );
-            $medication->riskAndSafety()->update(
-                array_intersect_key($validated, array_flip($medication->riskAndSafety->getFillable()))
             );
             $medication->composition()->update(
                 array_intersect_key($validated, array_flip($medication->composition->getFillable()))

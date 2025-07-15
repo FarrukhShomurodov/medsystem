@@ -13,7 +13,6 @@ class MedicationComposition extends Model
         'active_substance_dosage',
         'substance_name',
         'substance_dosage',
-        'pharmacological_group',
     ];
 
     public function medication(): BelongsTo

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('active_substance_dosage');
             $table->string('substance_name');
             $table->string('substance_dosage');
-            $table->string('pharmacological_group');
             $table->timestamps();
         });
     }

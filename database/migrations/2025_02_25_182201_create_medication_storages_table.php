@@ -13,7 +13,6 @@ return new class extends Migration {
             $table->foreignId('medication_id')->constrained()->cascadeOnDelete();
             $table->integer('storage_temperature');
             $table->string('storage_conditions');
-            $table->string('special_storage_conditions');
             $table->timestamps();
         });
     }
