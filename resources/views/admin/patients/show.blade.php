@@ -467,7 +467,7 @@
                                             Направление
                                             @break
                                         @case('service')
-                                            Услуга
+                                            Услуга {{ PatientService::getStatusTranslate($event['data']->status)  }}
                                             @break
                                         @case('patient_med_document')
                                             Мед. Документ
