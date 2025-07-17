@@ -119,7 +119,7 @@
                 </ul>
 
                 {{-- Контент вкладки --}}
-                <div class="tab-content border border-top-0 p-3" id="questionTabContent">
+                <div class="tab-content active border-top-0 p-3" id="questionTabContent">
                     {{-- Общие вопросы --}}
                     <div class="tab-pane fade show active" id="general-content" role="tabpanel"
                          aria-labelledby="general-tab">
