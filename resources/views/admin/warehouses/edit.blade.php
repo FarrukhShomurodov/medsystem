@@ -44,24 +44,24 @@
                     <span class="bs-stepper-label">Вместимость</span>
                 </button>
             </div>
-            <div class="line"></div>
-            <div class="step" data-target="#licenses">
-                <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">4</span>
-                    <span class="bs-stepper-label">Инвентаризация</span>
-                </button>
-            </div>
-            <div class="line"></div>
-            <div class="step" data-target="#supplies">
-                <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">5</span>
-                    <span class="bs-stepper-label">Рас. Материалы</span>
-                </button>
-            </div>
+{{--            <div class="line"></div>--}}
+{{--            <div class="step" data-target="#licenses">--}}
+{{--                <button type="button" class="step-trigger">--}}
+{{--                    <span class="bs-stepper-circle">4</span>--}}
+{{--                    <span class="bs-stepper-label">Инвентаризация</span>--}}
+{{--                </button>--}}
+{{--            </div>--}}
+{{--            <div class="line"></div>--}}
+{{--            <div class="step" data-target="#supplies">--}}
+{{--                <button type="button" class="step-trigger">--}}
+{{--                    <span class="bs-stepper-circle">5</span>--}}
+{{--                    <span class="bs-stepper-label">Рас. Материалы</span>--}}
+{{--                </button>--}}
+{{--            </div>--}}
             <div class="line"></div>
             <div class="step" data-target="#resources">
                 <button type="button" class="step-trigger">
-                    <span class="bs-stepper-circle">6</span>
+                    <span class="bs-stepper-circle">4</span>
                     <span class="bs-stepper-label">Хранение</span>
                 </button>
             </div>
@@ -386,405 +386,405 @@
                     </div>
                 </div>
 
-                <!-- Инвентаризация -->
-                <div id="licenses" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">Инвентаризация</h6>
-                    </div>
-                    <div class="row g-3">
-                        <div class="col-sm-12">
-                            <label class="form-label" for="medication">Медикаменты <span
-                                    class="text-danger">*</span></label>
-                            <select id="medication" name="medications[]"
-                                    class="form-control select2 @error('medications') is-invalid @enderror"
-                                    multiple="multiple">
-                                @foreach($medications as $medication)
-                                    <option value="{{ $medication->id }}"
-                                        @selected(old('medications', $warehouse->accounting->pluck('medication_id')->toArray()) && in_array($medication->id, $warehouse->accounting->pluck('medication_id')->toArray()))>
-                                        {{ $medication->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('medications')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+{{--                <!-- Инвентаризация -->--}}
+{{--                <div id="licenses" class="content">--}}
+{{--                    <div class="content-header mb-3">--}}
+{{--                        <h6 class="mb-0">Инвентаризация</h6>--}}
+{{--                    </div>--}}
+{{--                    <div class="row g-3">--}}
+{{--                        <div class="col-sm-12">--}}
+{{--                            <label class="form-label" for="medication">Медикаменты <span--}}
+{{--                                    class="text-danger">*</span></label>--}}
+{{--                            <select id="medication" name="medications[]"--}}
+{{--                                    class="form-control select2 @error('medications') is-invalid @enderror"--}}
+{{--                                    multiple="multiple">--}}
+{{--                                @foreach($medications as $medication)--}}
+{{--                                    <option value="{{ $medication->id }}"--}}
+{{--                                        @selected(old('medications', $warehouse->accounting->pluck('medication_id')->toArray()) && in_array($medication->id, $warehouse->accounting->pluck('medication_id')->toArray()))>--}}
+{{--                                        {{ $medication->name }}--}}
+{{--                                    </option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                            @error('medications')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
 
-                        <!-- Контейнер для динамических полей -->
-                        <div id="medication-details-container">
-                            <div id="medication-details-container">
-                                @foreach($warehouse->accounting as $accounting)
-                                    <div class="medication-details" data-id="{{ $accounting->medication_id }}">
-                                        <h5>Медикамент: {{ $accounting->medication->name }}</h5>
-                                        <input type="hidden" name="medications[{{ $accounting->medication_id }}][id]"
-                                               value="{{ $accounting->medication_id }}">
+{{--                        <!-- Контейнер для динамических полей -->--}}
+{{--                        <div id="medication-details-container">--}}
+{{--                            <div id="medication-details-container">--}}
+{{--                                @foreach($warehouse->accounting as $accounting)--}}
+{{--                                    <div class="medication-details" data-id="{{ $accounting->medication_id }}">--}}
+{{--                                        <h5>Медикамент: {{ $accounting->medication->name }}</h5>--}}
+{{--                                        <input type="hidden" name="medications[{{ $accounting->medication_id }}][id]"--}}
+{{--                                               value="{{ $accounting->medication_id }}">--}}
 
-                                        <div class="form-group mb-3">
-                                            <label for="quantity_{{ $accounting->medication_id }}">Количество <span
-                                                    class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <span class="input-group-text"><i class="bx bx-plus"></i></span>
-                                                <input type="number" id="quantity_{{ $accounting->medication_id }}"
-                                                       name="medications[{{ $accounting->medication_id }}][quantity]"
-                                                       class="form-control" placeholder="Введите количество"
-                                                       value="{{ $accounting->quantity }}">
-                                            </div>
-                                        </div>
+{{--                                        <div class="form-group mb-3">--}}
+{{--                                            <label for="quantity_{{ $accounting->medication_id }}">Количество <span--}}
+{{--                                                    class="text-danger">*</span></label>--}}
+{{--                                            <div class="input-group">--}}
+{{--                                                <span class="input-group-text"><i class="bx bx-plus"></i></span>--}}
+{{--                                                <input type="number" id="quantity_{{ $accounting->medication_id }}"--}}
+{{--                                                       name="medications[{{ $accounting->medication_id }}][quantity]"--}}
+{{--                                                       class="form-control" placeholder="Введите количество"--}}
+{{--                                                       value="{{ $accounting->quantity }}">--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
 
-                                        <div class="form-group mb-3">
-                                            <label for="expiration_date_{{ $accounting->medication_id }}">Срок годности
-                                                <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <span class="input-group-text"><i class="bx bx-calendar"></i></span>
-                                                <input type="date" id="expiration_date_{{ $accounting->medication_id }}"
-                                                       name="medications[{{ $accounting->medication_id }}][expiration_date]"
-                                                       class="form-control flatpickr-date"
-                                                       value="{{ $accounting->expiration_date }}">
-                                            </div>
-                                        </div>
+{{--                                        <div class="form-group mb-3">--}}
+{{--                                            <label for="expiration_date_{{ $accounting->medication_id }}">Срок годности--}}
+{{--                                                <span class="text-danger">*</span></label>--}}
+{{--                                            <div class="input-group">--}}
+{{--                                                <span class="input-group-text"><i class="bx bx-calendar"></i></span>--}}
+{{--                                                <input type="date" id="expiration_date_{{ $accounting->medication_id }}"--}}
+{{--                                                       name="medications[{{ $accounting->medication_id }}][expiration_date]"--}}
+{{--                                                       class="form-control flatpickr-date"--}}
+{{--                                                       value="{{ $accounting->expiration_date }}">--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
 
-                                        <div class="form-group mb-3">
-                                            <label for="date_of_receipt_{{ $accounting->medication_id }}">Дата получения
-                                                <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <span class="input-group-text"><i
-                                                        class="bx bx-calendar-event"></i></span>
-                                                <input type="date" id="date_of_receipt_{{ $accounting->medication_id }}"
-                                                       name="medications[{{ $accounting->medication_id }}][date_of_receipt]"
-                                                       class="form-control flatpickr-date"
-                                                       value="{{ $accounting->date_of_receipt }}">
-                                            </div>
-                                        </div>
+{{--                                        <div class="form-group mb-3">--}}
+{{--                                            <label for="date_of_receipt_{{ $accounting->medication_id }}">Дата получения--}}
+{{--                                                <span class="text-danger">*</span></label>--}}
+{{--                                            <div class="input-group">--}}
+{{--                                                <span class="input-group-text"><i--}}
+{{--                                                        class="bx bx-calendar-event"></i></span>--}}
+{{--                                                <input type="date" id="date_of_receipt_{{ $accounting->medication_id }}"--}}
+{{--                                                       name="medications[{{ $accounting->medication_id }}][date_of_receipt]"--}}
+{{--                                                       class="form-control flatpickr-date"--}}
+{{--                                                       value="{{ $accounting->date_of_receipt }}">--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
 
-                                        <div class="form-group mb-3">
-                                            <label for="batch_number_{{ $accounting->medication_id }}">Номер партии
-                                                <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <span class="input-group-text"><i class="bx bx-barcode"></i></span>
-                                                <input type="text" id="batch_number_{{ $accounting->medication_id }}"
-                                                       name="medications[{{ $accounting->medication_id }}][batch_number]"
-                                                       class="form-control" placeholder="Введите номер партии"
-                                                       value="{{ $accounting->batch_number }}">
-                                            </div>
-                                        </div>
+{{--                                        <div class="form-group mb-3">--}}
+{{--                                            <label for="batch_number_{{ $accounting->medication_id }}">Номер партии--}}
+{{--                                                <span class="text-danger">*</span></label>--}}
+{{--                                            <div class="input-group">--}}
+{{--                                                <span class="input-group-text"><i class="bx bx-barcode"></i></span>--}}
+{{--                                                <input type="text" id="batch_number_{{ $accounting->medication_id }}"--}}
+{{--                                                       name="medications[{{ $accounting->medication_id }}][batch_number]"--}}
+{{--                                                       class="form-control" placeholder="Введите номер партии"--}}
+{{--                                                       value="{{ $accounting->batch_number }}">--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
 
-                                        <h6>Упаковка:</h6>
+{{--                                        <h6>Упаковка:</h6>--}}
 
-                                        <div class="form-group mb-3">
-                                            <label for="packaging_type_{{ $accounting->medication_id }}">Тип упаковки
-                                                <span class="text-danger">*</span></label>
-                                            <select id="packaging_type_{{ $accounting->medication_id }}"
-                                                    name="medications[{{ $accounting->medication_id }}][packaging_type]"
-                                                    class="form-control select2" required>
-                                                @foreach(\App\Models\MedicationPackaging::TYPE as $type)
-                                                    <option
-                                                        value="{{ $type }}" {{ $type == $accounting->packaging->packaging_type ? 'selected' : '' }}>{{ $type }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+{{--                                        <div class="form-group mb-3">--}}
+{{--                                            <label for="packaging_type_{{ $accounting->medication_id }}">Тип упаковки--}}
+{{--                                                <span class="text-danger">*</span></label>--}}
+{{--                                            <select id="packaging_type_{{ $accounting->medication_id }}"--}}
+{{--                                                    name="medications[{{ $accounting->medication_id }}][packaging_type]"--}}
+{{--                                                    class="form-control select2" required>--}}
+{{--                                                @foreach(\App\Models\MedicationPackaging::TYPE as $type)--}}
+{{--                                                    <option--}}
+{{--                                                        value="{{ $type }}" {{ $type == $accounting->packaging->packaging_type ? 'selected' : '' }}>{{ $type }}</option>--}}
+{{--                                                @endforeach--}}
+{{--                                            </select>--}}
+{{--                                        </div>--}}
 
-                                        <div class="form-group mb-3">
-                                            <label for="quantity_per_package_{{ $accounting->medication_id }}">Количество
-                                                в упаковке <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <span class="input-group-text"><i class="bx bx-box"></i></span>
-                                                <input type="number"
-                                                       id="quantity_per_package_{{ $accounting->medication_id }}"
-                                                       name="medications[{{ $accounting->medication_id }}][quantity_per_package]"
-                                                       class="form-control" placeholder="Введите количество в упаковке"
-                                                       value="{{ $accounting->packaging->quantity_per_package }}">
-                                            </div>
-                                        </div>
+{{--                                        <div class="form-group mb-3">--}}
+{{--                                            <label for="quantity_per_package_{{ $accounting->medication_id }}">Количество--}}
+{{--                                                в упаковке <span class="text-danger">*</span></label>--}}
+{{--                                            <div class="input-group">--}}
+{{--                                                <span class="input-group-text"><i class="bx bx-box"></i></span>--}}
+{{--                                                <input type="number"--}}
+{{--                                                       id="quantity_per_package_{{ $accounting->medication_id }}"--}}
+{{--                                                       name="medications[{{ $accounting->medication_id }}][quantity_per_package]"--}}
+{{--                                                       class="form-control" placeholder="Введите количество в упаковке"--}}
+{{--                                                       value="{{ $accounting->packaging->quantity_per_package }}">--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
 
-                                        <div class="form-group mb-3">
-                                            <label for="package_size_{{ $accounting->medication_id }}">Размер упаковки
-                                                <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <span class="input-group-text"><i class="bx bx-expand"></i></span>
-                                                <input type="number" id="package_size_{{ $accounting->medication_id }}"
-                                                       name="medications[{{ $accounting->medication_id }}][package_size]"
-                                                       class="form-control" placeholder="Введите размер упаковки"
-                                                       value="{{ $accounting->packaging->package_size }}">
-                                            </div>
-                                        </div>
+{{--                                        <div class="form-group mb-3">--}}
+{{--                                            <label for="package_size_{{ $accounting->medication_id }}">Размер упаковки--}}
+{{--                                                <span class="text-danger">*</span></label>--}}
+{{--                                            <div class="input-group">--}}
+{{--                                                <span class="input-group-text"><i class="bx bx-expand"></i></span>--}}
+{{--                                                <input type="number" id="package_size_{{ $accounting->medication_id }}"--}}
+{{--                                                       name="medications[{{ $accounting->medication_id }}][package_size]"--}}
+{{--                                                       class="form-control" placeholder="Введите размер упаковки"--}}
+{{--                                                       value="{{ $accounting->packaging->package_size }}">--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
 
-                                        <div class="form-group mb-3">
-                                            <label for="packaging_date_{{ $accounting->medication_id }}">Дата упаковки
-                                                <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <span class="input-group-text"><i
-                                                        class="bx bx-calendar-check"></i></span>
-                                                <input type="date" id="packaging_date_{{ $accounting->medication_id }}"
-                                                       name="medications[{{ $accounting->medication_id }}][packaging_date]"
-                                                       class="form-control flatpickr-date" required
-                                                       value="{{ $accounting->packaging->packaging_date }}">
-                                            </div>
-                                        </div>
+{{--                                        <div class="form-group mb-3">--}}
+{{--                                            <label for="packaging_date_{{ $accounting->medication_id }}">Дата упаковки--}}
+{{--                                                <span class="text-danger">*</span></label>--}}
+{{--                                            <div class="input-group">--}}
+{{--                                                <span class="input-group-text"><i--}}
+{{--                                                        class="bx bx-calendar-check"></i></span>--}}
+{{--                                                <input type="date" id="packaging_date_{{ $accounting->medication_id }}"--}}
+{{--                                                       name="medications[{{ $accounting->medication_id }}][packaging_date]"--}}
+{{--                                                       class="form-control flatpickr-date" required--}}
+{{--                                                       value="{{ $accounting->packaging->packaging_date }}">--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
 
-                                        <h6>Стоимость и поставки</h6>
+{{--                                        <h6>Стоимость и поставки</h6>--}}
 
-                                        <div class="form-group mb-3">
-                                            <label for="retail_price_{{ $accounting->medication_id }}">Розничная
-                                                цена</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text"><i class="bx bx-money"></i></span>
-                                                <input type="number" id="retail_price_{{ $accounting->medication_id }}"
-                                                       name="medications[{{ $accounting->medication_id }}][retail_price]"
-                                                       class="form-control" placeholder="Розничная цена"
-                                                       value="{{ $accounting->medicationCost->retail_price }}">
-                                            </div>
-                                        </div>
+{{--                                        <div class="form-group mb-3">--}}
+{{--                                            <label for="retail_price_{{ $accounting->medication_id }}">Розничная--}}
+{{--                                                цена</label>--}}
+{{--                                            <div class="input-group">--}}
+{{--                                                <span class="input-group-text"><i class="bx bx-money"></i></span>--}}
+{{--                                                <input type="number" id="retail_price_{{ $accounting->medication_id }}"--}}
+{{--                                                       name="medications[{{ $accounting->medication_id }}][retail_price]"--}}
+{{--                                                       class="form-control" placeholder="Розничная цена"--}}
+{{--                                                       value="{{ $accounting->medicationCost->retail_price }}">--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
 
-                                        <div class="form-group mb-3">
-                                            <label for="wholesale_price_{{ $accounting->medication_id }}">Закупочная
-                                                цена</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text"><i class="bx bx-wallet"></i></span>
-                                                <input type="number"
-                                                       id="wholesale_price_{{ $accounting->medication_id }}"
-                                                       name="medications[{{ $accounting->medication_id }}][wholesale_price]"
-                                                       class="form-control" placeholder="Закупочная цена"
-                                                       value="{{ $accounting->medicationCost->wholesale_price }}">
-                                            </div>
-                                        </div>
+{{--                                        <div class="form-group mb-3">--}}
+{{--                                            <label for="wholesale_price_{{ $accounting->medication_id }}">Закупочная--}}
+{{--                                                цена</label>--}}
+{{--                                            <div class="input-group">--}}
+{{--                                                <span class="input-group-text"><i class="bx bx-wallet"></i></span>--}}
+{{--                                                <input type="number"--}}
+{{--                                                       id="wholesale_price_{{ $accounting->medication_id }}"--}}
+{{--                                                       name="medications[{{ $accounting->medication_id }}][wholesale_price]"--}}
+{{--                                                       class="form-control" placeholder="Закупочная цена"--}}
+{{--                                                       value="{{ $accounting->medicationCost->wholesale_price }}">--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
 
-                                        <div class="form-group mb-3">
-                                            <label for="supplier_{{ $accounting->medication_id }}">Поставщик (должен
-                                                совпадать с производителем препарата)
-                                                <span class="text-danger">*</span></label>
-                                            <select id="supplier_{{ $accounting->medication_id }}"
-                                                    name="medications[{{ $accounting->medication_id }}][supplier_id]"
-                                                    class="form-control select2" required>
-                                                @foreach($suppliers as $supplier)
-                                                    <option
-                                                        value="{{ $supplier->id }}" {{ $supplier->id == $accounting->medicationCost->supplier_id ? 'selected' : '' }}>{{ $supplier->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
+{{--                                        <div class="form-group mb-3">--}}
+{{--                                            <label for="supplier_{{ $accounting->medication_id }}">Поставщик (должен--}}
+{{--                                                совпадать с производителем препарата)--}}
+{{--                                                <span class="text-danger">*</span></label>--}}
+{{--                                            <select id="supplier_{{ $accounting->medication_id }}"--}}
+{{--                                                    name="medications[{{ $accounting->medication_id }}][supplier_id]"--}}
+{{--                                                    class="form-control select2" required>--}}
+{{--                                                @foreach($suppliers as $supplier)--}}
+{{--                                                    <option--}}
+{{--                                                        value="{{ $supplier->id }}" {{ $supplier->id == $accounting->medicationCost->supplier_id ? 'selected' : '' }}>{{ $supplier->name }}</option>--}}
+{{--                                                @endforeach--}}
+{{--                                            </select>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                @endforeach--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
 
-                        <!-- Шаблон для динамических полей (скрыт) -->
-                        <div id="medication-details-template" style="display: none;">
+{{--                        <!-- Шаблон для динамических полей (скрыт) -->--}}
+{{--                        <div id="medication-details-template" style="display: none;">--}}
 
-                            <div class="medication-details">
-                                <h5>Медикамент: <span class="medication-name"></span></h5>
-                                <input type="hidden" name="medications[ID][id]" value="ID">
+{{--                            <div class="medication-details">--}}
+{{--                                <h5>Медикамент: <span class="medication-name"></span></h5>--}}
+{{--                                <input type="hidden" name="medications[ID][id]" value="ID">--}}
 
-                                <div class="form-group mb-3">
-                                    <label for="quantity_ID">Количество <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bx bx-plus"></i></span>
-                                        <input type="number" id="quantity_ID" name="medications[ID][quantity]"
-                                               class="form-control" placeholder="Введите количество">
-                                    </div>
-                                </div>
+{{--                                <div class="form-group mb-3">--}}
+{{--                                    <label for="quantity_ID">Количество <span class="text-danger">*</span></label>--}}
+{{--                                    <div class="input-group">--}}
+{{--                                        <span class="input-group-text"><i class="bx bx-plus"></i></span>--}}
+{{--                                        <input type="number" id="quantity_ID" name="medications[ID][quantity]"--}}
+{{--                                               class="form-control" placeholder="Введите количество">--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
 
-                                <div class="form-group mb-3">
-                                    <label for="expiration_date_ID">Срок годности <span
-                                            class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bx bx-calendar"></i></span>
-                                        <input type="date" id="expiration_date_ID"
-                                               name="medications[ID][expiration_date]"
-                                               placeholder="YYYY-MM-DD"
-                                               class="form-control flatpickr-date">
-                                    </div>
-                                </div>
+{{--                                <div class="form-group mb-3">--}}
+{{--                                    <label for="expiration_date_ID">Срок годности <span--}}
+{{--                                            class="text-danger">*</span></label>--}}
+{{--                                    <div class="input-group">--}}
+{{--                                        <span class="input-group-text"><i class="bx bx-calendar"></i></span>--}}
+{{--                                        <input type="date" id="expiration_date_ID"--}}
+{{--                                               name="medications[ID][expiration_date]"--}}
+{{--                                               placeholder="YYYY-MM-DD"--}}
+{{--                                               class="form-control flatpickr-date">--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
 
-                                <div class="form-group mb-3">
-                                    <label for="date_of_receipt_ID">Дата получения <span
-                                            class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bx bx-calendar-event"></i></span>
-                                        <input type="date" id="date_of_receipt_ID"
-                                               name="medications[ID][date_of_receipt]"
-                                               placeholder="YYYY-MM-DD"
-                                               class="form-control flatpickr-date">
-                                    </div>
-                                </div>
+{{--                                <div class="form-group mb-3">--}}
+{{--                                    <label for="date_of_receipt_ID">Дата получения <span--}}
+{{--                                            class="text-danger">*</span></label>--}}
+{{--                                    <div class="input-group">--}}
+{{--                                        <span class="input-group-text"><i class="bx bx-calendar-event"></i></span>--}}
+{{--                                        <input type="date" id="date_of_receipt_ID"--}}
+{{--                                               name="medications[ID][date_of_receipt]"--}}
+{{--                                               placeholder="YYYY-MM-DD"--}}
+{{--                                               class="form-control flatpickr-date">--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
 
-                                <div class="form-group mb-3">
-                                    <label for="batch_number_ID">Номер партии <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bx bx-barcode"></i></span>
-                                        <input type="text" id="batch_number_ID" name="medications[ID][batch_number]"
-                                               class="form-control" placeholder="Введите номер партии">
-                                    </div>
-                                </div>
+{{--                                <div class="form-group mb-3">--}}
+{{--                                    <label for="batch_number_ID">Номер партии <span class="text-danger">*</span></label>--}}
+{{--                                    <div class="input-group">--}}
+{{--                                        <span class="input-group-text"><i class="bx bx-barcode"></i></span>--}}
+{{--                                        <input type="text" id="batch_number_ID" name="medications[ID][batch_number]"--}}
+{{--                                               class="form-control" placeholder="Введите номер партии">--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
 
-                                <h6>Упаковка:</h6>
+{{--                                <h6>Упаковка:</h6>--}}
 
-                                <div class="form-group mb-3">
-                                    <label for="packaging_type_ID">Тип упаковки <span
-                                            class="text-danger">*</span></label>
-                                    <select id="packaging_type_ID" name="medications[ID][packaging_type]"
-                                            class="form-control select2type" required>
-                                        @foreach(\App\Models\MedicationPackaging::TYPE as $type)
-                                            <option value="{{ $type }}">{{ $type }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+{{--                                <div class="form-group mb-3">--}}
+{{--                                    <label for="packaging_type_ID">Тип упаковки <span--}}
+{{--                                            class="text-danger">*</span></label>--}}
+{{--                                    <select id="packaging_type_ID" name="medications[ID][packaging_type]"--}}
+{{--                                            class="form-control select2type" required>--}}
+{{--                                        @foreach(\App\Models\MedicationPackaging::TYPE as $type)--}}
+{{--                                            <option value="{{ $type }}">{{ $type }}</option>--}}
+{{--                                        @endforeach--}}
+{{--                                    </select>--}}
+{{--                                </div>--}}
 
-                                <div class="form-group mb-3">
-                                    <label for="quantity_per_package_ID">Количество в упаковке <span
-                                            class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bx bx-box"></i></span>
-                                        <input type="number" id="quantity_per_package_ID"
-                                               name="medications[ID][quantity_per_package]" class="form-control"
-                                               placeholder="Введите количество в упаковке">
-                                    </div>
-                                </div>
+{{--                                <div class="form-group mb-3">--}}
+{{--                                    <label for="quantity_per_package_ID">Количество в упаковке <span--}}
+{{--                                            class="text-danger">*</span></label>--}}
+{{--                                    <div class="input-group">--}}
+{{--                                        <span class="input-group-text"><i class="bx bx-box"></i></span>--}}
+{{--                                        <input type="number" id="quantity_per_package_ID"--}}
+{{--                                               name="medications[ID][quantity_per_package]" class="form-control"--}}
+{{--                                               placeholder="Введите количество в упаковке">--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
 
-                                <div class="form-group mb-3">
-                                    <label for="package_size_ID">Размер упаковки <span
-                                            class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bx bx-expand"></i></span>
-                                        <input type="number" id="package_size_ID" name="medications[ID][package_size]"
-                                               placeholder="Введите размер упаковки"
-                                               class="form-control">
-                                    </div>
-                                </div>
+{{--                                <div class="form-group mb-3">--}}
+{{--                                    <label for="package_size_ID">Размер упаковки <span--}}
+{{--                                            class="text-danger">*</span></label>--}}
+{{--                                    <div class="input-group">--}}
+{{--                                        <span class="input-group-text"><i class="bx bx-expand"></i></span>--}}
+{{--                                        <input type="number" id="package_size_ID" name="medications[ID][package_size]"--}}
+{{--                                               placeholder="Введите размер упаковки"--}}
+{{--                                               class="form-control">--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
 
-                                <div class="form-group mb-3">
-                                    <label for="packaging_date_ID">Дата упаковки <span
-                                            class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bx bx-calendar-check"></i></span>
-                                        <input type="text" id="packaging_date_ID" name="medications[ID][packaging_date]"
-                                               placeholder="YYYY-MM-DD"
-                                               class="form-control flatpickr-date" required>
-                                    </div>
-                                </div>
+{{--                                <div class="form-group mb-3">--}}
+{{--                                    <label for="packaging_date_ID">Дата упаковки <span--}}
+{{--                                            class="text-danger">*</span></label>--}}
+{{--                                    <div class="input-group">--}}
+{{--                                        <span class="input-group-text"><i class="bx bx-calendar-check"></i></span>--}}
+{{--                                        <input type="text" id="packaging_date_ID" name="medications[ID][packaging_date]"--}}
+{{--                                               placeholder="YYYY-MM-DD"--}}
+{{--                                               class="form-control flatpickr-date" required>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
 
-                                <h6>Стоимость и поставки</h6>
+{{--                                <h6>Стоимость и поставки</h6>--}}
 
-                                <div class="form-group mb-3">
-                                    <label for="retail_price_ID">Розничная цена </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bx bx-money"></i></span>
-                                        <input type="number" id="retail_price_ID" name="medications[ID][retail_price]"
-                                               class="form-control" placeholder="Розничная цена">
-                                    </div>
-                                </div>
+{{--                                <div class="form-group mb-3">--}}
+{{--                                    <label for="retail_price_ID">Розничная цена </label>--}}
+{{--                                    <div class="input-group">--}}
+{{--                                        <span class="input-group-text"><i class="bx bx-money"></i></span>--}}
+{{--                                        <input type="number" id="retail_price_ID" name="medications[ID][retail_price]"--}}
+{{--                                               class="form-control" placeholder="Розничная цена">--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
 
-                                <div class="form-group mb-3">
-                                    <label for="wholesale_price_ID">Закупочная цена </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bx bx-wallet"></i></span>
-                                        <input type="number" id="wholesale_price_ID"
-                                               name="medications[ID][wholesale_price]" class="form-control"
-                                               placeholder="Закупочная цена">
-                                    </div>
-                                </div>
+{{--                                <div class="form-group mb-3">--}}
+{{--                                    <label for="wholesale_price_ID">Закупочная цена </label>--}}
+{{--                                    <div class="input-group">--}}
+{{--                                        <span class="input-group-text"><i class="bx bx-wallet"></i></span>--}}
+{{--                                        <input type="number" id="wholesale_price_ID"--}}
+{{--                                               name="medications[ID][wholesale_price]" class="form-control"--}}
+{{--                                               placeholder="Закупочная цена">--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
 
-                                <div class="form-group mb-3">
-                                    <label for="supplier_ID">Поставщик (должен совпадать с производителем препарата)
-                                        <span class="text-danger">*</span></label>
-                                    <select id="supplier_ID" name="medications[ID][supplier_id]"
-                                            class="form-control select2type" required>
-                                        @foreach($suppliers as $supplier)
-                                            <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+{{--                                <div class="form-group mb-3">--}}
+{{--                                    <label for="supplier_ID">Поставщик (должен совпадать с производителем препарата)--}}
+{{--                                        <span class="text-danger">*</span></label>--}}
+{{--                                    <select id="supplier_ID" name="medications[ID][supplier_id]"--}}
+{{--                                            class="form-control select2type" required>--}}
+{{--                                        @foreach($suppliers as $supplier)--}}
+{{--                                            <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>--}}
+{{--                                        @endforeach--}}
+{{--                                    </select>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
 
-                        <!-- Navigation -->
-                        <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev">
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+{{--                        <!-- Navigation -->--}}
+{{--                        <div class="col-12 d-flex justify-content-between">--}}
+{{--                            <button class="btn btn-primary btn-prev">--}}
+{{--                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад--}}
+{{--                            </button>--}}
+{{--                            <button class="btn btn-primary btn-next">--}}
+{{--                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>--}}
+{{--                            </button>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
 
-                <!-- Расходные Материалы -->
-                <div id="supplies" class="content">
-                    <div class="content-header mb-3">
-                        <h6 class="mb-0">Расходные Материалы</h6>
-                    </div>
-                    <div class="row g-3">
-                        <!-- Расходные Материалы -->
-                        <div class="col-sm-12">
-                            <label class="form-label" for="supply">Расходные Материалы <span
-                                    class="text-danger">*</span></label>
-                            <select id="supply" name="supplies[]"
-                                    class="form-control select2 @error('supplies') is-invalid @enderror"
-                                    multiple="multiple">
-                                @foreach($supplies as $supply)
-                                    <option
-                                        value="{{ $supply->id }}" @selected(in_array($supply->id, old('supplies', $warehouse->medicalSupplies->pluck('id')->toArray())))>{{ $supply->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('supplies')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
+{{--                <!-- Расходные Материалы -->--}}
+{{--                <div id="supplies" class="content">--}}
+{{--                    <div class="content-header mb-3">--}}
+{{--                        <h6 class="mb-0">Расходные Материалы</h6>--}}
+{{--                    </div>--}}
+{{--                    <div class="row g-3">--}}
+{{--                        <!-- Расходные Материалы -->--}}
+{{--                        <div class="col-sm-12">--}}
+{{--                            <label class="form-label" for="supply">Расходные Материалы <span--}}
+{{--                                    class="text-danger">*</span></label>--}}
+{{--                            <select id="supply" name="supplies[]"--}}
+{{--                                    class="form-control select2 @error('supplies') is-invalid @enderror"--}}
+{{--                                    multiple="multiple">--}}
+{{--                                @foreach($supplies as $supply)--}}
+{{--                                    <option--}}
+{{--                                        value="{{ $supply->id }}" @selected(in_array($supply->id, old('supplies', $warehouse->medicalSupplies->pluck('id')->toArray())))>{{ $supply->name }}</option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                            @error('supplies')--}}
+{{--                            <div class="invalid-feedback">--}}
+{{--                                {{ $message }}--}}
+{{--                            </div>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
 
-                        <!-- Контейнер для динамических полей -->
-                        <div id="supply-details-container">
-                            <div id="supply-details-container">
-                                @foreach($warehouse->medicalSupplies as $supply)
-                                    <div class="supply-details" data-id="{{ $supply->pivot->supply_id }}">
-                                        <h5>Медикамент: {{ $supply->name }}</h5>
-                                        <input type="hidden" name="supplies[{{ $supply->pivot->supply_id }}][id]"
-                                               value="{{ $supply->pivot->supply_id }}">
+{{--                        <!-- Контейнер для динамических полей -->--}}
+{{--                        <div id="supply-details-container">--}}
+{{--                            <div id="supply-details-container">--}}
+{{--                                @foreach($warehouse->medicalSupplies as $supply)--}}
+{{--                                    <div class="supply-details" data-id="{{ $supply->pivot->supply_id }}">--}}
+{{--                                        <h5>Медикамент: {{ $supply->name }}</h5>--}}
+{{--                                        <input type="hidden" name="supplies[{{ $supply->pivot->supply_id }}][id]"--}}
+{{--                                               value="{{ $supply->pivot->supply_id }}">--}}
 
-                                        <div class="form-group mb-3">
-                                            <label for="quantity_{{ $supply->pivot->supply_id }}">Количество <span
-                                                    class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <span class="input-group-text"><i class="bx bx-plus"></i></span>
-                                                <input type="number" id="quantity_{{ $supply->pivot->supply_id }}"
-                                                       name="supplies[{{ $supply->pivot->supply_id }}][quantity]"
-                                                       class="form-control" placeholder="Введите количество"
-                                                       value="{{ $supply->pivot->quantity }}">
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
+{{--                                        <div class="form-group mb-3">--}}
+{{--                                            <label for="quantity_{{ $supply->pivot->supply_id }}">Количество <span--}}
+{{--                                                    class="text-danger">*</span></label>--}}
+{{--                                            <div class="input-group">--}}
+{{--                                                <span class="input-group-text"><i class="bx bx-plus"></i></span>--}}
+{{--                                                <input type="number" id="quantity_{{ $supply->pivot->supply_id }}"--}}
+{{--                                                       name="supplies[{{ $supply->pivot->supply_id }}][quantity]"--}}
+{{--                                                       class="form-control" placeholder="Введите количество"--}}
+{{--                                                       value="{{ $supply->pivot->quantity }}">--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                @endforeach--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
 
-                        <!-- Шаблон для динамических полей (скрыт) -->
-                        <div id="supply-details-template" style="display: none;">
-                            <div class="supply-details">
-                                <h5>Расходные Материал: <span class="supply-name"></span></h5>
-                                <input type="hidden" name="supplies[ID][id]" value="ID">
+{{--                        <!-- Шаблон для динамических полей (скрыт) -->--}}
+{{--                        <div id="supply-details-template" style="display: none;">--}}
+{{--                            <div class="supply-details">--}}
+{{--                                <h5>Расходные Материал: <span class="supply-name"></span></h5>--}}
+{{--                                <input type="hidden" name="supplies[ID][id]" value="ID">--}}
 
-                                <div class="form-group mb-3">
-                                    <label for="quantity_ID">Количество <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bx bx-plus"></i></span>
-                                        <input type="number" id="quantity_ID" name="supplies[ID][quantity]"
-                                               class="form-control" placeholder="Введите количество">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+{{--                                <div class="form-group mb-3">--}}
+{{--                                    <label for="quantity_ID">Количество <span class="text-danger">*</span></label>--}}
+{{--                                    <div class="input-group">--}}
+{{--                                        <span class="input-group-text"><i class="bx bx-plus"></i></span>--}}
+{{--                                        <input type="number" id="quantity_ID" name="supplies[ID][quantity]"--}}
+{{--                                               class="form-control" placeholder="Введите количество">--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
 
-                        <!-- Навигация -->
-                        <div class="col-12 d-flex justify-content-between">
-                            <button class="btn btn-primary btn-prev">
-                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад
-                            </button>
-                            <button class="btn btn-primary btn-next">
-                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+{{--                        <!-- Навигация -->--}}
+{{--                        <div class="col-12 d-flex justify-content-between">--}}
+{{--                            <button class="btn btn-primary btn-prev">--}}
+{{--                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i> Назад--}}
+{{--                            </button>--}}
+{{--                            <button class="btn btn-primary btn-next">--}}
+{{--                                Далее <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>--}}
+{{--                            </button>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
 
                 <!-- Хранение -->
                 <div id="resources" class="content">
