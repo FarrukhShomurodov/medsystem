@@ -51,7 +51,7 @@ class MainWarehouseService
                 })->toArray();
 
                 foreach ($cleanedSupplies as $id => $data) {
-                    $existing = $warehouse->medicalSupplies()->wherePivot('medical_supply_id', $id)->first();
+                    $existing = $warehouse->medicalSupplies()->wherePivot('supply_id', $id)->first();
 
                     if ($existing) {
                         $warehouse->medicalSupplies()->updateExistingPivot($id, [
