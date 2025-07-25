@@ -32,9 +32,9 @@
 @section('content')
 
 
-    <div class="telegram-alert alert alert-info">🩺 Новое: ЭКГ в 10:00</div>
-    <div class="telegram-alert alert alert-success">🔬 Лаб. анализ: ОАК</div>
-    <div class="telegram-alert alert alert-warning">💉 Инъекция: Цефтриаксон</div>
+    <div class="telegram-alert alert-info">🩺 Новое: ЭКГ в 10:00</div>
+    <div class="telegram-alert alert-success">🔬 Лаб. анализ: ОАК</div>
+    <div class="telegram-alert alert-warning">💉 Инъекция: Цефтриаксон</div>
 
     <style>
         .telegram-alert {
