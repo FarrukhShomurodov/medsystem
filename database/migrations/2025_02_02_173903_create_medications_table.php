@@ -16,6 +16,12 @@ return new class extends Migration {
             $table->foreignId('group_id')->constrained('medication_groups')->cascadeOnDelete();
             $table->string('registration_number');
             $table->date('registration_date');
+
+            $table->integer('min_deduction');
+            $table->integer('min_quantity');
+            $table->integer('notify_before_days');
+            $table->integer('notify_min_qty');
+
             $table->timestamps();
         });
     }

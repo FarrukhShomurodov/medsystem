@@ -216,6 +216,92 @@
                             @enderror
                         </div>
 
+                        {{-- new --}}
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-min_deduction">Минимальное списание
+                                <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-company2"
+                                  class="input-group-text @error('min_deduction') text-danger icon-border @enderror"><i
+                                    class="bx bx-rename"></i></span>
+                                <input type="text" id="basic-icon-default-min_deduction"
+                                       class="form-control @error('min_deduction') is-invalid @enderror"
+                                       placeholder="Минимальное списание" aria-label="Минимальное списание"
+                                       name="min_deduction"
+                                       value="{{ old('min_deduction', $medication->min_deduction) }}"
+                                       aria-describedby="basic-icon-default-company2" required/>
+                            </div>
+                            @error('min_deduction')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-min_deduction">Минимальное количество
+                                <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-company2"
+                                  class="input-group-text @error('min_quantity') text-danger icon-border @enderror"><i
+                                    class="bx bx-rename"></i></span>
+                                <input type="text" id="basic-icon-default-min_quantity"
+                                       class="form-control @error('min_quantity') is-invalid @enderror"
+                                       placeholder="Минимальное количество" aria-label="Минимальное количество"
+                                       name="min_quantity"
+                                       value="{{ old('min_quantity', $medication->min_quantity) }}"
+                                       aria-describedby="basic-icon-default-company2" required/>
+                            </div>
+                            @error('min_quantity')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="form-label" for="basic-icon-default-notify_before_days">Уведомить о сроке за
+                                сколько дней
+                                <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-company2"
+                                  class="input-group-text @error('notify_before_days') text-danger icon-border @enderror"><i
+                                    class="bx bx-rename"></i></span>
+                                <input type="text" id="basic-icon-default-notify_before_days"
+                                       class="form-control @error('notify_before_days') is-invalid @enderror"
+                                       placeholder="Уведомить о сроке за сколько дней"
+                                       aria-label="Уведомить о сроке за сколько дней"
+                                       name="notify_before_days"
+                                       value="{{ old('notify_before_days',$medication->notify_before_days) }}"
+                                       aria-describedby="basic-icon-default-company2" required/>
+                            </div>
+                            @error('notify_before_days')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-sm-12">
+                            <label class="form-label" for="basic-icon-default-notify_min_qty">Уведомить за какое
+                                минимальное количество
+                                <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-company2"
+                                  class="input-group-text @error('notify_min_qty') text-danger icon-border @enderror"><i
+                                    class="bx bx-rename"></i></span>
+                                <input type="text" id="basic-icon-default-notify_min_qty"
+                                       class="form-control @error('notify_min_qty') is-invalid @enderror"
+                                       placeholder="Уведомить за какое минимальное количество"
+                                       aria-label="Уведомить за какое минимальное количество"
+                                       name="notify_min_qty"
+                                       value="{{ old('notify_min_qty',$medication->notify_min_qty) }}"
+                                       aria-describedby="basic-icon-default-company2" required/>
+                            </div>
+                            @error('notify_min_qty')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+
                         <!-- Navigation -->
                         <div class="col-12 d-flex justify-content-between">
                             <button class="btn btn-label-secondary btn-prev" disabled>
@@ -460,7 +546,9 @@
                             <select id="storage_conditions" name="storage_conditions"
                                     class="form-control select2 @error('storage_conditions') is-invalid @enderror"
                                     required>
-                                <option value="" disabled {{ old('storage_conditions', $medication->storage->storage_conditions) ? '' : 'selected' }}>Выберите
+                                <option value=""
+                                        disabled {{ old('storage_conditions', $medication->storage->storage_conditions) ? '' : 'selected' }}>
+                                    Выберите
                                     условие хранения
                                 </option>
                                 <option

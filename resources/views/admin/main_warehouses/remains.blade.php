@@ -97,8 +97,8 @@
                         $class = '';
 
                         $expirationDate = \Carbon\Carbon::parse($item->pivot->expiration_date);
-                        $isExpiringSoon = $expirationDate->lt(now()->addDays(30));
-                        $isLowStock = $item->pivot->quantity < 20;
+                        $isExpiringSoon = $expirationDate->lt(now()->addDays($item->medication->notify_before_days));
+                        $isLowStock = $item->pivot->quantity < $item->medication->notify_min_qty;
 
                         if ($isExpiringSoon && $isLowStock) {
                             $class = 'bg-danger text-white';

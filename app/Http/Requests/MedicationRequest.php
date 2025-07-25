@@ -29,6 +29,12 @@ class MedicationRequest extends FormRequest
             'registration_number' => 'required|string|max:255',
             'registration_date' => 'required|date',
 
+            'min_deduction' => 'required|int',
+            'min_quantity' => 'required|int',
+            'notify_before_days' => 'required|int',
+            'notify_min_qty' => 'required|int',
+
+
             //composition
             'active_substance_name' => 'required|string|max:255',
             'active_substance_dosage' => 'required|string|max:255',

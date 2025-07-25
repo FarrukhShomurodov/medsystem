@@ -18,6 +18,11 @@ class Medication extends Model
         'group_id',
         'registration_number',
         'registration_date',
+
+        'min_deduction',
+        'min_quantity',
+        'notify_before_days',
+        'notify_min_qty',
     ];
 
     const RELEASEFORM = [
