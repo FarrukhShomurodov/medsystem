@@ -405,121 +405,165 @@
             // Шаблон для медикаментов
             function createMedicationTemplate(id, name) {
                 return `
-                    <div class="product-details" data-id="${id}">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="product-title">${name}</h5>
-                            <button class="btn btn-sm btn-outline-danger remove-item"><i class="fas fa-times"></i></button>
-                        </div>
-                        <input type="hidden" name="medications[${id}][id]" value="${id}">
+        <div class="product-details" data-id="${id}">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="product-title">${name}</h5>
+                <button class="btn btn-sm btn-outline-danger remove-item"><i class="fas fa-times"></i></button>
+            </div>
+            <input type="hidden" name="medications[${id}][id]" value="${id}">
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label" for="quantity_${id}">Количество <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-calculator"></i></span>
-                                        <input type="number" id="quantity_${id}" name="medications[${id}][quantity]" class="form-control" placeholder="Введите количество">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label" for="expiration_date_${id}">Срок годности <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                                        <input type="date" id="expiration_date_${id}" name="medications[${id}][expiration_date]" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="quantity_${id}">Количество <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-calculator"></i></span>
+                            <input type="number" id="quantity_${id}" name="medications[${id}][quantity]" class="form-control" placeholder="Введите количество">
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label" for="date_of_receipt_${id}">Дата получения <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-truck"></i></span>
-                                        <input type="date" id="date_of_receipt_${id}" name="medications[${id}][date_of_receipt]" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label" for="batch_number_${id}">Номер партии <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-barcode"></i></span>
-                                        <input type="text" id="batch_number_${id}" name="medications[${id}][batch_number]" class="form-control" placeholder="Введите номер партии">
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="expiration_date_${id}">Срок годности <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                            <input type="date" id="expiration_date_${id}" name="medications[${id}][expiration_date]" class="form-control">
                         </div>
+                    </div>
+                </div>
+            </div>
 
-                        <h6 class="sub-section-title">Упаковка</h6>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label" for="packaging_type_${id}">Тип упаковки</label>
-                                    <select id="packaging_type_${id}" name="medications[${id}][packaging_type]" class="form-select">
-                                        <option>блистер</option>
-                                        <option>флакон</option>
-                                        <option>тюбик</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label" for="quantity_per_package_${id}">Кол-во в упаковке</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-box"></i></span>
-                                        <input type="number" id="quantity_per_package_${id}" name="medications[${id}][quantity_per_package]" class="form-control" placeholder="Введите количество">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label" for="package_size_${id}">Размер упаковки</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-ruler"></i></span>
-                                        <input type="number" id="package_size_${id}" name="medications[${id}][package_size]" class="form-control" placeholder="Введите размер">
-                                    </div>
-                                </div>
-                            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="date_of_receipt_${id}">Дата получения <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-truck"></i></span>
+                            <input type="date" id="date_of_receipt_${id}" name="medications[${id}][date_of_receipt]" class="form-control">
                         </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="batch_number_${id}">Номер партии <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                            <input type="text" id="batch_number_${id}" name="medications[${id}][batch_number]" class="form-control" placeholder="Введите номер партии">
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                        <h6 class="sub-section-title">Стоимость и поставки</h6>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label" for="retail_price_${id}">Розничная цена</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                                        <input type="number" id="retail_price_${id}" name="medications[${id}][retail_price]" class="form-control" placeholder="Введите цену">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label" for="wholesale_price_${id}">Закупочная цена</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-file-invoice-dollar"></i></span>
-                                        <input type="number" id="wholesale_price_${id}" name="medications[${id}][wholesale_price]" class="form-control" placeholder="Введите цену">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label" for="supplier_${id}">Поставщик</label>
-                                    <select id="supplier_${id}" name="medications[${id}][supplier_id]" class="form-select">
-                                        @foreach($suppliers as $supplier)
+            <h6 class="sub-section-title">Упаковка</h6>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="packaging_type_${id}">Тип упаковки</label>
+                        <select id="packaging_type_${id}" name="medications[${id}][packaging_type]" class="form-select">
+                            <option>блистер</option>
+                            <option>флакон</option>
+                            <option>тюбик</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="quantity_per_package_${id}">Кол-во в упаковке</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-box"></i></span>
+                            <input type="number" id="quantity_per_package_${id}" name="medications[${id}][quantity_per_package]" class="form-control" placeholder="Введите количество">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="package_size_${id}">Размер упаковки</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-ruler"></i></span>
+                            <input type="number" id="package_size_${id}" name="medications[${id}][package_size]" class="form-control" placeholder="Введите размер">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h6 class="sub-section-title">Стоимость и поставки</h6>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="retail_price_${id}">Розничная цена</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                            <input type="number" id="retail_price_${id}" name="medications[${id}][retail_price]" class="form-control" placeholder="Введите цену">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="wholesale_price_${id}">Закупочная цена</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-file-invoice-dollar"></i></span>
+                            <input type="number" id="wholesale_price_${id}" name="medications[${id}][wholesale_price]" class="form-control" placeholder="Введите цену">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="supplier_${id}">Поставщик</label>
+                        <select id="supplier_${id}" name="medications[${id}][supplier_id]" class="form-select">
+                                @foreach($suppliers as $supplier)
                 <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
-                                        @endforeach
+                                @endforeach
+
                 </select>
             </div>
         </div>
     </div>
-</div>
-`;
+
+    <h6 class="sub-section-title">Дополнительные поля</h6>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label class="form-label" for="markup_${id}">Наценка (%)</label>
+                        <input type="number" step="0.01" id="markup_${id}" name="medications[${id}][markup]" class="form-control" placeholder="Введите наценку">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="total_price_${id}">Сумма</label>
+                        <input type="number" step="0.01" id="total_price_${id}" name="medications[${id}][total_price]" class="form-control" placeholder="Введите сумму">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="incoming_price_total_${id}">Цена вх. (всего)</label>
+                        <input type="number" step="0.01" id="incoming_price_total_${id}" name="medications[${id}][incoming_price_total]" class="form-control" placeholder="Введите цену">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="incoming_price_per_unit_${id}">Цена вх. за ед.</label>
+                        <input type="number" step="0.0001" id="incoming_price_per_unit_${id}" name="medications[${id}][incoming_price_per_unit]" class="form-control" placeholder="Введите цену">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="incoming_sum_${id}">Сумма вх.</label>
+                        <input type="number" step="0.01" id="incoming_sum_${id}" name="medications[${id}][incoming_sum]" class="form-control" placeholder="Введите сумму">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="stock_${id}">Остатки</label>
+                        <input type="number" id="stock_${id}" name="medications[${id}][stock]" class="form-control" placeholder="Введите остаток">
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
             }
+
 
             // Шаблон для расходных материалов
             function createSupplyTemplate(id, name) {

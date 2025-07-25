@@ -32,6 +32,12 @@ class MainWarehouseService
                         'packaging_type' => $medication['packaging_type'],
                         'quantity_per_package' => $medication['quantity_per_package'],
                         'package_size' => $medication['package_size'],
+                        'markup' => $medication['markup'],
+                        'total_price' => $medication['total_price'],
+                        'incoming_price_total' => $medication['incoming_price_total'],
+                        'incoming_sum' => $medication['incoming_sum'],
+                        'incoming_price_per_unit' => $medication['incoming_price_per_unit'],
+                        'stock' => $medication['stock'],
                     ];
                 }
 

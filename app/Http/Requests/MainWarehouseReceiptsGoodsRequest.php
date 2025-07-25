@@ -54,6 +54,13 @@ class MainWarehouseReceiptsGoodsRequest extends FormRequest
             "medications.*.wholesale_price" => 'required|int',
             "medications.*.supplier_id" => 'required|int',
 
+            "medications.*.markup" => 'required|numeric|min:0',
+            "medications.*.total_price" => 'required|numeric|min:0',
+            "medications.*.incoming_price_total" => 'required|numeric|min:0',
+            "medications.*.incoming_price_per_unit" => 'required|numeric|min:0',
+            "medications.*.incoming_sum" => 'required|numeric|min:0',
+            "medications.*.stock" => 'required|integer|min:0',
+
             'supplies' => 'nullable|array',
             'supplies.*.id' => 'required|int',
             'supplies.*.quantity' => 'required|int',

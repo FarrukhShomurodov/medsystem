@@ -77,9 +77,16 @@
                     <th>Дата упаковки</th>
                     <th>Розн. цена</th>
                     <th>Опт. цена</th>
+                    <th>Наценка</th>
+                    <th>Цена вход. итого</th>
+                    <th>Цена вход. за ед.</th>
+                    <th>Сумма входящая</th>
+                    <th>Итоговая цена</th>
+                    <th>Остаток на складе</th>
                     <th>Поставщик</th>
                     <th></th>
                 </tr>
+
                 </thead>
                 <tbody>
                 @php $index = 1; @endphp
@@ -106,9 +113,7 @@
                         <td><span class="badge bg-info">Медикамент</span></td>
                         <td>{{ $item->name }}</td>
                         <td>{{ $item->pivot->quantity }}</td>
-                        <td>
-                            {{ $item->pivot->expiration_date?->format('d.m.Y') ?? '—' }}
-                        </td>
+                        <td>{{ $item->pivot->expiration_date?->format('d.m.Y') ?? '—' }}</td>
                         <td>{{ $item->pivot->date_of_receipt ?? '—' }}</td>
                         <td>{{ $item->pivot->batch_number ?? '—' }}</td>
                         <td>{{ $item->pivot->packaging_type ?? '—' }}</td>
@@ -117,6 +122,15 @@
                         <td>{{ $item->pivot->packaging_date ?? '—' }}</td>
                         <td>{{ $item->pivot->retail_price ?? '—' }}</td>
                         <td>{{ $item->pivot->wholesale_price ?? '—' }}</td>
+
+                        {{-- 🔽 Новые поля --}}
+                        <td>{{ $item->pivot->markup ?? '—' }}</td>
+                        <td>{{ $item->pivot->incoming_price_total ?? '—' }}</td>
+                        <td>{{ $item->pivot->incoming_price_per_unit ?? '—' }}</td>
+                        <td>{{ $item->pivot->incoming_sum ?? '—' }}</td>
+                        <td>{{ $item->pivot->total_price ?? '—' }}</td>
+                        <td>{{ $item->pivot->stock ?? '—' }}</td>
+
                         <td>{{ $item->pivot->supplier?->name ?? '—' }}</td>
                         <td>
                             <button class="btn btn-sm btn-primary" onclick="window.location.href='{{ route('main.warehouse.receipts.goods.discard', ['type' => 'medications', 'id' => $item->id]) }}'">

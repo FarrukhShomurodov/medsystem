@@ -66,7 +66,9 @@ class MainWarehouseController extends Controller
             $remainMedications = $warehouse->medication()->withPivot([
                 'quantity', 'expiration_date', 'date_of_receipt', 'batch_number',
                 'retail_price', 'wholesale_price', 'supplier_id',
-                'packaging_type', 'quantity_per_package', 'package_size', 'packaging_date'
+                'packaging_type', 'quantity_per_package', 'package_size', 'packaging_date',
+                'markup', 'markup', 'incoming_price_total', 'incoming_price_per_unit ', 'incoming_sum', 'total_price', 'stock',
+
             ])->wherePivot('quantity', '<', 20)->get();
         }
 

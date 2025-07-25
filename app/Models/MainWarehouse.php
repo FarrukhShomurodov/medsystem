@@ -53,6 +53,12 @@ class MainWarehouse extends Model
                 'quantity_per_package',
                 'package_size',
                 'packaging_date',
+                'markup',
+                'total_price',
+                'incoming_price_total',
+                'incoming_price_per_unit',
+                'incoming_sum',
+                'stock',
             ]);
     }
 }
