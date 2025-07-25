@@ -19,14 +19,6 @@ class DocumentSeeder extends Seeder
         $questions = [
             // Основная информация о пациенте
             [
-                'question' => 'ФИО пациента',
-                'type' => 'text',
-            ],
-            [
-                'question' => 'Дата рождения',
-                'type' => 'text',
-            ],
-            [
                 'question' => 'Дата и время начала осмотра (дата)',
                 'type' => 'text',
             ],
@@ -253,20 +245,6 @@ class DocumentSeeder extends Seeder
                 ]
             ],
 
-            // Возрастные категории
-            [
-                'question' => 'Ребёнок относится к категории',
-                'type' => 'choice',
-                'options' => [
-                    'Дети до 1 года',
-                    'От 1 до 3 лет',
-                    'От 3 до 5 лет',
-                    'От 5 до 7 лет',
-                    'От 7 до 10 лет',
-                    'От 10 до 18 лет'
-                ]
-            ],
-
             // Для детей до 1 года
             [
                 'question' => 'Оценка боли для детей до 1 года (выражение лица)',
@@ -468,21 +446,6 @@ class DocumentSeeder extends Seeder
 
         $humptyDumptyQuestions = [
             // Humpty Dumpty Scale questions
-            [
-                'question' => 'Возраст',
-                'type' => 'choice',
-                'options' => [
-                    'Младше 3-х лет',
-                    'От 3 до 7 лет',
-                    'От 7 до 13 лет',
-                    'От 13 до 18 лет'
-                ],
-            ],
-            [
-                'question' => 'Пол',
-                'type' => 'choice',
-                'options' => ['Мужской', 'Женский'],
-            ],
             [
                 'question' => 'Диагноз',
                 'type' => 'choice',
