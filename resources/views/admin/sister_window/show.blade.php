@@ -30,6 +30,22 @@
 </style>
 
 @section('content')
+
+
+    <div class="telegram-alert alert alert-info">🩺 Новое: ЭКГ в 10:00</div>
+    <div class="telegram-alert alert alert-success">🔬 Лаб. анализ: ОАК</div>
+    <div class="telegram-alert alert alert-warning">💉 Инъекция: Цефтриаксон</div>
+
+    <style>
+        .telegram-alert {
+            border-radius: 10px;
+            padding: 10px 15px;
+            font-size: 15px;
+            margin-bottom: 8px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+    </style>
+
     <div class="card">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-header">Пациенты </h5>
@@ -320,7 +336,7 @@
 
                         <!-- Препараты -->
                         <div id="medications" class="tab-content active">
-                            <table class="compact-table table table-bordered">
+                            <table class="table table-bordered">
                                 <thead>
                                 <tr>
                                     <th>Время</th>
@@ -331,20 +347,19 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <!-- Примерные данные -->
-                                <tr><td>07:00</td><td>Омепразол</td><td>20 мг</td><td><span class="status-indicator pending"></span>Ожидает</td><td>...</td></tr>
-                                <tr><td>08:00</td><td>Амоксициллин</td><td>500 мг</td><td><span class="status-indicator completed"></span>Принято</td><td>...</td></tr>
-                                <tr><td>09:00</td><td>Метформин</td><td>850 мг</td><td><span class="status-indicator pending"></span>Ожидает</td><td>...</td></tr>
-                                <tr><td>12:00</td><td>Парацетамол</td><td>325 мг</td><td><span class="status-indicator not-completed"></span>Отказ</td><td>...</td></tr>
-                                <tr><td>14:00</td><td>Аторвастатин</td><td>10 мг</td><td><span class="status-indicator pending"></span>Ожидает</td><td>...</td></tr>
-                                <tr><td>20:00</td><td>Амоксициллин</td><td>500 мг</td><td><span class="status-indicator pending"></span>Ожидает</td><td>...</td></tr>
+                                <tr><td>07:00</td><td>Омепразол</td><td>20 мг</td><td><span class="status-indicator pending"></span>Ожидает</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
+                                <tr><td>08:00</td><td>Амоксициллин</td><td>500 мг</td><td><span class="status-indicator completed"></span>Принято</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
+                                <tr><td>10:00</td><td>Цефтриаксон</td><td>1 г</td><td><span class="status-indicator pending"></span>Ожидает</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
+                                <tr><td>12:00</td><td>Парацетамол</td><td>325 мг</td><td><span class="status-indicator not-completed"></span>Отказ: аллергия</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
+                                <tr><td>16:00</td><td>Метронидазол</td><td>500 мг</td><td><span class="status-indicator pending"></span>Ожидает</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
+                                <tr><td>20:00</td><td>Флуконазол</td><td>150 мг</td><td><span class="status-indicator pending"></span>Ожидает</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
                                 </tbody>
                             </table>
                         </div>
 
                         <!-- Манипуляции -->
                         <div id="procedures" class="tab-content">
-                            <table class="compact-table table table-bordered">
+                            <table class="table table-bordered">
                                 <thead>
                                 <tr>
                                     <th>Время</th>
@@ -354,19 +369,18 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr><td>07:30</td><td>Забор крови</td><td><span class="status-indicator completed"></span>Выполнено</td><td>...</td></tr>
-                                <tr><td>08:00</td><td>Инъекция цефтриаксона</td><td><span class="status-indicator completed"></span>Выполнено</td><td>...</td></tr>
-                                <tr><td>09:00</td><td>Перевязка</td><td><span class="status-indicator not-completed"></span>Отказ</td><td>...</td></tr>
-                                <tr><td>10:00</td><td>ЭКГ</td><td><span class="status-indicator pending"></span>Ожидает</td><td>...</td></tr>
-                                <tr><td>15:00</td><td>Промывание катетера</td><td><span class="status-indicator pending"></span>Ожидает</td><td>...</td></tr>
-                                <tr><td>20:00</td><td>Инъекция цефтриаксона</td><td><span class="status-indicator pending"></span>Ожидает</td><td>...</td></tr>
+                                <tr><td>07:30</td><td>Забор крови на биохимию</td><td><span class="status-indicator completed"></span>Выполнено</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
+                                <tr><td>09:00</td><td>Инъекция цефтриаксона</td><td><span class="status-indicator completed"></span>Выполнено</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
+                                <tr><td>11:00</td><td>Катетеризация вены</td><td><span class="status-indicator pending"></span>Ожидает</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
+                                <tr><td>14:00</td><td>Перевязка раны</td><td><span class="status-indicator not-completed"></span>Отказ: пациент отказался</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
+                                <tr><td>17:00</td><td>Промывание катетера</td><td><span class="status-indicator pending"></span>Ожидает</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
                                 </tbody>
                             </table>
                         </div>
 
                         <!-- Исследования -->
                         <div id="researches" class="tab-content">
-                            <table class="compact-table table table-bordered">
+                            <table class="table table-bordered">
                                 <thead>
                                 <tr>
                                     <th>Время</th>
@@ -377,10 +391,9 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr><td>07:15</td><td>Лабораторное</td><td>ОАК</td><td><span class="status-indicator pending"></span>Назначено</td><td>...</td></tr>
-                                <tr><td>11:00</td><td>Инструментальное</td><td>УЗИ брюшной полости</td><td><span class="status-indicator pending"></span>Назначено</td><td>...</td></tr>
-                                <tr><td>13:00</td><td>Лабораторное</td><td>Биохимия крови</td><td><span class="status-indicator pending"></span>Назначено</td><td>...</td></tr>
-                                <tr><td>18:00</td><td>Инструментальное</td><td>Рентген грудной клетки</td><td><span class="status-indicator pending"></span>Назначено</td><td>...</td></tr>
+                                <tr><td>10:00</td><td>Лабораторное</td><td>Общий анализ крови</td><td><span class="status-indicator pending"></span>Назначено</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
+                                <tr><td>13:00</td><td>Инструментальное</td><td>УЗИ брюшной полости</td><td><span class="status-indicator pending"></span>Ожидает</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
+                                <tr><td>15:00</td><td>Инструментальное</td><td>Рентген легких</td><td><span class="status-indicator pending"></span>Ожидает</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
                                 </tbody>
                             </table>
                         </div>
