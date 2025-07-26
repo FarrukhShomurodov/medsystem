@@ -134,7 +134,7 @@ class PatientController extends Controller
 
         $patient->load([
             'examinationMaps' => function ($query) {
-                $query->with(['department', 'doctor', 'services', 'diagnosises', 'allDiagnosises', 'medications'])
+                $query->with(['department', 'doctor', 'services', 'diagnosises', 'medications'])
                     ->orderByDesc('admission_date')
                     ->get()
                     ->each(function ($map) {
