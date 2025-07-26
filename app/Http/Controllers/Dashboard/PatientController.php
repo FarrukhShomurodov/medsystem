@@ -371,6 +371,8 @@ class PatientController extends Controller
             ->whereIn('drug2_ru', $patientMedications)
             ->get();
 
+        dd($patientDetails['diagnosises']);
+
         return view(
             'admin.patients.show',
             compact(
