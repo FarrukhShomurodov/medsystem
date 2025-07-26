@@ -980,7 +980,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body">
-                    @foreach($patientDetails['diagnosises'] as $data)
+                    @foreach($patientDetails['allDiagnosises'] as $data)
                         <div class="border-bottom pb-4 mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="mb-0">

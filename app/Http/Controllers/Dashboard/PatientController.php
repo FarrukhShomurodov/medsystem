@@ -134,7 +134,7 @@ class PatientController extends Controller
 
         $patient->load([
             'examinationMaps' => function ($query) {
-                $query->with(['department', 'doctor', 'services', 'diagnosises', 'medications'])
+                $query->with(['department', 'doctor', 'services', 'diagnosises', 'allDiagnosises', 'medications'])
                     ->orderByDesc('admission_date')
                     ->get()
                     ->each(function ($map) {
@@ -174,6 +174,13 @@ class PatientController extends Controller
                     });
             },
             'diagnosises' => function ($query) {
+                $query->orderByDesc('created_at')
+                    ->get()
+                    ->each(function ($diagnosis) {
+                        $diagnosis->created_at = Carbon::parse($diagnosis->created_at);
+                    });
+            },
+            'allDiagnosises' => function ($query) {
                 $query->orderByDesc('created_at')
                     ->get()
                     ->each(function ($diagnosis) {
@@ -249,6 +256,7 @@ class PatientController extends Controller
             'surveys' => Survey::query()->get(),
 
             'diagnosises' => $patient->diagnosises,
+            'allDiagnosises' => $patient->allDiagnosises,
         ];
 
         $timeline = collect();
@@ -370,8 +378,6 @@ class PatientController extends Controller
             ->whereIn('drug1_ru', $patientMedications)
             ->whereIn('drug2_ru', $patientMedications)
             ->get();
-
-        dd($patientDetails['diagnosises']);
 
         return view(
             'admin.patients.show',

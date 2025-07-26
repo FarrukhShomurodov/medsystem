@@ -127,6 +127,11 @@ class Patient extends Model
             ->whereNull('examination_map_id');
     }
 
+    public function allDiagnosises(): HasMany
+    {
+        return $this->hasMany(PatientDiagnosis::class, 'patient_id');
+    }
+
     public function documentResponse(): HasMany
     {
         return $this->hasMany(DocumentResponse::class, 'patient_id')
