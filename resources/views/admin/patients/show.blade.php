@@ -1538,22 +1538,18 @@
                 $('#diagnosisSearchInput').off('input').on('input', function () {
                     const searchText = $(this).val().toLowerCase();
 
-                    // Проходим по всем диагнозам внутри модального окна
                     $('#diagnosisesModal .diagnosis-item').each(function () {
-                        const diagnosisText = $(this).text().toLowerCase();
-                        const parent = $(this).closest('.d-flex');
+                        const text = $(this).text().toLowerCase();
+                        const container = $(this).closest('.d-flex'); // или .parent() — смотри по DevTools
 
-                        if (diagnosisText.includes(searchText)) {
-                            console.log($(this).text());
-
-                            parent.show();
+                        if (text.includes(searchText)) {
+                            container.removeClass('d-none');
                         } else {
-                            parent.hide();
+                            container.addClass('d-none');
                         }
                     });
                 });
             });
-
 
             $('button[data-type-id][data-bs-target="#createServiceModal"]').on('click', function (e) {
                 e.preventDefault();
