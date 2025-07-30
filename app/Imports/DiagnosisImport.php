@@ -2,7 +2,6 @@
 
 namespace App\Imports;
 
-use App\Models\DangerousCombination;
 use App\Models\Diagnosis;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
