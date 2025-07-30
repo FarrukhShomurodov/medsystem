@@ -1536,14 +1536,18 @@
         $(document).ready(function () {
             $(document).on('shown.bs.modal', '#diagnosisesModal', function () {
                 $('#diagnosisSearchInput').off('input').on('input', function () {
-                    let searchText = $(this).val().toLowerCase();
+                    const searchText = $(this).val().toLowerCase();
 
+                    // Проходим по всем диагнозам внутри модального окна
                     $('#diagnosisesModal .diagnosis-item').each(function () {
-                        let diagnosisText = $(this).text().toLowerCase();
-                        let match = diagnosisText.includes(searchText);
+                        const diagnosisText = $(this).text().toLowerCase();
+                        const parent = $(this).closest('.d-flex');
 
-                        // Прячем или показываем блок с диагнозом
-                        $(this).parent('.d-flex').toggle(match);
+                        if (diagnosisText.includes(searchText)) {
+                            parent.show();
+                        } else {
+                            parent.hide();
+                        }
                     });
                 });
             });
