@@ -18,16 +18,16 @@ class DangerousCombinationImport implements ToCollection, WithHeadingRow
 
         foreach ($rows as $row) {
             DangerousCombination::create([
-                'drug1_en'       => $row[0],
-                'drug1_ru'       => $row[1],
-                'drug2_en'       => $row[2],
-                'drug2_ru'       => $row[3],
-                'severity_en'    => $row[4],
-                'severity_ru'    => $row[5],
-                'mechanism_en'   => $row[6],
-                'mechanism_ru'   => $row[7],
-                'comment_en'     => $row[8],
-                'comment_ru'     => $row[9],
+                'drug1_en' => $row['drug1'],
+                'drug1_ru' => $row['preparat_1'],
+                'drug2_en' => $row['drug2'],
+                'drug2_ru' => $row['preparat_2'],
+                'severity_en' => $row['severity'],
+                'severity_ru' => $row['severity'],
+                'mechanism_en' => $row['tiazest'],
+                'mechanism_ru' => $row['tiazest'],
+                'comment_en' => $row['interactioncomment'],
+                'comment_ru' => $row['vzaimodeistviekommentarii'],
             ]);
         }
     }

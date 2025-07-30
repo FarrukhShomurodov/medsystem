@@ -9,10 +9,10 @@ return new class extends Migration {
     {
         Schema::create('dangerous_combinations', function (Blueprint $table) {
             $table->id();
-            $table->string('drug1_en');
-            $table->string('drug1_ru');
-            $table->string('drug2_en');
-            $table->string('drug2_ru');
+            $table->string('drug1_en')->nullable();
+            $table->string('drug1_ru')->nullable();
+            $table->string('drug2_en')->nullable();
+            $table->string('drug2_ru')->nullable();
             $table->string('severity_en')->nullable();
             $table->string('severity_ru')->nullable();
             $table->string('mechanism_en')->nullable();
