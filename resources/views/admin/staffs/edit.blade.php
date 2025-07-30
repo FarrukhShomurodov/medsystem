@@ -947,14 +947,14 @@
                                                     <input type="time"
                                                            name="days[{{ $i }}][work][0][start_time]"
                                                            class="form-control start-time"
-                                                           value="08:00">
+                                                           value="08:30">
                                                 </div>
                                                 <div class="col-md-5">
                                                     <label class="form-label">Конец</label>
                                                     <input type="time"
                                                            name="days[{{ $i }}][work][0][end_time]"
                                                            class="form-control end-time"
-                                                           value="18:00">
+                                                           value="17:30">
                                                 </div>
                                             </div>
                                         @else
@@ -1182,8 +1182,8 @@
                     const $template = $container.find('.time-range').first().clone();
 
                     // Устанавливаем новые значения
-                    $template.find('.start-time').val('08:00');
-                    $template.find('.end-time').val('12:00');
+                    $template.find('.start-time').val('08:30');
+                    $template.find('.end-time').val('17:30');
 
                     // Обновляем атрибуты name с уникальными индексами
                     $template.find('.start-time').attr('name', `days[${index}][work][${rangeIndex}][start_time]`);
