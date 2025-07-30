@@ -1538,11 +1538,12 @@
                 $('#diagnosisSearchInput').off('input').on('input', function () {
                     let searchText = $(this).val().toLowerCase();
 
-                    console.log(searchText)
-
-                    $('#favoriteDiagnosisList .diagnosis-item, #regularDiagnosisList .diagnosis-item').each(function () {
+                    $('#diagnosisesModal .diagnosis-item').each(function () {
                         let diagnosisText = $(this).text().toLowerCase();
-                        $(this).closest('div').toggle(diagnosisText.includes(searchText));
+                        let match = diagnosisText.includes(searchText);
+
+                        // Прячем или показываем блок с диагнозом
+                        $(this).parent('.d-flex').toggle(match);
                     });
                 });
             });
