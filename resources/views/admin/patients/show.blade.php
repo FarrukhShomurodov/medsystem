@@ -920,6 +920,11 @@
                     <h5 class="modal-title">Создать диагноз</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="diagnosisSearchInput" placeholder="Поиск диагноза...">
+                </div>
+
                 <form action="{{ route('patient.diagnoses.store') }}" method="POST">
                     @csrf
                     <div class="modal-body">
@@ -1529,6 +1534,21 @@
     {{--  Modals  --}}
     <script>
         $(document).ready(function () {
+            $('#diagnosisSearchInput').on('input', function () {
+                let searchText = $(this).val().toLowerCase();
+
+                // Фильтрация обычных диагнозов
+                $('.list-group .diagnosis-item').each(function () {
+                    let diagnosisText = $(this).text().toLowerCase();
+                    if (diagnosisText.includes(searchText)) {
+                        $(this).closest('div').show();
+                    } else {
+                        $(this).closest('div').hide();
+                    }
+                });
+            });
+
+
             $('button[data-type-id][data-bs-target="#createServiceModal"]').on('click', function (e) {
                 e.preventDefault();
                 var button = $(this);
