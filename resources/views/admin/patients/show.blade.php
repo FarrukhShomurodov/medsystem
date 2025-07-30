@@ -935,7 +935,7 @@
                         @if($favoriteDiagnoses->count())
                             <div class="mb-3">
                                 <h6 class="text-warning fw-bold">⭐ Избранные диагнозы</h6>
-                                <div class="list-group">
+                                <div class="list-group" id="favoriteDiagnosisList">
                                     @foreach($favoriteDiagnoses as $diagnosis)
                                         <div class="d-flex justify-content-between align-items-center">
                                             <a href="#"
@@ -956,7 +956,7 @@
                         {{-- Все остальные диагнозы --}}
                         <div>
                             <h6 class="text-secondary fw-bold">Все диагнозы</h6>
-                            <div class="list-group">
+                            <div class="list-group" id="regularDiagnosisList">
                                 @foreach($regularDiagnoses as $diagnosis)
                                     <div class="d-flex justify-content-between align-items-center">
                                         <a href="#"
@@ -1538,12 +1538,13 @@
                 $('#diagnosisSearchInput').off('input').on('input', function () {
                     let searchText = $(this).val().toLowerCase();
 
-                    $('.list-group .diagnosis-item').each(function () {
+                    $('#favoriteDiagnosisList .diagnosis-item, #regularDiagnosisList .diagnosis-item').each(function () {
                         let diagnosisText = $(this).text().toLowerCase();
                         $(this).closest('div').toggle(diagnosisText.includes(searchText));
                     });
                 });
             });
+
 
             $('button[data-type-id][data-bs-target="#createServiceModal"]').on('click', function (e) {
                 e.preventDefault();
