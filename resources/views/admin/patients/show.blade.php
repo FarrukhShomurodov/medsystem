@@ -1534,37 +1534,16 @@
     {{--  Modals  --}}
     <script>
         $(document).ready(function () {
-
-            $('#diagnosisesModal').on('shown.bs.modal', function () {
-                $('#diagnosisSearchInput').on('input', function () {
+            $(document).on('shown.bs.modal', '#diagnosisesModal', function () {
+                $('#diagnosisSearchInput').off('input').on('input', function () {
                     let searchText = $(this).val().toLowerCase();
 
-                    // Фильтрация обычных диагнозов
                     $('.list-group .diagnosis-item').each(function () {
                         let diagnosisText = $(this).text().toLowerCase();
-                        if (diagnosisText.includes(searchText)) {
-                            $(this).closest('div').show();
-                        } else {
-                            $(this).closest('div').hide();
-                        }
+                        $(this).closest('div').toggle(diagnosisText.includes(searchText));
                     });
                 });
             });
-
-            // $('#diagnosisSearchInput').on('input', function () {
-            //     let searchText = $(this).val().toLowerCase();
-            //
-            //     // Фильтрация обычных диагнозов
-            //     $('.list-group .diagnosis-item').each(function () {
-            //         let diagnosisText = $(this).text().toLowerCase();
-            //         if (diagnosisText.includes(searchText)) {
-            //             $(this).closest('div').show();
-            //         } else {
-            //             $(this).closest('div').hide();
-            //         }
-            //     });
-            // });
-
 
             $('button[data-type-id][data-bs-target="#createServiceModal"]').on('click', function (e) {
                 e.preventDefault();
