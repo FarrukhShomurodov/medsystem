@@ -34,8 +34,12 @@
     <div class="card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-header">Диагнозы</h5>
-            <a href="{{ route('diagnoses.create') }}" class="btn btn-primary "
-               style="margin-right: 22px;">Создать</a>
+            <div>
+                <a href="{{ route('diagnoses.create') }}" class="btn btn-primary "
+                   style="margin-right: 22px;">Создать</a>
+                <a href="{{ route('diagnoses.import.show') }}" class="btn btn-primary "
+                   style="margin-right: 22px;">Импорт</a>
+            </div>
         </div>
         <div class="card-datatable table-responsive">
             <table class="datatables-users table border-top">

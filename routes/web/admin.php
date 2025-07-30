@@ -301,8 +301,12 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::get('/dangerous-combination/import', [DangerousCombinationController::class, 'showImportServices'])->name('dangerous.combination.import.show');
     Route::post('/dangerous-combination/import', [DangerousCombinationController::class, 'importServices'])->name('dangerous.combination.import');
 
-    // diagnosis
+    // diagnoses
     Route::resource('/diagnoses', DiagnosisController::class)->names('diagnoses');
+
+    // diagnosis import
+    Route::get('/diagnosis/import', [DiagnosisController::class, 'showImportDiagnosis'])->name('diagnoses.import.show');
+    Route::post('/diagnosis/import', [DiagnosisController::class, 'importDiagnosis'])->name('diagnoses.import');
 
     // patient vital parameters
     Route::post('/patient-parameter/{patient}', [PatientParameterController::class, 'storeNormalVitalParameter'])->name(
