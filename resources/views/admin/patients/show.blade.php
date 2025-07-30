@@ -1540,12 +1540,12 @@
 
                     // Проходим по всем диагнозам внутри модального окна
                     $('#diagnosisesModal .diagnosis-item').each(function () {
-                        console.log($(this).text());
-
                         const diagnosisText = $(this).text().toLowerCase();
                         const parent = $(this).closest('.d-flex');
 
                         if (diagnosisText.includes(searchText)) {
+                            console.log($(this).text());
+
                             parent.show();
                         } else {
                             parent.hide();
