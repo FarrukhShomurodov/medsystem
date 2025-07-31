@@ -328,8 +328,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="container">
-                        <div class="tabs d-flex mb-3">
-                            <div class="tab active" onclick="switchTab('medications')">Препараты</div>
+                        <div class="tabs d-flex mb-3" style="border: none">
+                            <div class="tab active" onclick="switchTab('medications')">Лист назначение</div>
                             <div class="tab" onclick="switchTab('procedures')">Манипуляции</div>
                             <div class="tab" onclick="switchTab('researches')">Исследования</div>
                         </div>
@@ -339,20 +339,42 @@
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
-                                    <th>Время</th>
-                                    <th>Препарат</th>
+                                    <th>#</th>
+                                    <th>Медикамент</th>
                                     <th>Дозировка</th>
+                                    <th>Период приёма</th>
+                                    <th>Разовая доза</th>
                                     <th>Статус</th>
-                                    <th>Действия</th>
+                                    <th>Метод</th>
+                                    <th>Правило приёма</th>
+                                    <th>Примечание</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr><td>07:00</td><td>Омепразол</td><td>20 мг</td><td><span class="status-indicator pending"></span>Ожидает</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
-                                <tr><td>08:00</td><td>Амоксициллин</td><td>500 мг</td><td><span class="status-indicator completed"></span>Принято</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
-                                <tr><td>10:00</td><td>Цефтриаксон</td><td>1 г</td><td><span class="status-indicator pending"></span>Ожидает</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
-                                <tr><td>12:00</td><td>Парацетамол</td><td>325 мг</td><td><span class="status-indicator not-completed"></span>Отказ: аллергия</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
-                                <tr><td>16:00</td><td>Метронидазол</td><td>500 мг</td><td><span class="status-indicator pending"></span>Ожидает</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
-                                <tr><td>20:00</td><td>Флуконазол</td><td>150 мг</td><td><span class="status-indicator pending"></span>Ожидает</td><td><button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято</button><button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button><input type="text" class="form-control mt-1 reason-input" placeholder="Причина отказа..." style="display:none;"></td></tr>
+                                @foreach($patientMedicationsAllMedications as $index => $medication)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $medication->name }}</td>
+                                        <td>{{ $medication->pivot->dosage }}</td>
+                                        <td>{{ $medication->pivot->admission_period }}</td>
+                                        <td>{{ $medication->pivot->single_dose }}</td>
+                                        <td>
+                                            @php
+                                                $status = $medication->pivot->status;
+                                                $label = \App\Models\PatientMedication::STATUS_LABELS[$status] ?? $status;
+                                                $icon = \App\Models\PatientMedication::STATUS_ICONS[$status] ?? 'fa-question';
+                                                $color = \App\Models\PatientMedication::STATUS_COLORS[$status] ?? 'text-secondary';
+                                            @endphp
+
+                                            <i class="fas {{ $icon }} {{ $color }}" title="{{ $label }}"></i>
+                                            {{ $label }}
+                                        </td>
+
+                                        <td>{{ \App\Models\PatientMedication::METHOD_LABELS[$medication->pivot->method] ?? $medication->pivot->method }}</td>
+                                        <td>{{ \App\Models\PatientMedication::ADMISSION_RULE_LABELS[$medication->pivot->admission_rules] ?? $medication->pivot->admission_rules }}</td>
+                                        <td>{{ $medication->pivot->medication_notes ?? '-' }}</td>
+                                    </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -399,7 +421,7 @@
                         </div>
 
                         <div class="save-btn mt-3">
-                            <button class="btn btn-primary"><i class="fas fa-save"></i> Сохранить изменения</button>
+                            <button class="btn btn-primary"><i class="fas fa-save me-2"></i> Сохранить изменения</button>
                         </div>
                     </div>
                 </div>

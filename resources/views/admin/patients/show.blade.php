@@ -217,16 +217,24 @@
                     </button>
                 </div>
 
-                <!-- Медикамент -->
-                <button
-                    type="button"
-                    class="btn btn-primary d-flex align-items-center"
-                    data-bs-toggle="modal"
-                    data-bs-target="#medicationModal"
-                >
-                    <i class="bi bi-capsule me-2"></i>Медикамент
-                </button>
-
+                <div class="d-flex">
+                    <button
+                        type="button"
+                        class="btn btn-primary d-flex align-items-center"
+                        data-bs-toggle="modal"
+                        data-bs-target="#showMedicationModal"
+                    >
+                        <i class="bi bi-capsule me-2"></i>Лист назначение
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-outline-primary d-flex align-items-center ms-1"
+                        data-bs-toggle="modal"
+                        data-bs-target="#medicationModal"
+                    >
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
 
                 <!-- Процедуры -->
                 <button
@@ -531,7 +539,7 @@
                                             Документ
                                             @break
                                         @case('medication')
-                                            Медикамент
+                                            Лист назначение
                                             @break
                                         @case('procedure')
                                             Процедура
@@ -1326,6 +1334,7 @@
         </div>
     </div>
 
+    {{--  Add medication Model  --}}
     <div class="modal fade" id="medicationModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
@@ -1379,6 +1388,53 @@
                                             <input type="text" name="dosages[]" class="form-control"
                                                    value=""
                                                    placeholder="Дозировка" required>
+                                        </div>
+
+                                        <!-- Разовая доза -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Разовая доза</label>
+                                            <input type="text" name="single_doses[]" class="form-control"
+                                                   placeholder="Разовая доза" required maxlength="50">
+                                        </div>
+
+                                        <!-- Статус -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Статус</label>
+                                            <select name="statuses[]" class="form-select" required>
+                                                @foreach(App\Models\PatientMedication::STATUS as $status)
+                                                    <option
+                                                        value="{{ $status }}">{{ App\Models\PatientMedication::STATUS_LABELS[$status] }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <!-- Способ приёма -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Способ приёма</label>
+                                            <select name="methods[]" class="form-select" required>
+                                                @foreach(App\Models\PatientMedication::METHOD as $method)
+                                                    <option
+                                                        value="{{ $method }}">{{ App\Models\PatientMedication::METHOD_LABELS[$method] }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <!-- Правило приёма -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Правило приёма</label>
+                                            <select name="admission_rules[]" class="form-select" required>
+                                                @foreach(App\Models\PatientMedication::ADMISSION_RULES as $rule)
+                                                    <option
+                                                        value="{{ $rule }}">{{ App\Models\PatientMedication::ADMISSION_RULE_LABELS[$rule] }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <!-- Примечания -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Примечания</label>
+                                            <textarea name="medication_notes[]" class="form-control"
+                                                      placeholder="Примечания" required maxlength="500"></textarea>
                                         </div>
 
                                         <!-- Период приёма -->
@@ -1447,6 +1503,60 @@
         </div>
     </div>
 
+    {{--  Show Model --}}
+    <div class="modal fade" id="showMedicationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Медикаменты</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Медикамент</th>
+                            <th>Дозировка</th>
+                            <th>Период приёма</th>
+                            <th>Разовая доза</th>
+                            <th>Статус</th>
+                            <th>Метод</th>
+                            <th>Правило приёма</th>
+                            <th>Примечание</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($patientMedicationsAllMedications as $index => $medication)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $medication->name }}</td>
+                                <td>{{ $medication->pivot->dosage }}</td>
+                                <td>{{ $medication->pivot->admission_period }}</td>
+                                <td>{{ $medication->pivot->single_dose }}</td>
+                                <td>
+                                    @php
+                                        $status = $medication->pivot->status;
+                                        $label = \App\Models\PatientMedication::STATUS_LABELS[$status] ?? $status;
+                                        $icon = \App\Models\PatientMedication::STATUS_ICONS[$status] ?? 'fa-question';
+                                        $color = \App\Models\PatientMedication::STATUS_COLORS[$status] ?? 'text-secondary';
+                                    @endphp
+
+                                    <i class="fas {{ $icon }} {{ $color }}" title="{{ $label }}"></i>
+                                    {{ $label }}
+                                </td>
+
+                                <td>{{ \App\Models\PatientMedication::METHOD_LABELS[$medication->pivot->method] ?? $medication->pivot->method }}</td>
+                                <td>{{ \App\Models\PatientMedication::ADMISSION_RULE_LABELS[$medication->pivot->admission_rules] ?? $medication->pivot->admission_rules }}</td>
+                                <td>{{ $medication->pivot->medication_notes ?? '-' }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="modal fade" id="proceduresModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
@@ -1869,8 +1979,8 @@
         });
     </script>
 
+    {{-- medications --}}
     <script>
-        // medications
         const containerMedicaments = document.getElementById('medications-container');
         const templateMedicaments = document.getElementById('medication-template');
 

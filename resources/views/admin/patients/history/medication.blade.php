@@ -10,6 +10,25 @@
                 <label class="form-label fw-bold">Активное вещество:</label>
                 <p class="form-control-plaintext">{{ $data->medication->composition->active_substance_name }}</p>
             </div>
+
+            <!-- Разовая доза -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Разовая доза:</label>
+                <p class="form-control-plaintext">{{ $data->single_dose }}</p>
+            </div>
+
+            <!-- Статус -->
+            <div class="mb-3">
+                @php
+                    $status = $data->status;
+                    $label = \App\Models\PatientMedication::STATUS_LABELS[$status] ?? $status;
+                    $icon = \App\Models\PatientMedication::STATUS_ICONS[$status] ?? 'fa-question';
+                    $color = \App\Models\PatientMedication::STATUS_COLORS[$status] ?? 'text-secondary';
+                @endphp
+
+                <label class="form-label fw-bold">Статус:</label>
+                <p class="form-control-plaintext text-capitalize"> <i class="fas {{ $icon }} {{ $color }}" title="{{ $label }}"></i> {{ App\Models\PatientMedication::STATUS_LABELS[$data->status] }}</p>
+            </div>
         </div>
 
         <div class="col-md-6">
@@ -22,6 +41,26 @@
                 <label class="form-label fw-bold">Группа препарата:</label>
                 <p class="form-control-plaintext">{{ $data->medication->group->name ?? 'Не указана' }}</p>
             </div>
+
+            <!-- Способ приёма -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Способ приёма:</label>
+                <p class="form-control-plaintext text-capitalize">{{ App\Models\PatientMedication::METHOD_LABELS[$data->method] }}</p>
+            </div>
+
+            <!-- Правило приёма -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Правило приёма:</label>
+                <p class="form-control-plaintext text-capitalize">{{ App\Models\PatientMedication::ADMISSION_RULE_LABELS[$data->admission_rules] }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Примечания (полноширинное поле) -->
+    <div class="mb-4">
+        <label class="form-label fw-bold">Примечания:</label>
+        <div class="border rounded p-3 bg-light">
+            {{ $data->medication_notes ?: 'Примечания отсутствуют' }}
         </div>
     </div>
 

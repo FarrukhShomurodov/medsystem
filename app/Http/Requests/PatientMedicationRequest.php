@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\PatientMedication;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -25,6 +26,20 @@ class PatientMedicationRequest extends FormRequest
                 ])
             ],
             'dosages.*' => 'required|string|max:50',
+
+            'single_doses' => 'required|array',
+            'single_doses.*' => 'required|string|max:50',
+
+            'statuses' => 'required|array',
+            'statuses.*' => ['required', Rule::in(PatientMedication::STATUS)],
+
+            'methods' => 'required|array',
+            'methods.*' => ['required', Rule::in(PatientMedication::METHOD)],
+
+            'admission_rules' => 'required|array',
+            'admission_rules.*' => ['required', Rule::in(PatientMedication::ADMISSION_RULES)],
+
+
             'admission_periods' => [
                 'required',
                 'array',
@@ -33,8 +48,9 @@ class PatientMedicationRequest extends FormRequest
                 ])
             ],
             'admission_periods.*' => 'required|string|max:100',
-            'medication_notes' => 'nullable|array',
-            'medication_notes.*' => 'nullable|string|max:500',
+
+            'medication_notes' => 'required|array',
+            'medication_notes.*' => 'required|string|max:500',
 
             'compatible_medications' => 'nullable',
             'compatible_dosages' => 'nullable',

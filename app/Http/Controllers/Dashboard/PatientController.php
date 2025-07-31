@@ -373,6 +373,17 @@ class PatientController extends Controller
 
 
         $patientMedications = $patient->medicationsAll()->pluck('name')->map(fn($name) => trim($name))->toArray();
+        $patientMedicationsAllMedications = $patient->medicationsAll()->withPivot([
+            'id',
+            'dosage',
+            'admission_period',
+            'single_dose',
+            'status',
+            'method',
+            'admission_rules',
+            'medication_notes',
+        ])->get();
+
 
         $warnings = DangerousCombination::query()
             ->whereIn('drug1_ru', $patientMedications)
@@ -384,6 +395,7 @@ class PatientController extends Controller
             compact(
                 'patientDetails',
                 'lastViews',
+                'patientMedicationsAllMedications',
                 'departments',
                 'documents',
                 'medications',

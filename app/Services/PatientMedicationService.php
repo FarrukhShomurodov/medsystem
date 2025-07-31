@@ -29,6 +29,13 @@ class PatientMedicationService
 
                 $medicationData[$medicationModel->id] = [
                     'dosage' => $validated['dosages'][$index] ?? null,
+                    'single_dose' => $validated['single_doses'][$index] ?? null,
+                    'status' => $validated['statuses'][$index] ?? null,
+                    'method' => $validated['methods'][$index] ?? null,
+                    'admission_rules' => $validated['admission_rules'][$index] ?? null,
+
+                    'medication_notes' => $validated['medication_notes'][$index] ?? null,
+
                     'admission_period' => $validated['admission_periods'][$index] ?? null,
                     'examination_map_id' => $map->exists() ? $map->first()->id : null,
                 ];

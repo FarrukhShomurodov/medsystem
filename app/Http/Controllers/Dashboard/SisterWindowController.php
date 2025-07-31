@@ -123,6 +123,17 @@ class SisterWindowController extends Controller
         $documents = Document::query()->where('id', '!=', 1)->get();
         $examinationMap = $patient->examinationMaps->where('is_active', true)->first();
 
+        $patientMedicationsAllMedications = $patient->medicationsAll()->withPivot([
+            'id',
+            'dosage',
+            'admission_period',
+            'single_dose',
+            'status',
+            'method',
+            'admission_rules',
+            'medication_notes',
+        ])->get();
+
         return view(
             'admin.sister_window.show',
             compact(
@@ -135,6 +146,7 @@ class SisterWindowController extends Controller
                 'jsChartData',
                 'documents',
                 'examinationMap',
+                'patientMedicationsAllMedications',
             )
         );
     }
