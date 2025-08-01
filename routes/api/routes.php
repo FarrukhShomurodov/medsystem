@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard\Api\FileController;
 use App\Http\Controllers\Dashboard\Api\MedicationController;
 use App\Http\Controllers\Dashboard\Api\PatientController;
 use App\Http\Controllers\Dashboard\Api\PatientHistoryController;
+use App\Http\Controllers\Dashboard\Api\PatientMedicationController;
 use App\Http\Controllers\Dashboard\Api\PatientServiceController;
 use App\Http\Controllers\Dashboard\Api\ReceptionController;
 use App\Http\Controllers\Dashboard\Api\ScoreFinishedController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Dashboard\Api\StaffController;
 use App\Http\Controllers\Dashboard\Api\SurveyController;
 use App\Http\Controllers\Dashboard\Api\SurveyResponseController;
 use App\Http\Controllers\Dashboard\Api\TransferController;
+use App\Models\PatientMedication;
 use App\Models\Staff;
 use Illuminate\Support\Facades\Route;
 
@@ -76,3 +78,7 @@ Route::get('/document-scores/{document}/{score}', [DocumentScoreController::clas
 
 // document finish action
 Route::post('/document/finish/action', [ScoreFinishedController::class, 'finish']);
+
+// patients medication
+Route::post('/patient-medication/{medication}/cancel', [PatientMedicationController::class, 'cancel']);
+

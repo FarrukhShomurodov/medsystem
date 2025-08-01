@@ -71,4 +71,13 @@ class PatientMedicationService
             }
         }
     }
+
+    public function cancel(PatientMedication $medication)
+    {
+        $medication->update([
+            'status' => 'cancelled'
+        ]);
+
+        return $medication;
+    }
 }

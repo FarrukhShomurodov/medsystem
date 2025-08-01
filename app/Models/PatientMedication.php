@@ -10,12 +10,18 @@ class PatientMedication extends Pivot
 {
     protected $table = 'patient_medications';
 
+    protected $fillable = [
+        'status',
+        'date_of_end',
+    ];
+
     const STATUS = [
         'ordered',
         'sent_to_floor',
         'received_at_station',
         'completed',
         'returned',
+        'cancelled',
     ];
 
     const STATUS_LABELS = [
@@ -24,6 +30,7 @@ class PatientMedication extends Pivot
         'received_at_station' => 'Принят в посту',
         'completed' => 'Сделано',
         'returned' => 'Возвращено',
+        'cancelled' => 'Отменено',
     ];
 
     const STATUS_ICONS = [
@@ -32,6 +39,7 @@ class PatientMedication extends Pivot
         'received_at_station' => 'fa-check', // жёлтая галочка
         'completed' => 'fa-check-circle', // зелёная галочка
         'returned' => 'fa-undo-alt', // коробка с обратной стрелкой
+        'cancelled' => 'fa-circle-xmark', // коробка с обратной стрелкой
     ];
 
     const STATUS_COLORS = [
@@ -40,6 +48,7 @@ class PatientMedication extends Pivot
         'received_at_station' => 'text-warning',
         'completed' => 'text-success',
         'returned' => 'text-brown', // добавь свой цвет в CSS, если нет в Bootstrap
+        'cancelled' => 'text-warning', // добавь свой цвет в CSS, если нет в Bootstrap
     ];
 
     const METHOD = [

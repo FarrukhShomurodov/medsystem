@@ -1409,8 +1409,10 @@
                                             <label class="form-label">Статус</label>
                                             <select name="statuses[]" class="form-select" required>
                                                 @foreach(App\Models\PatientMedication::STATUS as $status)
+                                                    @if($status !== 'cancelled')
                                                     <option
                                                         value="{{ $status }}">{{ App\Models\PatientMedication::STATUS_LABELS[$status] }}</option>
+                                                    @endif
                                                 @endforeach
                                             </select>
                                         </div>
@@ -1532,6 +1534,7 @@
                             <th>Метод</th>
                             <th>Правило приёма</th>
                             <th>Примечание</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -1558,6 +1561,16 @@
                                 <td>{{ \App\Models\PatientMedication::METHOD_LABELS[$medication->pivot->method] ?? $medication->pivot->method }}</td>
                                 <td>{{ \App\Models\PatientMedication::ADMISSION_RULE_LABELS[$medication->pivot->admission_rules] ?? $medication->pivot->admission_rules }}</td>
                                 <td>{{ $medication->pivot->medication_notes ?? '-' }}</td>
+                                <td>
+                                    @if($medication->pivot->status !== 'cancelled')
+                                        <div class="d-inline-block text-nowrap">
+                                            <button id="cancel_medication" data-id="{{$medication->pivot->id}}"
+                                                    class="btn btn-sm btn-warning">
+                                                Отменить
+                                            </button>
+                                        </div>
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -1622,6 +1635,30 @@
 
 @section('scripts')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <script>
+        $(document).on('click', '#cancel_medication', function (e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+
+            if (!confirm("Вы уверены, что хотите отменить назначение?")) return;
+
+            $.ajax({
+                url: `/api/patient-medication/${id}/cancel`,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    alert('Медикамент отменен');
+                    location.reload(); // или обнови UI вручную
+                },
+                error: function (xhr) {
+                    alert('Ошибка при отмене');
+                }
+            });
+        });
+    </script>
 
     {{-- show view modal  --}}
     <script>
