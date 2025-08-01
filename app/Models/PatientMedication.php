@@ -10,10 +10,10 @@ class PatientMedication extends Pivot
 {
     protected $table = 'patient_medications';
 
-    protected $fillable = [
-        'status',
-        'date_of_end',
-    ];
+//    protected $fillable = [
+//        'status',
+//        'date_of_end',
+//    ];
 
     const STATUS = [
         'ordered',
