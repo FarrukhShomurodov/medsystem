@@ -25,6 +25,8 @@ return new class extends Migration {
             $table->enum('admission_rules', PatientMedication::ADMISSION_RULES);
             $table->string('medication_notes')->nullable();
 
+            $table->date('date_of_end');
+
             $table->timestamps();
         });
     }

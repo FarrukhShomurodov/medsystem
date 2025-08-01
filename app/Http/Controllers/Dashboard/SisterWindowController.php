@@ -132,6 +132,7 @@ class SisterWindowController extends Controller
             'method',
             'admission_rules',
             'medication_notes',
+            'date_of_end',
         ])->get();
 
         return view(

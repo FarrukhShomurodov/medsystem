@@ -17,6 +17,14 @@
                 <p class="form-control-plaintext">{{ $data->single_dose }}</p>
             </div>
 
+
+            <!-- Дата -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Дата:</label>
+                <p class="form-control-plaintext">{{ $data->date_of_end }}</p>
+            </div>
+
+
             <!-- Статус -->
             <div class="mb-3">
                 @php

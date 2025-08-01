@@ -33,6 +33,7 @@ class PatientMedicationService
                     'status' => $validated['statuses'][$index] ?? null,
                     'method' => $validated['methods'][$index] ?? null,
                     'admission_rules' => $validated['admission_rules'][$index] ?? null,
+                    'date_of_end' => $validated['date_of_ends'][$index] ?? null,
 
                     'medication_notes' => $validated['medication_notes'][$index] ?? null,
 

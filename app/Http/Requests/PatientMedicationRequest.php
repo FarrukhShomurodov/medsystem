@@ -40,6 +40,10 @@ class PatientMedicationRequest extends FormRequest
             'admission_rules.*' => ['required', Rule::in(PatientMedication::ADMISSION_RULES)],
 
 
+            'date_of_ends' => 'required|array',
+            'date_of_ends.*' => 'required|date',
+
+
             'admission_periods' => [
                 'required',
                 'array',

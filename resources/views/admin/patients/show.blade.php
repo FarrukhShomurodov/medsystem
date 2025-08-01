@@ -1397,6 +1397,13 @@
                                                    placeholder="Разовая доза" required maxlength="50">
                                         </div>
 
+                                        <!-- Дата -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Дата</label>
+                                            <input type="date" name="date_of_ends[]" class="form-control"
+                                                   placeholder="Разовая доза" required maxlength="50">
+                                        </div>
+
                                         <!-- Статус -->
                                         <div class="mb-3">
                                             <label class="form-label">Статус</label>
@@ -1520,6 +1527,7 @@
                             <th>Дозировка</th>
                             <th>Период приёма</th>
                             <th>Разовая доза</th>
+                            <th>Дата</th>
                             <th>Статус</th>
                             <th>Метод</th>
                             <th>Правило приёма</th>
@@ -1534,6 +1542,7 @@
                                 <td>{{ $medication->pivot->dosage }}</td>
                                 <td>{{ $medication->pivot->admission_period }}</td>
                                 <td>{{ $medication->pivot->single_dose }}</td>
+                                <td>{{ $medication->pivot->date_of_end }}</td>
                                 <td>
                                     @php
                                         $status = $medication->pivot->status;
