@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\PatientMedication;
 use App\Services\PatientMedicationService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class PatientMedicationController extends Controller
 {
@@ -20,6 +19,13 @@ class PatientMedicationController extends Controller
     public function cancel(PatientMedication $medication): JsonResponse
     {
         $medication = $this->service->cancel($medication);
+
+        return response()->json($medication);
+    }
+
+    public function extend(PatientMedication $medication): JsonResponse
+    {
+        $medication = $this->service->extend($medication);
 
         return response()->json($medication);
     }

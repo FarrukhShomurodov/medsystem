@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Medication;
 use App\Models\Patient;
 use App\Models\PatientMedication;
+use Carbon\Carbon;
 
 
 class PatientMedicationService
@@ -79,5 +80,20 @@ class PatientMedicationService
         ]);
 
         return $medication;
+    }
+
+    public function extend(PatientMedication $medication): ?PatientMedication
+    {
+        if ($medication->status !== 'cancelled' || $medication->status !== 'returned' || $medication->status !== 'cancelled') {
+            $newDate = Carbon::parse($medication->date_of_end)->addDay();
+
+            $medication->update([
+                'date_of_end' => $newDate,
+            ]);
+
+            return $medication;
+        }
+
+        return null;
     }
 }

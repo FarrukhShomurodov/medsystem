@@ -1514,7 +1514,7 @@
 
     {{--  Show Model --}}
     <div class="modal fade" id="showMedicationModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-fullscreen">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Медикаменты</h5>
@@ -1563,14 +1563,22 @@
                                 <td>{{ $medication->pivot->medication_notes ?? '-' }}</td>
                                 <td>
                                     @if($medication->pivot->status !== 'cancelled')
-                                        <div class="d-inline-block text-nowrap">
-                                            <button id="cancel_medication" data-id="{{$medication->pivot->id}}"
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <button id="extend_medication" data-id="{{ $medication->pivot->id }}"
                                                     class="btn btn-sm btn-warning">
-                                                Отменить
+                                                Продлить
                                             </button>
+
+                                            @if($medication->pivot->status !== 'completed')
+                                                <button id="cancel_medication" data-id="{{ $medication->pivot->id }}"
+                                                        class="btn btn-sm btn-danger">
+                                                    Отменить
+                                                </button>
+                                            @endif
                                         </div>
                                     @endif
                                 </td>
+
                             </tr>
                         @endforeach
                         </tbody>
@@ -1651,6 +1659,28 @@
                 },
                 success: function (response) {
                     alert('Медикамент отменен');
+                    location.reload(); // или обнови UI вручную
+                },
+                error: function (xhr) {
+                    alert('Ошибка при отмене');
+                }
+            });
+        });
+
+        $(document).on('click', '#extend_medication', function (e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+
+            if (!confirm("Вы уверены, что хотите отменить назначение?")) return;
+
+            $.ajax({
+                url: `/api/patient-medication/${id}/extend`,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    alert('Медикамент продлен');
                     location.reload(); // или обнови UI вручную
                 },
                 error: function (xhr) {

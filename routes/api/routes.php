@@ -81,4 +81,5 @@ Route::post('/document/finish/action', [ScoreFinishedController::class, 'finish'
 
 // patients medication
 Route::post('/patient-medication/{medication}/cancel', [PatientMedicationController::class, 'cancel']);
+Route::post('/patient-medication/{medication}/extend', [PatientMedicationController::class, 'extend']);
 
