@@ -866,12 +866,12 @@
                                             <div class="col-md-5">
                                                 <label class="form-label">Начало</label>
                                                 <input type="time" name="days[{{ $i }}][reception][0][start_time]"
-                                                       class="form-control start-time" value="13:00">
+                                                       class="form-control start-time" value="08:00">
                                             </div>
                                             <div class="col-md-5">
                                                 <label class="form-label">Конец</label>
                                                 <input type="time" name="days[{{ $i }}][reception][0][end_time]"
-                                                       class="form-control end-time" value="17:00">
+                                                       class="form-control end-time" value="17:30">
                                             </div>
                                             <div class="col-md-2 d-flex align-items-end">
                                                 <button class="btn btn-outline-danger remove-range">×</button>
@@ -1007,8 +1007,8 @@
                     `);
                 }
 
-                $template.find('.start-time').val('13:00').attr('name', `days[${index}][reception][${rangeIndex}][start_time]`);
-                $template.find('.end-time').val('17:00').attr('name', `days[${index}][reception][${rangeIndex}][end_time]`);
+                $template.find('.start-time').val('08:00').attr('name', `days[${index}][reception][${rangeIndex}][start_time]`);
+                $template.find('.end-time').val('17:30').attr('name', `days[${index}][reception][${rangeIndex}][end_time]`);
 
                 $template.find('.remove-range').on('click', function () {
                     $(this).closest('.time-range').remove();

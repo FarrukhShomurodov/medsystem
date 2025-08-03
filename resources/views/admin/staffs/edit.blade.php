@@ -1238,7 +1238,7 @@
 
                     // Устанавливаем новые значения
                     $template.find('.start-time').val('13:00');
-                    $template.find('.end-time').val('17:00');
+                    $template.find('.end-time').val('17:30');
 
                     // Обновляем атрибуты name с уникальными индексами
                     $template.find('.start-time').attr('name', `days[${index}][reception][${rangeIndex}][start_time]`);
