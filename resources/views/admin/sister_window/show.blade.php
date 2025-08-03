@@ -352,26 +352,27 @@
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Медикамент</th>
-                                    <th>Дозировка</th>
-                                    <th>Период приёма</th>
-                                    <th>Разовая доза</th>
+                                    <th>Дата и время назначения</th>
+                                    <th>Название препарата, Доза, Путь введения, Время приема ( час:мин)</th>
                                     <th>Дата</th>
                                     <th>Статус</th>
-                                    <th>Метод</th>
-                                    <th>Правило приёма</th>
-                                    <th>Примечание</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($patientMedicationsAllMedications as $index => $medication)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
-                                        <td>{{ $medication->name }}</td>
-                                        <td>{{ $medication->pivot->dosage }}</td>
-                                        <td>{{ $medication->pivot->admission_period }}</td>
-                                        <td>{{ $medication->pivot->single_dose }}</td>
+                                        <td>{{ $medication->pivot->created_at }}</td>
+                                        <td>
+                                            {{ $medication->name }}, {{ $medication->pivot->dosage }}, {{ \App\Models\PatientMedication::ADMISSION_RULE_LABELS[$medication->pivot->admission_rules] ?? $medication->pivot->admission_rules }} ,
+
+                                            @foreach(explode(',', $medication->pivot->admission_period) as $time)
+                                                <span class="badge bg-primary p-2">{{ $time }}</span>
+                                            @endforeach
+                                        </td>
+
                                         <td>{{ $medication->pivot->date_of_end }}</td>
+
                                         <td>
                                             @php
                                                 $status = $medication->pivot->status;
@@ -383,10 +384,6 @@
                                             <i class="fas {{ $icon }} {{ $color }}" title="{{ $label }}"></i>
                                             {{ $label }}
                                         </td>
-
-                                        <td>{{ \App\Models\PatientMedication::METHOD_LABELS[$medication->pivot->method] ?? $medication->pivot->method }}</td>
-                                        <td>{{ \App\Models\PatientMedication::ADMISSION_RULE_LABELS[$medication->pivot->admission_rules] ?? $medication->pivot->admission_rules }}</td>
-                                        <td>{{ $medication->pivot->medication_notes ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>

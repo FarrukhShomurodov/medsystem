@@ -28,6 +28,8 @@ class PatientMedicationService
                     continue;
                 }
 
+                $now = now();
+
                 $medicationData[$medicationModel->id] = [
                     'dosage' => $validated['dosages'][$index] ?? null,
                     'single_dose' => $validated['single_doses'][$index] ?? null,
@@ -40,6 +42,7 @@ class PatientMedicationService
 
                     'admission_period' => $validated['admission_periods'][$index] ?? null,
                     'examination_map_id' => $map->exists() ? $map->first()->id : null,
+                    'created_at' => $now,
                 ];
                 $medicationIndexMap[$medicationModel->id] = $index;
             }

@@ -383,6 +383,7 @@ class PatientController extends Controller
             'admission_rules',
             'medication_notes',
             'date_of_end',
+            'created_at',
         ])->get();
 
 
