@@ -1237,7 +1237,7 @@
                     }
 
                     // Устанавливаем новые значения
-                    $template.find('.start-time').val('13:00');
+                    $template.find('.start-time').val('08:00');
                     $template.find('.end-time').val('17:30');
 
                     // Обновляем атрибуты name с уникальными индексами

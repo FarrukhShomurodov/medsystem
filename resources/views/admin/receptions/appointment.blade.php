@@ -221,7 +221,7 @@
                         times.forEach(function (time) {
                             let row = '<tr><td>' + time + '</td>';
                             staff.forEach(function (doc) {
-                                row += '<td class="status-cell bg-danger text-white fw-semibold" data-time="' + time + '" data-doctor="' + doc.id + '" data-admission-period="' + doc.admission_period + '">Недоступно</td>';
+                                // row += '<td class="status-cell bg-danger text-white fw-semibold" data-time="' + time + '" data-doctor="' + doc.id + '" data-admission-period="' + doc.admission_period + '">Недоступно</td>';
                             });
                             row += '</tr>';
                             $('#calendar-body').append(row);
@@ -237,43 +237,66 @@
             });
 
             function fetchAvailability(staff, minAdmissionPeriod) {
-                staff.forEach(function (doc) {
-                    $.ajax({
+                let slotsMap = {}; // { time: { doctorId: 'Свободно' | 'Недоступно' } }
+
+                let requests = staff.map(doc => {
+                    return $.ajax({
                         url: '/api/staff-availability-today/' + doc.id,
                         method: 'GET',
                         success: function (response) {
-                            let availability = response;
-
-                            availability.forEach(function (slot) {
+                            response.forEach(slot => {
                                 let startTime = moment(slot.time, 'HH:mm');
                                 let admissionPeriod = slot.admission_period;
                                 let endTime = moment(startTime).add(admissionPeriod, 'minutes');
-
                                 let currentTime = moment(startTime);
 
                                 do {
-                                    let cellSelector = 'td.status-cell[data-time="' + currentTime.format('HH:mm') + '"][data-doctor="' + doc.id + '"]';
-                                    let cell = $(cellSelector);
+                                    let timeKey = currentTime.format('HH:mm');
+                                    if (!slotsMap[timeKey]) slotsMap[timeKey] = {};
 
-                                    if (cell.length) {
-                                        if (slot.is_available) {
-                                            cell.removeClass('bg-danger bg-info').addClass('bg-success').text('Свободно');
-                                        } else {
-                                            cell.removeClass('bg-success bg-info').addClass('bg-danger').text('Недоступно');
-                                        }
+                                    if (slot.is_available) {
+                                        slotsMap[timeKey][doc.id] = 'Свободно';
                                     }
 
                                     currentTime.add(minAdmissionPeriod, 'minutes');
                                 } while (currentTime.isBefore(endTime));
-
                             });
-                        },
-                        error: function (xhr) {
-                            console.error(xhr.responseText);
                         }
                     });
                 });
+
+                $.when(...requests).done(function () {
+                    renderCalendarBody(slotsMap, staff, minAdmissionPeriod);
+                    fetchBooked(staff, minAdmissionPeriod);
+                });
             }
+
+            function renderCalendarBody(slotsMap, staff, interval) {
+                $('#calendar-body').empty();
+
+                Object.keys(slotsMap).sort().forEach(time => {
+                    let row = '<tr><td>' + time + '</td>';
+                    let hasAnyAvailable = false;
+
+                    staff.forEach(doc => {
+                        let status = slotsMap[time][doc.id];
+                        if (status === 'Свободно') {
+                            row += '<td class="status-cell bg-success text-white fw-semibold" data-time="' + time + '" data-doctor="' + doc.id + '" data-admission-period="' + doc.admission_period + '">Свободно</td>';
+                            hasAnyAvailable = true;
+                        } else {
+                            row += '<td></td>';
+                        }
+                    });
+
+                    row += '</tr>';
+
+                    if (hasAnyAvailable) {
+                        $('#calendar-body').append(row);
+                    }
+                });
+            }
+
+
 
             function fetchBooked(staff, minAdmissionPeriod) {
                 staff.forEach(function (doc) {
