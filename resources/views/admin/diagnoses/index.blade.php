@@ -47,6 +47,7 @@
                 <tr>
                     <th>#</th>
                     <th>Название</th>
+                    <th>Код</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -55,6 +56,7 @@
                     <tr>
                         <td>{{ $diagnosis->id }}</td>
                         <td>{{ $diagnosis->name }}</td>
+                        <td>{{ $diagnosis->code }}</td>
 
                         <td>
                             <div class="d-inline-block text-nowrap">

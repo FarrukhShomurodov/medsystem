@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->string('title');
             $table->enum('color', \App\Models\Survey::COLOR);
             $table->foreignId('survey_type_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('diagnosis_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
         });
     }

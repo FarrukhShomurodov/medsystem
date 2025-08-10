@@ -33,6 +33,25 @@
                 @method('put')
 
                 <div class="mb-3">
+                    <label class="form-label" for="basic-icon-code">Код <span
+                            class="text-danger">*</span></label>
+                    <div class="input-group input-group-merge">
+                            <span id="basic-icon-code"
+                                  class="input-group-text @error('code') text-danger icon-border @enderror"><i
+                                    class="bx bx-rename"></i></span>
+                        <input type="text" id="basic-icon-code"
+                               class="form-control @error('code') is-invalid @enderror"
+                               placeholder="Код" aria-label="Код"
+                               name="code"
+                               value="{{ old('code',  $diagnosis->code) }}"
+                               aria-describedby="basic-icon-code" required/>
+                    </div>
+                    @error('code')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
                     <label class="form-label" for="basic-icon-default-company">Название <span
                             class="text-danger">*</span></label>
                     <div class="input-group input-group-merge">
@@ -47,6 +66,21 @@
                                aria-describedby="basic-icon-default-company2" required/>
                     </div>
                     @error('name')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="surveys">Мед. документы<span
+                            class="text-danger">*</span></label>
+                    <select class="select2 form-control" id="surveys" name="surveys[]" multiple>
+                        @foreach($surveys as $survey)
+                            <option
+                                value="{{ $survey->id }}" @selected(in_array($survey->id, $diagnosis->surveys->pluck('id')->toArray()) )>{{ $survey->title }}</option>
+                        @endforeach
+                    </select>
+
+                    @error('surveys')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>

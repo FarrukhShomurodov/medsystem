@@ -9,6 +9,7 @@ return new class extends Migration {
     {
         Schema::create('diagnoses', function (Blueprint $table) {
             $table->id();
+            $table->text('code');
             $table->text('name');
             $table->timestamps();
         });

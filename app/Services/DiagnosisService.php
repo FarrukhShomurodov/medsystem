@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Diagnosis;
+use App\Models\Survey;
 
 class DiagnosisService
 {
@@ -19,6 +20,13 @@ class DiagnosisService
      */
     public function update(Diagnosis $diagnosis, array $validated): Diagnosis
     {
+        Survey::where('diagnosis_id', $diagnosis->id)->update(['diagnosis_id' => null]);
+
+        if (!empty($validated['surveys'])) {
+            Survey::whereIn('id', $validated['surveys'])
+                ->update(['diagnosis_id' => $diagnosis->id]);
+        }
+
         $diagnosis->update($validated);
         return $diagnosis->refresh();
     }

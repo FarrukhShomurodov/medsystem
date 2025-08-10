@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DiagnosisRequest;
 use App\Imports\DiagnosisImport;
 use App\Models\Diagnosis;
+use App\Models\Survey;
 use App\Services\DiagnosisService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -30,7 +31,7 @@ class DiagnosisController extends Controller
     public function index(): View
     {
         $diagnoses = Diagnosis::query()
-            ->select(['id', 'name'])
+            ->select(['id', 'name', 'code'])
             ->orderBy('id', 'desc')
             ->paginate(10);
 
@@ -52,7 +53,8 @@ class DiagnosisController extends Controller
 
     public function edit(Diagnosis $diagnosis): View
     {
-        return view('admin.diagnoses.edit', compact('diagnosis'));
+        $surveys = Survey::query()->get();
+        return view('admin.diagnoses.edit', compact('diagnosis', 'surveys'));
     }
 
     public function update(diagnosisRequest $request, Diagnosis $diagnosis): RedirectResponse

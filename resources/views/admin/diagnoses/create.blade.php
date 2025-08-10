@@ -31,6 +31,25 @@
                 @csrf
 
                 <div class="mb-3">
+                    <label class="form-label" for="basic-icon-code">Код <span
+                            class="text-danger">*</span></label>
+                    <div class="input-group input-group-merge">
+                            <span id="basic-icon-code"
+                                  class="input-group-text @error('code') text-danger icon-border @enderror"><i
+                                    class="bx bx-rename"></i></span>
+                        <input type="text" id="basic-icon-code"
+                               class="form-control @error('code') is-invalid @enderror"
+                               placeholder="Код" aria-label="Код"
+                               name="code"
+                               value="{{ old('code') }}"
+                               aria-describedby="basic-icon-code" required/>
+                    </div>
+                    @error('code')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
                     <label class="form-label" for="basic-icon-default-company">Название <span
                             class="text-danger">*</span></label>
                     <div class="input-group input-group-merge">

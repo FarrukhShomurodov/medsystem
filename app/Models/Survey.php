@@ -36,6 +36,7 @@ class Survey extends Model
     protected $fillable = [
         'title',
         'survey_type_id',
+        'diagnosis_id',
         'color',
     ];
 
