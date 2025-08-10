@@ -19,10 +19,16 @@ class PatientDiagnosisController extends Controller
     public function store(PatientDiagnosisRequest $request)
     {
         $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $diagnosis = $this->service->store((array)$validated);
+
+        $diagnosis->load(['diagnosis.surveys']);
 
         if ($request->ajax()) {
-            return response()->json(['success' => true]);
+            return response()->json([
+                'status' => true,
+                'diagnosis_id' => $diagnosis->id,
+                'surveys' => $diagnosis->diagnosis->surveys ?? []
+            ]);
         }
 
         return redirect()

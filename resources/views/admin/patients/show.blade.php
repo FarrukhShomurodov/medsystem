@@ -1410,8 +1410,8 @@
                                             <select name="statuses[]" class="form-select" required>
                                                 @foreach(App\Models\PatientMedication::STATUS as $status)
                                                     @if($status !== 'cancelled')
-                                                    <option
-                                                        value="{{ $status }}">{{ App\Models\PatientMedication::STATUS_LABELS[$status] }}</option>
+                                                        <option
+                                                            value="{{ $status }}">{{ App\Models\PatientMedication::STATUS_LABELS[$status] }}</option>
                                                     @endif
                                                 @endforeach
                                             </select>
@@ -1538,7 +1538,9 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $medication->pivot->created_at }}</td>
                                 <td>
-                                    {{ $medication->name }}, {{ $medication->pivot->dosage }}, {{ \App\Models\PatientMedication::ADMISSION_RULE_LABELS[$medication->pivot->admission_rules] ?? $medication->pivot->admission_rules }} ,
+                                    {{ $medication->name }}, {{ $medication->pivot->dosage }}
+                                    , {{ \App\Models\PatientMedication::ADMISSION_RULE_LABELS[$medication->pivot->admission_rules] ?? $medication->pivot->admission_rules }}
+                                    ,
 
                                     @foreach(explode(',', $medication->pivot->admission_period) as $time)
                                         <span class="badge bg-primary p-2">{{ $time }}</span>
@@ -2237,7 +2239,6 @@
 
     <script>
         $(document).ready(function () {
-            // Добавление/удаление диагноза пациенту
             $('.diagnosis-item').on('click', function (e) {
                 e.preventDefault();
 
@@ -2257,8 +2258,24 @@
                         diagnosis_id: diagnosisId
                     }),
                     success: function (response) {
-                        alert("Диагноз успешно добавлен");
-                        location.reload();
+                        if (!response.status) {
+                            alert("Ошибка при добавлении диагноза");
+                            return;
+                        }
+
+                        let surveys = response.surveys || [];
+
+                        if (surveys.length === 0) {
+                            alert("Диагноз успешно добавлен (без мед. документов).");
+                            location.reload(); // сразу перезагружаем
+                            return;
+                        }
+
+                        // Закрываем модалку диагнозов перед началом
+                        $('#diagnosisesModal').modal('hide');
+
+                        // Запускаем показ модалок мед. документов
+                        startSurveyModalSequence(surveys, patientId);
                     },
                     error: function (xhr) {
                         alert("Ошибка при добавлении диагноза.");
@@ -2266,6 +2283,59 @@
                     }
                 });
             });
+
+            function startSurveyModalSequence(surveys, patientId) {
+                let currentIndex = 0;
+
+                function showNextSurvey() {
+                    if (currentIndex >= surveys.length) {
+                        alert("Все мед. документы успешно добавлены.");
+                        location.reload(); // перезагружаем после последнего
+                        return;
+                    }
+
+                    let survey = surveys[currentIndex];
+
+                    // Заполняем форму
+                    $('#createDocumentModal input[name="patient_id"]').val(patientId);
+                    $('#survey-select').val(survey.id).trigger('change');
+
+                    // Отключаем возможность выбора другого документа
+                    $('#survey-select')
+                        .attr('readonly', true) // просто визуально блокируем
+                        .css('pointer-events', 'none'); // чтобы нельзя было открыть список
+
+
+                    // Открываем модалку
+                    $('#createDocumentModal').modal('show');
+
+                    // AJAX отправка формы
+                    $('#createDocumentModal form').off('submit').on('submit', function (e) {
+                        e.preventDefault();
+
+                        $.ajax({
+                            url: $(this).attr('action'),
+                            method: "POST",
+                            data: $(this).serialize(),
+                            success: function () {
+                                $('#createDocumentModal').modal('hide');
+                            },
+                            error: function () {
+                                alert("Ошибка при добавлении мед. документа");
+                            }
+                        });
+                    });
+                }
+
+                // После закрытия открываем следующий
+                $('#createDocumentModal').off('hidden.bs.modal').on('hidden.bs.modal', function () {
+                    currentIndex++;
+                    showNextSurvey();
+                });
+
+                // Запускаем первый
+                showNextSurvey();
+            }
 
             // Добавление/удаление из избранного
             $('.diagnosis-favorite').on('click', function (e) {
