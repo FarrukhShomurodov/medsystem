@@ -949,7 +949,7 @@
                                             <a href="#"
                                                class="list-group-item list-group-item-action diagnosis-item"
                                                data-diagnosis-id="{{ $diagnosis->id }}">
-                                                {{ $diagnosis->name }}
+                                                {{ $diagnosis->name }} {{ $diagnosis->code }}
                                             </a>
                                             <span class="ms-2 diagnosis-favorite text-warning cursor-pointer"
                                                   data-diagnosis-id="{{ $diagnosis->id }}"
@@ -970,7 +970,7 @@
                                         <a href="#"
                                            class="list-group-item list-group-item-action diagnosis-item"
                                            data-diagnosis-id="{{ $diagnosis->id }}">
-                                            {{ $diagnosis->name }}
+                                            {{ $diagnosis->name }} {{ $diagnosis->code }}
                                         </a>
                                         <span class="ms-2 diagnosis-favorite text-muted cursor-pointer"
                                               data-diagnosis-id="{{ $diagnosis->id }}"
