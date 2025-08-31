@@ -1570,6 +1570,11 @@
                                             </button>
 
                                             @if($medication->pivot->status !== 'completed')
+                                                <a href="{{ route('patient.medication.edit', $medication->pivot->id) }}"
+                                                   class="btn btn-sm btn-warning">
+                                                    Изменить
+                                                </a>
+
                                                 <button id="cancel_medication" data-id="{{ $medication->pivot->id }}"
                                                         class="btn btn-sm btn-danger">
                                                     Отменить

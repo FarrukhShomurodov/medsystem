@@ -51,7 +51,8 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     WardRoomController,
     WarehouseAccountingController,
     WarehouseController,
-    WarehouseTypeController};
+    WarehouseTypeController
+};
 use App\Http\Middleware\ExaminationMapIsActive;
 use Illuminate\Support\Facades\Route;
 
@@ -246,6 +247,8 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // medication
     Route::post('patient-medication', [PatientMedicationController::class, 'store'])->name('patient.medication.store');
+    Route::get('patient-medication/edit/{medication}', [PatientMedicationController::class, 'edit'])->name('patient.medication.edit');
+    Route::put('patient-medication/edit/{medication}', [PatientMedicationController::class, 'update'])->name('patient.medication.update');
 
     // procedures
     Route::post('patient-procedures', [PatientProcedureController::class, 'store'])->name('patient.procedures.store');

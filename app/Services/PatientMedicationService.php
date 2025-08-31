@@ -85,6 +85,37 @@ class PatientMedicationService
         return $medication;
     }
 
+    public function update(PatientMedication $medication, array $validated): void
+    {
+        $now = now();
+
+        // обновляем pivot самого препарата
+        $medication->update([
+            'dosage'           => $validated['dosages'][0] ?? $medication->dosage,
+            'single_dose'      => $validated['single_doses'][0] ?? $medication->single_dose,
+            'status'           => $validated['statuses'][0] ?? $medication->status,
+            'method'           => $validated['methods'][0] ?? $medication->method,
+            'admission_rules'  => $validated['admission_rules'][0] ?? $medication->admission_rules,
+            'date_of_end'      => $validated['date_of_ends'][0] ?? $medication->date_of_end,
+            'medication_notes' => $validated['medication_notes'][0] ?? $medication->medication_notes,
+            'admission_period' => $validated['admission_periods'][0] ?? $medication->admission_period,
+            'updated_at'       => $now,
+        ]);
+
+        // Обновляем совместимые препараты
+        $compatibles = $validated['compatible_medications'] ?? [];
+        $dosagesCompatibles = $validated['compatible_dosages'] ?? [];
+
+        $syncData = [];
+        foreach ($compatibles as $i => $compId) {
+            $syncData[$compId] = [
+                'dosage' => $dosagesCompatibles[$i] ?? null,
+            ];
+        }
+
+        $medication->compatibleMedications()->sync($syncData);
+    }
+
     public function extend(PatientMedication $medication): ?PatientMedication
     {
         if ($medication->status !== 'cancelled' || $medication->status !== 'returned' || $medication->status !== 'cancelled') {

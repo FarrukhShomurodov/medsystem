@@ -225,7 +225,7 @@
                             <span id="basic-icon-default-company2"
                                   class="input-group-text @error('min_deduction') text-danger icon-border @enderror"><i
                                     class="bx bx-rename"></i></span>
-                                <input type="text" id="basic-icon-default-min_deduction"
+                                <input type="number" id="basic-icon-default-min_deduction"
                                        class="form-control @error('min_deduction') is-invalid @enderror"
                                        placeholder="Минимальное списание" aria-label="Минимальное списание"
                                        name="min_deduction"
