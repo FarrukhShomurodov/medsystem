@@ -171,6 +171,7 @@
                         <td>—</td>
                         <td>—</td>
                         <td>—</td>
+                        <td>—</td>
                         <td>
                             <button class="btn btn-sm btn-primary" onclick="window.location.href='{{ route('main.warehouse.receipts.goods.discard', ['type' => 'supplies', 'id' => $item->id]) }}'">
                                 Списать
@@ -195,6 +196,7 @@
                         <td><span class="badge bg-warning">Хоз. материал</span></td>
                         <td>{{ $item->name }}</td>
                         <td>{{ $item->pivot->quantity }}</td>
+                        <td>—</td>
                         <td>—</td>
                         <td>—</td>
                         <td>—</td>
