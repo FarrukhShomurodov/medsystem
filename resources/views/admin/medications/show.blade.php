@@ -63,18 +63,18 @@
                         <td>{{ $i++ }}</td>
                         <td>{{ $substance->substance_name }}</td>
                         <td>{{ $substance->substance_dosage }}</td>
-                        <td>
-                            <div class="d-inline-block text-nowrap">
-                                <form action="{{ route('additional.substance.delete', $substance->id) }}" method="POST"
-                                      style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-danger">
-                                        Удалить
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+{{--                        <td>--}}
+{{--                            <div class="d-inline-block text-nowrap">--}}
+{{--                                <form action="{{ route('additional.substance.delete', $substance->id) }}" method="POST"--}}
+{{--                                      style="display:inline;">--}}
+{{--                                    @csrf--}}
+{{--                                    @method('DELETE')--}}
+{{--                                    <button class="btn btn-sm btn-danger">--}}
+{{--                                        Удалить--}}
+{{--                                    </button>--}}
+{{--                                </form>--}}
+{{--                            </div>--}}
+{{--                        </td>--}}
                     </tr>
                 @endforeach
                 </tbody>
