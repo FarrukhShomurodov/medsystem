@@ -44,6 +44,38 @@ class PatientService extends Model
         return $statusRu[$status];
     }
 
+    public static function getPaymentStatusTranslate($status)
+    {
+        $statusRu = [
+            'paid' => 'Оплачено',
+            'unpaid' => 'Не оплачено',
+            'partially_paid' => 'Частично оплачено',
+        ];
+
+        return $statusRu[$status];
+    }
+
+    public static function getPaymentMethodTranslate($status)
+    {
+        $statusRu = [
+            'cash' => 'Наличные',
+            'card' => 'Карта',
+            'insurance_company' => 'Страховая компания',
+        ];
+
+        return $statusRu[$status];
+    }
+
+    public static function getPlaceTranslate($status)
+    {
+        $statusRu = [
+            'institution' => 'Учреждение',
+            'cabinet' => 'Кабинет',
+        ];
+
+        return $statusRu[$status];
+    }
+
     public static function getStatusStyles(): array
     {
         return [

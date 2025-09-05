@@ -65,7 +65,7 @@ class PatientServiceController extends Controller
         $validated = $request->validated();
         $this->service->store((array)$validated);
 
-        return redirect()->back()->with('success', 'Услуга назначена!');
+        return redirect()->route('patient.services.index')->with('success', 'Услуга назначена!');
     }
 
     public function edit(PatientService $service): View
@@ -76,7 +76,7 @@ class PatientServiceController extends Controller
         $institutions = Department::query()->get();
         $methods = ServiceMethod::query()->get();
         $equipments = Equipment::query()->where('status', 'работает')->get();
-        $service->with('methods');
+        $service->with('methods','');
         $maps = $service->patient->examinationMaps;
         $procedures = Procedure::query()->get();
         $staffs = $this->scopeAvailableStaffOnDate();
