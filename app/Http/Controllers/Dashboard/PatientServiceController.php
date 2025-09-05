@@ -79,6 +79,7 @@ class PatientServiceController extends Controller
         $service->with('methods');
         $maps = $service->patient->examinationMaps;
         $procedures = Procedure::query()->get();
+        $staffs = $this->scopeAvailableStaffOnDate();
         $medications = Medication::query()->get();
 
         return view('admin.patient_services.edit', compact('maintenances', 'patients', 'doctors', 'institutions', 'methods', 'equipments', 'staffs', 'service', 'maps', 'procedures', 'medications'));
