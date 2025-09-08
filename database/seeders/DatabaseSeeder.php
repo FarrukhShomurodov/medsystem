@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
 
 
         $roleAdmin = Role::query()->where('name', 'admin')->first();
-        $roleAdmin->givePermissionTo(['view_cashier']);
+        $roleAdmin->givePermissionTo('view_cashier');
 
         $roleCashier = Role::firstOrCreate([
             'name' => 'Кассир',
