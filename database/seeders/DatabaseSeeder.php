@@ -41,7 +41,17 @@ class DatabaseSeeder extends Seeder
             'name' => 'Регистратор'
         ]);
 
-        $role = Role::firstOrCreate([
+        StaffPosition::query()->create([
+            'name' => 'Кассир'
+        ]);
+
+
+        $roleCashier = Role::firstOrCreate([
+            'name' => 'Кассир',
+            'guard_name' => 'admin',
+        ]);
+
+        $roleRegister = Role::firstOrCreate([
             'name' => 'Регистратор',
             'guard_name' => 'admin',
         ]);
@@ -62,7 +72,9 @@ class DatabaseSeeder extends Seeder
         ];
 
 
-        $role->syncPermissions($permissions);
+        $roleRegister->syncPermissions($permissions);
+
+        $roleCashier->syncPermissions(['view_dashboard', 'view_cashier']);
 
 //        $types = [
 //            'Данные отсутствуют',
