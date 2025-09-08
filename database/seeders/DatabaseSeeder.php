@@ -37,52 +37,6 @@ class DatabaseSeeder extends Seeder
 //            'name' => 'Заведуюший'
 //        ]);
 
-        Permission::firstOrCreate([
-            'name' => 'view_cashier',
-            'guard_name' => 'admin',
-        ]);
-
-        StaffPosition::query()->create([
-            'name' => 'Регистратор'
-        ]);
-
-        StaffPosition::query()->create([
-            'name' => 'Кассир'
-        ]);
-
-
-        $roleAdmin = Role::query()->where('name', 'admin')->first();
-        $roleAdmin->givePermissionTo('view_cashier');
-
-        $roleCashier = Role::firstOrCreate([
-            'name' => 'Кассир',
-            'guard_name' => 'admin',
-        ]);
-
-        $roleRegister = Role::firstOrCreate([
-            'name' => 'Регистратор',
-            'guard_name' => 'admin',
-        ]);
-
-        $permissions = [
-            'view_patients',
-            'create_patients',
-            'edit_patients',
-            'delete_patients',
-            'patient_inspection_store',
-            'create_patient_map',
-            'view_patient_services',
-            'create_patient_services',
-            'edit_patient_services',
-            'delete_patient_services',
-            'view_dashboard',
-            'view_cashier',
-        ];
-
-        $roleRegister->syncPermissions($permissions);
-
-        $roleCashier->syncPermissions(['view_dashboard', 'view_cashier']);
-
 //        $types = [
 //            'Данные отсутствуют',
 //            'Общие исследования',
@@ -129,7 +83,7 @@ class DatabaseSeeder extends Seeder
 //            ]);
 //        }
 
-//        $this->call(PermissionSeeder::class);
+        $this->call(PermissionSeeder::class);
 //        $this->call(DocumentSeeder::class);
 //        $this->call(WarehouseSeeder::class);
 //

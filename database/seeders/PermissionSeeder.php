@@ -232,11 +232,6 @@ class PermissionSeeder extends Seeder
             'view_cashier'
         ];
 
-        $role = Role::firstOrCreate([
-            'name' => 'main_admin',
-            'guard_name' => 'admin',
-        ]);
-
         foreach ($permissions as $permission) {
             Permission::firstOrCreate([
                 'name' => $permission,
@@ -244,9 +239,37 @@ class PermissionSeeder extends Seeder
             ]);
         }
 
-        $role->syncPermissions($permissions);
+        $roleMainAdmin = Role::firstOrCreate(['name' => 'main_admin', 'guard_name' => 'admin']);
+        $roleRegister  = Role::firstOrCreate(['name' => 'Регистратор', 'guard_name' => 'admin']);
+        $roleCashier   = Role::firstOrCreate(['name' => 'Кассир', 'guard_name' => 'admin']);
 
-        $admin = Admin::query()->first();
-        $admin->assignRole('main_admin');
+        $roleMainAdmin->syncPermissions($permissions);
+
+        // Регистратор
+        $roleRegister->syncPermissions([
+            'view_patients',
+            'create_patients',
+            'edit_patients',
+            'delete_patients',
+            'patient_inspection_store',
+            'create_patient_map',
+            'view_patient_services',
+            'create_patient_services',
+            'edit_patient_services',
+            'delete_patient_services',
+            'view_dashboard',
+            'view_cashier',
+        ]);
+
+        // Кассир
+        $roleCashier->syncPermissions([
+            'view_dashboard',
+            'view_cashier',
+        ]);
+
+        // Назначаем роль главного админа первому пользователю
+        if ($admin = Admin::query()->first()) {
+            $admin->assignRole('main_admin');
+        }
     }
 }
