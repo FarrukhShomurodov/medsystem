@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->time('service_time')->nullable();
             $table->enum('place', ['institution', 'cabinet'])->nullable();
             $table->longText('result')->nullable();
-            $table->enum('status', ['assigned', 'in_process', 'completed', 'cancelled']);
+            $table->enum('status', ['assigned', 'in_process', 'completed', 'cancelled', 'confirmed']);
             $table->json('payment')->nullable();
             $table->json('insurance_policy')->nullable();
             $table->timestamps();

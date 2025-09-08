@@ -65,6 +65,10 @@ class PatientServiceController extends Controller
         $validated = $request->validated();
         $this->service->store((array)$validated);
 
+        if (str_contains(url()->previous(), 'dashboard/patients/') ){
+            return redirect()->back()->with('success', 'Услуга назначена!');
+        }
+
         return redirect()->route('patient.services.index')->with('success', 'Услуга назначена!');
     }
 

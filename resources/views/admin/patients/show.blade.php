@@ -615,6 +615,53 @@
         </div>
     </div>
 
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>Регистрация: услуги, приёмы и процедуры</h5>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Тип</th>
+                    <th>Название</th>
+                    <th>Цена</th>
+                    <th>Статус</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($allRecords as $i => $item)
+                    <tr>
+                        <td>{{ $i+1 }}</td>
+                        <td>
+                            @if($item['type'] === 'service')
+                                <span class="badge bg-primary">Услуга</span>
+                            @elseif($item['type'] === 'reception')
+                                <span class="badge bg-success">Приём</span>
+                            @else
+                                <span class="badge bg-warning text-dark">Процедура</span>
+                            @endif
+                        </td>
+                        <td>{{ $item['name'] }}</td>
+                        <td>{{ $item['price'] }}</td>
+                        <td>
+                            {{ $item['status'] }}
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <h5>Итого: {{ $total }} UZS</h5>
+            <form method="POST" action="{{ route('registrar.confirm', $patientDetails['patient_id']) }}">
+                @csrf
+                <button type="submit" class="btn btn-success">Подтвердить</button>
+            </form>
+        </div>
+    </div>
+
     @php $accordionId = uniqid('accordion_'); @endphp
 
     <div class="accordion mt-3" id="{{ $accordionId }}">
@@ -756,6 +803,8 @@
                     <p><strong>Дата рождения:</strong> {{ $patientDetails['basic_info']['birth_date'] }}</p>
                     <p><strong>Пол:</strong> {{ $patientDetails['basic_info']['gender'] }}</p>
                     <p><strong>Гражданство:</strong> {{ $patientDetails['basic_info']['citizenship'] }}</p>
+                    <p><strong>Откуда услышали о нас
+                            ?:</strong> {{ $patientDetails['basic_info']['referral_source'] ?? 'N/A' }}</p>
                 </div>
             </div>
         </div>

@@ -187,8 +187,9 @@
             let minAdmissionPeriod;
             let staff;
 
+            let serviceId;
             $('#service').on('change', function () {
-                const serviceId = $(this).val();
+                serviceId = $(this).val();
 
                 $.ajax({
                     url: '/api/staff-by-service/' + serviceId,
@@ -211,7 +212,7 @@
                             $('#calendar-header').append(
                                 '<th data-doctor="' + doc.id + '">' +
                                 doc.first_name + ' ' + doc.last_name +
-                                ' <a href="/dashboard/receptions-doctor-calendar/' + doc.id + '" class="btn btn-sm calendar-button text-white calendar-icon-button" data-doctor-id="' + doc.id + '"><i class="fas fa-calendar-alt"></i></a>' +
+                                ' <a href="/dashboard/receptions-doctor-calendar/' + doc.id + '/' + serviceId + '" class="btn btn-sm calendar-button text-white calendar-icon-button" data-doctor-id="' + doc.id + '"><i class="fas fa-calendar-alt"></i></a>' +
                                 '</th>'
                             );
                         });
@@ -423,6 +424,7 @@
                     data: {
                         patient_id: patientId,
                         staff_id: staffId,
+                        service_id: serviceId,
                         start_time: startTime,
                         end_time: endTime,
                         date: date,

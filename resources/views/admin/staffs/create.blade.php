@@ -271,24 +271,6 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-email">Email <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group input-group-merge">
-                            <span class="input-group-text @error('email') text-danger icon-border @enderror"><i
-                                    class="bx bx-envelope"></i></span>
-                                <input type="email" id="basic-icon-default-email"
-                                       class="form-control @error('email') is-invalid @enderror" placeholder="Email"
-                                       name="email"
-                                       required
-                                       value="{{ old('email') }}"
-                                       aria-label="Email" aria-describedby="basic-icon-default-email2"/>
-                            </div>
-                            @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
 
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-address">
@@ -318,8 +300,7 @@
 
                         {{-- Emergency --}}
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-email">Экстраный кантакт (ФИО) <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-email">Экстраный кантакт (ФИО)</label>
                             <div class="input-group input-group-merge">
                             <span
                                 class="input-group-text @error('emergency_contact_name') text-danger icon-border @enderror"><i
@@ -328,7 +309,6 @@
                                        class="form-control @error('emergency_contact_name') is-invalid @enderror"
                                        placeholder="Экстраный кантакт (ФИО)"
                                        name="emergency_contact_name"
-                                       required
                                        value="{{ old('emergency_contact_name') }}"
                                        aria-label="Экстраный кантакт (ФИО)"
                                        aria-describedby="basic-icon-default-emergency_contact_name"/>
@@ -340,8 +320,7 @@
 
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-emergency_contact_phone">Экстраный кантакт
-                                (Телефон) <span
-                                    class="text-danger">*</span></label>
+                                (Телефон) </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-emergency_contact_phone"
                                   class="input-group-text @error('emergency_contact_phone') text-danger icon-border @enderror"><i
@@ -349,7 +328,6 @@
                                 <input type="text" id="basic-icon-default-emergency_contact_phone"
                                        class="form-control phone @error('emergency_contact_phone') is-invalid @enderror"
                                        name="emergency_contact_phone"
-                                       required
                                        value="{{ old('emergency_contact_phone') }}"
                                        placeholder="+ 998 (XX) XXX XX XX" aria-label="+ 998 (XX) XXX XX XX"
                                        aria-describedby="basic-icon-default-emergency_contact_phone"/>
@@ -363,8 +341,6 @@
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-emergency_contact_relation">
                                 Экстраный кантакт (кем приходит)
-                                <span
-                                    class="text-danger">*</span>
                             </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
@@ -376,7 +352,6 @@
                                        placeholder=" Экстраный кантакт (кем приходит)"
                                        aria-label="Экстраный кантакт (кем приходит)"
                                        name="emergency_contact_relation"
-                                       required
                                        value="{{ old('emergency_contact_relation') }}"
                                        aria-describedby="basic-icon-default-company2"/>
                             </div>
@@ -506,11 +481,10 @@
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label" for="services">Услуги<span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="services">Услуги</label>
 
                             <select id="services" name="services[]"
-                                    class="form-control select2 @error('services') is-invalid @enderror" required
+                                    class="form-control select2 @error('services') is-invalid @enderror"
                                     multiple>
                                 @foreach($services as $service)
                                     <option
@@ -527,8 +501,8 @@
 
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-education_name">Название Образование <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-education_name">Название
+                                Образование </label>
                             <div class="input-group input-group-merge">
         <span class="input-group-text @error('education_name') text-danger icon-border @enderror">
             <i class="bx bx-book"></i>
@@ -537,7 +511,6 @@
                                        class="form-control @error('education_name') is-invalid @enderror"
                                        name="education_name"
                                        value="{{ old('education_name') }}"
-                                       required
                                        placeholder="Название Образование"/>
                             </div>
                             @error('education_name')
@@ -546,8 +519,8 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-education_graduation_year">Дата окончание обучения
-                                <span class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-education_graduation_year">Дата окончание
+                                обучения</label>
                             <div class="input-group input-group-merge">
         <span class="input-group-text @error('education_graduation_year') text-danger icon-border @enderror">
             <i class="bx bx-calendar"></i>
@@ -556,7 +529,7 @@
                                        value="{{ old('education_graduation_year') }}"
                                        id="basic-icon-education_graduation_year"
                                        class="form-control flatpickr-date @error('education_graduation_year') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD" required/>
+                                       placeholder="YYYY-MM-DD"/>
                             </div>
                             @error('education_graduation_year')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -565,7 +538,7 @@
 
                         <div class="col-sm-4">
                             <label class="form-label" for="basic-icon-default-certificate_name">Название сертификата
-                                <span class="text-danger">*</span></label>
+                            </label>
                             <div class="input-group input-group-merge">
         <span class="input-group-text @error('certificate_name') text-danger icon-border @enderror">
             <i class="bx bx-certification"></i>
@@ -574,7 +547,6 @@
                                        class="form-control @error('certificate_name') is-invalid @enderror"
                                        name="certificate_name"
                                        value="{{ old('certificate_name') }}"
-                                       required
                                        placeholder="Название сертификата"/>
                             </div>
                             @error('certificate_name')
@@ -583,8 +555,8 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-default-certificate_number">Номер лицензии <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-certificate_number">Номер
+                                лицензии </label>
                             <div class="input-group input-group-merge">
         <span class="input-group-text @error('certificate_number') text-danger icon-border @enderror">
             <i class="bx bx-id-card"></i>
@@ -592,7 +564,6 @@
                                 <input type="text" id="basic-icon-default-certificate_number"
                                        class="form-control @error('certificate_number') is-invalid @enderror"
                                        name="certificate_number"
-                                       required
                                        value="{{ old('certificate_number') }}"
                                        placeholder="Номер лицензии"/>
                             </div>
@@ -602,8 +573,7 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-certificate_issue_date">Дата выдачи <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-certificate_issue_date">Дата выдачи </label>
                             <div class="input-group input-group-merge">
         <span class="input-group-text @error('certificate_issue_date') text-danger icon-border @enderror">
             <i class="bx bx-calendar"></i>
@@ -612,7 +582,7 @@
                                        value="{{ old('certificate_issue_date') }}"
                                        id="basic-icon-certificate_issue_date"
                                        class="form-control flatpickr-date @error('certificate_issue_date') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD" required/>
+                                       placeholder="YYYY-MM-DD"/>
                             </div>
                             @error('certificate_issue_date')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -620,8 +590,7 @@
                         </div>
 
                         <div class="col-sm-4">
-                            <label class="form-label" for="basic-icon-certificate_validity_period">Срок действия <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-certificate_validity_period">Срок действия</label>
                             <div class="input-group input-group-merge">
                                 <span
                                     class="input-group-text @error('certificate_validity_period') text-danger icon-border @enderror">
@@ -631,7 +600,7 @@
                                        value="{{ old('certificate_validity_period') }}"
                                        id="basic-icon-certificate_validity_period"
                                        class="form-control flatpickr-date @error('certificate_validity_period') is-invalid @enderror"
-                                       placeholder="YYYY-MM-DD" required/>
+                                       placeholder="YYYY-MM-DD"/>
                             </div>
                             @error('certificate_validity_period')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -887,10 +856,9 @@
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label" for="admission_period">Период приема (Минуты) <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="admission_period">Период приема (Минуты)</label>
                             <input type="number" name="admission_period" id="admission_period" class="form-control"
-                                   value="{{ old('admission_period') }}" required>
+                                   value="{{ old('admission_period') }}">
                         </div>
 
 

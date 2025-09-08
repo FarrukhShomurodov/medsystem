@@ -13,4 +13,9 @@ class PatientProcedure extends Pivot
     {
         return $this->belongsTo(Procedure::class);
     }
+
+    public function patient(): BelongsTo
+    {
+        return $this->belongsTo(Patient::class,'patient_id');
+    }
 }

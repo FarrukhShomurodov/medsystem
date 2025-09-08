@@ -24,15 +24,18 @@ class PatientRequest extends FormRequest
             'passport_series' => 'required|string|max:255',
             'passport_validity_period' => 'required|date|date_format:Y-m-d',
 
+            // новое поле
+            'referral_source' => 'nullable|string|max:255',
+
             // Контактная информация
             'phone' => 'required|string|max:255',
             'additional_phone' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
-            'region_id' => 'required',
-            'city_id' => 'required',
-            'residential_address_street' => 'required|string|max:255',
-            'residential_address_house' => 'required|string|max:255',
-            'residential_address_apartment' => 'required|string|max:255',
+            'region_id' => 'nullable',
+            'city_id' => 'nullable',
+            'residential_address_street' => 'nullable|string|max:255',
+            'residential_address_house' => 'nullable|string|max:255',
+            'residential_address_apartment' => 'nullable|string|max:255',
             'residential_postcode' => 'nullable|int',
 
             // Адрес регистрации
@@ -51,9 +54,9 @@ class PatientRequest extends FormRequest
             'insurance_expiry_date' => 'nullable|date|date_format:Y-m-d',
 
             // Данные экстренных контакто
-            'emergency_contact_full_name' => 'required|string|max:255',
-            'emergency_contact_relation' => 'required|string|max:255',
-            'emergency_contact_phone' => 'required|string|max:255',
+            'emergency_contact_full_name' => 'nullable|string|max:255',
+            'emergency_contact_relation' => 'nullable|string|max:255',
+            'emergency_contact_phone' => 'nullable|string|max:255',
             'emergency_contact_address' => 'nullable|string|max:255',
 
             // Медицинская информация

@@ -32,6 +32,8 @@ class StaffService
 
             $validated['staff_id'] = $staff->id;
 
+            $validated['email'] = $validated['login_email'];
+
             // Создание связанных записей
             $staff->contact()->create($validated);
             $staff->document()->create($validated);

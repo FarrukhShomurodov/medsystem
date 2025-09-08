@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class PatientService extends Model
 {
     const PLACE = ['institution', 'cabinet'];
-    const STATUS = ['assigned', 'in_process', 'completed', 'cancelled'];
+    const STATUS = ['assigned', 'in_process', 'completed', 'cancelled', 'confirmed', 'paid'];
     const PAYMENT_STATUS = ['paid', 'unpaid', 'partially_paid'];
     const PAYMENT_METHOD = ['cash', 'card', 'insurance_company'];
 
@@ -38,7 +38,9 @@ class PatientService extends Model
             'assigned' => 'Назначена',
             'in_process' => 'В процессе',
             'completed' => 'Завершена',
-            'cancelled' => 'Отменена'
+            'cancelled' => 'Отменена',
+            'confirmed' => 'Подтверждено',
+            'paid' => 'Оплачено',
         ];
 
         return $statusRu[$status];
@@ -82,6 +84,11 @@ class PatientService extends Model
             'assigned' => [
                 'class' => 'bg-label-success',
                 'text' => 'Назначена',
+            ],
+
+            'confirmed' => [
+                'class' => 'bg-label-success',
+                'text' => 'Подтверждено',
             ],
             'in_process' => [
                 'class' => 'bg-label-info',

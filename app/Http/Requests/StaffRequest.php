@@ -28,11 +28,10 @@ class StaffRequest extends FormRequest
 
 
             'phone' => 'required|string|max:255',
-            'email' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'emergency_contact_name' => 'required|string|max:255',
-            'emergency_contact_phone' => 'required|string|max:255',
-            'emergency_contact_relation' => 'required|string|max:255',
+            'emergency_contact_name' => 'nullable|string|max:255',
+            'emergency_contact_phone' => 'nullable|string|max:255',
+            'emergency_contact_relation' => 'nullable|string|max:255',
 
             'position_id' => 'required',
             'addition_position_id' => 'nullable',
@@ -40,14 +39,14 @@ class StaffRequest extends FormRequest
             'department_id' => 'required',
             'category' => ['required', Rule::in(StaffProfessionalData::CATEGORY)],
 
-            'education_name' => 'required|string|max:255',
-            'education_graduation_year' => 'required|string|max:255',
+            'education_name' => 'nullable|string|max:255',
+            'education_graduation_year' => 'nullable|string|max:255',
 
-            'certificate_name' => 'required|string|max:255',
-            'certificate_number' => 'required|string|max:255',
-            'certificate_issue_date' => 'required|date',
-            'certificate_validity_period' => 'required|string|max:255',
-            'services' => 'required|array',
+            'certificate_name' => 'nullable|string|max:255',
+            'certificate_number' => 'nullable|string|max:255',
+            'certificate_issue_date' => 'nullable|date',
+            'certificate_validity_period' => 'nullable|string|max:255',
+            'services' => 'nullable|array',
 
             'employment_contract_number' => 'required|string|max:255',
             'employment_contract_date_of_signing' => 'required|date',
@@ -58,7 +57,7 @@ class StaffRequest extends FormRequest
             'dismissal_reception_number' => 'nullable|string|max:255',
             'dismissal_reception_date' => 'nullable|date',
 
-            'admission_period' => 'required|int',
+            'admission_period' => 'nullable|int',
 
             'passport_series' => 'required|string|max:255',
             'INN' => 'required|string|max:255',

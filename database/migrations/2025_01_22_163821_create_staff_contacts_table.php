@@ -11,11 +11,11 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('staff_id')->constrained()->cascadeOnDelete();
             $table->string('phone');
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->string('address');
-            $table->string('emergency_contact_name');
-            $table->string('emergency_contact_phone');
-            $table->string('emergency_contact_relation');
+            $table->string('emergency_contact_name')->nullable();
+            $table->string('emergency_contact_phone')->nullable();
+            $table->string('emergency_contact_relation')->nullable();
             $table->timestamps();
         });
     }

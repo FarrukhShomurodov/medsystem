@@ -21,11 +21,11 @@ class PatientService
     {
         $patient = DB::transaction(function () use ($validated) {
 
-            if (!is_numeric($validated['region_id'])) {
+            if (isset($validated['region_id']) && !is_numeric($validated['region_id'])) {
                 $validated['region_id'] = Region::query()->create(['name' => $validated['region_id']])->id;
             }
 
-            if (!is_numeric($validated['city_id'])) {
+            if (isset($validated['city_id']) && !is_numeric($validated['city_id'])) {
                 /** @var array $validated */
                 $validated['city_id'] = City::query()->create([
                     'name' => $validated['city_id'],
@@ -99,11 +99,11 @@ class PatientService
     {
         $patient = DB::transaction(function () use ($validated, $patient) {
 
-            if (!is_numeric($validated['region_id'])) {
+            if (isset($validated['region_id']) && !is_numeric($validated['region_id'])) {
                 $validated['region_id'] = Region::query()->create(['name' => $validated['region_id']])->id;
             }
 
-            if (!is_numeric($validated['city_id'])) {
+            if (isset($validated['city_id']) && !is_numeric($validated['city_id'])) {
                 /** @var array $validated */
                 $validated['city_id'] = City::query()->create([
                     'name' => $validated['city_id'],

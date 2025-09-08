@@ -16,6 +16,7 @@ class ReceptionRequest extends FormRequest
         return [
             'patient_id' => 'required|int|exists:patients,id',
             'staff_id' => 'required|int|exists:staff,id',
+            'service_id' => 'required|int|exists:services,id',
             'start_time' => 'required',
             'end_time' => 'required',
             'date' => 'required|date',

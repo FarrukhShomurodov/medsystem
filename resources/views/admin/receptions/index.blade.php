@@ -92,6 +92,7 @@
                 <tr>
                     <th>#</th>
                     <th>Пациент</th>
+                    <th>Услуга</th>
                     <th>Персонал</th>
                     <th>Время началы</th>
                     <th>Время конца</th>
@@ -104,6 +105,7 @@
                     <tr>
                         <td>{{ $reception->id }}</td>
                         <td>{{ $reception->patient->first_name }}</td>
+                        <td>{{ $reception->service->name ?? 'N/A' }}</td>
                         <td>{{ $reception->staff->name }}</td>
                         <td>{{ $reception->start_time }}</td>
                         <td>{{ $reception->end_time }}</td>

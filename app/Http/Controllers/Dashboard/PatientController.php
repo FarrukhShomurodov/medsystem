@@ -18,6 +18,7 @@ use App\Models\Patient;
 use App\Models\PatientMedication;
 use App\Models\PatientProcedure;
 use App\Models\Procedure;
+use App\Models\Reception;
 use App\Models\Region;
 use App\Models\Service;
 use App\Models\Survey;
@@ -216,6 +217,7 @@ class PatientController extends Controller
                 'birth_date' => $patient->birth_date,
                 'gender' => $patient->gender === 'male' ? 'Мужской' : 'Женский',
                 'citizenship' => $patient->citizenship,
+                'referral_source' => $patient->referral_source,
             ],
             'contact_info' => [
                 'phone' => $patient->phone,
@@ -392,6 +394,52 @@ class PatientController extends Controller
             ->whereIn('drug2_ru', $patientMedications)
             ->get();
 
+
+        //
+        $allRecords = collect();
+
+        foreach ($patient->allServices->where('status', 'assigned') as $s) {
+            $allRecords->push([
+                'id'       => $s->id,
+                'type'     => 'service',
+                'name'     => $s->service?->name ?? '-',
+                'price'    => (float) ($s->service?->price ?? 0),
+                'status'   => $s->status,
+                'source'   => $s,
+            ]);
+        }
+
+        // Приёмы (Reception)
+        foreach ($patient->allReceptions->where('status', 'new') as $r) {
+            $allRecords->push([
+                'id'       => $r->id,
+                'type'     => 'reception',
+                'name'     => $r->service?->name ?? '-',
+                'price'    => (float) ($r->service?->price ?? 0),
+                'status'   => $r->status,
+                'source'   => $r,
+            ]);
+        }
+
+        foreach ($patient->allProcedures->where('status', 'assigned') as $p) {
+            $allRecords->push([
+                'id'       => $p->id,
+                'type'     => 'procedure',
+                'name'     => $p->procedure?->name ?? '-',
+                'price'    => (float) ($p->procedure?->price ?? 0),
+                'status'   => $p->status,
+                'source'   => $p,
+            ]);
+        }
+
+        // Сортируем по дате создания (если нужно) — у каждого source есть created_at
+        $allRecords = $allRecords->sortByDesc(function ($item) {
+            return optional($item['source'])->created_at ?? null;
+        })->values();
+
+        // Считаем общую сумму
+        $total = $allRecords->sum(fn($it) => $it['price'] ?? 0);
+
         return view(
             'admin.patients.show',
             compact(
@@ -406,6 +454,8 @@ class PatientController extends Controller
                 'vitalParameters',
                 'procedures',
                 'warnings',
+                'allRecords',
+                'total'
             )
         );
     }
@@ -417,6 +467,13 @@ class PatientController extends Controller
         $allegories = Allegory::query()->get();
         $devices = MedicalDevice::query()->get();
         $diseases = ChronicDisease::query()->get();
+
+        $user = auth()->user();
+        $role = $user->getRoleNames()->first();
+
+        if ($role == 'Регистратор') {
+            return view('admin.patients.register', compact('regions', 'cities', 'allegories', 'devices', 'diseases'));
+        }
 
         return view('admin.patients.create', compact('regions', 'cities', 'allegories', 'devices', 'diseases'));
     }
@@ -457,5 +514,14 @@ class PatientController extends Controller
         $this->service->destroy($patient);
 
         return redirect()->route('patients.index')->with('success', 'Пациент устройство успешно удалена!');
+    }
+
+    public function confirm(Patient $patient)
+    {
+        \App\Models\PatientService::query()->where('patient_id', $patient->id)->where('status', 'assigned')->update(['status' => 'confirmed']);
+        Reception::query()->where('patient_id', $patient->id)->where('status', 'new')->update(['status' => 'confirmed']);
+        PatientProcedure::query()->where('patient_id', $patient->id)->where('status', 'assigned')->update(['status' => 'confirmed']);
+
+        return back()->with('success', 'Все записи подтверждены!');
     }
 }

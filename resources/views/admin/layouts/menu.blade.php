@@ -262,6 +262,15 @@
             </li>
         @endcan
 
+        @can('view_cashier')
+            <li class="menu-item {{ Request::is('dashboard/cashier*') ? 'active' : '' }}">
+                <a href="{{ route('cashier.index') }}" class="menu-link">
+                    <i class="menu-icon bx bx-group"></i>
+                    <div data-i18n="Касса">Касса</div>
+                </a>
+            </li>
+        @endcan
+
         <li class="menu-item {{ Request::is('dashboard/sister-window*')  ? 'active' : '' }}">
             <a href="{{ route('sister.window.index') }}" class="menu-link">
                 <i class="menu-icon bx bx-clinic"></i>
@@ -377,13 +386,13 @@
                         </a>
                     </li>
 
-{{--                    @can('view_warehouse_types')--}}
-{{--                        <li class="menu-item {{ Request::is('dashboard/warehouses/types*') ? 'active' : '' }}">--}}
-{{--                            <a href="{{ route('warehouses.type.index') }}" class="menu-link">--}}
-{{--                                <div data-i18n="Типы">Типы</div>--}}
-{{--                            </a>--}}
-{{--                        </li>--}}
-{{--                    @endcan--}}
+                    {{--                    @can('view_warehouse_types')--}}
+                    {{--                        <li class="menu-item {{ Request::is('dashboard/warehouses/types*') ? 'active' : '' }}">--}}
+                    {{--                            <a href="{{ route('warehouses.type.index') }}" class="menu-link">--}}
+                    {{--                                <div data-i18n="Типы">Типы</div>--}}
+                    {{--                            </a>--}}
+                    {{--                        </li>--}}
+                    {{--                    @endcan--}}
                 </ul>
             </li>
         @endcanany

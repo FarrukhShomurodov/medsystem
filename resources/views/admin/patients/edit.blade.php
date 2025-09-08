@@ -257,6 +257,25 @@
                             </div>
                         </div>
 
+                        {{-- new --}}
+                        <div class="col">
+                            <label class="form-label" for="referral_source">Откуда услышали о нас?</label>
+                            <div class="input-group input-group-merge">
+                                <span id="referral_source"
+                                      class="input-group-text @error('referral_source') text-danger icon-border @enderror">
+                                    <i class="bx bx-file"></i>
+                                </span>
+                                <input type="text" id="referral_source"
+                                       class="form-control @error('referral_source', $patient->referral_source) is-invalid @enderror"
+                                       placeholder="Откуда услышали о нас?" aria-label="Откуда услышали о нас?" name="referral_source"
+                                       value="{{ old('referral_source') }}"/>
+                            </div>
+                            @error('referral_source')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- buttons --}}
                         <div class="col-12 d-flex justify-content-between">
                             <button class="btn btn-label-secondary btn-prev" disabled>
                                 <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
@@ -339,10 +358,9 @@
                     </div>
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-region">Области <span class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-region">Области</label>
                             <select class="form-control select2 @error('region_id') is-invalid @enderror"
-                                    id="basic-icon-default-region" name="region_id"
-                                    required>
+                                    id="basic-icon-default-region" name="region_id">
                                 <option value="" disabled selected>Выберите область</option>
                                 @foreach($regions as $region)
                                     <option
@@ -355,10 +373,9 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-city">Города <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-city">Города</label>
                             <select class="form-control select2 @error('city_id') is-invalid @enderror"
-                                    id="basic-icon-default-city" name="city_id" required>
+                                    id="basic-icon-default-city" name="city_id">
                                 <option value="" disabled selected>Выберите город</option>
                                 @foreach($cities as $city)
                                     <option
@@ -372,8 +389,7 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-street">Улица <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-street">Улица</label>
                             <div class="input-group input-group-merge">
                         <span id="basic-icon-default-street2"
                               class="input-group-text @error('residential_address_street') text-danger icon-border @enderror">
@@ -383,7 +399,7 @@
                                        class="form-control @error('residential_address_street') is-invalid @enderror"
                                        placeholder="Улица" aria-label="Улица" name="residential_address_street"
                                        value="{{ old('residential_address_street',$patient->residential_address_street) }}"
-                                       aria-describedby="basic-icon-default-street2" required/>
+                                       aria-describedby="basic-icon-default-street2"/>
                             </div>
                             @error('residential_address_street')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -391,8 +407,7 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-house">Дом <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-house">Дом</label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-house2"
                                   class="input-group-text @error('residential_address_house') text-danger icon-border @enderror">
@@ -402,7 +417,7 @@
                                        class="form-control @error('residential_address_house') is-invalid @enderror"
                                        placeholder="Дом" aria-label="Дом" name="residential_address_house"
                                        value="{{ old('residential_address_house',$patient->residential_address_house) }}"
-                                       aria-describedby="basic-icon-default-house2" required/>
+                                       aria-describedby="basic-icon-default-house2"/>
                             </div>
                             @error('residential_address_house')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -410,8 +425,7 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-apartment">Квартира <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-apartment">Квартира </label>
                             <div class="input-group input-group-merge">
                             <span id="basic-icon-default-apartment2"
                                   class="input-group-text @error('residential_address_apartment') text-danger icon-border @enderror">
@@ -421,8 +435,7 @@
                                        class="form-control @error('residential_address_apartment') is-invalid @enderror"
                                        placeholder="Квартира" aria-label="Квартира" name="residential_address_apartment"
                                        value="{{ old('residential_address_apartment',$patient->residential_address_apartment) }}"
-                                       aria-describedby="basic-icon-default-apartment2"
-                                       required/>
+                                       aria-describedby="basic-icon-default-apartment2"/>
                             </div>
                             @error('residential_address_apartment')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -565,8 +578,7 @@
                     </div>
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-first-name">ФИО контактного лица <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-first-name">ФИО контактного лица </label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-first-name2"
                                       class="input-group-text @error('emergency_contact_full_name') text-danger icon-border @enderror">
@@ -577,7 +589,7 @@
                                        placeholder="ФИО контактного лица" aria-label="ФИО контактного лица"
                                        name="emergency_contact_full_name"
                                        value="{{ old('emergency_contact_full_name',$patient->emergency_contact_full_name) }}"
-                                       aria-describedby="basic-icon-default-first-name2" required/>
+                                       aria-describedby="basic-icon-default-first-name2"/>
                             </div>
                             @error('emergency_contact_full_name')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -586,8 +598,7 @@
 
                         <div class="col-sm-6">
                             <label class="form-label" for="basic-icon-default-last-name">Связь с пациентом (родственник,
-                                друг...) <span
-                                    class="text-danger">*</span></label>
+                                друг...) </label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-last-name2"
                                       class="input-group-text @error('emergency_contact_relation') text-danger icon-border @enderror">
@@ -599,8 +610,7 @@
                                        aria-label="Связь с пациентом (родственник, друг...)"
                                        name="emergency_contact_relation"
                                        value="{{ old('emergency_contact_relation',$patient->emergency_contact_relation) }}"
-                                       aria-describedby="basic-icon-default-last-name2"
-                                       required/>
+                                       aria-describedby="basic-icon-default-last-name2"/>
                             </div>
                             @error('emergency_contact_relation')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -608,8 +618,7 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label class="form-label" for="basic-icon-default-phone_emerge">Телефон <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="basic-icon-default-phone_emerge">Телефон </label>
                             <div class="input-group input-group-merge">
                                 <span id="basic-icon-default-phone2"
                                       class="input-group-text @error('emergency_contact_phone') text-danger icon-border @enderror">
@@ -620,8 +629,7 @@
                                        name="emergency_contact_phone"
                                        value="{{ old('emergency_contact_phone',$patient->emergency_contact_phone) }}"
                                        placeholder="+ 998 (XX) XXX XX XX"
-                                       aria-label="+ 998 (XX) XXX XX XX" aria-describedby="basic-icon-default-phone2"
-                                       required/>
+                                       aria-label="+ 998 (XX) XXX XX XX" aria-describedby="basic-icon-default-phone2"/>
                             </div>
                             @error('emergency_contact_phone')
                             <div class="invalid-feedback">{{ $message }}</div>

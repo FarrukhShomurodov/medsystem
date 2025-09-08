@@ -3,6 +3,7 @@
 use App\Http\Controllers\Dashboard\{AdminAuthController,
     AdminController,
     AllegoryController,
+    CashierStatsController,
     ChronicDiseaseController,
     CityController,
     DangerousCombinationController,
@@ -70,6 +71,9 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     Route::resource('admins', AdminController::class);
 
+    Route::get('cashier', [CashierStatsController::class, 'index'])
+        ->name('cashier.index')->middleware('permission:view_cashier');
+
 
     // department
     Route::prefix('departments')->group(function () {
@@ -111,7 +115,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         ->name('receptions.index')
         ->middleware('permission:view_receptions');
 
-    Route::get('receptions-doctor-calendar/{staff}', [ReceptionController::class, 'doctorCalendar'])
+    Route::get('receptions-doctor-calendar/{staff}/{serviceId}', [ReceptionController::class, 'doctorCalendar'])
         ->name('receptions.doctor.calendar')
         ->middleware('permission:view_reception_doctor_calendar');
 
@@ -244,6 +248,11 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::resource('diseases', ChronicDiseaseController::class);
     Route::resource('devices', MedicalDeviceController::class);
     Route::resource('patients', PatientController::class);
+    Route::post('/registrar/{patient}/confirm', [PatientController::class, 'confirm'])->name('registrar.confirm');
+
+    Route::put('/cashier/update-all', [CashierStatsController::class, 'updateAll'])
+        ->name('cashier.updateAll');
+
 
     // medication
     Route::post('patient-medication', [PatientMedicationController::class, 'store'])->name('patient.medication.store');

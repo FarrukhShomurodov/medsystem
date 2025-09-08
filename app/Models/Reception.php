@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Reception extends Model
 {
-    const STATUS = ['new', 'done', 'paid', 'cancelled'];
+    const STATUS = ['new', 'done', 'paid', 'cancelled', 'confirmed'];
 
     protected $fillable = [
         'examination_map_id',
         'patient_id',
         'staff_id',
+        'service_id',
         'start_time',
         'end_time',
         'date',
@@ -25,9 +26,11 @@ class Reception extends Model
     {
         $statusRu = [
             'new' => 'Новое',
+            'confirmed' => 'Подтверждено',
             'paid' => 'Оплачено',
             'cancelled' => 'Отмена',
-            'done' => 'Выполнено'
+            'done' => 'Выполнено',
+            '' => 'N/A'
         ];
         return $statusRu[$status];
     }
@@ -40,6 +43,11 @@ class Reception extends Model
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class, 'patient_id');
+    }
+
+    public function service(): BelongsTo
+    {
+        return $this->belongsTo(Service::class, 'service_id');
     }
 
     public function staff(): BelongsTo

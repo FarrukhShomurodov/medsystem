@@ -361,6 +361,7 @@
                     data: {
                         patient_id: patientId,
                         staff_id: staffId,
+                        service_id: {{ request('serviceId') }},
                         status: status,
                         start_time: startTime,
                         end_time: endTime,

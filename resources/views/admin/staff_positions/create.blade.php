@@ -52,21 +52,181 @@
                 <div class="col-12 mb-3">
                     <label class="form-label" for="permissions">Разрешения <span
                             class="text-danger">*</span></label>
-                    <select id="type" name="permissions[]"
-                            class="form-control select2 @error('permissions') is-invalid @enderror" required multiple>
-                        @foreach($permissions as $permission)
-                            <option
-                                value="{{ $permission->name }}" @selected(in_array($permission->name, old('permissions', [])))>
-                                {{ $permissionsRu[$permission->name] ?? $permission->name  }}
-                            </option>
-                        @endforeach
-                    </select>
+
+                    <div class="card permission-selector">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Выберите разрешения</span>
+                                <div>
+                                    <button type="button" class="btn btn-sm btn-outline-primary me-2" id="select-all">
+                                        Выбрать все
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="deselect-all">
+                                        Очистить
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @foreach($groupedPermissions as $category => $permissions)
+                                    <div class="col-md-6 mb-4">
+                                        <div class="permission-category card">
+                                            <div class="card-header py-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input category-checkbox"
+                                                           type="checkbox"
+                                                           id="category-{{ Str::slug($category) }}"
+                                                           data-category="{{ Str::slug($category) }}">
+                                                    <label class="form-check-label fw-medium" for="category-{{ Str::slug($category) }}">
+                                                        {{ $category }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                @foreach($permissions as $permission)
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input permission-checkbox"
+                                                               type="checkbox"
+                                                               name="permissions[]"
+                                                               value="{{ $permission['name'] }}"
+                                                               id="permission-{{ $permission['id'] }}"
+                                                               data-category="{{ Str::slug($category) }}"
+                                                            {{ in_array($permission['name'], old('permissions', [])) ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="permission-{{ $permission['id'] }}">
+                                                            {{ $permission['russian_name'] }}
+                                                        </label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+
                     @error('permissions')
-                    <div class="invalid-feedback">{{ $message }}</div>@enderror
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <button type="submit" class="btn btn-primary">Сохранить</button>
             </form>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Выбрать все разрешения
+            document.getElementById('select-all').addEventListener('click', function() {
+                document.querySelectorAll('.permission-checkbox').forEach(checkbox => {
+                    checkbox.checked = true;
+                });
+                document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+                    checkbox.checked = true;
+                });
+            });
+
+            // Очистить все разрешения
+            document.getElementById('deselect-all').addEventListener('click', function() {
+                document.querySelectorAll('.permission-checkbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+            });
+
+            // Обработка выбора категории
+            document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const category = this.dataset.category;
+                    document.querySelectorAll(`.permission-checkbox[data-category="${category}"]`).forEach(permission => {
+                        permission.checked = this.checked;
+                    });
+                });
+            });
+
+            // Обновление состояния чекбокса категории при изменении разрешений
+            document.querySelectorAll('.permission-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const category = this.dataset.category;
+                    const categoryCheckbox = document.querySelector(`.category-checkbox[data-category="${category}"]`);
+                    const categoryPermissions = document.querySelectorAll(`.permission-checkbox[data-category="${category}"]`);
+                    const allChecked = Array.from(categoryPermissions).every(permission => permission.checked);
+                    const someChecked = Array.from(categoryPermissions).some(permission => permission.checked);
+
+                    categoryCheckbox.checked = allChecked;
+                    categoryCheckbox.indeterminate = someChecked && !allChecked;
+                });
+            });
+
+            // Инициализация состояния категорий при загрузке
+            document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+                const category = checkbox.dataset.category;
+                const categoryPermissions = document.querySelectorAll(`.permission-checkbox[data-category="${category}"]`);
+                const allChecked = Array.from(categoryPermissions).every(permission => permission.checked);
+                const someChecked = Array.from(categoryPermissions).some(permission => permission.checked);
+
+                checkbox.checked = allChecked;
+                checkbox.indeterminate = someChecked && !allChecked;
+            });
+        });
+
+        // Добавьте этот код в существующий script
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.placeholder = 'Поиск разрешений...';
+        searchInput.className = 'form-control mb-3';
+
+        document.querySelector('.permission-selector .card-header').prepend(searchInput);
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+
+            document.querySelectorAll('.permission-checkbox').forEach(checkbox => {
+                const label = checkbox.nextElementSibling;
+                const text = label.textContent.toLowerCase();
+                const category = checkbox.closest('.permission-category');
+
+                if (text.includes(searchTerm)) {
+                    label.closest('.form-check').style.display = 'block';
+                    category.style.display = 'block';
+                    category.closest('.col-md-6').style.display = 'block';
+                } else {
+                    label.closest('.form-check').style.display = 'none';
+
+                    // Скрываем категорию, если в ней не осталось видимых разрешений
+                    const visiblePermissions = category.querySelectorAll('.form-check').length;
+                    const hiddenPermissions = category.querySelectorAll('.form-check[style*="display: none"]').length;
+
+                    if (visiblePermissions === hiddenPermissions) {
+                        category.style.display = 'none';
+                        category.closest('.col-md-6').style.display = 'none';
+                    } else {
+                        category.style.display = 'block';
+                        category.closest('.col-md-6').style.display = 'block';
+                    }
+                }
+            });
+        });
+    </script>
+@endsection
+
+@section('styles')
+    <style>
+        .permission-category {
+            height: 100%;
+        }
+        .permission-category .card-body {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .category-checkbox:indeterminate {
+            background-color: #0d6efd;
+        }
+    </style>
 @endsection

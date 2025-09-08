@@ -18,17 +18,20 @@ return new class extends Migration {
             $table->enum('gender', ['male', 'female']);
             $table->string('citizenship');
             $table->string('passport_series');
-            $table->date('passport_validity_period');
+            $table->date('passport_validity_period')->nullable();
+
+            // новое поле
+            $table->string('referral_source')->nullable();
 
             // Контактная информация
             $table->string('phone');
             $table->string('additional_phone')->nullable();
             $table->string('email')->nullable();
-            $table->foreignId('region_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('city_id')->constrained()->cascadeOnDelete();
-            $table->string('residential_address_street');
-            $table->string('residential_address_house');
-            $table->string('residential_address_apartment');
+            $table->foreignId('region_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('city_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->string('residential_address_street')->nullable();
+            $table->string('residential_address_house')->nullable();
+            $table->string('residential_address_apartment')->nullable();
             $table->integer('residential_postcode')->nullable();
 
             // Адрес регистрации
@@ -46,9 +49,9 @@ return new class extends Migration {
             $table->date('insurance_expiry_date')->nullable();
 
             // Данные экстренных контакто
-            $table->string('emergency_contact_full_name');
-            $table->string('emergency_contact_relation');
-            $table->string('emergency_contact_phone');
+            $table->string('emergency_contact_full_name')->nullable();
+            $table->string('emergency_contact_relation')->nullable();
+            $table->string('emergency_contact_phone')->nullable();
             $table->string('emergency_contact_address')->nullable();
 
             $table->timestamps();

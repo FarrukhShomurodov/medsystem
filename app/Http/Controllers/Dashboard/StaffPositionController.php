@@ -260,7 +260,21 @@ class StaffPositionController extends Controller
         $permissions = Permission::query()->get();
         $permissionsRu = $this->permissionsRu;
 
-        return view('admin.staff_positions.create', compact('permissions', 'permissionsRu'));
+        // Группируем разрешения по категориям
+        $groupedPermissions = $this->groupPermissions($permissions, $permissionsRu);
+
+        return view('admin.staff_positions.create', compact('permissions', 'permissionsRu', 'groupedPermissions'));
+    }
+
+    public function edit(StaffPosition $position): View
+    {
+        $permissions = Permission::query()->get();
+        $permissionsRu = $this->permissionsRu;
+
+        // Группируем разрешения по категориям
+        $groupedPermissions = $this->groupPermissions($permissions, $permissionsRu);
+
+        return view('admin.staff_positions.edit', compact('position', 'permissions', 'permissionsRu', 'groupedPermissions'));
     }
 
     public function store(StaffPositionRequest $request): RedirectResponse
@@ -269,14 +283,6 @@ class StaffPositionController extends Controller
         $this->service->store((array)$validated);
 
         return redirect()->route('staffs.position.index')->with('success', 'Должность успешно добавлен!');
-    }
-
-    public function edit(StaffPosition $position): View
-    {
-        $permissions = Permission::query()->get();
-        $permissionsRu = $this->permissionsRu;
-
-        return view('admin.staff_positions.edit', compact('position', 'permissions', 'permissionsRu'));
     }
 
     public function update(StaffPositionRequest $request, StaffPosition $position): RedirectResponse
@@ -289,12 +295,42 @@ class StaffPositionController extends Controller
 
     public function destroy(StaffPosition $position): RedirectResponse
     {
-        if (collect([1, 2, 3, 4])->contains($position->id)) {
+        if (collect([1, 2, 3, 4, 5])->contains($position->id)) {
             return redirect()->back()->withErrors('Удаление этой должности недоступно!');
         }
 
         $this->service->destroy($position);
 
         return redirect()->route('staffs.position.index')->with('success', 'Должность успешно удален!');
+    }
+
+    private function groupPermissions($permissions, $permissionsRu): array
+    {
+        $grouped = [];
+
+        foreach ($permissions as $permission) {
+            $name = $permission->name;
+            $russianName = $permissionsRu[$name] ?? $name;
+
+            // Определяем категорию на основе префикса разрешения
+            $category = 'Общие';
+            if (str_starts_with($name, 'view_')) {
+                $category = 'Просмотр';
+            } elseif (str_starts_with($name, 'create_')) {
+                $category = 'Создание';
+            } elseif (str_starts_with($name, 'edit_')) {
+                $category = 'Редактирование';
+            } elseif (str_starts_with($name, 'delete_')) {
+                $category = 'Удаление';
+            }
+
+            $grouped[$category][] = [
+                'id' => $permission->id,
+                'name' => $name,
+                'russian_name' => $russianName
+            ];
+        }
+
+        return $grouped;
     }
 }

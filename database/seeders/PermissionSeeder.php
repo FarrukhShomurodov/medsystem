@@ -228,6 +228,8 @@ class PermissionSeeder extends Seeder
             'create_household_materials',
             'edit_household_materials',
             'delete_household_materials',
+
+            'view_cashier'
         ];
 
         $role = Role::firstOrCreate([

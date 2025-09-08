@@ -27,6 +27,9 @@ class Patient extends Model
         'passport_series',
         'passport_validity_period',
 
+        // новое поле
+        'referral_source',
+
         // Контактная информация
         'phone',
         'additional_phone',
@@ -95,6 +98,12 @@ class Patient extends Model
             ->orderByDesc('created_at');
     }
 
+    public function allServices(): HasMany
+    {
+        return $this->hasMany(PatientService::class)
+            ->orderByDesc('created_at');
+    }
+
     public function assignments(): HasMany
     {
         return $this->hasMany(PatientAssignment::class)
@@ -113,6 +122,11 @@ class Patient extends Model
     {
         return $this->hasMany(Reception::class, 'patient_id')
             ->whereNull('examination_map_id');
+    }
+
+    public function allReceptions(): HasMany
+    {
+        return $this->hasMany(Reception::class, 'patient_id');
     }
 
     // file
@@ -184,6 +198,16 @@ class Patient extends Model
             'procedure_id'
         )->using(PatientProcedure::class)
             ->whereNull('examination_map_id');
+    }
+
+    public function allProcedures(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Procedure::class,
+            'patient_procedures',
+            'patient_id',
+            'procedure_id'
+        )->using(PatientProcedure::class);
     }
 
 //    public function analyzes(): HasMany

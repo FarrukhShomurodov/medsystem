@@ -17,15 +17,15 @@ return new class extends Migration {
 
             $table->enum('category', ['first', 'second'])->nullable();
 
-            $table->string('education_name');
-            $table->date('education_graduation_year');
+            $table->string('education_name')->nullable();
+            $table->date('education_graduation_year')->nullable();
 
-            $table->string('certificate_name');
-            $table->string('certificate_number');
-            $table->date('certificate_issue_date');
-            $table->date('certificate_validity_period');
+            $table->string('certificate_name')->nullable();
+            $table->string('certificate_number')->nullable();
+            $table->date('certificate_issue_date')->nullable();
+            $table->date('certificate_validity_period')->nullable();
 
-            $table->integer('admission_period');
+            $table->integer('admission_period')->nullable();
             $table->timestamps();
         });
     }
