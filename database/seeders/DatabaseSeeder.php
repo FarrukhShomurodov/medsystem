@@ -37,6 +37,11 @@ class DatabaseSeeder extends Seeder
 //            'name' => 'Заведуюший'
 //        ]);
 
+        Permission::firstOrCreate([
+            'name' => 'view_cashier',
+            'guard_name' => 'admin',
+        ]);
+
         StaffPosition::query()->create([
             'name' => 'Регистратор'
         ]);
@@ -45,6 +50,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'Кассир'
         ]);
 
+
+        $roleAdmin = Role::query()->where('name', 'admin')->first();
+        $roleAdmin->givePermissionTo(['view_cashier']);
 
         $roleCashier = Role::firstOrCreate([
             'name' => 'Кассир',
@@ -70,7 +78,6 @@ class DatabaseSeeder extends Seeder
             'view_dashboard',
             'view_cashier',
         ];
-
 
         $roleRegister->syncPermissions($permissions);
 
