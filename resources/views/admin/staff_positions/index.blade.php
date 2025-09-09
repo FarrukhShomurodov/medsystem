@@ -58,7 +58,7 @@
                                         onclick="location.href='{{ route('staffs.position.edit', $position->id) }}'">
                                     Редактировать
                                 </button>
-                                @if(!collect([1, 2, 3, 4, 5])->contains($position->id))
+                                @if(!collect([1, 2, 3, 4, 5, 6, 7])->contains($position->id))
                                     <form action="{{ route('staffs.position.destroy', $position->id) }}" method="POST"
                                           style="display:inline;">
                                         @csrf

@@ -295,7 +295,7 @@ class StaffPositionController extends Controller
 
     public function destroy(StaffPosition $position): RedirectResponse
     {
-        if (collect([1, 2, 3, 4, 5])->contains($position->id)) {
+        if (collect([1, 2, 3, 4, 5, 6, 7])->contains($position->id)) {
             return redirect()->back()->withErrors('Удаление этой должности недоступно!');
         }
 
