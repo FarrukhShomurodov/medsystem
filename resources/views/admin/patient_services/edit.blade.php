@@ -92,11 +92,9 @@
 
                         <!-- Examination Map -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="patient-map">Карта обследования <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="patient-map">Карта обследования</label>
                             <select id="patient-map" name="examination_map_id"
-                                    class="form-control select2 @error('examination_map_id') is-invalid @enderror"
-                                    required>
+                                    class="form-control select2 @error('examination_map_id') is-invalid @enderror">
                                 @foreach($maps as $map)
                                     <option value="{{$map->id}}" @selected($map->id == $service->examination_map_id)>
                                         {{ $map->patient->first_name }} — {{ $map->admission_date }}

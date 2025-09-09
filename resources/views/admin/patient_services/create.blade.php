@@ -89,11 +89,9 @@
 
                         <!-- Examination Map -->
                         <div class="col-sm-4">
-                            <label class="form-label" for="patient-map">Карта обследования <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="patient-map">Карта обследования</label>
                             <select id="patient-map" name="examination_map_id"
-                                    class="form-control select2 @error('examination_map_id') is-invalid @enderror"
-                                    required>
+                                    class="form-control select2 @error('examination_map_id') is-invalid @enderror">
                                 <option value="" disabled selected>Выберите карту</option>
                             </select>
                             @error('examination_map_id')
