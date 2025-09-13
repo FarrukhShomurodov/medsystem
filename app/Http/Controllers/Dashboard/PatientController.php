@@ -12,6 +12,8 @@ use App\Models\DangerousCombination;
 use App\Models\Department;
 use App\Models\Diagnosis;
 use App\Models\Document;
+use App\Models\MainWarehouse;
+use App\Models\MainWarehouseMedication;
 use App\Models\MedicalDevice;
 use App\Models\Medication;
 use App\Models\Patient;
@@ -400,37 +402,49 @@ class PatientController extends Controller
 
         foreach ($patient->allServices->where('status', 'assigned') as $s) {
             $allRecords->push([
-                'id'       => $s->id,
-                'type'     => 'service',
-                'name'     => $s->service?->name ?? '-',
-                'price'    => (float) ($s->service?->price ?? 0),
-                'status'   => $s->status,
-                'source'   => $s,
+                'id' => $s->id,
+                'type' => 'service',
+                'name' => $s->service?->name ?? '-',
+                'price' => (float)($s->service?->price ?? 0),
+                'status' => $s->status,
+                'source' => $s,
             ]);
         }
 
         // Приёмы (Reception)
         foreach ($patient->allReceptions->where('status', 'new') as $r) {
             $allRecords->push([
-                'id'       => $r->id,
-                'type'     => 'reception',
-                'name'     => $r->service?->name ?? '-',
-                'price'    => (float) ($r->service?->price ?? 0),
-                'status'   => $r->status,
-                'source'   => $r,
+                'id' => $r->id,
+                'type' => 'reception',
+                'name' => $r->service?->name ?? '-',
+                'price' => (float)($r->service?->price ?? 0),
+                'status' => $r->status,
+                'source' => $r,
             ]);
         }
 
         foreach ($patient->allProcedures->where('status', 'assigned') as $p) {
             $allRecords->push([
-                'id'       => $p->id,
-                'type'     => 'procedure',
-                'name'     => $p->procedure?->name ?? '-',
-                'price'    => (float) ($p->procedure?->price ?? 0),
-                'status'   => $p->status,
-                'source'   => $p,
+                'id' => $p->id,
+                'type' => 'procedure',
+                'name' => $p->procedure?->name ?? '-',
+                'price' => (float)($p->procedure?->price ?? 0),
+                'status' => $p->status,
+                'source' => $p,
             ]);
         }
+
+        foreach (PatientMedication::query()->where('status', 'ordered')->where('patient_id', $patient->id)->with(['medication', 'medication.mainWarehouses', 'medication.mainWarehouses.medication'])->get() as $p) {
+            $allRecords->push([
+                'id' => $p->id,
+                'type' => 'medication',
+                'name' => $p->medication->name ?? '-',
+                'price' => $p->price,
+                'status' => $p->status,
+                'source' => $p,
+            ]);
+        }
+
 
         // Сортируем по дате создания (если нужно) — у каждого source есть created_at
         $allRecords = $allRecords->sortByDesc(function ($item) {
@@ -521,6 +535,7 @@ class PatientController extends Controller
         \App\Models\PatientService::query()->where('patient_id', $patient->id)->where('status', 'assigned')->update(['status' => 'confirmed']);
         Reception::query()->where('patient_id', $patient->id)->where('status', 'new')->update(['status' => 'confirmed']);
         PatientProcedure::query()->where('patient_id', $patient->id)->where('status', 'assigned')->update(['status' => 'confirmed']);
+        PatientMedication::query()->where('patient_id', $patient->id)->where('status', 'ordered')->update(['status' => 'sent_to_floor']);
 
         return back()->with('success', 'Все записи подтверждены!');
     }

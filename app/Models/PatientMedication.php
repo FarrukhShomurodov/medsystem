@@ -118,6 +118,11 @@ class PatientMedication extends Pivot
         return $this->belongsTo(Medication::class);
     }
 
+    public function patient(): BelongsTo
+    {
+        return $this->belongsTo(Patient::class);
+    }
+
     public function compatibleMedications(): BelongsToMany
     {
         return $this->belongsToMany(

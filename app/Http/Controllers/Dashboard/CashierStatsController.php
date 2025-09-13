@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\PatientMedication;
 use App\Models\PatientService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -97,12 +98,39 @@ class CashierStatsController extends Controller
             ];
         });
 
+        // PatientMedication
+        $MedicationQuery = PatientMedication::with(['medication', 'patient']);
+        if ($request->filled('first_name')) {
+            $MedicationQuery->whereHas('patient', fn($q) => $q->where('first_name', 'like', '%'.$request->first_name.'%'));
+        }
+        if ($request->filled('last_name')) {
+            $MedicationQuery->whereHas('patient', fn($q) => $q->where('last_name', 'like', '%'.$request->last_name.'%'));
+        }
+        if ($request->filled('service_date')) {
+            $MedicationQuery->whereDate('procedure_date', $request->service_date);
+        }
+
+        $medication = $MedicationQuery->where('status', 'sent_to_floor')->get()->map(function ($p) {
+            return [
+                'id' => $p->id,
+                'type' => 'medication',
+                'name' => $p->medication?->name,
+                'patient' => $p->patient?->last_name . ' ' . $p->patient?->first_name,
+                'doctor' => '-', // если не привязан врач
+                'price' => $p->price ?? 0,
+                'currency' => 'UZS',
+                'date_time' => $p->created_at,
+                'status' => '<span class="badge bg-label-secondary">Лист назначение</span>',
+            ];
+        });
+
 
         // Объединяем
         $all = collect()
             ->merge($services)
             ->merge($receptions)
             ->merge($procedures)
+            ->merge($medication)
             ->sortByDesc('date_time');
 
         // Пагинация вручную (на Collection)
@@ -145,6 +173,14 @@ class CashierStatsController extends Controller
                     $model = \App\Models\Reception::find($id);
                     if ($model) {
                         $model->status = 'paid';
+                        $model->save();
+                    }
+                    break;
+
+                    case 'medication':
+                    $model = \App\Models\PatientMedication::find($id);
+                    if ($model) {
+                        $model->status = 'received_at_station';
                         $model->save();
                     }
                     break;

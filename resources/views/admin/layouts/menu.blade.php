@@ -262,14 +262,14 @@
             </li>
         @endcan
 
-        @can('view_cashier')
+{{--        @can('view_cashier')--}}
             <li class="menu-item {{ Request::is('dashboard/cashier*') ? 'active' : '' }}">
                 <a href="{{ route('cashier.index') }}" class="menu-link">
                     <i class="menu-icon bx bx-group"></i>
                     <div data-i18n="Касса">Касса</div>
                 </a>
             </li>
-        @endcan
+{{--        @endcan--}}
 
         <li class="menu-item {{ Request::is('dashboard/sister-window*')  ? 'active' : '' }}">
             <a href="{{ route('sister.window.index') }}" class="menu-link">

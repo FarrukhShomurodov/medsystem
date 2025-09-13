@@ -95,6 +95,8 @@
                                     <span class="badge bg-primary">Услуга</span>
                                 @elseif($row['type'] === 'reception')
                                     <span class="badge bg-success">Приём</span>
+                                @elseif($row['type'] === 'medication')
+                                    <span class="badge bg-success">Лист назначение</span>
                                 @elseif($row['type'] === 'procedure')
                                     <span class="badge bg-warning text-dark">Процедура</span>
                                 @endif

@@ -639,6 +639,8 @@
                                 <span class="badge bg-primary">Услуга</span>
                             @elseif($item['type'] === 'reception')
                                 <span class="badge bg-success">Приём</span>
+                            @elseif($item['type'] === 'medication')
+                                <span class="badge bg-success">Лист назначение</span>
                             @else
                                 <span class="badge bg-warning text-dark">Процедура</span>
                             @endif

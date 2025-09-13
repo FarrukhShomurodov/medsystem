@@ -27,6 +27,8 @@ return new class extends Migration {
 
             $table->date('date_of_end');
 
+            $table->decimal('price');
+
             $table->timestamps();
         });
     }

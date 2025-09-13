@@ -72,7 +72,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::resource('admins', AdminController::class);
 
     Route::get('cashier', [CashierStatsController::class, 'index'])
-        ->name('cashier.index')->middleware('permission:view_cashier');
+        ->name('cashier.index');
 
 
     // department

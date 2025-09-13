@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\MainWarehouse;
+use App\Models\MainWarehouseMedication;
 use App\Models\Medication;
 use App\Models\Patient;
 use App\Models\PatientMedication;
@@ -28,6 +30,14 @@ class PatientMedicationService
                     continue;
                 }
 
+                $mainWarehouseMedication = MainWarehouseMedication::query()->where('main_warehouse_id', 1)->where('medication_id', $medicationId)->first();
+
+                $pricePerUnit = $mainWarehouseMedication->retail_price
+                    ?? $mainWarehouseMedication->incoming_price_per_unit
+                    ?? 0;
+
+                $totalPrice = $pricePerUnit * (int)$validated['dosages'][$index];
+
                 $now = now();
 
                 $medicationData[$medicationModel->id] = [
@@ -42,6 +52,9 @@ class PatientMedicationService
 
                     'admission_period' => $validated['admission_periods'][$index] ?? null,
                     'examination_map_id' => $map->exists() ? $map->first()->id : null,
+
+                    'price' => $totalPrice ?? 0,
+
                     'created_at' => $now,
                 ];
                 $medicationIndexMap[$medicationModel->id] = $index;
@@ -89,6 +102,14 @@ class PatientMedicationService
     {
         $now = now();
 
+        $mainWarehouseMedication = MainWarehouseMedication::query()->where('main_warehouse_id', 1)->where('medication_id', $medication->medication->id)->first();
+
+        $pricePerUnit = $mainWarehouseMedication->retail_price
+            ?? $mainWarehouseMedication->incoming_price_per_unit
+            ?? 0;
+
+        $totalPrice = $pricePerUnit * (int)$validated['dosages'][0];
+
         // обновляем pivot самого препарата
         $medication->update([
             'dosage'           => $validated['dosages'][0] ?? $medication->dosage,
@@ -99,6 +120,7 @@ class PatientMedicationService
             'date_of_end'      => $validated['date_of_ends'][0] ?? $medication->date_of_end,
             'medication_notes' => $validated['medication_notes'][0] ?? $medication->medication_notes,
             'admission_period' => $validated['admission_periods'][0] ?? $medication->admission_period,
+            'price' => $totalPrice ?? 0,
             'updated_at'       => $now,
         ]);
 
