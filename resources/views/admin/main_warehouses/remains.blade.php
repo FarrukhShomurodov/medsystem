@@ -170,11 +170,11 @@
                         <td>—</td>
                         <td>—</td>
                         <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
+{{--                        <td>—</td>--}}
+{{--                        <td>—</td>--}}
+{{--                        <td>—</td>--}}
+{{--                        <td>—</td>--}}
+{{--                        <td>—</td>--}}
                         <td>—</td>
                         <td>
                             <button class="btn btn-sm btn-primary" onclick="window.location.href='{{ route('main.warehouse.receipts.goods.discard', ['type' => 'supplies', 'id' => $item->id]) }}'">
@@ -207,11 +207,11 @@
                         <td>—</td>
                         <td>—</td>
                         <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
+{{--                        <td>—</td>--}}
+{{--                        <td>—</td>--}}
+{{--                        <td>—</td>--}}
+{{--                        <td>—</td>--}}
+{{--                        <td>—</td>--}}
                         <td>—</td>
                         <td>—</td>
                         <td>—</td>
