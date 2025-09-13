@@ -360,7 +360,16 @@ class PatientController extends Controller
 
         $documents = Document::query()->where('id', '!=', 1)->get();
 
-        $medications = Medication::query()->get();
+        $mainWarehouse = MainWarehouse::query()->first();
+        $medications = Medication::query()
+            ->whereHas('mainWarehouses', function($q) use ($mainWarehouse) {
+                $q->where('main_warehouses.id', $mainWarehouse->id)
+                    ->where(function($sub) {
+                        $sub->where('main_warehouse_medications.stock', '>', 0)
+                            ->orWhere('main_warehouse_medications.quantity', '>', 0);
+                    });
+            })->get();
+
         $procedures = Procedure::query()->get();
 
         $admin = Auth::guard('admin')->user();

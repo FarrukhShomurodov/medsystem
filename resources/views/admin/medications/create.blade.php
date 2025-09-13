@@ -123,7 +123,7 @@
                             <span id="basic-icon-default-company2"
                                   class="input-group-text @error('dosage') text-danger icon-border @enderror"><i
                                     class="bx bx-rename"></i></span>
-                                <input type="text" id="basic-icon-default-dosage"
+                                <input type="number" id="basic-icon-default-dosage"
                                        class="form-control @error('dosage') is-invalid @enderror"
                                        placeholder="Дозировка" aria-label="Дозировка"
                                        name="dosage"
