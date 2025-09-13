@@ -340,6 +340,9 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
         Route::get('receipts-goods', [MainWarehouseController::class, 'receiptsGoods'])->name('receipts.goods.index');
         Route::post('receipts-goods', [MainWarehouseController::class, 'receiptsGoodsStore'])->name('receipts.goods.store');
         Route::get('receipts-discard/{type}/{id}', [MainWarehouseController::class, 'discardGood'])->name('receipts.goods.discard');
+
+        Route::get('medication/{medicationId}', [MainWarehouseController::class, 'showMedicationRemain'])
+            ->name('show.medication.remain');
     });
 
     Route::get('supply-requests/orders', [SupplyRequestController::class, 'index'])->name('supply-requests.index');

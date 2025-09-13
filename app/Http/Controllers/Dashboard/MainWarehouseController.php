@@ -9,6 +9,7 @@ use App\Models\MainWarehouse;
 use App\Models\MedicalSupply;
 use App\Models\Medication;
 use App\Models\Supplier;
+use App\Models\WarehouseAccounting;
 use App\Services\MainWarehouseService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -51,6 +52,24 @@ class MainWarehouseController extends Controller
             'warehouse', 'medications', 'supplies', 'household', 'type'
         ));
     }
+
+    public function showMedicationRemain($medicationId): \Illuminate\Contracts\View\View
+    {
+        $warehouse = MainWarehouse::query()->first();
+
+        $pivot = $warehouse->medication()
+            ->where('medication_id', $medicationId)
+            ->first()?->pivot;
+
+        if ($pivot) {
+            $pivot->load('supplier');
+        }
+
+        return view('admin.main_warehouses.medication_show', [
+            'medication' => $pivot,
+        ]);
+    }
+
 
 
     public function receiptsGoods(): View

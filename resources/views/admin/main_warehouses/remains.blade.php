@@ -67,14 +67,16 @@
                     <th>#</th>
                     <th>Тип</th>
                     <th>Название</th>
+                    <th>Производитель</th>
+                    <th>Форма выпуска</th>
                     <th>Количество</th>
-                    <th>Срок годности</th>
-                    <th>Дата поступления</th>
-                    <th>Партия</th>
-                    <th>Упаковка</th>
+{{--                    <th>Срок годности</th>--}}
+{{--                    <th>Дата поступления</th>--}}
+{{--                    <th>Партия</th>--}}
+{{--                    <th>Упаковка</th>--}}
                     <th>Кол-во в упаковке</th>
-                    <th>Размер упаковки</th>
-                    <th>Дата упаковки</th>
+{{--                    <th>Размер упаковки</th>--}}
+{{--                    <th>Дата упаковки</th>--}}
                     <th>Розн. цена</th>
                     <th>Опт. цена</th>
                     <th>Наценка</th>
@@ -82,8 +84,8 @@
                     <th>Цена вход. за ед.</th>
                     <th>Сумма входящая</th>
                     <th>Итоговая цена</th>
-                    <th>Остаток на складе</th>
-                    <th>Поставщик</th>
+{{--                    <th>Остаток на складе</th>--}}
+{{--                    <th>Поставщик</th>--}}
                     <th></th>
                 </tr>
 
@@ -108,18 +110,20 @@
                             $class = 'bg-warning text-dark';
                         }
                     @endphp
-                    <tr class="{{ $class }}">
+                    <tr class="{{ $class }}" onclick="window.location.href='{{ route('main.warehouse.show.medication.remain', $item->id) }}'">
                         <td>{{ $index++ }}</td>
                         <td><span class="badge bg-info">Медикамент</span></td>
                         <td>{{ $item->name }}</td>
+                        <td>{{ $item->manufacturer->name }}</td>
+                        <td>{{ $item->release_form }}</td>
                         <td>{{ $item->pivot->quantity }}</td>
-                        <td>{{ $item->pivot->expiration_date?->format('d.m.Y') ?? '—' }}</td>
-                        <td>{{ $item->pivot->date_of_receipt ?? '—' }}</td>
-                        <td>{{ $item->pivot->batch_number ?? '—' }}</td>
-                        <td>{{ $item->pivot->packaging_type ?? '—' }}</td>
+{{--                        <td>{{ $item->pivot->expiration_date?->format('d.m.Y') ?? '—' }}</td>--}}
+{{--                        <td>{{ $item->pivot->date_of_receipt ?? '—' }}</td>--}}
+{{--                        <td>{{ $item->pivot->batch_number ?? '—' }}</td>--}}
+{{--                        <td>{{ $item->pivot->packaging_type ?? '—' }}</td>--}}
                         <td>{{ $item->pivot->quantity_per_package ?? '—' }}</td>
-                        <td>{{ $item->pivot->package_size ?? '—' }}</td>
-                        <td>{{ $item->pivot->packaging_date ?? '—' }}</td>
+{{--                        <td>{{ $item->pivot->package_size ?? '—' }}</td>--}}
+{{--                        <td>{{ $item->pivot->packaging_date ?? '—' }}</td>--}}
                         <td>{{ $item->pivot->retail_price ?? '—' }}</td>
                         <td>{{ $item->pivot->wholesale_price ?? '—' }}</td>
 
@@ -129,9 +133,9 @@
                         <td>{{ $item->pivot->incoming_price_per_unit ?? '—' }}</td>
                         <td>{{ $item->pivot->incoming_sum ?? '—' }}</td>
                         <td>{{ $item->pivot->total_price ?? '—' }}</td>
-                        <td>{{ $item->pivot->stock ?? '—' }}</td>
+{{--                        <td>{{ $item->pivot->stock ?? '—' }}</td>--}}
 
-                        <td>{{ $item->pivot->supplier?->name ?? '—' }}</td>
+{{--                        <td>{{ $item->pivot->supplier?->name ?? '—' }}</td>--}}
                         <td>
                             <button class="btn btn-sm btn-primary" onclick="window.location.href='{{ route('main.warehouse.receipts.goods.discard', ['type' => 'medications', 'id' => $item->id]) }}'">
                                 Списать

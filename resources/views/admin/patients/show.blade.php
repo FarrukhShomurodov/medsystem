@@ -5,11 +5,6 @@
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('patients.index') }}">Пациент</a> /</span> {{ $patientDetails['basic_info']['full_name'] }}
-    </h6>
-
     <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
         @if ($errors->any())
             @foreach ($errors->all() as $error)
@@ -30,63 +25,193 @@
         @endif
     </div>
 
-    <div class="card mt-3">
-        <div class="card-header">
-            <h5>Последние пациенты</h5>
+    <div class="position-sticky bg-white p-4 text-center shadow-sm card" style="top: 0; z-index: 1030;">
+        <div class="d-flex justify-content-between align-items-center text-center">
+            <h6 class="breadcrumb-wrapper m-0 p-0">
+                <span class="text-muted fw-light"><a class="text-muted"
+                                             href="{{ route('patients.index') }}">Пациент</a> /</span> {{ $patientDetails['basic_info']['full_name'] }}
+            </h6>
+
+            <div class="d-flex flex-row">
+                <a class="btn btn-primary me-3" href="{{ url()->previous() }}">
+                    Вернуться в отделение
+                </a>
+
+                <button type="button" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#generalInformationModal">
+                    Общая информация
+                </button>
+
+                <button class="btn btn-link collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#filtersCollapse">
+                    <i class="bx bx-filter-alt"></i> Фильтры
+                </button>
+            </div>
         </div>
-        <table class="datatables-users table border-top">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>Дата поступления</th>
-                <th>Отделения</th>
-                <th>ФИО</th>
-                <th>Дата рождения / Возвраст</th>
-                <th>Палаты</th>
-                <th>Диагноз</th>
-                <th>Дата и название операции</th>
-                <th>Лечащий врач</th>
-                <th>Дней в стационаре</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
 
-            @php
-                $count = 1;
-            @endphp
 
-            @foreach($lastViews as $patient)
-                <tr class="cursor-pointer">
-                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $count++ }}</td>
-                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $patient->created_at }}</td>
-                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
-                        {{ $patient->examinationMaps()->first()?->department->name ?? '-' }}
-                    </td>
-                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
-                        {{ $patient->first_name }} {{ $patient->last_name }} {{ $patient->middle_name }}
-                    </td>
-                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $patient->birth_date }}
-                        / {{ \Carbon\Carbon::parse($patient->birth_date)->age }}</td>
-                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">-</td>
-                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $patient->examinationMaps()->first()?->admission_diagnosis_description ?? '-' }}</td>
-                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">-</td>
-                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $patient->examinationMaps()->first()?->doctor->name ?? '-' }}</td>
-                    <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ \Carbon\Carbon::parse($patient->examinationMaps()->first()?->admission_date)->age }}</td>
-
-                    <td>
-                        <div class="d-inline-block text-nowrap">
-                            <button class="btn btn-sm btn-warning"
-                                    onclick="location.href='{{ route('patients.edit', $patient->id) }}'">
-                                Редактировать
-                            </button>
+        {{-- Фильтры --}}
+        <div id="filtersCollapse"
+             class="collapse @if(request()->anyFilled(['first_name','last_name','middle_name','birth_date'])) show @endif">
+            <div class="card-body">
+                <form method="GET" action="{{ route('patients.index') }}">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-2 form-group">
+                            <label class="form-label" for="id">ID</label>
+                            <div class="input-group input-group-merge">
+                                <input type="text" name="id" value="{{ request("id") }}"
+                                       id="id"
+                                       class="form-control"
+                                       placeholder="ID"/>
+                            </div>
                         </div>
-                    </td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
+
+                        <div class="col-md-2 form-group">
+                            <label class="form-label" for="first_name">Имя</label>
+                            <div class="input-group input-group-merge">
+                                <input type="text" name="first_name" value="{{ request("first_name") }}"
+                                       id="first_name"
+                                       class="form-control"
+                                       placeholder="Имя"/>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 form-group">
+                            <label class="form-label" for="second_name">Фамилия</label>
+                            <div class="input-group input-group-merge">
+                                <input type="text" name="second_name" value="{{ request("second_name") }}"
+                                       id="second_name"
+                                       class="form-control"
+                                       placeholder="Фамилия"/>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 form-group">
+                            <label class="form-label" for="middle_name">Отчество</label>
+                            <div class="input-group input-group-merge">
+                                <input type="text" name="middle_name" value="{{ request("middle_name") }}"
+                                       id="middle_name"
+                                       class="form-control"
+                                       placeholder="Отчество"/>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 form-group">
+                            <label class="form-label" for="basic-icon-birth-date">Дата рождения </label>
+                            <div class="input-group input-group-merge">
+                                    <span id="basic-icon-birth-date2" class="input-group-text"><i
+                                            class="bx bx-calendar"></i></span>
+                                <input type="text" name="birth_date" value="{{ request("birth_date") }}"
+                                       id="basic-icon-birth-date"
+                                       class="form-control flatpickr-date"
+                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2"/>
+                            </div>
+                        </div>
+
+                        @php
+                            $filters = [
+                                ['id' => 'department', 'label' => 'Отделения', 'items' => $departments],
+                            ];
+                        @endphp
+
+                        @foreach($filters as $filter)
+                            <div class="col-md-2 form-group">
+                                <label for="{{ $filter['id'] }}">{{ $filter['label'] }}</label>
+                                <select id="{{ $filter['id'] }}" name="{{ $filter['id'] }}_id"
+                                        class="form-control select2">
+                                    <option value="">Все</option>
+                                    @foreach($filter['items'] as $item)
+                                        <option value="{{ $item->id }}"
+                                            @selected(request("{$filter['id']}_id") == $item->id)>
+                                            {{ $item->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endforeach
+
+                        <div class="w-100">
+                            <label class="form-label" for="basic-icon-birth-date"></label>
+                            <div class="d-flex flex-row justify-content-between align-items-center w-100">
+                                <button type="submit" class="btn btn-primary">Поиск</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+
+    <div class="accordion mt-3" id="accordionLastPatients">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingLastPatients">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseLastPatients" aria-expanded="false"
+                        aria-controls="collapseLastPatients">
+                    Последние пациенты
+                </button>
+            </h2>
+            <div id="collapseLastPatients" class="accordion-collapse collapse"
+                 aria-labelledby="headingLastPatients" data-bs-parent="#accordionLastPatients">
+                <div class="accordion-bodyс card">
+                    <table class="datatables-users table border-top">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Дата поступления</th>
+                            <th>Отделения</th>
+                            <th>ФИО</th>
+                            <th>Дата рождения / Возвраст</th>
+                            <th>Палаты</th>
+                            <th>Диагноз</th>
+                            <th>Дата и название операции</th>
+                            <th>Лечащий врач</th>
+                            <th>Дней в стационаре</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @php $count = 1; @endphp
+                        @foreach($lastViews as $patient)
+                            <tr class="cursor-pointer">
+                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $count++ }}</td>
+                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $patient->created_at }}</td>
+                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
+                                    {{ $patient->examinationMaps()->first()?->department->name ?? '-' }}
+                                </td>
+                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
+                                    {{ $patient->first_name }} {{ $patient->last_name }} {{ $patient->middle_name }}
+                                </td>
+                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
+                                    {{ $patient->birth_date }} / {{ \Carbon\Carbon::parse($patient->birth_date)->age }}
+                                </td>
+                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">-</td>
+                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
+                                    {{ $patient->examinationMaps()->first()?->admission_diagnosis_description ?? '-' }}
+                                </td>
+                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">-</td>
+                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
+                                    {{ $patient->examinationMaps()->first()?->doctor->name ?? '-' }}
+                                </td>
+                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
+                                    {{ \Carbon\Carbon::parse($patient->examinationMaps()->first()?->admission_date)->age }}
+                                </td>
+                                <td>
+                                    <div class="d-inline-block text-nowrap">
+                                        <button class="btn btn-sm btn-warning"
+                                                onclick="location.href='{{ route('patients.edit', $patient->id) }}'">
+                                            Редактировать
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                          @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div class="card accordion mt-3" id="warningsAccordion">
         <div class="accordion-item">
@@ -271,95 +396,6 @@
                     <div class="col-auto">
                         <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
                         <button type="submit" class="btn btn-primary">Добавить документ</button>
-                    </div>
-                </div>
-            </form>
-
-            <form method="GET" action="{{ route('patients.index') }}">
-                <div class="row g-3 align-items-center">
-                    <div class="col-md-2 form-group">
-                        <label class="form-label" for="id">ID</label>
-                        <div class="input-group input-group-merge">
-                            <input type="text" name="id" value="{{ request("id") }}"
-                                   id="id"
-                                   class="form-control"
-                                   placeholder="ID"/>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 form-group">
-                        <label class="form-label" for="first_name">Имя</label>
-                        <div class="input-group input-group-merge">
-                            <input type="text" name="first_name" value="{{ request("first_name") }}"
-                                   id="first_name"
-                                   class="form-control"
-                                   placeholder="Имя"/>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 form-group">
-                        <label class="form-label" for="second_name">Фамилия</label>
-                        <div class="input-group input-group-merge">
-                            <input type="text" name="second_name" value="{{ request("second_name") }}"
-                                   id="second_name"
-                                   class="form-control"
-                                   placeholder="Фамилия"/>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 form-group">
-                        <label class="form-label" for="middle_name">Отчество</label>
-                        <div class="input-group input-group-merge">
-                            <input type="text" name="middle_name" value="{{ request("middle_name") }}"
-                                   id="middle_name"
-                                   class="form-control"
-                                   placeholder="Отчество"/>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 form-group">
-                        <label class="form-label" for="basic-icon-birth-date">Дата рождения </label>
-                        <div class="input-group input-group-merge">
-                                    <span id="basic-icon-birth-date2" class="input-group-text"><i
-                                            class="bx bx-calendar"></i></span>
-                            <input type="text" name="birth_date" value="{{ request("birth_date") }}"
-                                   id="basic-icon-birth-date"
-                                   class="form-control flatpickr-date"
-                                   placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2"/>
-                        </div>
-                    </div>
-
-                    @php
-                        $filters = [
-                            ['id' => 'department', 'label' => 'Отделения', 'items' => $departments],
-                        ];
-                    @endphp
-
-                    @foreach($filters as $filter)
-                        <div class="col-md-2 form-group">
-                            <label for="{{ $filter['id'] }}">{{ $filter['label'] }}</label>
-                            <select id="{{ $filter['id'] }}" name="{{ $filter['id'] }}_id"
-                                    class="form-control select2">
-                                <option value="">Все</option>
-                                @foreach($filter['items'] as $item)
-                                    <option value="{{ $item->id }}"
-                                        @selected(request("{$filter['id']}_id") == $item->id)>
-                                        {{ $item->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    @endforeach
-
-                    <div class="w-100">
-                        <label class="form-label" for="basic-icon-birth-date"></label>
-                        <div class="d-flex flex-row justify-content-between align-items-center w-100">
-                            <button type="submit" class="btn btn-primary">Поиск</button>
-
-                            <a class="btn btn-primary" href="{{ url()->previous() }}">
-                                Вернуться в отделение
-                            </a>
-                        </div>
                     </div>
                 </div>
             </form>
@@ -950,6 +986,29 @@
                 <div class="modal-body">
                     <div id="response-content">
                         <p class="text-muted">Загрузка...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="generalInformationModal" tabindex="-1" aria-labelledby="generalInformationModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="generalInformationModal">Ответы документа</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="">
+                        <p><strong>ФИО:</strong> {{ $patientDetails['basic_info']['full_name'] }}</p>
+                        <p><strong>Дата рождения:</strong> {{ $patientDetails['basic_info']['birth_date'] }}</p>
+                        <p><strong>Пол:</strong> {{ $patientDetails['basic_info']['gender'] }}</p>
+                        <p><strong>Гражданство:</strong> {{ $patientDetails['basic_info']['citizenship'] }}</p>
+                        <p><strong>Откуда услышали о нас
+                                ?:</strong> {{ $patientDetails['basic_info']['referral_source'] ?? 'N/A' }}</p>
                     </div>
                 </div>
             </div>

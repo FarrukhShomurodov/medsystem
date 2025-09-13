@@ -19,4 +19,9 @@ class MainWarehouseMedication extends Pivot
     {
         return $this->belongsTo(Supplier::class);
     }
+
+    public function medication(): BelongsTo
+    {
+        return $this->belongsTo(Medication::class);
+    }
 }
