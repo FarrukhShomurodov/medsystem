@@ -41,7 +41,8 @@ class PatientController extends Controller
 
     public function __construct(PatientService $service)
     {
-        $this->middleware(['permission:view_patients'])->only('index');
+        $this->middleware(['permission:list_patients'])->only('index');
+        $this->middleware(['permission:view_patients'])->only('show');
         $this->middleware(['permission:create_patients'])->only(['create', 'store']);
         $this->middleware(['permission:edit_patients'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_patients'])->only('destroy');

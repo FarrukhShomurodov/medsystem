@@ -56,6 +56,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
 };
 use App\Http\Middleware\ExaminationMapIsActive;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Permission;
 
 Route::get('admin/login', [AdminAuthController::class, 'showLoginForm'])
     ->name('dashboard.login');
@@ -113,7 +114,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     Route::get('receptions/list', [ReceptionController::class, 'index'])
         ->name('receptions.index')
-        ->middleware('permission:view_receptions');
+        ->middleware('permission:list_receptions');
 
     Route::get('receptions-doctor-calendar/{staff}/{serviceId}', [ReceptionController::class, 'doctorCalendar'])
         ->name('receptions.doctor.calendar')
@@ -263,7 +264,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::post('patient-procedures', [PatientProcedureController::class, 'store'])->name('patient.procedures.store');
 
     // diagnosises
-    Route::post('patient/diagnoses', [PatientDiagnosisController::class, 'store'])->name('patient.diagnoses.store');
+    Route::post('patient/diagnoses', [PatientDiagnosisController::class, 'store'])->name('patient.diagnoses.store')->middleware('create_patient_diagnoses');
 
     // patient assignment
     Route::post('patient-assignment', [PatientAssignmentController::class, 'store'])->name('patient.assignment.store');
@@ -336,7 +337,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // main warehouse
     Route::name('main.warehouse.')->prefix('main-warehouse')->group(function () {
-        Route::get('remains', [MainWarehouseController::class, 'remains'])->name('remains');
+        Route::get('remains', [MainWarehouseController::class, 'remains'])->name('remains')->middleware('main_warehouse_remain');
         Route::get('receipts-goods', [MainWarehouseController::class, 'receiptsGoods'])->name('receipts.goods.index');
         Route::post('receipts-goods', [MainWarehouseController::class, 'receiptsGoodsStore'])->name('receipts.goods.store');
         Route::get('receipts-discard/{type}/{id}', [MainWarehouseController::class, 'discardGood'])->name('receipts.goods.discard');

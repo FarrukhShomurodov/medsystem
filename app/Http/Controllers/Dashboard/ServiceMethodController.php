@@ -15,7 +15,7 @@ class ServiceMethodController extends Controller
 
     public function __construct(ServicMethodService $service)
     {
-        $this->middleware(['permission:view_service_methods'])->only('index');
+        $this->middleware(['permission:list_service_methods'])->only('index');
         $this->middleware(['permission:create_service_methods'])->only(['create', 'store']);
         $this->middleware(['permission:edit_service_methods'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_service_methods'])->only('destroy');

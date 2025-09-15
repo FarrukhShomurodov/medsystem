@@ -15,7 +15,7 @@ class AnalyzeMethodController extends Controller
 
     public function __construct(AnalyzeMethodService $service)
     {
-        $this->middleware(['permission:view_analyze_methods'])->only('index');
+        $this->middleware(['permission:list_analyze_methods'])->only('index');
         $this->middleware(['permission:create_analyze_methods'])->only(['create', 'store']);
         $this->middleware(['permission:edit_analyze_methods'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_analyze_methods'])->only('destroy');

@@ -24,7 +24,7 @@ class AnalyzeController extends Controller
 
     public function __construct(AnalyzeService $service)
     {
-        $this->middleware(['permission:view_analyzes'])->only('index');
+        $this->middleware(['permission:list_analyzes'])->only('index');
         $this->middleware(['permission:create_analyzes'])->only(['create', 'store']);
         $this->middleware(['permission:edit_analyzes'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_analyzes'])->only('destroy');

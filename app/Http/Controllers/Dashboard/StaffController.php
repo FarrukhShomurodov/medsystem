@@ -21,7 +21,7 @@ class StaffController extends Controller
 
     public function __construct(StaffService $service)
     {
-        $this->middleware(['permission:view_staffs'])->only(['index', 'show']);
+        $this->middleware(['permission:list_staffs'])->only(['index', 'show']);
         $this->middleware(['permission:create_staffs'])->only(['create', 'store']);
         $this->middleware(['permission:edit_staffs'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_staffs'])->only('destroy');

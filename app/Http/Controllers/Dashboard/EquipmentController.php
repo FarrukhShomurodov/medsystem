@@ -19,7 +19,7 @@ class EquipmentController extends Controller
 
     public function __construct(EquipmentService $service)
     {
-        $this->middleware(['permission:view_equipments'])->only('index');
+        $this->middleware(['permission:list_equipments'])->only('index');
         $this->middleware(['permission:create_equipments'])->only(['create', 'store']);
         $this->middleware(['permission:edit_equipments'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_equipments'])->only('destroy');

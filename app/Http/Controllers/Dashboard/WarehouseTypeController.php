@@ -15,7 +15,7 @@ class WarehouseTypeController extends Controller
 
     public function __construct(WarehouseTypeService $service)
     {
-        $this->middleware(['permission:view_warehouse_types'])->only('index');
+        $this->middleware(['permission:list_warehouse_types'])->only('index');
         $this->middleware(['permission:create_warehouse_types'])->only(['create', 'store']);
         $this->middleware(['permission:edit_warehouse_types'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_warehouse_types'])->only('destroy');

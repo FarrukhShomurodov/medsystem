@@ -15,7 +15,7 @@ class ManufacturerController extends Controller
 
     public function __construct(ManufactureService $service)
     {
-        $this->middleware(['permission:view_manufacturers'])->only('index');
+        $this->middleware(['permission:list_manufacturers'])->only('index');
         $this->middleware(['permission:create_manufacturers'])->only(['create', 'store']);
         $this->middleware(['permission:edit_manufacturers'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_manufacturers'])->only('destroy');

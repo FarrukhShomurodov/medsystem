@@ -15,7 +15,7 @@ class MedicalDeviceController extends Controller
 
     public function __construct(MedicalDeviceService $service)
     {
-        $this->middleware(['permission:view_devices'])->only('index');
+        $this->middleware(['permission:list_devices'])->only('index');
         $this->middleware(['permission:create_devices'])->only(['create', 'store']);
         $this->middleware(['permission:edit_devices'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_devices'])->only('destroy');

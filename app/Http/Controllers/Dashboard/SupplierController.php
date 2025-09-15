@@ -16,7 +16,7 @@ class SupplierController extends Controller
 
     public function __construct(SupplierService $service)
     {
-        $this->middleware(['permission:view_suppliers'])->only('index');
+        $this->middleware(['permission:list_suppliers'])->only('index');
         $this->middleware(['permission:create_suppliers'])->only(['create', 'store']);
         $this->middleware(['permission:edit_suppliers'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_suppliers'])->only('destroy');

@@ -15,7 +15,7 @@ class AllegoryController extends Controller
 
     public function __construct(AllegoryService $service)
     {
-        $this->middleware(['permission:view_allegories'])->only('index');
+        $this->middleware(['permission:list_allegories'])->only('index');
         $this->middleware(['permission:create_allegories'])->only(['create', 'store']);
         $this->middleware(['permission:edit_allegories'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_allegories'])->only('destroy');

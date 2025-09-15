@@ -13,6 +13,8 @@ class PatientProcedureController extends Controller
 
     public function __construct(PatientProcedureService $service)
     {
+        $this->middleware(['permission:create_patient_procedure'])->only(['store']);
+
         $this->service = $service;
     }
 

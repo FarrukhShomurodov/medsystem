@@ -15,7 +15,7 @@ class HouseholdMaterialController extends Controller
 
     public function __construct(HouseholdMaterialService $service)
     {
-        $this->middleware(['permission:view_household_materials'])->only('index');
+        $this->middleware(['permission:list_household_materials'])->only('index');
         $this->middleware(['permission:create_household_materials'])->only(['create', 'store']);
         $this->middleware(['permission:edit_household_materials'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_household_materials'])->only('destroy');

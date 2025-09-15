@@ -84,6 +84,7 @@ class DatabaseSeeder extends Seeder
 //        }
 
         $this->call(PermissionSeeder::class);
+
 //        $this->call(DocumentSeeder::class);
 //        $this->call(WarehouseSeeder::class);
 //

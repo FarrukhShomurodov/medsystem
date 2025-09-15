@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ReceptionRequest;
 use App\Models\Reception;
 use App\Models\Staff;
@@ -10,7 +11,7 @@ use App\Traits\HandlesStaffAvailability;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-class ReceptionController
+class ReceptionController extends Controller
 {
     use HandlesStaffAvailability;
 
@@ -18,6 +19,8 @@ class ReceptionController
 
     public function __construct(ReceptionService $service)
     {
+        $this->middleware(['permission:create_receptions'])->only(['create']);
+        $this->middleware(['permission:change_receptions_status'])->only(['changeStatus']);
         $this->service = $service;
     }
 

@@ -16,7 +16,7 @@ class MedicationGroupController extends Controller
 
     public function __construct(MedicationGroupService $service)
     {
-        $this->middleware(['permission:view_medication_groups'])->only('index');
+        $this->middleware(['permission:list_medication_groups'])->only('index');
         $this->middleware(['permission:create_medication_groups'])->only(['create', 'store']);
         $this->middleware(['permission:edit_medication_groups'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_medication_groups'])->only('destroy');

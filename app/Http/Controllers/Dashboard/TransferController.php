@@ -18,7 +18,7 @@ class TransferController extends Controller
 
     public function __construct(TransferService $transferService)
     {
-        $this->middleware(['permission:view_transfers'])->only('index');
+        $this->middleware(['permission:list_transfers'])->only('index');
         $this->middleware(['permission:create_transfers'])->only(['create', 'store']);
         $this->middleware(['permission:edit_transfers'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_transfers'])->only('destroy');

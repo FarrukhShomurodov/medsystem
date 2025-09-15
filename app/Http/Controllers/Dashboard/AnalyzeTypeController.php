@@ -15,7 +15,7 @@ class AnalyzeTypeController extends Controller
 
     public function __construct(AnalyzeTypeService $service)
     {
-        $this->middleware(['permission:view_analyze_types'])->only('index');
+        $this->middleware(['permission:list_analyze_types'])->only('index');
         $this->middleware(['permission:create_analyze_types'])->only(['create', 'store']);
         $this->middleware(['permission:edit_analyze_types'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_analyze_types'])->only('destroy');

@@ -15,7 +15,7 @@ class ChronicDiseaseController extends Controller
 
     public function __construct(ChronicDiseaseService $service)
     {
-        $this->middleware(['permission:view_diseases'])->only('index');
+        $this->middleware(['permission:list_diseases'])->only('index');
         $this->middleware(['permission:create_diseases'])->only(['create', 'store']);
         $this->middleware(['permission:edit_diseases'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_diseases'])->only('destroy');

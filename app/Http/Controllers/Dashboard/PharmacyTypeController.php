@@ -16,7 +16,7 @@ class PharmacyTypeController extends Controller
 
     public function __construct(PharmacyTypeService $service)
     {
-        $this->middleware(['permission:view_pharmacy_types'])->only('index');
+        $this->middleware(['permission:list_pharmacy_types'])->only('index');
         $this->middleware(['permission:create_pharmacy_types'])->only(['create', 'store']);
         $this->middleware(['permission:edit_pharmacy_types'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_pharmacy_types'])->only('destroy');

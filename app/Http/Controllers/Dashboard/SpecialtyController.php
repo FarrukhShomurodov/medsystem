@@ -15,7 +15,7 @@ class SpecialtyController extends Controller
 
     public function __construct(SpecialtyService $service)
     {
-        $this->middleware(['permission:view_specialties'])->only('index');
+        $this->middleware(['permission:list_specialties'])->only('index');
         $this->middleware(['permission:create_specialties'])->only(['create', 'store']);
         $this->middleware(['permission:edit_specialties'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_specialties'])->only('destroy');

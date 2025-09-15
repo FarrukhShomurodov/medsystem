@@ -17,7 +17,7 @@ class StaffPositionController extends Controller
 
     public function __construct(StaffPositionService $service)
     {
-        $this->middleware(['permission:view_staff_positions'])->only('index');
+        $this->middleware(['permission:list_staff_positions'])->only('index');
         $this->middleware(['permission:create_staff_positions'])->only(['create', 'store']);
         $this->middleware(['permission:edit_staff_positions'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_staff_positions'])->only('destroy');
@@ -27,84 +27,119 @@ class StaffPositionController extends Controller
         $this->permissionsRu = [
             'view_dashboard' => 'Просмотр панели управления',
 
+            // --- Admins
+            'list_admins' => 'Список администраторов',
             'view_admins' => 'Просмотр администраторов',
             'create_admins' => 'Создание администраторов',
             'edit_admins' => 'Редактирование администраторов',
             'delete_admins' => 'Удаление администраторов',
 
+            // --- Specialties
+            'list_specialties' => 'Список специальностей',
             'view_specialties' => 'Просмотр специальностей',
             'create_specialties' => 'Создание специальностей',
             'edit_specialties' => 'Редактирование специальностей',
             'delete_specialties' => 'Удаление специальностей',
 
+            // --- Departments
+            'list_departments' => 'Список отделений',
             'view_departments' => 'Просмотр отделений',
             'create_departments' => 'Создание отделений',
             'edit_departments' => 'Редактирование отделений',
             'delete_departments' => 'Удаление отделений',
 
+            // --- Department Rooms
+            'list_department_rooms' => 'Список помещений отделений',
             'view_department_rooms' => 'Просмотр помещений отделений',
             'create_department_rooms' => 'Создание помещений отделений',
             'edit_department_rooms' => 'Редактирование помещений отделений',
             'delete_department_rooms' => 'Удаление помещений отделений',
 
+            // --- Equipments
+            'list_equipments' => 'Список оборудования',
             'view_equipments' => 'Просмотр оборудования',
             'create_equipments' => 'Создание оборудования',
             'edit_equipments' => 'Редактирование оборудования',
             'delete_equipments' => 'Удаление оборудования',
 
-            'view_equipment_types' => 'Просмотр типа оборудования',
-            'create_equipment_types' => 'Создание типа оборудования',
-            'edit_equipment_types' => 'Редактирование типа оборудования',
-            'delete_equipment_types' => 'Удаление типа оборудования',
+            // --- Equipment Types
+            'list_equipment_types' => 'Список типов оборудования',
+            'view_equipment_types' => 'Просмотр типов оборудования',
+            'create_equipment_types' => 'Создание типов оборудования',
+            'edit_equipment_types' => 'Редактирование типов оборудования',
+            'delete_equipment_types' => 'Удаление типов оборудования',
 
+            // --- Staffs
+            'list_staffs' => 'Список персонала',
             'view_staffs' => 'Просмотр персонала',
-            'create_staffs' => 'Добавление персонала',
+            'create_staffs' => 'Создание персонала',
             'edit_staffs' => 'Редактирование персонала',
             'delete_staffs' => 'Удаление персонала',
 
+            // --- Staff Positions
+            'list_staff_positions' => 'Список должностей персонала',
             'view_staff_positions' => 'Просмотр должностей персонала',
             'create_staff_positions' => 'Создание должностей персонала',
             'edit_staff_positions' => 'Редактирование должностей персонала',
             'delete_staff_positions' => 'Удаление должностей персонала',
 
+            // --- Supplies
+            'list_supplies' => 'Список расходников',
             'view_supplies' => 'Просмотр расходников',
             'create_supplies' => 'Создание расходников',
             'edit_supplies' => 'Редактирование расходников',
             'delete_supplies' => 'Удаление расходников',
 
+            // --- Receptions
+            'list_receptions' => 'Список приемов',
+            'create_receptions' => 'Создание приемов',
+            'change_receptions_status' => 'Изменение статуса приема',
             'view_receptions' => 'Просмотр приемов',
-            'view_appointment_receptions' => 'Назначить прием',
+            'view_appointment_receptions' => 'Назначение приемов',
             'view_reception_doctor_calendar' => 'Просмотр календаря врача',
 
+            // --- Suppliers
+            'list_suppliers' => 'Список поставщиков',
             'view_suppliers' => 'Просмотр поставщиков',
             'create_suppliers' => 'Создание поставщиков',
             'edit_suppliers' => 'Редактирование поставщиков',
             'delete_suppliers' => 'Удаление поставщиков',
 
+            // --- Manufacturers
+            'list_manufacturers' => 'Список производителей',
             'view_manufacturers' => 'Просмотр производителей',
             'create_manufacturers' => 'Создание производителей',
             'edit_manufacturers' => 'Редактирование производителей',
             'delete_manufacturers' => 'Удаление производителей',
 
+            // --- Warehouses
+            'list_warehouses' => 'Список складов',
             'view_warehouses' => 'Просмотр складов',
             'create_warehouses' => 'Создание складов',
             'edit_warehouses' => 'Редактирование складов',
             'delete_warehouses' => 'Удаление складов',
 
+            // --- Warehouse Types
+            'list_warehouse_types' => 'Список типов складов',
             'view_warehouse_types' => 'Просмотр типов складов',
             'create_warehouse_types' => 'Создание типов складов',
             'edit_warehouse_types' => 'Редактирование типов складов',
             'delete_warehouse_types' => 'Удаление типов складов',
 
+            // --- Warehouse Medications & Supplies
             'view_warehouse_medications' => 'Просмотр медикаментов на складе',
             'view_warehouse_supplies' => 'Просмотр расходников на складе',
             'view_warehouse_medication_detail' => 'Просмотр деталей медикамента на складе',
 
+            // --- Pharmacies
+            'list_pharmacies' => 'Список аптек',
             'view_pharmacies' => 'Просмотр аптек',
             'create_pharmacies' => 'Создание аптек',
             'edit_pharmacies' => 'Редактирование аптек',
             'delete_pharmacies' => 'Удаление аптек',
 
+            // --- Pharmacy Types
+            'list_pharmacy_types' => 'Список типов аптек',
             'view_pharmacy_types' => 'Просмотр типов аптек',
             'create_pharmacy_types' => 'Создание типов аптек',
             'edit_pharmacy_types' => 'Редактирование типов аптек',
@@ -112,13 +147,17 @@ class StaffPositionController extends Controller
 
             'view_pharmacy_medications' => 'Просмотр медикаментов в аптеках',
 
+            // --- Transfers
+            'list_transfers' => 'Список перемещений',
             'view_transfers' => 'Просмотр перемещений',
             'create_transfers' => 'Создание перемещений',
             'edit_transfers' => 'Редактирование перемещений',
             'delete_transfers' => 'Удаление перемещений',
 
-            'view_transfer_medications' => 'Просмотр медикаментов в перемещении',
+            'view_transfer_medications' => 'Просмотр медикаментов в перемещениях',
 
+            // --- Surveys
+            'list_surveys' => 'Список опросов',
             'view_surveys' => 'Просмотр опросов',
             'create_surveys' => 'Создание опросов',
             'edit_surveys' => 'Редактирование опросов',
@@ -127,121 +166,147 @@ class StaffPositionController extends Controller
             'create_survey_response' => 'Создание ответа на опрос',
             'store_survey_response' => 'Сохранение ответа на опрос',
 
-//            'view_analyzes' => 'Просмотр анализов',
-//            'create_analyzes' => 'Создание анализов',
-//            'edit_analyzes' => 'Редактирование анализов',
-//            'delete_analyzes' => 'Удаление анализов',
-//
-//            'create_analyze_result' => 'Создание результата анализа',
-//            'store_analyze_result' => 'Сохранение результата анализа',
-//            'show_analyze_result' => 'Просмотр результата анализа',
-//            'edit_analyze_result' => 'Редактирование результата анализа',
-//            'update_analyze_result' => 'Обновление результата анализа',
-
+            // --- Medications
+            'list_medications' => 'Список медикаментов',
             'view_medications' => 'Просмотр медикаментов',
             'create_medications' => 'Создание медикаментов',
             'edit_medications' => 'Редактирование медикаментов',
             'delete_medications' => 'Удаление медикаментов',
 
+            // --- Medication Groups
+            'list_medication_groups' => 'Список групп медикаментов',
             'view_medication_groups' => 'Просмотр групп медикаментов',
             'create_medication_groups' => 'Создание групп медикаментов',
             'edit_medication_groups' => 'Редактирование групп медикаментов',
             'delete_medication_groups' => 'Удаление групп медикаментов',
 
+            // --- Services
+            'list_services' => 'Список услуг',
             'view_services' => 'Просмотр услуг',
             'create_services' => 'Создание услуг',
             'edit_services' => 'Редактирование услуг',
             'delete_services' => 'Удаление услуг',
 
+            // --- Patient Services
+            'list_patient_services' => 'Список услуг пациента',
             'view_patient_services' => 'Просмотр услуг пациента',
             'create_patient_services' => 'Создание услуг пациента',
             'edit_patient_services' => 'Редактирование услуг пациента',
             'delete_patient_services' => 'Удаление услуг пациента',
 
-            'view_service_types' => 'Просмотр типа услуг',
-            'create_service_types' => 'Создание типа услуг',
-            'edit_service_types' => 'Редактирование типа услуг',
-            'delete_service_types' => 'Удаление типа услуг',
+            // --- Service Groups
+            'list_service_groups' => 'Список групп услуг',
+            'view_service_groups' => 'Просмотр групп услуг',
+            'create_service_groups' => 'Создание групп услуг',
+            'edit_service_groups' => 'Редактирование групп услуг',
+            'delete_service_groups' => 'Удаление групп услуг',
 
-            'view_service_groups' => 'Просмотр группы услуг',
-            'create_service_groups' => 'Создание группы услуг',
-            'edit_service_groups' => 'Редактирование группы услуг',
-            'delete_service_groups' => 'Удаление группы услуг',
+            // --- Service Types
+            'list_service_types' => 'Список типов услуг',
+            'view_service_types' => 'Просмотр типов услуг',
+            'create_service_types' => 'Создание типов услуг',
+            'edit_service_types' => 'Редактирование типов услуг',
+            'delete_service_types' => 'Удаление типов услуг',
 
+            // --- Service Procedures
+            'list_service_procedures' => 'Список процедур',
             'view_service_procedures' => 'Просмотр процедур',
             'create_service_procedures' => 'Создание процедур',
             'edit_service_procedures' => 'Редактирование процедур',
             'delete_service_procedures' => 'Удаление процедур',
 
+            // --- Service Methods
+            'list_service_methods' => 'Список методов услуг',
             'view_service_methods' => 'Просмотр методов услуг',
             'create_service_methods' => 'Создание методов услуг',
             'edit_service_methods' => 'Редактирование методов услуг',
             'delete_service_methods' => 'Удаление методов услуг',
 
+            // --- Laboratories
+            'list_laboratories' => 'Список лабораторий',
             'view_laboratories' => 'Просмотр лабораторий',
             'create_laboratories' => 'Создание лабораторий',
             'edit_laboratories' => 'Редактирование лабораторий',
             'delete_laboratories' => 'Удаление лабораторий',
 
-//            'view_analyze_methods' => 'Просмотр методов анализов',
-//            'create_analyze_methods' => 'Создание методов анализов',
-//            'edit_analyze_methods' => 'Редактирование методов анализов',
-//            'delete_analyze_methods' => 'Удаление методов анализов',
-//
-//            'view_analyze_types' => 'Просмотр типов анализов',
-//            'create_analyze_types' => 'Создание типов анализов',
-//            'edit_analyze_types' => 'Редактирование типов анализов',
-//            'delete_analyze_types' => 'Удаление типов анализов',
-
+            // --- Regions
+            'list_regions' => 'Список регионов',
             'view_regions' => 'Просмотр регионов',
             'create_regions' => 'Создание регионов',
             'edit_regions' => 'Редактирование регионов',
             'delete_regions' => 'Удаление регионов',
 
+            // --- Cities
+            'list_cities' => 'Список городов',
             'view_cities' => 'Просмотр городов',
             'create_cities' => 'Создание городов',
             'edit_cities' => 'Редактирование городов',
             'delete_cities' => 'Удаление городов',
 
+            // --- Allegories
+            'list_allegories' => 'Список аллергий',
             'view_allegories' => 'Просмотр аллергий',
             'create_allegories' => 'Создание аллергий',
             'edit_allegories' => 'Редактирование аллергий',
             'delete_allegories' => 'Удаление аллергий',
 
+            // --- Diseases
+            'list_diseases' => 'Список заболеваний',
             'view_diseases' => 'Просмотр заболеваний',
             'create_diseases' => 'Создание заболеваний',
             'edit_diseases' => 'Редактирование заболеваний',
             'delete_diseases' => 'Удаление заболеваний',
 
+            // --- Devices
+            'list_devices' => 'Список устройств',
             'view_devices' => 'Просмотр устройств',
             'create_devices' => 'Создание устройств',
             'edit_devices' => 'Редактирование устройств',
             'delete_devices' => 'Удаление устройств',
 
+            // --- Patients
+            'list_patients' => 'Список пациентов',
             'view_patients' => 'Просмотр пациентов',
             'create_patients' => 'Создание пациентов',
             'edit_patients' => 'Редактирование пациентов',
             'delete_patients' => 'Удаление пациентов',
 
+            'sister_window_show' => 'Просмотр сестринского окна',
+            'patient_inspection_store' => 'Создание осмотра',
+            'create_patient_map' => 'Создание карты пациента',
+
+            // --- Maps
             'edit_maps' => 'Редактирование карт',
             'update_maps' => 'Обновление карт',
             'delete_maps' => 'Удаление карт',
 
-            'create_patient_map' => 'Создание карты пациента',
+            // --- Diagnoses
+            'list_diagnoses' => 'Список диагнозов',
+            'view_diagnoses' => 'Просмотр диагнозов',
+            'create_diagnoses' => 'Создание диагнозов',
+            'edit_diagnoses' => 'Редактирование диагнозов',
+            'delete_diagnoses' => 'Удаление диагнозов',
 
-            'sister_window_show' => 'Просмотр сестринского окна',
-            'patient_inspection_store' => 'Создание осмотра',
+            'create_patient_diagnoses' => 'Создание диагноза пациента',
+            'list_patient_diagnoses' => 'Список диагнозов пациента',
 
-            'view_diagnoses' => 'Просмотр диагноза',
-            'create_diagnoses' => 'Создание диагноза',
-            'edit_diagnoses' => 'Редактирование диагноза',
-            'delete_diagnoses' => 'Удаление диагноза',
+            // --- Patient Medications
+            'create_patient_medication' => 'Назначение медикамента пациенту',
+            'edit_patient_medication' => 'Редактирование медикамента пациента',
+            'list_patient_medication' => 'Список медикаментов пациента',
 
+            // --- Procedures
+            'create_patient_procedure' => 'Назначение процедуры пациенту',
 
-            'view_household_materials' => 'Просмотр хозяйственного материала',
-            'create_household_materials' => 'Создание хозяйственного материала',
-            'edit_household_materials' => 'Редактирование хозяйственного материала',
-            'delete_household_materials' => 'Удаление хозяйственного материала',
+            // --- Household Materials
+            'list_household_materials' => 'Список хоз. материалов',
+            'view_household_materials' => 'Просмотр хоз. материалов',
+            'create_household_materials' => 'Создание хоз. материалов',
+            'edit_household_materials' => 'Редактирование хоз. материалов',
+            'delete_household_materials' => 'Удаление хоз. материалов',
+
+            'view_cashier' => 'Просмотр кассы',
+            'main_warehouse_remain' => 'Просмотр общего остатки склада',
         ];
     }
 

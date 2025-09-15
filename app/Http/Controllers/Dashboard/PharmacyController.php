@@ -16,7 +16,7 @@ class PharmacyController extends Controller
 
     public function __construct(PharmacyService $service)
     {
-        $this->middleware(['permission:view_pharmacies'])->only('index');
+        $this->middleware(['permission:list_pharmacies'])->only('index');
         $this->middleware(['permission:create_pharmacies'])->only(['create', 'store']);
         $this->middleware(['permission:edit_pharmacies'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_pharmacies'])->only('destroy');

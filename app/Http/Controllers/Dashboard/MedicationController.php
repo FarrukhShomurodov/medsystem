@@ -19,7 +19,7 @@ class MedicationController extends Controller
 
     public function __construct(MedicationService $service)
     {
-        $this->middleware(['permission:view_medications'])->only('index');
+        $this->middleware(['permission:list_medications'])->only('index');
         $this->middleware(['permission:create_medications'])->only(['create', 'store']);
         $this->middleware(['permission:edit_medications'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_medications'])->only('destroy');

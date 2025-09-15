@@ -16,6 +16,9 @@ class PatientMedicationController extends Controller
 
     public function __construct(PatientMedicationService $service)
     {
+        $this->middleware(['permission:create_patient_medication'])->only(['store']);
+        $this->middleware(['permission:edit_patient_medication'])->only(['edit', 'update']);
+
         $this->service = $service;
     }
 

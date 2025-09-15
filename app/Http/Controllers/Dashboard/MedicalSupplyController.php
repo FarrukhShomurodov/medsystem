@@ -15,7 +15,7 @@ class MedicalSupplyController extends Controller
 
     public function __construct(MedicalSupplyService $service)
     {
-        $this->middleware(['permission:view_supplies'])->only('index');
+        $this->middleware(['permission:list_supplies'])->only('index');
         $this->middleware(['permission:create_supplies'])->only(['create', 'store']);
         $this->middleware(['permission:edit_supplies'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_supplies'])->only('destroy');

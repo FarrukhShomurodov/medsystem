@@ -29,7 +29,7 @@
         <div class="d-flex justify-content-between align-items-center text-center">
             <h6 class="breadcrumb-wrapper m-0 p-0">
                 <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('patients.index') }}">Пациент</a> /</span> {{ $patientDetails['basic_info']['full_name'] }}
+                                                     href="{{ route('patients.index') }}">Пациент</a> /</span> {{ $patientDetails['basic_info']['full_name'] }}
             </h6>
 
             <div class="d-flex flex-row">
@@ -37,7 +37,8 @@
                     Вернуться в отделение
                 </a>
 
-                <button type="button" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#generalInformationModal">
+                <button type="button" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal"
+                        data-bs-target="#generalInformationModal">
                     Общая информация
                 </button>
 
@@ -204,7 +205,7 @@
                                     </div>
                                 </td>
                             </tr>
-                          @endforeach
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -272,113 +273,135 @@
             <!-- flex-wrap вместо btn-toolbar -->
             <div class="d-flex flex-wrap gap-3 mb-3">
                 <!-- Инструментальные исследования -->
-                <div class="d-flex">
-                    <button
-                        type="button"
-                        class="btn btn-primary d-flex align-items-center"
-                        data-bs-toggle="modal"
-                        data-bs-target="#instrumentalModal"
-                    >
-                        <i class="bi bi-activity me-2"></i>Инструментальные
-                    </button>
-                    <button
-                        type="button"
-                        class="btn btn-outline-primary d-flex align-items-center ms-1"
-                        data-bs-toggle="modal"
-                        data-bs-target="#createServiceModal"
-                    >
-                        <i class="bi bi-plus-lg"></i>
-                    </button>
-                </div>
+                @can('create_patient_services')
+                    <div class="d-flex">
+                        <button
+                            type="button"
+                            class="btn btn-primary d-flex align-items-center"
+                            data-bs-toggle="modal"
+                            data-bs-target="#instrumentalModal"
+                        >
+                            <i class="bi bi-activity me-2"></i>Инструментальные
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-outline-primary d-flex align-items-center ms-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#createServiceModal"
+                        >
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                    </div>
 
-                <!-- Лаборатория -->
-                <div class="d-flex">
-                    <button
-                        type="button"
-                        class="btn btn-primary d-flex align-items-center"
-                        data-bs-toggle="modal"
-                        data-type-id="5"
-                        data-bs-target="#indicativeModal"
-                    >
-                        <i class="bi bi-beaker me-2"></i>Лаборатория
-                    </button>
-                    <button
-                        type="button"
-                        class="btn btn-outline-primary d-flex align-items-center ms-1"
-                        data-bs-toggle="modal"
-                        data-type-id="5"
-                        data-bs-target="#createServiceModal"
-                    >
-                        <i class="bi bi-plus-lg"></i>
-                    </button>
-                </div>
+                    <!-- Лаборатория -->
+                    <div class="d-flex">
+                        <button
+                            type="button"
+                            class="btn btn-primary d-flex align-items-center"
+                            data-bs-toggle="modal"
+                            data-type-id="5"
+                            data-bs-target="#indicativeModal"
+                        >
+                            <i class="bi bi-beaker me-2"></i>Лаборатория
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-primary d-flex align-items-center ms-1"
+                            data-bs-toggle="modal"
+                            data-type-id="5"
+                            data-bs-target="#createServiceModal"
+                        >
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                    </div>
+                @endcan
+
 
                 <!-- Консультация -->
-                <a
-                    class="btn btn-primary d-flex align-items-center"
-                    target="_blank"
-                    href="{{ route('receptions.appointment') }}"
-                >
-                    <i class="bi bi-chat-dots me-2"></i>Консультация
-                </a>
+                @can('create_receptions')
+                    <a
+                        class="btn btn-primary d-flex align-items-center"
+                        target="_blank"
+                        href="{{ route('receptions.appointment') }}">
+                        <i class="bi bi-chat-dots me-2"></i>Консультация
+                    </a>
+                @endcan
 
                 <!-- Диагноз -->
                 <div class="d-flex">
-                    <button
-                        type="button"
-                        class="btn btn-primary d-flex align-items-center"
-                        data-bs-toggle="modal"
-                        data-bs-target="#showDiagnosisesModal"
-                    >
-                        <i class="bi bi-journal-medical me-2"></i>Диагноз
-                    </button>
-                    <button
-                        type="button"
-                        class="btn btn-outline-primary d-flex align-items-center ms-1"
-                        data-bs-toggle="modal"
-                        data-bs-target="#diagnosisesModal"
-                    >
-                        <i class="bi bi-plus-lg"></i>
-                    </button>
+                    @can('list_patient_diagnoses')
+                        <button
+                            type="button"
+                            class="btn btn-primary d-flex align-items-center"
+                            data-bs-toggle="modal"
+                            data-bs-target="#showDiagnosisesModal"
+                        >
+                            <i class="bi bi-journal-medical me-2"></i>Диагноз
+                        </button>
+                    @endcan
+
+
+                    @can('create_patient_diagnoses')
+                        <button
+                            type="button"
+                            class="btn btn-outline-primary d-flex align-items-center ms-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#diagnosisesModal"
+                        >
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                    @endcan
                 </div>
 
                 <div class="d-flex">
+                    @can('list_patient_medication')
+                        <button
+                            type="button"
+                            class="btn btn-primary d-flex align-items-center"
+                            data-bs-toggle="modal"
+                            data-bs-target="#showMedicationModal"
+                        >
+                            <i class="bi bi-capsule me-2"></i>Лист назначение
+                        </button>
+                    @endcan
+
+
+                    @can('create_patient_medication')
+                        <button
+                            type="button"
+                            class="btn btn-outline-primary d-flex align-items-center ms-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#medicationModal"
+                        >
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                    @endcan
+                </div>
+
+                <!-- Процедуры -->
+                @can('create_patient_procedure')
                     <button
                         type="button"
                         class="btn btn-primary d-flex align-items-center"
                         data-bs-toggle="modal"
-                        data-bs-target="#showMedicationModal"
+                        data-bs-target="#proceduresModal"
                     >
-                        <i class="bi bi-capsule me-2"></i>Лист назначение
+                        <i class="bi bi-tools me-2"></i>Процедуры
                     </button>
-                    <button
-                        type="button"
-                        class="btn btn-outline-primary d-flex align-items-center ms-1"
-                        data-bs-toggle="modal"
-                        data-bs-target="#medicationModal"
-                    >
-                        <i class="bi bi-plus-lg"></i>
-                    </button>
-                </div>
-
-                <!-- Процедуры -->
-                <button
-                    type="button"
-                    class="btn btn-primary d-flex align-items-center"
-                    data-bs-toggle="modal"
-                    data-bs-target="#proceduresModal"
-                >
-                    <i class="bi bi-tools me-2"></i>Процедуры
-                </button>
+                @endcan
 
                 <!-- Госпитализация -->
-                <button
-                    onclick="window.location.href='{{ route('patient.map.create', $patientDetails['patient_id']) }}'"
-                    class="btn btn-primary d-flex align-items-center"
-                    @disabled(!$patientDetails['history']['map_is_active'])
-                >
-                    <i class="bi bi-hospital me-2"></i>Госпитализация
-                </button>
+                @can('create_patient_map')
+                    <button
+                        onclick="window.location.href='{{ route('patient.map.create', $patientDetails['patient_id']) }}'"
+                        class="btn btn-primary d-flex align-items-center"
+                        @disabled(!$patientDetails['history']['map_is_active'])
+                    >
+                        <i class="bi bi-hospital me-2"></i>Госпитализация
+                    </button>
+                @endcan
+
             </div>
 
             <!-- Форма выбора документа -->
@@ -993,7 +1016,8 @@
     </div>
 
 
-    <div class="modal fade" id="generalInformationModal" tabindex="-1" aria-labelledby="generalInformationModal" aria-hidden="true">
+    <div class="modal fade" id="generalInformationModal" tabindex="-1" aria-labelledby="generalInformationModal"
+         aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1623,27 +1647,28 @@
     </div>
 
     {{--  Show Model --}}
-    <div class="modal fade" id="showMedicationModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-fullscreen">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Медикаменты</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Дата и время назначения</th>
-                            <th>Название препарата, Доза, Путь введения, Время приема ( час:мин)</th>
-                            <th>Дата</th>
-                            <th>Статус</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($patientMedicationsAllMedications as $index => $medication)
+    @can('list_patient_medication')
+        <div class="modal fade" id="showMedicationModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Медикаменты</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Дата и время назначения</th>
+                                <th>Название препарата, Доза, Путь введения, Время приема ( час:мин)</th>
+                                <th>Дата</th>
+                                <th>Статус</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($patientMedicationsAllMedications as $index => $medication)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $medication->pivot->created_at }}</td>
@@ -1661,11 +1686,11 @@
 
                                 <td>
                                     @php
-                                        $status = $medication->pivot->status;
-                                        $label = \App\Models\PatientMedication::STATUS_LABELS[$status] ?? $status;
-                                        $icon = \App\Models\PatientMedication::STATUS_ICONS[$status] ?? 'fa-question';
-                                        $color = \App\Models\PatientMedication::STATUS_COLORS[$status] ?? 'text-secondary';
-                                    @endphp
+                                            $status = $medication->pivot->status;
+                                            $label = \App\Models\PatientMedication::STATUS_LABELS[$status] ?? $status;
+                                            $icon = \App\Models\PatientMedication::STATUS_ICONS[$status] ?? 'fa-question';
+                                            $color = \App\Models\PatientMedication::STATUS_COLORS[$status] ?? 'text-secondary';
+                                        @endphpf
 
                                     <i class="fas {{ $icon }} {{ $color }}" title="{{ $label }}"></i>
                                     {{ $label }}
@@ -1694,65 +1719,70 @@
                                     @endif
                                 </td>
                             </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endcan
 
-    <div class="modal fade" id="proceduresModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Добавить медикамент</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('patient.procedures.store') }}" method="post">
-                        @csrf
-                        <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
 
-                        <div class="mb-3">
-                            <label class="form-label">Процедуры</label>
-                            <div id="procedures-container">
+    @can('create_patient_procedure')
+        <div class="modal fade" id="proceduresModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Добавить медикамент</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('patient.procedures.store') }}" method="post">
+                            @csrf
+                            <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
+
+                            <div class="mb-3">
+                                <label class="form-label">Процедуры</label>
+                                <div id="procedures-container">
+                                </div>
+
+                                <button type="button" class="btn btn-primary mt-2" id="btn-add-procedure">
+                                    <i class="fas fa-plus me-2"></i> Добавить процедуру
+                                </button>
+
+                                <template id="procedure-template">
+                                    <div class="row mb-2 procedure-row">
+                                        <div class="col-sm-5">
+                                            <select name="procedures[]" class="form-control procedure-select"
+                                                    data-placeholder="Выберите или введите новую процедуру" required>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <input type="date" name="procedure_dates[]"
+                                                   class="form-control"
+                                                   value="{{ now()->format('Y-m-d') }}"
+                                                   required>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <button type="button" class="btn btn-danger btn-remove-procedure">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </template>
                             </div>
 
-                            <button type="button" class="btn btn-primary mt-2" id="btn-add-procedure">
-                                <i class="fas fa-plus me-2"></i> Добавить процедуру
+                            <button type="submit" class="btn btn-outline-primary w-100 mt-3">
+                                Сохранить
                             </button>
-
-                            <template id="procedure-template">
-                                <div class="row mb-2 procedure-row">
-                                    <div class="col-sm-5">
-                                        <select name="procedures[]" class="form-control procedure-select"
-                                                data-placeholder="Выберите или введите новую процедуру" required>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-5">
-                                        <input type="date" name="procedure_dates[]"
-                                               class="form-control"
-                                               value="{{ now()->format('Y-m-d') }}"
-                                               required>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <button type="button" class="btn btn-danger btn-remove-procedure">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-
-                        <button type="submit" class="btn btn-outline-primary w-100 mt-3">
-                            Сохранить
-                        </button>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endcan
+
 @endsection
 
 @section('scripts')

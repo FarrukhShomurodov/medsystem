@@ -16,7 +16,7 @@ class ProcedureController extends Controller
 
     public function __construct(ProcedureService $service)
     {
-        $this->middleware(['permission:view_service_procedures'])->only('index');
+        $this->middleware(['permission:list_service_procedures'])->only('index');
         $this->middleware(['permission:create_service_procedures'])->only(['create', 'store']);
         $this->middleware(['permission:edit_service_procedures'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_service_procedures'])->only('destroy');

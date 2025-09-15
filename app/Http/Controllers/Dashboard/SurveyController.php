@@ -16,7 +16,7 @@ class SurveyController extends Controller
 
     public function __construct(SurveyService $service)
     {
-        $this->middleware(['permission:view_surveys'])->only('index');
+        $this->middleware(['permission:list_surveys'])->only('index');
         $this->middleware(['permission:create_surveys'])->only(['create', 'store']);
         $this->middleware(['permission:edit_surveys'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_surveys'])->only('destroy');

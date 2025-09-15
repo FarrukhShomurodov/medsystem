@@ -20,7 +20,7 @@ class DiagnosisController extends Controller
 
     public function __construct(DiagnosisService $service)
     {
-        $this->middleware(['permission:view_diagnoses'])->only('index');
+        $this->middleware(['permission:list_diagnoses'])->only('index');
         $this->middleware(['permission:create_diagnoses'])->only(['create', 'store']);
         $this->middleware(['permission:edit_diagnoses'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_diagnoses'])->only('destroy');

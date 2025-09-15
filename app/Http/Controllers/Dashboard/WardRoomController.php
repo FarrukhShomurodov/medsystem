@@ -15,7 +15,7 @@ class WardRoomController extends Controller
 
     public function __construct(WardRoomService $service)
     {
-        $this->middleware(['permission:view_department_rooms'])->only('index');
+        $this->middleware(['permission:list_department_rooms'])->only('index');
         $this->middleware(['permission:create_department_rooms'])->only(['create', 'store']);
         $this->middleware(['permission:edit_department_rooms'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_department_rooms'])->only('destroy');

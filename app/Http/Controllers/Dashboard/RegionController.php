@@ -15,7 +15,7 @@ class RegionController extends Controller
 
     public function __construct(RegionService $service)
     {
-        $this->middleware(['permission:view_regions'])->only('index');
+        $this->middleware(['permission:list_regions'])->only('index');
         $this->middleware(['permission:create_regions'])->only(['create', 'store']);
         $this->middleware(['permission:edit_regions'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_regions'])->only('destroy');

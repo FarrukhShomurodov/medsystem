@@ -16,7 +16,7 @@ class LaboratoryController extends Controller
 
     public function __construct(LaboratoryService $service)
     {
-        $this->middleware(['permission:view_laboratories'])->only('index');
+        $this->middleware(['permission:list_laboratories'])->only('index');
         $this->middleware(['permission:create_laboratories'])->only(['create', 'store']);
         $this->middleware(['permission:edit_laboratories'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_laboratories'])->only('destroy');

@@ -15,7 +15,7 @@ class ServiceGroupController extends Controller
 
     public function __construct(ServiceGroupService $service)
     {
-        $this->middleware(['permission:view_service_groups'])->only('index');
+        $this->middleware(['permission:list_service_groups'])->only('index');
         $this->middleware(['permission:create_service_groups'])->only(['create', 'store']);
         $this->middleware(['permission:edit_service_groups'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_service_groups'])->only('destroy');

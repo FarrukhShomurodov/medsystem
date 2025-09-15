@@ -21,7 +21,7 @@ class ServiceController extends Controller
 
     public function __construct(ServiceService $service)
     {
-        $this->middleware(['permission:view_services'])->only('index');
+        $this->middleware(['permission:list_services'])->only('index');
         $this->middleware(['permission:create_services'])->only(['create', 'store']);
         $this->middleware(['permission:edit_services'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_services'])->only('destroy');

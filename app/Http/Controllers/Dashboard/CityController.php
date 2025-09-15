@@ -16,7 +16,7 @@ class CityController extends Controller
 
     public function __construct(CityService $service)
     {
-        $this->middleware(['permission:view_cities'])->only('index');
+        $this->middleware(['permission:list_cities'])->only('index');
         $this->middleware(['permission:create_cities'])->only(['create', 'store']);
         $this->middleware(['permission:edit_cities'])->only(['edit', 'update']);
         $this->middleware(['permission:delete_cities'])->only('destroy');
