@@ -337,7 +337,7 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     // main warehouse
     Route::name('main.warehouse.')->prefix('main-warehouse')->group(function () {
-        Route::get('remains', [MainWarehouseController::class, 'remains'])->name('remains')->middleware('main_warehouse_remain');
+        Route::get('remains', [MainWarehouseController::class, 'remains'])->name('remains')->middleware('permission:main_warehouse_remain');
         Route::get('receipts-goods', [MainWarehouseController::class, 'receiptsGoods'])->name('receipts.goods.index');
         Route::post('receipts-goods', [MainWarehouseController::class, 'receiptsGoodsStore'])->name('receipts.goods.store');
         Route::get('receipts-discard/{type}/{id}', [MainWarehouseController::class, 'discardGood'])->name('receipts.goods.discard');
