@@ -307,26 +307,30 @@
         @endcanany
 
 
-        {{-- Общий склад --}}
-        <li class="menu-item {{ Request::is('dashboard/main-warehouse*') || Request::is('dashboard/supply-requests/orders') ? 'open' : '' }}">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon bx bx-store"></i>
-                <div data-i18n="Общий склад">Общий склад</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item {{ Request::is('dashboard/main-warehouse*') ? 'active' : '' }}">
-                    <a href="{{ route('main.warehouse.remains') }}" class="menu-link">
-                        <div data-i18n="Остатки">Остатки</div>
-                    </a>
-                </li>
+        @can('main_warehouse_remain')
+            {{-- Общий склад --}}
+            <li class="menu-item {{ Request::is('dashboard/main-warehouse*') || Request::is('dashboard/supply-requests/orders') ? 'open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon bx bx-store"></i>
+                    <div data-i18n="Общий склад">Общий склад</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item {{ Request::is('dashboard/main-warehouse*') ? 'active' : '' }}">
+                        <a href="{{ route('main.warehouse.remains') }}" class="menu-link">
+                            <div data-i18n="Остатки">Остатки</div>
+                        </a>
+                    </li>
 
-                <li class="menu-item {{ Request::is('dashboard/supply-requests/orders') ? 'active' : '' }}">
-                    <a href="{{ route('supply-requests.index') }}" class="menu-link">
-                        <div data-i18n="Переходы">Переходы</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
+                    <li class="menu-item {{ Request::is('dashboard/supply-requests/orders') ? 'active' : '' }}">
+                        <a href="{{ route('supply-requests.index') }}" class="menu-link">
+                            <div data-i18n="Переходы">Переходы</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endcan
+
+
 
         {{-- Склад --}}
         @canany(['list_warehouses', 'list_warehouse_medications', 'list_warehouse_supplies', 'list_warehouse_types'])
