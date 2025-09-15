@@ -166,12 +166,15 @@
                         <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ \Carbon\Carbon::parse($patient->examinationMaps()->first()?->admission_date)->age }}</td>
 
                         <td>
-                            <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-warning"
-                                        onclick="location.href='{{ route('patients.edit', $patient->id) }}'">
-                                    Редактировать
-                                </button>
-                            </div>
+                            @can('edit_patients')
+                                <div class="d-inline-block text-nowrap">
+                                    <button class="btn btn-sm btn-warning"
+                                            onclick="location.href='{{ route('patients.edit', $patient->id) }}'">
+                                        Редактировать
+                                    </button>
+                                </div>
+                            @endcan
+
 
                             {{--                                <form action="{{ route('patients.destroy', $patient->id) }}" method="POST"--}}
                             {{--                                      style="display:inline;">--}}
