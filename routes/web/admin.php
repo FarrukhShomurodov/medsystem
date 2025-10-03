@@ -75,6 +75,9 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::get('cashier', [CashierStatsController::class, 'index'])
         ->name('cashier.index');
 
+    Route::get('cashier/export', [CashierStatsController::class, 'export'])
+        ->name('cashier.export');
+
 
     // department
     Route::prefix('departments')->group(function () {

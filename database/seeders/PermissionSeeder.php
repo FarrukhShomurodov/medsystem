@@ -308,6 +308,7 @@ class PermissionSeeder extends Seeder
             'delete_household_materials',
 
             'view_cashier',
+            'list_cashier',
             'main_warehouse_remain',
         ];
 

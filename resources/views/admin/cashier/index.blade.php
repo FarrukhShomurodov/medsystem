@@ -32,9 +32,15 @@
     <div class="card shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-header">Услуги пациентов</h5>
-            <button class="btn btn-link collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
-                <i class="bx bx-filter-alt"></i> Фильтры
-            </button>
+
+            <div>
+                <a href="{{ route('cashier.export', request()->all()) }}" class="btn btn-outline-primary">
+                    <i class="bx bx-download"></i> Экспорт в Excel
+                </a>
+                <button class="btn btn-link collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
+                    <i class="bx bx-filter-alt"></i> Фильтры
+                </button>
+            </div>
         </div>
 
         {{-- Фильтры --}}
@@ -60,6 +66,7 @@
                 </form>
             </div>
         </div>
+
 
         {{-- Таблица --}}
         <form action="{{ route('cashier.updateAll') }}" method="POST" id="bulkForm">

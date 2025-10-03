@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Exports\CashierStatsExport;
 use App\Http\Controllers\Controller;
 use App\Models\PatientMedication;
 use App\Models\PatientService;
@@ -9,6 +10,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use App\Models\Reception;
 use App\Models\PatientProcedure;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class CashierStatsController extends Controller
@@ -197,6 +199,74 @@ class CashierStatsController extends Controller
         }
 
         return back()->with('success', 'Выбранные услуги успешно оплачены');
+    }
+
+
+    public function export(Request $request)
+    {
+        // Скопируй сборку данных из index()
+        $services   = PatientService::with(['service', 'patient', 'doctor'])
+            ->where('status', 'confirmed')->get()->map(fn($s) => [
+                'id' => $s->id,
+                'type' => 'service',
+                'name' => $s->service?->name,
+                'patient' => $s->patient?->last_name . ' ' . $s->patient?->first_name,
+                'doctor' => $s->doctor?->full_name,
+                'price' => $s->service?->price,
+                'currency' => $s->service?->currency ?? 'UZS',
+                'date_time' => trim($s->service_date . ' ' . $s->service_time),
+                'status' => $s->getStatusBadge(),
+            ]);
+
+        $receptions = Reception::with(['service', 'patient', 'staff'])
+            ->where('status', 'confirmed')->get()->map(fn($r) => [
+                'id' => $r->id,
+                'type' => 'reception',
+                'name' => $r->service?->name,
+                'patient' => $r->patient?->last_name . ' ' . $r->patient?->first_name,
+                'doctor' => $r->staff?->full_name,
+                'price' => $r->service?->price,
+                'currency' => $r->service?->currency ?? 'UZS',
+                'date_time' => trim($r->date . ' ' . $r->start_time),
+                'status' => $r->statusTranslate($r->status),
+            ]);
+
+        $procedures = PatientProcedure::with(['procedure', 'patient'])
+            ->where('status', 'confirmed')->get()->map(fn($p) => [
+                'id' => $p->id,
+                'type' => 'procedure',
+                'name' => $p->procedure?->name,
+                'patient' => $p->patient?->last_name . ' ' . $p->patient?->first_name,
+                'doctor' => '-',
+                'price' => $p->procedure?->price,
+                'currency' => 'UZS',
+                'date_time' => $p->procedure_date,
+                'status' => 'Процедура',
+            ]);
+
+        $medication = PatientMedication::with(['medication', 'patient'])
+            ->where('status', 'sent_to_floor')->get()->map(fn($p) => [
+                'id' => $p->id,
+                'type' => 'medication',
+                'name' => $p->medication?->name,
+                'patient' => $p->patient?->last_name . ' ' . $p->patient?->first_name,
+                'doctor' => '-',
+                'price' => $p->price ?? 0,
+                'currency' => 'UZS',
+                'date_time' => $p->created_at,
+                'status' => 'Лист назначение',
+            ]);
+
+        $all = collect()
+            ->merge($services)
+            ->merge($receptions)
+            ->merge($procedures)
+            ->merge($medication)
+            ->sortByDesc('date_time');
+
+        $total = $all->sum('price');
+
+        return Excel::download(new CashierStatsExport($all, $total), 'cashier_stats.xlsx');
     }
 
 }
