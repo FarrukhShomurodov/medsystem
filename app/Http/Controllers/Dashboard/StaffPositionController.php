@@ -307,6 +307,20 @@ class StaffPositionController extends Controller
 
             'view_cashier' => 'Просмотр кассы',
             'main_warehouse_remain' => 'Просмотр общего остатки склада',
+
+            // offices
+            'list_offices' => 'Список кабинетов',
+            'create_offices' => 'Создание кабинет',
+            'edit_offices' => 'Редактирование кабинет',
+            'delete_offices' => 'Удаление кабинет',
+
+            // list_floors
+
+            'list_floors' => 'Список этажей',
+            'view_floors' => 'Просмотр этажей',
+            'create_floors' => 'Создание этаж',
+            'edit_floors' => 'Редактирование этаж',
+            'delete_floors' => 'Удаление этаж',
         ];
     }
 

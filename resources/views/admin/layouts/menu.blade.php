@@ -161,6 +161,14 @@
                             </a>
                         </li>
                     @endcan
+
+                    @can('list_offices')
+                        <li class="menu-item {{ Request::is('dashboard/offices*') ? 'active' : '' }}">
+                            <a href="{{route('offices.index')}}" class="menu-link">
+                                <div data-i18n="Кабинет ">Кабинет</div>
+                            </a>
+                        </li>
+                    @endcan
                 </ul>
             </li>
         @endcanany
@@ -263,7 +271,7 @@
         @endcan
 
         @can('list_cashier')
-            <li class="menu-item {{ Request::is('dashboard/cashier*') ? 'active' : '' }}">
+            <li class="menu-item {{ Request::is('d\ashboard/cashier*') ? 'active' : '' }}">
                 <a href="{{ route('cashier.index') }}" class="menu-link">
                     <i class="menu-icon bx bx-group"></i>
                     <div data-i18n="Касса">Касса</div>

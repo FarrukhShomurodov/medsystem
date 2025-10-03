@@ -15,7 +15,6 @@ class DepartmentRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'floor' => 'nullable|int',
             'warehouse_id' => 'nullable|exists:warehouses,id',
             'rooms' => 'required|array',
         ];

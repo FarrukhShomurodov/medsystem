@@ -292,7 +292,7 @@ class PermissionSeeder extends Seeder
             'create_patient_diagnoses',
             'list_patient_diagnoses',
 
-             // --- Medication
+            // --- Medication
             'create_patient_medication',
             'edit_patient_medication',
             'list_patient_medication',
@@ -310,6 +310,19 @@ class PermissionSeeder extends Seeder
             'view_cashier',
             'list_cashier',
             'main_warehouse_remain',
+
+            // offices
+            'list_offices',
+            'create_offices',
+            'edit_offices',
+            'delete_offices',
+
+            // list_floors
+            'list_floors',
+            'create_floors',
+            'view_floors',
+            'edit_floors',
+            'delete_floors',
         ];
 
         foreach ($permissions as $permission) {

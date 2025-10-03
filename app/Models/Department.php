@@ -11,7 +11,6 @@ class Department extends Model
 {
     protected $fillable = [
         'name',
-        'floor',
         'warehouse_id',
     ];
 

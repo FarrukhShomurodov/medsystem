@@ -14,6 +14,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     EquipmentController,
     EquipmentTypeController,
     ExaminationMapController,
+    FloorController,
     HouseholdMaterialController,
     MainWarehouseController,
     ManufacturerController,
@@ -22,6 +23,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     MedicationAdditionalSubstanceController,
     MedicationController,
     MedicationGroupController,
+    OfficeController,
     PatientAssignmentController,
     PatientController,
     PatientDiagnosisController,
@@ -355,4 +357,9 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
 
     Route::get('supply-requests/orders', [SupplyRequestController::class, 'index'])->name('supply-requests.index');
     Route::post('supply-requests/{id}/approve', [SupplyRequestController::class, 'approve'])->name('supply-requests.approve');
+
+
+    // offices
+    Route::resource('/offices', OfficeController::class);
+    Route::resource('/floors', FloorController::class);
 });

@@ -10,7 +10,6 @@ return new class extends Migration {
         Schema::create('departments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('floor');
             $table->foreignId('warehouse_id')->nullable()->constrained('warehouses')->cascadeOnDelete();
             $table->timestamps();
         });
