@@ -35,6 +35,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     ProcedureController,
     ReceptionController,
     RegionController,
+    RegistrarController,
     ServiceCalendarController,
     ServiceController,
     ServiceGroupController,
@@ -52,8 +53,7 @@ use App\Http\Controllers\Dashboard\{AdminAuthController,
     WardRoomController,
     WarehouseAccountingController,
     WarehouseController,
-    WarehouseTypeController
-};
+    WarehouseTypeController};
 use App\Http\Middleware\ExaminationMapIsActive;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Permission;
@@ -249,7 +249,11 @@ Route::prefix('dashboard')->middleware('auth:admin')->group(function () {
     Route::resource('diseases', ChronicDiseaseController::class);
     Route::resource('devices', MedicalDeviceController::class);
     Route::resource('patients', PatientController::class);
+
+    // register
     Route::post('/registrar/{patient}/confirm', [PatientController::class, 'confirm'])->name('registrar.confirm');
+    Route::get('/registrar/{patient}/export', [RegistrarController::class, 'export'])
+        ->name('registrar.export');
 
     Route::put('/cashier/update-all', [CashierStatsController::class, 'updateAll'])
         ->name('cashier.updateAll');

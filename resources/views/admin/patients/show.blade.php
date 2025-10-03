@@ -140,6 +140,162 @@
                 </form>
             </div>
         </div>
+
+        {{-- Кнопки --}}
+       <div class="mt-4">
+           <!-- flex-wrap вместо btn-toolbar -->
+           <div class="d-flex flex-wrap gap-3 mb-3">
+               <!-- Инструментальные исследования -->
+               @can('create_patient_services')
+                   <div class="d-flex">
+                       <button
+                           type="button"
+                           class="btn btn-primary d-flex align-items-center"
+                           data-bs-toggle="modal"
+                           data-bs-target="#instrumentalModal"
+                       >
+                           <i class="bi bi-activity me-2"></i>Инструментальные
+                       </button>
+                       <button
+                           type="button"
+                           class="btn btn-outline-primary d-flex align-items-center ms-1"
+                           data-bs-toggle="modal"
+                           data-bs-target="#createServiceModal"
+                       >
+                           <i class="bi bi-plus-lg"></i>
+                       </button>
+                   </div>
+
+                   <!-- Лаборатория -->
+                   <div class="d-flex">
+                       <button
+                           type="button"
+                           class="btn btn-primary d-flex align-items-center"
+                           data-bs-toggle="modal"
+                           data-type-id="5"
+                           data-bs-target="#indicativeModal"
+                       >
+                           <i class="bi bi-beaker me-2"></i>Лаборатория
+                       </button>
+
+                       <button
+                           type="button"
+                           class="btn btn-outline-primary d-flex align-items-center ms-1"
+                           data-bs-toggle="modal"
+                           data-type-id="5"
+                           data-bs-target="#createServiceModal"
+                       >
+                           <i class="bi bi-plus-lg"></i>
+                       </button>
+                   </div>
+               @endcan
+
+
+               <!-- Консультация -->
+               @can('create_receptions')
+                   <a
+                       class="btn btn-primary d-flex align-items-center"
+                       target="_blank"
+                       href="{{ route('receptions.appointment') }}">
+                       <i class="bi bi-chat-dots me-2"></i>Консультация
+                   </a>
+               @endcan
+
+               <!-- Диагноз -->
+               <div class="d-flex">
+                   @can('list_patient_diagnoses')
+                       <button
+                           type="button"
+                           class="btn btn-primary d-flex align-items-center"
+                           data-bs-toggle="modal"
+                           data-bs-target="#showDiagnosisesModal"
+                       >
+                           <i class="bi bi-journal-medical me-2"></i>Диагноз
+                       </button>
+                   @endcan
+
+
+                   @can('create_patient_diagnoses')
+                       <button
+                           type="button"
+                           class="btn btn-outline-primary d-flex align-items-center ms-1"
+                           data-bs-toggle="modal"
+                           data-bs-target="#diagnosisesModal"
+                       >
+                           <i class="bi bi-plus-lg"></i>
+                       </button>
+                   @endcan
+               </div>
+
+               <div class="d-flex">
+                   @can('list_patient_medication')
+                       <button
+                           type="button"
+                           class="btn btn-primary d-flex align-items-center"
+                           data-bs-toggle="modal"
+                           data-bs-target="#showMedicationModal"
+                       >
+                           <i class="bi bi-capsule me-2"></i>Лист назначение
+                       </button>
+                   @endcan
+
+
+                   @can('create_patient_medication')
+                       <button
+                           type="button"
+                           class="btn btn-outline-primary d-flex align-items-center ms-1"
+                           data-bs-toggle="modal"
+                           data-bs-target="#medicationModal"
+                       >
+                           <i class="bi bi-plus-lg"></i>
+                       </button>
+                   @endcan
+               </div>
+
+               <!-- Процедуры -->
+               @can('create_patient_procedure')
+                   <button
+                       type="button"
+                       class="btn btn-primary d-flex align-items-center"
+                       data-bs-toggle="modal"
+                       data-bs-target="#proceduresModal"
+                   >
+                       <i class="bi bi-tools me-2"></i>Процедуры
+                   </button>
+               @endcan
+
+               <!-- Госпитализация -->
+               @can('create_patient_map')
+                   <button
+                       onclick="window.location.href='{{ route('patient.map.create', $patientDetails['patient_id']) }}'"
+                       class="btn btn-primary d-flex align-items-center"
+                       @disabled(!$patientDetails['history']['map_is_active'])
+                   >
+                       <i class="bi bi-hospital me-2"></i>Госпитализация
+                   </button>
+               @endcan
+
+           </div>
+
+           <!-- Форма выбора документа -->
+           <form id="select-document-form" method="GET" action="" class="mb-3">
+               <div class="row g-3 align-items-end">
+                   <div class="col-auto">
+                       <label for="document_id" class="form-label">Выберите документ</label>
+                       <select id="document_id" name="document_id" class="form-select select2">
+                           <option disabled selected>Выберите</option>
+                           @foreach($documents as $document)
+                               <option value="{{ $document->id }}">{{ $document->title }}</option>
+                           @endforeach
+                       </select>
+                   </div>
+                   <div class="col-auto">
+                       <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
+                       <button type="submit" class="btn btn-primary">Добавить документ</button>
+                   </div>
+               </div>
+           </form>
+       </div>
     </div>
 
     <div class="accordion mt-3" id="accordionLastPatients">
@@ -267,161 +423,6 @@
     <div class="card mt-3">
         <div>
             <h5 class="card-header">История посещений</h5>
-        </div>
-
-        <div class="card-body">
-            <!-- flex-wrap вместо btn-toolbar -->
-            <div class="d-flex flex-wrap gap-3 mb-3">
-                <!-- Инструментальные исследования -->
-                @can('create_patient_services')
-                    <div class="d-flex">
-                        <button
-                            type="button"
-                            class="btn btn-primary d-flex align-items-center"
-                            data-bs-toggle="modal"
-                            data-bs-target="#instrumentalModal"
-                        >
-                            <i class="bi bi-activity me-2"></i>Инструментальные
-                        </button>
-                        <button
-                            type="button"
-                            class="btn btn-outline-primary d-flex align-items-center ms-1"
-                            data-bs-toggle="modal"
-                            data-bs-target="#createServiceModal"
-                        >
-                            <i class="bi bi-plus-lg"></i>
-                        </button>
-                    </div>
-
-                    <!-- Лаборатория -->
-                    <div class="d-flex">
-                        <button
-                            type="button"
-                            class="btn btn-primary d-flex align-items-center"
-                            data-bs-toggle="modal"
-                            data-type-id="5"
-                            data-bs-target="#indicativeModal"
-                        >
-                            <i class="bi bi-beaker me-2"></i>Лаборатория
-                        </button>
-
-                        <button
-                            type="button"
-                            class="btn btn-outline-primary d-flex align-items-center ms-1"
-                            data-bs-toggle="modal"
-                            data-type-id="5"
-                            data-bs-target="#createServiceModal"
-                        >
-                            <i class="bi bi-plus-lg"></i>
-                        </button>
-                    </div>
-                @endcan
-
-
-                <!-- Консультация -->
-                @can('create_receptions')
-                    <a
-                        class="btn btn-primary d-flex align-items-center"
-                        target="_blank"
-                        href="{{ route('receptions.appointment') }}">
-                        <i class="bi bi-chat-dots me-2"></i>Консультация
-                    </a>
-                @endcan
-
-                <!-- Диагноз -->
-                <div class="d-flex">
-                    @can('list_patient_diagnoses')
-                        <button
-                            type="button"
-                            class="btn btn-primary d-flex align-items-center"
-                            data-bs-toggle="modal"
-                            data-bs-target="#showDiagnosisesModal"
-                        >
-                            <i class="bi bi-journal-medical me-2"></i>Диагноз
-                        </button>
-                    @endcan
-
-
-                    @can('create_patient_diagnoses')
-                        <button
-                            type="button"
-                            class="btn btn-outline-primary d-flex align-items-center ms-1"
-                            data-bs-toggle="modal"
-                            data-bs-target="#diagnosisesModal"
-                        >
-                            <i class="bi bi-plus-lg"></i>
-                        </button>
-                    @endcan
-                </div>
-
-                <div class="d-flex">
-                    @can('list_patient_medication')
-                        <button
-                            type="button"
-                            class="btn btn-primary d-flex align-items-center"
-                            data-bs-toggle="modal"
-                            data-bs-target="#showMedicationModal"
-                        >
-                            <i class="bi bi-capsule me-2"></i>Лист назначение
-                        </button>
-                    @endcan
-
-
-                    @can('create_patient_medication')
-                        <button
-                            type="button"
-                            class="btn btn-outline-primary d-flex align-items-center ms-1"
-                            data-bs-toggle="modal"
-                            data-bs-target="#medicationModal"
-                        >
-                            <i class="bi bi-plus-lg"></i>
-                        </button>
-                    @endcan
-                </div>
-
-                <!-- Процедуры -->
-                @can('create_patient_procedure')
-                    <button
-                        type="button"
-                        class="btn btn-primary d-flex align-items-center"
-                        data-bs-toggle="modal"
-                        data-bs-target="#proceduresModal"
-                    >
-                        <i class="bi bi-tools me-2"></i>Процедуры
-                    </button>
-                @endcan
-
-                <!-- Госпитализация -->
-                @can('create_patient_map')
-                    <button
-                        onclick="window.location.href='{{ route('patient.map.create', $patientDetails['patient_id']) }}'"
-                        class="btn btn-primary d-flex align-items-center"
-                        @disabled(!$patientDetails['history']['map_is_active'])
-                    >
-                        <i class="bi bi-hospital me-2"></i>Госпитализация
-                    </button>
-                @endcan
-
-            </div>
-
-            <!-- Форма выбора документа -->
-            <form id="select-document-form" method="GET" action="" class="mb-3">
-                <div class="row g-3 align-items-end">
-                    <div class="col-auto">
-                        <label for="document_id" class="form-label">Выберите документ</label>
-                        <select id="document_id" name="document_id" class="form-select select2">
-                            <option disabled selected>Выберите</option>
-                            @foreach($documents as $document)
-                                <option value="{{ $document->id }}">{{ $document->title }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-auto">
-                        <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
-                        <button type="submit" class="btn btn-primary">Добавить документ</button>
-                    </div>
-                </div>
-            </form>
         </div>
 
         <div class="card-body">
@@ -675,8 +676,13 @@
     </div>
 
     <div class="card mt-4">
-        <div class="card-header">
+        <div class="card-header d-flex justify-content-between align-items-center">
             <h5>Регистрация: услуги, приёмы и процедуры</h5>
+
+                {{-- Todo permisiion--}}
+                <a href="{{ route('registrar.export', $patientDetails['patient_id']) }}" class="btn btn-primary">
+                    Экспорт в Excel
+                </a>
         </div>
         <div class="card-body">
             <table class="table">
