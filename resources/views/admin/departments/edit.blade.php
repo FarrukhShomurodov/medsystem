@@ -53,20 +53,19 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label" for="floor">Этаж <span
-                                class="text-danger">*</span></label>
-                        <div class="input-group input-group-merge">
-                            <span id="floor"
-                                  class="input-group-text @error('floor') text-danger icon-border @enderror"><i
-                                    class="bx bx-rename"></i></span>
-                            <input type="number" id="floor"
-                                   class="form-control @error('floor') is-invalid @enderror"
-                                   placeholder="Этаж" aria-label="Этаж"
-                                   name="floor"
-                                   value="{{ old('floor', $department->floor) }}"
-                                   aria-describedby="floor" required/>
-                        </div>
-                        @error('floor')
+                        <label class="form-label" for="floor_id">Этаж </label>
+
+                        <select id="floor_id" name="floor_id"
+                                class="form-control select2 @error('floor_id') is-invalid @enderror">
+                            @foreach($floors as $floor)
+                                <option
+                                    value="{{ $floor->id }}" @selected(old('floor_id', $floor->id) == $office->floor_id)>
+                                    {{ $floor->name }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        @error('floor_id')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

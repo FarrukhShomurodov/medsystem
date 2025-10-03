@@ -140,8 +140,8 @@
         @endcanany
 
         {{-- Отделение --}}
-        @canany(['list_departments', 'list_department_rooms'])
-            <li class="menu-item {{ Request::is('dashboard/departments*') ? 'open' : '' }}">
+        @canany(['list_departments', 'list_department_rooms', 'list_offices', 'list_floors'])
+            <li class="menu-item {{ Request::is('dashboard/departments*') || Request::is('dashboard/floors*') ||  Request::is('dashboard/offices*') ? 'open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon bx bx-buildings"></i>
                     <div data-i18n="Отделение">Отделение</div>
@@ -166,6 +166,14 @@
                         <li class="menu-item {{ Request::is('dashboard/offices*') ? 'active' : '' }}">
                             <a href="{{route('offices.index')}}" class="menu-link">
                                 <div data-i18n="Кабинет ">Кабинет</div>
+                            </a>
+                        </li>
+                    @endcan
+
+                    @can('list_floors')
+                        <li class="menu-item {{ Request::is('dashboard/floors*') ? 'active' : '' }}">
+                            <a href="{{route('floors.index')}}" class="menu-link">
+                                <div data-i18n="Этаж">Этаж</div>
                             </a>
                         </li>
                     @endcan

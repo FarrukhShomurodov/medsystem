@@ -3,7 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class Floor extends Model
 {
@@ -11,13 +12,13 @@ class Floor extends Model
         'name'
     ];
 
-    public function departments(): BelongsToMany
+    public function departments(): hasMany
     {
-        return $this->belongsToMany(Department::class);
+        return $this->hasMany(Department::class);
     }
 
-    public function offices(): BelongsToMany
+    public function offices(): hasMany
     {
-        return $this->belongsToMany(Office::class);
+        return $this->hasMany(Office::class);
     }
 }

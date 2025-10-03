@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OfficeRequest;
+use App\Models\Floor;
 use App\Models\Office;
 use App\Services\OfficeService;
 use Illuminate\Contracts\View\View;
@@ -26,16 +27,19 @@ class OfficeController extends Controller
     public function index(): View
     {
         $offices = Office::query()
-            ->select(['id', 'name'])
+            ->with('floor')
             ->orderBy('id', 'desc')
             ->paginate(10);
+
 
         return view('admin.offices.index', compact('offices'));
     }
 
     public function create(): View
     {
-        return view('admin.offices.create');
+        $floors = Floor::query()->get();
+
+        return view('admin.offices.create', compact('floors'));
     }
 
     public function store(OfficeRequest $request): RedirectResponse
@@ -48,7 +52,9 @@ class OfficeController extends Controller
 
     public function edit(Office $office): View
     {
-        return view('admin.offices.edit', compact('office'));
+        $floors = Floor::query()->get();
+
+        return view('admin.offices.edit', compact('office', 'floors'));
     }
 
     public function update(OfficeRequest $request, Office $office): RedirectResponse

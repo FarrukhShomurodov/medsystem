@@ -43,6 +43,7 @@
                 <tr>
                     <th>#</th>
                     <th>Название</th>
+                    <th>Этаж</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -51,6 +52,7 @@
                     <tr>
                         <td>{{ $office->id }}</td>
                         <td>{{ $office->name }}</td>
+                        <td><a href="{{ route('floors.show', $office->floor->id) }}">{{ $office->floor->name }}</a></td>
 
                         <td>
                             <div class="d-inline-block text-nowrap">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentRequest;
 use App\Models\Department;
+use App\Models\Floor;
 use App\Models\WardRoom;
 use App\Models\Warehouse;
 use App\Services\DepartmentService;
@@ -31,7 +32,7 @@ class DepartmentController extends Controller
     public function index(): View
     {
         $departments = Department::query()
-            ->select(['id', 'name', 'floor', 'warehouse_id'])
+            ->select(['id', 'name', 'floor_id', 'warehouse_id'])
             ->with('warehouse')
             ->with('rooms')
             ->orderBy('id', 'desc')
@@ -44,8 +45,9 @@ class DepartmentController extends Controller
     {
         $wardRooms = WardRoom::query()->get();
         $warehouses = Warehouse::query()->get();
+        $floors = Floor::query()->get();
 
-        return view('admin.departments.create', compact('wardRooms', 'warehouses'));
+        return view('admin.departments.create', compact('wardRooms', 'warehouses', 'floors'));
     }
 
     public function store(DepartmentRequest $request): RedirectResponse
@@ -60,10 +62,10 @@ class DepartmentController extends Controller
     {
         $wardRooms = WardRoom::query()->get();
         $warehouses = Warehouse::query()->get();
-
+        $floors = Floor::query()->get();
         $department->with('staffs');
 
-        return view('admin.departments.edit', compact('department', 'wardRooms', 'warehouses'));
+        return view('admin.departments.edit', compact('department', 'wardRooms', 'warehouses', 'floors'));
     }
 
     public function update(DepartmentRequest $request, Department $department): RedirectResponse

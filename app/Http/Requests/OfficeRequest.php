@@ -13,6 +13,7 @@ class OfficeRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
+            'floor_id' => 'nullable|exists:floors,id',
         ];
     }
 }

@@ -54,7 +54,7 @@
                     <tr>
                         <td>{{ $department->id }}</td>
                         <td>{{ $department->name }}</td>
-                        <td>{{ $department->floor }}</td>
+                        <td><a href="{{ route('floors.show', $department->floor->id) }}">{{ $department->floor->name }}</a></td>
                         <td>{{ $department->warehouse->name ?? '' }}</td>
                         <td>{{ $department->rooms->count() }}</td>
                         <td>

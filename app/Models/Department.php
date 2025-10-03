@@ -12,11 +12,17 @@ class Department extends Model
     protected $fillable = [
         'name',
         'warehouse_id',
+        'floor_id',
     ];
 
     public function warehouse(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class);
+    }
+
+    public function floor(): BelongsTo
+    {
+        return $this->belongsTo(Floor::class);
     }
 
     public function rooms(): BelongsToMany

@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->foreignId('warehouse_id')->nullable()->constrained('warehouses')->cascadeOnDelete();
+            $table->foreignId('floor_id')->nullable()->constrained('floors')->cascadeOnDelete();
             $table->timestamps();
         });
     }

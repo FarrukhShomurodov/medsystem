@@ -30,23 +30,43 @@
             <form action="{{ route('offices.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <div class="mb-3">
-                    <label class="form-label" for="basic-icon-default-company">Название <span
-                            class="text-danger">*</span></label>
-                    <div class="input-group input-group-merge">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="basic-icon-default-company">Название <span
+                                class="text-danger">*</span></label>
+                        <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2"
                                   class="input-group-text @error('name') text-danger icon-border @enderror"><i
                                     class="bx bx-rename"></i></span>
-                        <input type="text" id="basic-icon-default-company"
-                               class="form-control @error('name') is-invalid @enderror"
-                               placeholder="Название" aria-label="Название"
-                               name="name"
-                               value="{{ old('name') }}"
-                               aria-describedby="basic-icon-default-company2" required/>
+                            <input type="text" id="basic-icon-default-company"
+                                   class="form-control @error('name') is-invalid @enderror"
+                                   placeholder="Название" aria-label="Название"
+                                   name="name"
+                                   value="{{ old('name') }}"
+                                   aria-describedby="basic-icon-default-company2" required/>
+                        </div>
+                        @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
-                    @error('name')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="floor_id">Этаж </label>
+
+                        <select id="floor_id" name="floor_id"
+                                class="form-control select2 @error('floor_id') is-invalid @enderror">
+                            @foreach($floors as $floor)
+                                <option
+                                    value="{{ $floor->id }}" @selected(old('floor_id') == $floor->id)>
+                                    {{ $floor->name }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        @error('floor_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Сохранить</button>
