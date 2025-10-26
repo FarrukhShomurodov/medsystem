@@ -306,6 +306,8 @@ class StaffPositionController extends Controller
             'delete_household_materials' => 'Удаление хоз. материалов',
 
             'view_cashier' => 'Просмотр кассы',
+            'list_cashier' => 'Список кассы',
+
             'main_warehouse_remain' => 'Просмотр общего остатки склада',
 
             // offices
