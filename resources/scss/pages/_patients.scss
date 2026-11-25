@@ -1,0 +1,73 @@
+// The patient pages: the patient list and card (admin/patients), the examination maps (admin/maps)
+// and the nurse window (admin/sister_window).
+
+@use '@tabler/core/scss/config' as tb;
+
+// patients/show: the order buttons stay at the top of the screen while the visit history scrolls.
+// Not on narrow screens: there the wrapped buttons fill more than half of a phone's height.
+.patient-toolbar {
+    @include tb.media-breakpoint-up(lg) {
+        position: sticky;
+        top: 0;
+        z-index: tb.$zindex-sticky;
+    }
+}
+
+// A form wrapping the body and footer of a modal: without a box of its own the body still scrolls
+// in a .modal-dialog-scrollable and the footer stays at the bottom.
+.modal-form {
+    display: contents;
+}
+
+// The colour a medical document (Survey::COLOR) is marked with, one class per colour so the views
+// need no style attribute: <span class="survey-swatch survey-color-f4ead5">. PatientsPagesTest
+// checks that every colour of App\Models\Survey::COLOR has its class here.
+$survey-colors: (
+    'f4ead5': #f4ead5,
+    'dff6ff': #dff6ff,
+    'e0ffe0': #e0ffe0,
+    'fff5cc': #fff5cc,
+    'ffebe0': #ffebe0,
+    'e6e6fa': #e6e6fa,
+    'f0fff0': #f0fff0,
+    'fafad2': #fafad2,
+    'ffe4e1': #ffe4e1,
+    'f5fffa': #f5fffa,
+    'ffd700': #ffd700,
+    'ff69b4': #ff69b4,
+    '00ced1': #00ced1,
+    'ffa07a': #ffa07a,
+    '98fb98': #98fb98,
+    'ffb6c1': #ffb6c1,
+    'ff8c00': #ff8c00,
+    '7fffd4': #7fffd4,
+    'ff6347': #ff6347,
+    '87cefa': #87cefa,
+);
+
+@each $name, $color in $survey-colors {
+    .survey-color-#{$name} {
+        --survey-color: #{$color};
+    }
+}
+
+.survey-swatch {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 0.875rem;
+    height: 0.875rem;
+    vertical-align: middle;
+    background-color: var(--survey-color, var(--bg-surface-secondary));
+    border: var(--border-width) solid var(--border-color);
+    border-radius: 50%;
+}
+
+// A row of a filled-in document: a bar of the document's colour along its first cell.
+.survey-row > :first-child {
+    box-shadow: inset 0.25rem 0 0 var(--survey-color, transparent);
+}
+
+// The chart area of the nurse window keeps its height while a chart is drawn or has no data.
+.vital-chart {
+    min-height: 22rem;
+}

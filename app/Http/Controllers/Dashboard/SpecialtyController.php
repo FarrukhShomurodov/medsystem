@@ -8,19 +8,21 @@ use App\Models\Specialty;
 use App\Services\SpecialtyService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class SpecialtyController extends Controller
+class SpecialtyController extends Controller implements HasMiddleware
 {
-    protected SpecialtyService $service;
+    public function __construct(private readonly SpecialtyService $service) {}
 
-    public function __construct(SpecialtyService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_specialties'])->only('index');
-        $this->middleware(['permission:create_specialties'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_specialties'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_specialties'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_specialties', only: ['index']),
+            new Middleware('permission:create_specialties', only: ['create', 'store']),
+            new Middleware('permission:edit_specialties', only: ['edit', 'update']),
+            new Middleware('permission:delete_specialties', only: ['destroy']),
+        ];
     }
 
     public function index(): View
@@ -40,10 +42,9 @@ class SpecialtyController extends Controller
 
     public function store(SpecialtyRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->specialty());
 
-        return redirect()->route('specialties.index')->with('success', 'Специальность успешно добавлена!');
+        return to_route('specialties.index')->with('success', 'Специальность успешно добавлена!');
     }
 
     public function edit(Specialty $specialty): View
@@ -53,16 +54,15 @@ class SpecialtyController extends Controller
 
     public function update(SpecialtyRequest $request, Specialty $specialty): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($specialty, (array)$validated);
+        $this->service->update($specialty, $request->specialty());
 
-        return redirect()->route('specialties.index')->with('success', 'Специальность успешно обновлена!');
+        return to_route('specialties.index')->with('success', 'Специальность успешно обновлена!');
     }
 
     public function destroy(Specialty $specialty): RedirectResponse
     {
         $this->service->destroy($specialty);
 
-        return redirect()->route('specialties.index')->with('success', 'Специальность успешно удалена!');
+        return to_route('specialties.index')->with('success', 'Специальность успешно удалена!');
     }
 }

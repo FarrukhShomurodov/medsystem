@@ -2,17 +2,26 @@
 
 namespace Database\Seeders;
 
+use App\Enums\QuestionType;
 use App\Models\Document;
 use App\Models\DocumentQuestion;
 use App\Models\DocumentScore;
 use App\Models\DocumentScoreAction;
+use Database\Seeders\Concerns\SeedsRowsWithFixedIds;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
+/**
+ * The scored nursing documents (initial inspection, fall-risk and pain scales).
+ * Idempotent: rows are matched on their natural keys, documents keep fixed ids.
+ */
 class DocumentSeeder extends Seeder
 {
+    use SeedsRowsWithFixedIds;
+
     public function run(): void
     {
-        $initialInspection = Document::query()->create([
+        $initialInspection = $this->firstOrCreateWithId(Document::class, 1, [
             'title' => 'Первичный сестринский осмотр. Детский.',
         ]);
 
@@ -20,91 +29,91 @@ class DocumentSeeder extends Seeder
             // Основная информация о пациенте
             [
                 'question' => 'Дата и время начала осмотра (дата)',
-                'type' => 'text',
+                'type' => QuestionType::Text,
             ],
             [
                 'question' => 'Дата и время начала осмотра (время)',
-                'type' => 'text',
+                'type' => QuestionType::Text,
             ],
 
             // Опрос пациента
             [
                 'question' => 'Осмотр ведется со слов',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Пациента',
                     'Члена семьи/друга',
-                    'Другого лица'
-                ]
+                    'Другого лица',
+                ],
             ],
             [
                 'question' => 'Язык общения',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Узбекский',
                     'Русский',
                     'Иностранный (нужен переводчик)',
-                    'Жестами (глухонемой)'
-                ]
+                    'Жестами (глухонемой)',
+                ],
             ],
 
             // Социально-экономический статус
             [
                 'question' => 'Живет (бытовые условия)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Благоустроенно',
                     'Не благоустроенно',
-                    'Дом ребенка'
-                ]
+                    'Дом ребенка',
+                ],
             ],
             [
                 'question' => 'Семья',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Полная',
                     'Не полная (с матерью)',
-                    'Не полная (с отцом)'
-                ]
+                    'Не полная (с отцом)',
+                ],
             ],
             [
                 'question' => 'Ребенок в семье (порядковый номер)',
-                'type' => 'text',
+                'type' => QuestionType::Text,
             ],
             [
                 'question' => 'Всего детей в семье',
-                'type' => 'text',
+                'type' => QuestionType::Text,
             ],
             [
                 'question' => 'Есть ли вредные привычки у родителей',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Нет',
-                    'Да (указать какие)'
-                ]
+                    'Да (указать какие)',
+                ],
             ],
 
             // Осмотр пациента
             [
                 'question' => 'Сознание',
-                'type' => 'text',
+                'type' => QuestionType::Text,
             ],
             [
                 'question' => 'Контакт',
-                'type' => 'text',
+                'type' => QuestionType::Text,
             ],
             [
                 'question' => 'Развитие ребенка',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Согласно возрасту',
                     'Отстает в умственном развитии',
-                    'Отстает в физическом развитии'
-                ]
+                    'Отстает в физическом развитии',
+                ],
             ],
             [
                 'question' => 'Психоэмоциональная оценка',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Адекватен',
                     'Не адекватен',
@@ -113,20 +122,20 @@ class DocumentSeeder extends Seeder
                     'Ориентированный',
                     'Не ориентированный (в месте)',
                     'Не ориентированный (во времени)',
-                    'Не ориентированный (в пространстве)'
-                ]
+                    'Не ориентированный (в пространстве)',
+                ],
             ],
             [
                 'question' => 'Сон',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Нет проблем',
-                    'Трудности со сном (указать какие)'
-                ]
+                    'Трудности со сном (указать какие)',
+                ],
             ],
             [
                 'question' => 'Зрение',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Не нарушено',
                     'Снижено справа',
@@ -134,12 +143,12 @@ class DocumentSeeder extends Seeder
                     'Снижено оба',
                     'Слепота справа',
                     'Слепота слева',
-                    'Слепота оба'
-                ]
+                    'Слепота оба',
+                ],
             ],
             [
                 'question' => 'Слух',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Не нарушено',
                     'Снижено справа',
@@ -147,181 +156,172 @@ class DocumentSeeder extends Seeder
                     'Снижено оба',
                     'Глухота справа',
                     'Глухота слева',
-                    'Глухота оба'
-                ]
+                    'Глухота оба',
+                ],
             ],
             [
                 'question' => 'Двигательная функция',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Не нарушена',
                     'Нарушение движения рук справа',
                     'Нарушение движения рук слева',
                     'Нарушение движения ног справа',
                     'Нарушение движения ног слева',
-                    'Не подвижен'
-                ]
+                    'Не подвижен',
+                ],
             ],
             [
                 'question' => 'Речь',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Не нарушена',
-                    'Нарушена'
-                ]
+                    'Нарушена',
+                ],
             ],
             [
                 'question' => 'Состояние кожи',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Нет изменений',
                     'Есть изменения',
                     'Отеки',
                     'Пролежни',
-                    'Другие изменения (указать)'
-                ]
+                    'Другие изменения (указать)',
+                ],
             ],
 
             // Функциональные оценки
             [
                 'question' => 'Степень зависимости по шкале Бартелл',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Независим',
                     'Легкая',
                     'Средняя',
-                    'Высокая'
-                ]
+                    'Высокая',
+                ],
             ],
             [
                 'question' => 'Риск падения (по шкале Хампти-Дампти)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '7-11 - низкий риск',
-                    '12-23 - высокий риск'
-                ]
+                    '12-23 - высокий риск',
+                ],
             ],
             [
                 'question' => 'Риск развития пролежней (по шкале Брадена)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Выше 16 - нет риска',
                     '15-16 - низкий',
                     '13-14 - средний',
-                    '12 и менее - высокий'
-                ]
+                    '12 и менее - высокий',
+                ],
             ],
 
             // Оценка питания
             [
                 'question' => 'Аппетит',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Хороший',
                     'Снижен',
-                    'Повышен'
-                ]
+                    'Повышен',
+                ],
             ],
             [
                 'question' => 'Способ кормления',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Через рот',
                     'Грудное молоко',
                     'Искусственное молоко',
                     'Парентеральное',
                     'Кормление через зонд',
-                    'Другое (указать)'
-                ]
+                    'Другое (указать)',
+                ],
             ],
             [
                 'question' => 'Трудности при питании',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Трудностей нет',
                     'Жевании',
                     'Глотании',
-                    'Не может самостоятельно принимать пищу'
-                ]
+                    'Не может самостоятельно принимать пищу',
+                ],
             ],
 
             // Для детей до 1 года
             [
                 'question' => 'Оценка боли для детей до 1 года (выражение лица)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - обычное, спокойное',
-                    '1 - гримаса (нос, губы и брови)'
+                    '1 - гримаса (нос, губы и брови)',
                 ],
-                'condition' => ['Дети до 1 года']
+                'condition' => ['Дети до 1 года'],
             ],
             [
                 'question' => 'Оценка боли для детей до 1 года (крик/плач)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - не плачет',
                     '1 - хнычет, плачет и успокаивается',
-                    '2 - сильно кричит и плачет'
+                    '2 - сильно кричит и плачет',
                 ],
-                'condition' => ['Дети до 1 года']
+                'condition' => ['Дети до 1 года'],
             ],
 
             // Для детей 1-3 лет
             [
                 'question' => 'Оценка боли по шкале FLACC (лицо)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - без особых гримас',
                     '1 - иногда хмурое, напряжено',
-                    '2 - часто/постоянно дрожит подбородок'
+                    '2 - часто/постоянно дрожит подбородок',
                 ],
-                'condition' => ['От 1 до 3 лет']
+                'condition' => ['От 1 до 3 лет'],
             ],
 
             // Для детей 3-18 лет
             [
                 'question' => 'Оценка боли для детей 3-18 лет',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Нет боли',
                     'Есть боль (острая)',
-                    'Есть боль (хроническая)'
+                    'Есть боль (хроническая)',
                 ],
-                'condition' => ['От 3 до 5 лет', 'От 5 до 7 лет', 'От 7 до 10 лет', 'От 10 до 18 лет']
+                'condition' => ['От 3 до 5 лет', 'От 5 до 7 лет', 'От 7 до 10 лет', 'От 10 до 18 лет'],
             ],
 
             // Планирование выписки
             [
                 'question' => 'Приехал/а из-за пределов г.Ташкент',
-                'type' => 'boolean',
-                'options' => ['Нет', 'Да']
+                'type' => QuestionType::Boolean,
+                'options' => ['Нет', 'Да'],
             ],
             [
                 'question' => 'До выписки необходимо обучить',
-                'type' => 'text'
+                'type' => QuestionType::Text,
             ],
             [
                 'question' => 'Уровень необходимого обучения',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Обычное обучение',
-                    'Дополнительные темы обучения (указать какие)'
-                ]
-            ]
+                    'Дополнительные темы обучения (указать какие)',
+                ],
+            ],
         ];
 
-        foreach ($questions as $q) {
-            $questionData = [
-                'document_id' => $initialInspection->id,
-                'question' => $q['question'],
-                'type' => $q['type'],
-                'options' => $q['options'] ?? null,
-            ];
+        $this->seedQuestions($initialInspection, $questions);
 
-            DocumentQuestion::query()->create($questionData);
-        }
-
-        $morseFallScale = Document::query()->create([
+        $morseFallScale = $this->firstOrCreateWithId(Document::class, 2, [
             'title' => 'Лист оценки риска падения по шкале Морзе',
         ]);
 
@@ -329,58 +329,49 @@ class DocumentSeeder extends Seeder
             // Morse Scale questions
             [
                 'question' => 'Падал ли в последние 3 мес.?',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => ['Нет', 'Да'],
             ],
             [
                 'question' => 'Есть ли сопутствующее заболевание? (со стороны сердечно-сосудистой, костно-суставной и мышечной, нервной систем, судорожный синдром, нарушение зрения, анемия)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => ['Нет', 'Да'],
             ],
             [
                 'question' => 'Ходит самостоятельно',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Сам / постельный режим',
                     'Костыли / ходунки / трость',
-                    'Опора о мебель или стены'
+                    'Опора о мебель или стены',
                 ],
             ],
             [
                 'question' => 'Принимает внутривенное вливание (есть система) / принимает гепарин',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => ['Нет', 'Да'],
             ],
             [
                 'question' => 'Походка',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Нормальная (ходит свободно)',
                     'Слегка несвободная (ходит с остановками, шаги короткие, иногда с задержкой)',
-                    'Нарушения (не может встать, ходит опираясь, смотрит вниз)'
+                    'Нарушения (не может встать, ходит опираясь, смотрит вниз)',
                 ],
             ],
             [
                 'question' => 'Психическое состояние',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Осознает свою способность двигаться',
-                    'Не знает или забывает, что нужна помощь при движении'
+                    'Не знает или забывает, что нужна помощь при движении',
                 ],
             ],
 
         ];
 
-        foreach ($morseQuestions as $q) {
-            $questionData = [
-                'document_id' => $morseFallScale->id,
-                'question' => $q['question'],
-                'type' => $q['type'],
-                'options' => $q['options'] ?? null,
-            ];
-
-            DocumentQuestion::query()->create($questionData);
-        }
+        $this->seedQuestions($morseFallScale, $morseQuestions);
 
         $morseScoreAction = [
             [
@@ -390,7 +381,7 @@ class DocumentSeeder extends Seeder
                     'Сообщить членам семьи/пациенту о его/ее риске падения',
                     'Ознакомить пациента с местностью',
                     'Обучить родителей/пациента о предотвращении падения',
-                    'Установить кнопку вызова в пределах досягаемости'
+                    'Установить кнопку вызова в пределах досягаемости',
                 ],
             ],
             [
@@ -403,7 +394,7 @@ class DocumentSeeder extends Seeder
                     'Обеспечить хорошее освещение',
                     'Сообщить тех. отделам о неисправностях',
                     'Напомнить о нескользкой обуви',
-                    'При сопровождении сообщить персоналу другого отделения о риске падения'
+                    'При сопровождении сообщить персоналу другого отделения о риске падения',
                 ],
             ],
             [
@@ -419,28 +410,14 @@ class DocumentSeeder extends Seeder
                     'Обеспечить присутствие члена семьи или санитарки',
                     'Вовлекать пациента и семью в профилактику',
                     'Обучить о принимаемых ЛС и их влиянии на падение',
-                    'Установить боковые ограждения при необходимости'
+                    'Установить боковые ограждения при необходимости',
                 ],
             ],
         ];
 
-        foreach ($morseScoreAction as $scoreRange) {
-            $scoreModel = DocumentScore::create([
-                'document_id' => $morseFallScale->id,
-                'from_score' => (int)$scoreRange['from_score'],
-                'to_score' => $scoreRange['to_score'] !== null ? (int)$scoreRange['to_score'] : null,
-            ]);
+        $this->seedScores($morseFallScale, $morseScoreAction);
 
-            foreach ($scoreRange['actions'] as $actionText) {
-                DocumentScoreAction::create([
-                    'document_score_id' => $scoreModel->id,
-                    'action' => $actionText,
-                ]);
-            }
-        }
-
-
-        $humptyDumptyScale = Document::query()->create([
+        $humptyDumptyScale = $this->firstOrCreateWithId(Document::class, 3, [
             'title' => 'Лист оценки риска падения детей по шкале "Хампти-Дампти"',
         ]);
 
@@ -448,75 +425,66 @@ class DocumentSeeder extends Seeder
             // Humpty Dumpty Scale questions
             [
                 'question' => 'Диагноз',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Неврологические нарушения',
                     'Нарушения оксигенации',
                     'Психологические/поведенческие расстройства',
-                    'Другое'
+                    'Другое',
                 ],
             ],
             [
                 'question' => 'Когнитивные расстройства',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Не осознает ограничений',
                     'Забывает об ограничениях',
-                    'Ориентируется в способностях'
+                    'Ориентируется в способностях',
                 ],
             ],
             [
                 'question' => 'Факторы среды',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Падения в анамнезе',
                     'Вспомогательные средства',
                     'Лежачий / на руках',
-                    'Ходит самостоятельно'
+                    'Ходит самостоятельно',
                 ],
             ],
             [
                 'question' => 'Состояние после операции/седации/анестезии/инвазивной процедуры',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'До 24 ч',
                     '24-48 ч',
-                    'Более 48 ч / не проводилось'
+                    'Более 48 ч / не проводилось',
                 ],
             ],
             [
                 'question' => 'Медикаменты',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '2 и более из указанных групп',
                     '1 медикамент',
-                    'Не принимает / другие'
+                    'Не принимает / другие',
                 ],
             ],
 
             // General preventive measures
-//            [
-//                'question' => 'Общие профилактические меры для всех пациентов',
-//                'type' => 'choice',
-//                'options' => [
-//                    'Сообщить членам семьи/пациенту о риске падения',
-//                    'Установить кнопку вызова в пределах досягаемости',
-//                    'Ознакомить пациента с местностью',
-//                    'Обучить родителей/пациента о предотвращении падения'
-//                ],
-//            ],
+            //            [
+            //                'question' => 'Общие профилактические меры для всех пациентов',
+            //                'type' => QuestionType::Choice,
+            //                'options' => [
+            //                    'Сообщить членам семьи/пациенту о риске падения',
+            //                    'Установить кнопку вызова в пределах досягаемости',
+            //                    'Ознакомить пациента с местностью',
+            //                    'Обучить родителей/пациента о предотвращении падения'
+            //                ],
+            //            ],
         ];
 
-        foreach ($humptyDumptyQuestions as $q) {
-            $questionData = [
-                'document_id' => $humptyDumptyScale->id,
-                'question' => $q['question'],
-                'type' => $q['type'],
-                'options' => $q['options'] ?? null,
-            ];
-
-            DocumentQuestion::query()->create($questionData);
-        }
+        $this->seedQuestions($humptyDumptyScale, $humptyDumptyQuestions);
 
         $humptyDumptyScaleAction = [
             // Low risk measures
@@ -529,7 +497,7 @@ class DocumentSeeder extends Seeder
                     'Поставить коляску и др. вспомогательные предметы рядом',
                     'Обеспечить хорошее освещение',
                     'Сообщать персоналу при сопровождении',
-                    'Документировать обучение по профилактике падения'
+                    'Документировать обучение по профилактике падения',
                 ],
             ],
 
@@ -550,28 +518,15 @@ class DocumentSeeder extends Seeder
                     'Обучить о влиянии лекарств на падение',
                     'Установить боковые ограждения/борты койки',
                     'Документировать обучение и изменения риска',
-                    'Повторной оценки риска'
+                    'Повторной оценки риска',
                 ],
             ],
         ];
 
-        foreach ($humptyDumptyScaleAction as $scoreRange) {
-            $scoreModel = DocumentScore::create([
-                'document_id' => $humptyDumptyScale->id,
-                'from_score' => (int)$scoreRange['from_score'],
-                'to_score' => $scoreRange['to_score'] !== null ? (int)$scoreRange['to_score'] : null,
-            ]);
-
-            foreach ($scoreRange['actions'] as $actionText) {
-                DocumentScoreAction::create([
-                    'document_score_id' => $scoreModel->id,
-                    'action' => $actionText,
-                ]);
-            }
-        }
+        $this->seedScores($humptyDumptyScale, $humptyDumptyScaleAction);
 
         // Create new document for Outpatient Fall Risk Assessment
-        $outpatientFallRisk = Document::query()->create([
+        $outpatientFallRisk = $this->firstOrCreateWithId(Document::class, 4, [
             'title' => 'Лист оценки риска падения амбулаторного пациента (КДО)',
         ]);
 
@@ -579,41 +534,32 @@ class DocumentSeeder extends Seeder
             // Assessment questions
             [
                 'question' => 'Падали ли вы в последние 3 мес.? (При повторной оценке: падал/а ли за последние сутки?)',
-                'type' => 'boolean',
+                'type' => QuestionType::Boolean,
                 'options' => ['Нет', 'Да'],
             ],
             [
                 'question' => 'Чувствуете ли вы сейчас головокружение?',
-                'type' => 'boolean',
+                'type' => QuestionType::Boolean,
                 'options' => ['Нет', 'Да'],
             ],
             [
                 'question' => 'Чувствуете слабость в ногах?',
-                'type' => 'boolean',
+                'type' => QuestionType::Boolean,
                 'options' => ['Нет', 'Да'],
             ],
             [
                 'question' => 'Ходит с костылями/тростью/в инвалидном кресле',
-                'type' => 'boolean',
+                'type' => QuestionType::Boolean,
                 'options' => ['Нет', 'Да'],
             ],
             [
                 'question' => 'Принял процедуру, медикамент или анестезию, повышающую риск падения или риск головокружения',
-                'type' => 'boolean',
+                'type' => QuestionType::Boolean,
                 'options' => ['Нет', 'Да'],
             ],
         ];
 
-        foreach ($outpatientQuestions as $q) {
-            $questionData = [
-                'document_id' => $outpatientFallRisk->id,
-                'question' => $q['question'],
-                'type' => $q['type'],
-                'options' => $q['options'] ?? null,
-            ];
-
-            DocumentQuestion::query()->create($questionData);
-        }
+        $this->seedQuestions($outpatientFallRisk, $outpatientQuestions);
 
         $outpatientFallRiskScore = [
             // Preventive measures - no risk
@@ -624,7 +570,7 @@ class DocumentSeeder extends Seeder
                     'Сообщить членам семьи/пациенту о риске падения',
                     'Ознакомить пациента с местностью',
                     'Обучить пациента о предотвращении падения',
-                    'Напомнить о нескользкой обуви'
+                    'Напомнить о нескользкой обуви',
                 ],
             ],
 
@@ -636,28 +582,14 @@ class DocumentSeeder extends Seeder
                     'Выдать памятку по профилактике и снижению риска падения',
                     'Обучить пациента о предотвращении падения',
                     'Сопровождать пациента после процедур до родственников',
-                    'Обучить о влиянии лекарств на падение'
+                    'Обучить о влиянии лекарств на падение',
                 ],
             ],
         ];
 
-        foreach ($outpatientFallRiskScore as $scoreRange) {
-            $scoreModel = DocumentScore::create([
-                'document_id' => $outpatientFallRisk->id,
-                'from_score' => (int)$scoreRange['from_score'],
-                'to_score' => $scoreRange['to_score'] !== null ? (int)$scoreRange['to_score'] : null,
-            ]);
+        $this->seedScores($outpatientFallRisk, $outpatientFallRiskScore);
 
-            foreach ($scoreRange['actions'] as $actionText) {
-                DocumentScoreAction::create([
-                    'document_score_id' => $scoreModel->id,
-                    'action' => $actionText,
-                ]);
-            }
-        }
-
-
-        $painAssessment = Document::query()->create([
+        $painAssessment = $this->firstOrCreateWithId(Document::class, 5, [
             'title' => 'Лист оценки боли (для взрослых и детей от 3 лет)',
         ]);
 
@@ -665,7 +597,7 @@ class DocumentSeeder extends Seeder
             // Pain intensity
             [
                 'question' => 'Интенсивность боли (0-10)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - Боли нет',
                     '1 - Очень слабая боль',
@@ -677,24 +609,24 @@ class DocumentSeeder extends Seeder
                     '7 - Крайне сильная боль',
                     '8 - Жестокая боль',
                     '9 - Невыносимая боль',
-                    '10 - Максимально возможная боль'
+                    '10 - Максимально возможная боль',
                 ],
             ],
 
             // Pain location
             [
                 'question' => 'Локализация боли',
-                'type' => 'text',
+                'type' => QuestionType::Text,
             ],
             [
                 'question' => 'Схематичное расположение боли (отметить на схеме)',
-                'type' => 'text', // You'll need to implement this custom type
+                'type' => QuestionType::Text, // You'll need to implement this custom type
             ],
 
             // Pain characteristics
             [
                 'question' => 'Характер боли',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Ж - жгучая',
                     'Р - режущая',
@@ -707,64 +639,55 @@ class DocumentSeeder extends Seeder
                     'П - постоянная',
                     'Тян - тянущая',
                     'Пл - пульсирующая',
-                    'Другое (указать)'
+                    'Другое (указать)',
                 ],
             ],
 
             // Pain interventions
             [
                 'question' => 'Оказанная помощь (медикаментозная)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'НР - наркотические анальгетики',
                     'НН - ненаркотические анальгетики',
                     'СП - спазмолитики',
                     'АН - анестетики',
-                    'Другое (указать)'
+                    'Другое (указать)',
                 ],
             ],
             [
                 'question' => 'Оказанная помощь (немедикаментозная)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'п - психологическая помощь, обучение',
                     'у - упражнения, массаж',
                     'м - местная терапия',
                     'и - иммобилизация',
-                    'Другое (указать)'
+                    'Другое (указать)',
                 ],
             ],
 
             // Side effects
             [
                 'question' => 'Побочные эффекты',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     'Аллергическая реакция',
                     'Привыкание',
                     'Тошнота/рвота',
                     'Боли в желудке',
                     'Запор',
-                    'Другое (указать)'
+                    'Другое (указать)',
                 ],
             ],
 
             [
                 'question' => 'Комментарии',
-                'type' => 'text',
+                'type' => QuestionType::Text,
             ],
         ];
 
-        foreach ($painAssessmentQuestions as $q) {
-            $questionData = [
-                'document_id' => $painAssessment->id,
-                'question' => $q['question'],
-                'type' => $q['type'],
-                'options' => $q['options'] ?? null,
-            ];
-
-            DocumentQuestion::query()->create($questionData);
-        }
+        $this->seedQuestions($painAssessment, $painAssessmentQuestions);
 
         $painAssessmentRiskScore = [
             [
@@ -841,28 +764,14 @@ class DocumentSeeder extends Seeder
                 'from_score' => 10,
                 'to_score' => null,
                 'actions' => [
-                    'Максимально возможная боль'
+                    'Максимально возможная боль',
                 ],
             ],
         ];
 
+        $this->seedScores($painAssessment, $painAssessmentRiskScore);
 
-        foreach ($painAssessmentRiskScore as $scoreRange) {
-            $scoreModel = DocumentScore::create([
-                'document_id' => $painAssessment->id,
-                'from_score' => (int)$scoreRange['from_score'],
-                'to_score' => $scoreRange['to_score'] !== null ? (int)$scoreRange['to_score'] : null,
-            ]);
-
-            foreach ($scoreRange['actions'] as $actionText) {
-                DocumentScoreAction::create([
-                    'document_score_id' => $scoreModel->id,
-                    'action' => $actionText,
-                ]);
-            }
-        }
-
-        $flaccPainAssessment = Document::query()->create([
+        $flaccPainAssessment = $this->firstOrCreateWithId(Document::class, 6, [
             'title' => 'Лист оценки боли FLACC (дети 1-3 года)',
         ]);
 
@@ -870,59 +779,52 @@ class DocumentSeeder extends Seeder
             // FLACC assessment components
             [
                 'question' => 'Лицо (Face)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - без особых гримас и выражений',
                     '1 - иногда хмурое, напряжено, отвлечено',
-                    '2 - часто/постоянно дрожит подбородок, сжаты нижние челюсти'
+                    '2 - часто/постоянно дрожит подбородок, сжаты нижние челюсти',
                 ],
             ],
             [
                 'question' => 'Ноги (Legs)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - нормально расположены / расслаблены',
                     '1 - беспокойные движения, напряжены',
-                    '2 - пинается, или подняты вверх'
+                    '2 - пинается, или подняты вверх',
                 ],
             ],
             [
                 'question' => 'Активность (Activity)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - лежит спокойно, в нормальном положении, двигается легко',
                     '1 - корчится, движется вперед и назад, напряжен',
-                    '2 - изогнут дугой, ригидный или резко движется (рывками)'
+                    '2 - изогнут дугой, ригидный или резко движется (рывками)',
                 ],
             ],
             [
                 'question' => 'Плач (Cry)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - не плачет (бодрствует или спит)',
                     '1 - ноет или хнычет; беспокоит редко',
-                    '2 - плачет часто, кричит или всхлипывает, часто беспокоит'
+                    '2 - плачет часто, кричит или всхлипывает, часто беспокоит',
                 ],
             ],
             [
                 'question' => 'Успокаиваемость (Consolability)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - спокоен, расслаблен',
                     '1 - успокаивается при прикосновении, от слов, объятий, на руках, отвлекается',
-                    '2 - трудно поддается успокоению'
+                    '2 - трудно поддается успокоению',
                 ],
             ],
         ];
 
-        foreach ($flaccQuestions as $q) {
-            DocumentQuestion::query()->create([
-                'document_id' => $flaccPainAssessment->id,
-                'question' => $q['question'],
-                'type' => $q['type'],
-                'options' => $q['options'] ?? null,
-            ]);
-        }
+        $this->seedQuestions($flaccPainAssessment, $flaccQuestions);
 
         $flaccRiskScore = [
             [
@@ -950,27 +852,14 @@ class DocumentSeeder extends Seeder
                 'from_score' => 7,
                 'to_score' => 10,
                 'actions' => [
-                    'сильная боль'
+                    'сильная боль',
                 ],
             ],
         ];
 
-        foreach ($flaccRiskScore as $scoreRange) {
-            $scoreModel = DocumentScore::create([
-                'document_id' => $flaccPainAssessment->id,
-                'from_score' => (int)$scoreRange['from_score'],
-                'to_score' => $scoreRange['to_score'] !== null ? (int)$scoreRange['to_score'] : null,
-            ]);
+        $this->seedScores($flaccPainAssessment, $flaccRiskScore);
 
-            foreach ($scoreRange['actions'] as $actionText) {
-                DocumentScoreAction::create([
-                    'document_score_id' => $scoreModel->id,
-                    'action' => $actionText,
-                ]);
-            }
-        }
-
-        $nipsPainAssessment = Document::query()->create([
+        $nipsPainAssessment = $this->firstOrCreateWithId(Document::class, 7, [
             'title' => 'Лист оценки боли NIPS (новорожденные и дети до года)',
         ]);
 
@@ -978,63 +867,56 @@ class DocumentSeeder extends Seeder
             // NIPS assessment components
             [
                 'question' => 'Выражение лица',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - обычное, спокойное',
-                    '1 - гримаса (нос, губы и брови)'
+                    '1 - гримаса (нос, губы и брови)',
                 ],
             ],
             [
                 'question' => 'Крик / плач',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - не плачет',
                     '1 - хнычет, плачет и успокаивается',
-                    '2 - сильно кричит и плачет'
+                    '2 - сильно кричит и плачет',
                 ],
             ],
             [
                 'question' => 'Характер дыхания',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - дыхание спокойное',
-                    '1 - нерегулярное, частое, задержка'
+                    '1 - нерегулярное, частое, задержка',
                 ],
             ],
             [
                 'question' => 'Руки',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - нет ригидности мышц, иногда двигаются',
-                    '1 - ригидные, натянуты прямо или быстрое сгибание/разгибание'
+                    '1 - ригидные, натянуты прямо или быстрое сгибание/разгибание',
                 ],
             ],
             [
                 'question' => 'Ноги',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - нет ригидности мышц, иногда двигаются',
-                    '1 - ригидные, натянуты прямо или быстрое сгибание/разгибание'
+                    '1 - ригидные, натянуты прямо или быстрое сгибание/разгибание',
                 ],
             ],
             [
                 'question' => 'Состояние возбуждения',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - спокойно спит, бодрствует',
-                    '1 - беспокойный, мечется'
+                    '1 - беспокойный, мечется',
                 ],
             ],
         ];
 
-        foreach ($nipsQuestions as $q) {
-            DocumentQuestion::query()->create([
-                'document_id' => $nipsPainAssessment->id,
-                'question' => $q['question'],
-                'type' => $q['type'],
-                'options' => $q['options'] ?? null,
-            ]);
-        }
+        $this->seedQuestions($nipsPainAssessment, $nipsQuestions);
 
         $nipsRiskScore = [
             [
@@ -1048,27 +930,14 @@ class DocumentSeeder extends Seeder
                 'from_score' => 4,
                 'to_score' => 7,
                 'actions' => [
-                    'боль вероятна'
+                    'боль вероятна',
                 ],
             ],
         ];
 
-        foreach ($nipsRiskScore as $scoreRange) {
-            $scoreModel = DocumentScore::create([
-                'document_id' => $nipsPainAssessment->id,
-                'from_score' => (int)$scoreRange['from_score'],
-                'to_score' => $scoreRange['to_score'] !== null ? (int)$scoreRange['to_score'] : null,
-            ]);
+        $this->seedScores($nipsPainAssessment, $nipsRiskScore);
 
-            foreach ($scoreRange['actions'] as $actionText) {
-                DocumentScoreAction::create([
-                    'document_score_id' => $scoreModel->id,
-                    'action' => $actionText,
-                ]);
-            }
-        }
-
-        $cpotPainAssessment = Document::query()->create([
+        $cpotPainAssessment = $this->firstOrCreateWithId(Document::class, 8, [
             'title' => 'Лист оценки боли CPOT (невербальные пациенты)',
         ]);
 
@@ -1076,69 +945,62 @@ class DocumentSeeder extends Seeder
             // CPOT assessment components
             [
                 'question' => 'Выражение лица (Facial expressions)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - Расслабленное, нейтральное',
                     '1 - Напряженное (хмурится, опускает бровь)',
-                    '2 - Гримасы (крепко закрыты веки, открыт рот)'
+                    '2 - Гримасы (крепко закрыты веки, открыт рот)',
                 ],
             ],
             [
                 'question' => 'Движения тела (Body movements)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - Отсутствие движений или нормальное положение',
                     '1 - Защита (медленные, осторожные движения)',
-                    '2 - Беспокойство (пытается встать, борется)'
+                    '2 - Беспокойство (пытается встать, борется)',
                 ],
             ],
             [
                 'question' => 'Толерантность к ИВЛ (для интубированных)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - Толерантен к ИВЛ',
                     '1 - Кашляет но толерантен',
-                    '2 - Борется с ИВЛ'
+                    '2 - Борется с ИВЛ',
                 ],
             ],
             [
                 'question' => 'Издавание звуков (для неинтубированных)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - Нормальный тон или нет звука',
                     '1 - Вздыхает, стонет',
-                    '2 - Кричит, рыдает'
+                    '2 - Кричит, рыдает',
                 ],
             ],
             [
                 'question' => 'Напряжение мышц (Muscle tension)',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0 - Расслаблены',
                     '1 - Напряжены, ригидны',
-                    '2 - Очень напряжены или очень ригидны'
+                    '2 - Очень напряжены или очень ригидны',
                 ],
             ],
 
             [
                 'question' => 'Интерпретация баллов CPOT',
-                'type' => 'choice',
+                'type' => QuestionType::Choice,
                 'options' => [
                     '0-1 - нет боли, покой / выжидательная тактика',
                     '2-5 - боль есть, но медикаментозная помощь не обязательна',
-                    '6-8 - боль есть, рассмотреть медикаментозную терапию'
+                    '6-8 - боль есть, рассмотреть медикаментозную терапию',
                 ],
             ],
         ];
 
-        foreach ($cpotQuestions as $q) {
-            DocumentQuestion::query()->create([
-                'document_id' => $cpotPainAssessment->id,
-                'question' => $q['question'],
-                'type' => $q['type'],
-                'options' => $q['options'] ?? null,
-            ]);
-        }
+        $this->seedQuestions($cpotPainAssessment, $cpotQuestions);
 
         $cpotRiskScore = [
             [
@@ -1161,24 +1023,105 @@ class DocumentSeeder extends Seeder
                 'from_score' => 6,
                 'to_score' => 8,
                 'actions' => [
-                    'Оценить реакцию (Р) через 15-60 мин после вмешательства'
+                    'Оценить реакцию (Р) через 15-60 мин после вмешательства',
                 ],
-            ]
+            ],
         ];
 
-        foreach ($cpotRiskScore as $scoreRange) {
-            $scoreModel = DocumentScore::create([
-                'document_id' => $cpotPainAssessment->id,
-                'from_score' => (int)$scoreRange['from_score'],
-                'to_score' => $scoreRange['to_score'] !== null ? (int)$scoreRange['to_score'] : null,
-            ]);
+        $this->seedScores($cpotPainAssessment, $cpotRiskScore);
 
-            foreach ($scoreRange['actions'] as $actionText) {
-                DocumentScoreAction::create([
-                    'document_score_id' => $scoreModel->id,
-                    'action' => $actionText,
+        $this->syncIdSequence('documents');
+    }
+
+    /**
+     * Questions are matched on their document and wording. The missing ones go in with one insert,
+     * in list order: the tests seed this before many of them, and a create() per row was slow.
+     *
+     * @param  list<array{question: string, type: QuestionType, options?: list<string>, condition?: list<string>}>  $questions
+     */
+    private function seedQuestions(Document $document, array $questions): void
+    {
+        $seeded = DocumentQuestion::query()->where('document_id', $document->id)->pluck('question')->flip()->all();
+        $rows = [];
+
+        foreach ($questions as $question) {
+            if (isset($seeded[$question['question']])) {
+                continue;
+            }
+
+            $seeded[$question['question']] = true;
+            $rows[] = $this->row(new DocumentQuestion, [
+                'document_id' => $document->id,
+                'question' => $question['question'],
+                'type' => $question['type'],
+                'options' => $question['options'] ?? null,
+            ]);
+        }
+
+        DocumentQuestion::query()->insert($rows);
+    }
+
+    /**
+     * Score ranges are matched on their document and lower bound, their actions on the wording.
+     * Like the questions, the missing ranges and then the missing actions go in with one insert each.
+     *
+     * @param  list<array{from_score: int|string, to_score: int|string|null, actions: list<string>}>  $scores
+     */
+    private function seedScores(Document $document, array $scores): void
+    {
+        $seededScores = fn (): array => DocumentScore::query()->where('document_id', $document->id)->pluck('id', 'from_score')->all();
+        $scoreIds = $seededScores();
+        $rows = [];
+
+        foreach ($scores as $range) {
+            $from = (int) $range['from_score'];
+
+            if (! isset($scoreIds[$from])) {
+                $scoreIds[$from] = null;
+                $rows[] = $this->row(new DocumentScore, [
+                    'document_id' => $document->id,
+                    'from_score' => $from,
+                    'to_score' => $range['to_score'] === null ? null : (int) $range['to_score'],
                 ]);
             }
         }
+
+        DocumentScore::query()->insert($rows);
+        $scoreIds = $rows === [] ? $scoreIds : $seededScores();
+
+        $seededActions = DocumentScoreAction::query()
+            ->whereIn('document_score_id', array_values($scoreIds))
+            ->get(['document_score_id', 'action'])
+            ->mapWithKeys(fn (DocumentScoreAction $action): array => ["{$action->document_score_id}|{$action->action}" => true])
+            ->all();
+        $rows = [];
+
+        foreach ($scores as $range) {
+            $scoreId = $scoreIds[(int) $range['from_score']];
+
+            foreach ($range['actions'] as $action) {
+                if (isset($seededActions["{$scoreId}|{$action}"])) {
+                    continue;
+                }
+
+                $seededActions["{$scoreId}|{$action}"] = true;
+                $rows[] = $this->row(new DocumentScoreAction, ['document_score_id' => $scoreId, 'action' => $action]);
+            }
+        }
+
+        DocumentScoreAction::query()->insert($rows);
+    }
+
+    /**
+     * The row create() would insert for the model: its casts applied, its timestamps set.
+     *
+     * @param  array<string, mixed>  $attributes
+     * @return array<string, mixed>
+     */
+    private function row(Model $model, array $attributes): array
+    {
+        $model->forceFill($attributes)->updateTimestamps();
+
+        return $model->getAttributes();
     }
 }

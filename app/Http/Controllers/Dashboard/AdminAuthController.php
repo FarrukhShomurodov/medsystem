@@ -2,33 +2,38 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Admin;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rules\Password;
 
-class AdminAuthController
+class AdminAuthController extends Controller
 {
     public function showLoginForm(): View
     {
         return view('admin.auth.login');
     }
 
-    public function login(Request $request): RedirectResponse
+    public function login(LoginRequest $request): RedirectResponse
     {
-        $credentials = $request->validate([
-            'email' => 'required|string|email',
-            'password' => ['required', 'string', Password::min(8)],
-        ]);
+        $request->authenticate();
 
-        return Auth::guard('admin')->attempt($credentials) ? redirect()->intended(route('dashboard')) : back()->withErrors(['login' => __('validation.incorrect_login_data')]);
+        // A new session id after sign-in, so an id planted before login is worthless (session fixation).
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('dashboard'));
     }
 
-    public function logout(): RedirectResponse
+    public function logout(Request $request): RedirectResponse
     {
-        Auth::logout();
+        Auth::guard(Admin::GUARD)->logout();
 
-        return redirect()->route('dashboard.login');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return to_route('dashboard.login');
     }
 }

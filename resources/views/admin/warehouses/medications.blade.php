@@ -1,71 +1,78 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA | Медикаменты склада</title>
+@section('title', 'Медикаменты склада')
+
+@section('header')
+    <x-page-header title="Медикаменты склада" pretitle="Склад и аптека" />
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light">Медикаменты склада</span>
-    </h6>
-
-    <div class="card shadow-sm">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Медикаменты склада </h5>
-        </div>
-        <div class="card-datatable table-responsive">
-            <table class="datatables-users table border-top">
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table card-table table-vcenter">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th class="w-1">#</th>
                     <th>Склад</th>
                     <th>Препарат</th>
-                    <th>Кол-во</th>
+                    <th class="text-end">Кол-во</th>
                     <th>Срок годности</th>
                     <th>Дата получения</th>
                     <th>Номер партии</th>
-                    <th></th>
+                    <th class="w-1"><span class="visually-hidden">Действия</span></th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($accountings as $accounting)
+                @forelse ($accountings as $accounting)
                     @php
-                        $expirationDate = \Carbon\Carbon::parse($accounting->expiration_date);
-                        $daysUntilExpiration = now()->diffInDays($expirationDate, false);
-
-                        $rowClass = '';
-                        if ($daysUntilExpiration <= 10 && $daysUntilExpiration > 0) {
-                            $rowClass = 'bg-warning text-white';
-                        } elseif ($daysUntilExpiration <= 0) {
-                            $rowClass = 'bg-danger text-white';
-                        }
+                        // The rules of the remains pages: a batch expires the day after its date, and
+                        // its warning is due within its medication's notify_before_days.
+                        $expired = $accounting->isExpired(today());
+                        $expiring = ! $expired && $accounting->medication->expiryWarningDue($accounting->expiration_date, today());
                     @endphp
-                    <tr class="{{ $rowClass }}">
-                        <td>{{ $accounting->id }}</td>
+                    <tr @class(['table-danger' => $expired || $expiring, 'fw-semibold' => $expired])>
+                        <td class="text-secondary">{{ $accounting->id }}</td>
                         <td>
-                            <a class="text-primary"
-                               href="{{ route('warehouses.show', $accounting->warehouse->id) }}">{{ $accounting->warehouse->name }}</a>
+                            @can('view_warehouses')
+                                <a href="{{ route('warehouses.show', $accounting->warehouse_id) }}">{{ $accounting->warehouse->name }}</a>
+                            @else
+                                {{ $accounting->warehouse->name }}
+                            @endcan
                         </td>
                         <td>
-                            <a class="text-primary"
-                               href="{{ route('medications.show', $accounting->medication->id) }}">{{ $accounting->medication->name }}</a>
+                            @can('view_medications')
+                                <a href="{{ route('medications.show', $accounting->medication_id) }}">{{ $accounting->medication->name }}</a>
+                            @else
+                                {{ $accounting->medication->name }}
+                            @endcan
                         </td>
-                        <td>{{ $accounting->quantity }}</td>
-                        <td>{{ $accounting->expiration_date }}</td>
-                        <td>{{ $accounting->date_of_receipt }}</td>
-                        <td>{{ $accounting->batch_number }}</td>
+                        <td class="text-end">{{ $accounting->quantity }}</td>
+                        <td class="text-nowrap">
+                            {{ $accounting->expiration_date->format('d.m.Y') }}
+                            @if ($expired)
+                                <span class="badge bg-danger text-white ms-1">просрочен</span>
+                            @elseif ($expiring)
+                                <span class="badge bg-danger-lt ms-1">истекает</span>
+                            @endif
+                        </td>
+                        <td>{{ $accounting->date_of_receipt?->format('d.m.Y') ?? '—' }}</td>
+                        <td>{{ $accounting->batch_number ?? '—' }}</td>
                         <td>
-                            <button class="btn btn-sm btn-secondary"
-                                    onclick="location.href='{{ route('warehouse.medication.show', $accounting->id) }}'">
-                                Просмотреть
-                            </button>
+                            @can('view_warehouse_medication_detail')
+                                <a href="{{ route('warehouse.medication.show', $accounting->id) }}" class="btn btn-sm">Просмотреть</a>
+                            @endcan
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="8"><x-empty-state title="На складе нет медикаментов" icon="bx-capsule" /></td>
+                    </tr>
+                @endforelse
+                </tbody>
             </table>
-            <div class="mt-4 p-1">
-                {{ $accountings->links('pagination::bootstrap-5') }}
-            </div>
         </div>
+        @if ($accountings->hasPages())
+            <div class="card-footer">{{ $accountings->links() }}</div>
+        @endif
     </div>
 @endsection

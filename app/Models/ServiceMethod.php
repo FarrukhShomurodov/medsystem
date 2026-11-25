@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use Database\Factories\ServiceMethodFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ServiceMethod extends Model
 {
-    protected $fillable = ['name'];
+    /** @use HasFactory<ServiceMethodFactory> */
+    use HasFactory;
 
+    protected $fillable = ['name'];
 }

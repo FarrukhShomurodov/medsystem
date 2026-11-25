@@ -1,0 +1,90 @@
+// flatpickr (MIT) in Tabler's colours. The calendar keeps its own layout; only the surface, the
+// selected day and the focus colours follow the theme.
+
+@use 'flatpickr/dist/flatpickr.css' as *;
+
+.flatpickr-calendar {
+    font-family: inherit;
+    background: var(--bg-surface);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-dropdown);
+
+    &.arrowTop::after {
+        border-bottom-color: var(--bg-surface);
+    }
+
+    &.arrowBottom::after {
+        border-top-color: var(--bg-surface);
+    }
+}
+
+.flatpickr-months .flatpickr-month,
+.flatpickr-current-month .flatpickr-monthDropdown-months,
+span.flatpickr-weekday {
+    color: var(--body-color);
+    fill: var(--body-color);
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    font-weight: var(--font-weight-medium);
+}
+
+.flatpickr-day {
+    color: var(--body-color);
+    border-radius: var(--border-radius);
+
+    &:hover,
+    &:focus,
+    &.inRange,
+    &.prevMonthDay.inRange,
+    &.nextMonthDay.inRange {
+        background: var(--hover-bg);
+        border-color: transparent;
+    }
+
+    &.today {
+        border-color: var(--primary);
+    }
+
+    &.selected,
+    &.startRange,
+    &.endRange,
+    &.selected:hover,
+    &.startRange:hover,
+    &.endRange:hover,
+    &.selected:focus {
+        color: #fff;
+        background: var(--primary);
+        border-color: var(--primary);
+    }
+
+    &.prevMonthDay,
+    &.nextMonthDay,
+    &.flatpickr-disabled,
+    &.flatpickr-disabled:hover {
+        color: var(--disabled-color);
+    }
+}
+
+.flatpickr-time {
+    border-top-color: var(--border-color);
+
+    input,
+    .flatpickr-am-pm,
+    .flatpickr-time-separator {
+        color: var(--body-color);
+    }
+
+    input:hover,
+    input:focus,
+    .flatpickr-am-pm:hover,
+    .flatpickr-am-pm:focus {
+        background: var(--hover-bg);
+    }
+}
+
+// The text input flatpickr adds next to a hidden original (altInput) looks like any other field.
+.flatpickr-input[readonly] {
+    background-color: var(--bg-forms);
+}

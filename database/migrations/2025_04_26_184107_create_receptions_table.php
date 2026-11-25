@@ -1,14 +1,14 @@
 <?php
 
-use App\Models\Reception;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
-        Schema::create('receptions', function (Blueprint $table) {
+        Schema::create('receptions', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('examination_map_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('patient_id')->nullable()->constrained()->cascadeOnDelete();
@@ -18,7 +18,13 @@ return new class extends Migration {
             $table->time('end_time');
             $table->date('date');
             $table->text('comment')->nullable();
-            $table->enum('status', Reception::STATUS)->default('new');
+            $table->enum('status', [
+                'new',
+                'done',
+                'paid',
+                'cancelled',
+                'confirmed',
+            ])->default('new');
             $table->timestamps();
         });
     }

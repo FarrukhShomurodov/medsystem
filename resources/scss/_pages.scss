@@ -1,0 +1,32 @@
+// Styles of single pages that used to sit in the old layout's inline <style>. A page migrated to
+// its own module may move its block into a partial of its own (resources/scss/pages/_x.scss).
+
+// Ward room form (department_rooms/create|edit): the beds of the room as a grid of cards.
+.room-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    gap: 1rem;
+    min-height: 12rem;
+    padding: 1rem;
+    margin-top: 1rem;
+    background-color: var(--bg-surface-secondary);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+}
+
+// The cards only show the beds: they are not buttons, so they do not react to the pointer.
+.bed-item {
+    padding: 1.25rem;
+    text-align: center;
+    background-color: var(--bg-surface);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-card);
+
+    span {
+        display: block;
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+        color: var(--secondary);
+    }
+}

@@ -8,19 +8,21 @@ use App\Models\MedicalDevice;
 use App\Services\MedicalDeviceService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class MedicalDeviceController extends Controller
+class MedicalDeviceController extends Controller implements HasMiddleware
 {
-    protected MedicalDeviceService $service;
+    public function __construct(private readonly MedicalDeviceService $service) {}
 
-    public function __construct(MedicalDeviceService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_devices'])->only('index');
-        $this->middleware(['permission:create_devices'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_devices'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_devices'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_devices', only: ['index']),
+            new Middleware('permission:create_devices', only: ['create', 'store']),
+            new Middleware('permission:edit_devices', only: ['edit', 'update']),
+            new Middleware('permission:delete_devices', only: ['destroy']),
+        ];
     }
 
     public function index(): View
@@ -40,10 +42,9 @@ class MedicalDeviceController extends Controller
 
     public function store(MedicalDeviceRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('devices.index')->with('success', 'Медицинское устройство успешно добавлена!');
+        return to_route('devices.index')->with('success', 'Медицинское устройство успешно добавлено!');
     }
 
     public function edit(MedicalDevice $device): View
@@ -53,16 +54,15 @@ class MedicalDeviceController extends Controller
 
     public function update(MedicalDeviceRequest $request, MedicalDevice $device): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($device, (array)$validated);
+        $this->service->update($device, $request->validated());
 
-        return redirect()->route('devices.index')->with('success', 'Медицинское устройство  успешно обновлена!');
+        return to_route('devices.index')->with('success', 'Медицинское устройство успешно обновлено!');
     }
 
     public function destroy(MedicalDevice $device): RedirectResponse
     {
         $this->service->destroy($device);
 
-        return redirect()->route('devices.index')->with('success', 'Медицинское устройство успешно удалена!');
+        return to_route('devices.index')->with('success', 'Медицинское устройство успешно удалено!');
     }
 }

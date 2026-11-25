@@ -6,10 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
     public function up(): void
     {
-        Schema::create('household_materials', function (Blueprint $table) {
+        Schema::create('household_materials', function (Blueprint $table): void {
             $table->id();
             $table->string('batch_number');
             $table->string('name');
@@ -18,7 +17,6 @@ return new class extends Migration
             $table->timestamps();
         });
     }
-
 
     public function down(): void
     {

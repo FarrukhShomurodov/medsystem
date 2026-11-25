@@ -14,6 +14,17 @@ class MedicationCostAndSupply extends Model
         'supplier_id',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'retail_price' => 'decimal:2',
+            'wholesale_price' => 'decimal:2',
+        ];
+    }
+
+    /**
+     * @return BelongsTo<Supplier, $this>
+     */
     public function supplier(): BelongsTo
     {
         return $this->belongsTo(Supplier::class);

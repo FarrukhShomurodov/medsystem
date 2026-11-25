@@ -4,10 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
-        Schema::create('service_sub_groups', function (Blueprint $table) {
+        Schema::create('service_sub_groups', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
             $table->foreignId('service_group_id')->constrained()->cascadeOnDelete();
@@ -15,9 +16,8 @@ return new class extends Migration {
         });
     }
 
-
     public function down(): void
     {
-        Schema::dropIfExists('sevice_sub_groups');
+        Schema::dropIfExists('service_sub_groups');
     }
 };

@@ -8,19 +8,21 @@ use App\Models\Region;
 use App\Services\RegionService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class RegionController extends Controller
+class RegionController extends Controller implements HasMiddleware
 {
-    protected RegionService $service;
+    public function __construct(private readonly RegionService $service) {}
 
-    public function __construct(RegionService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_regions'])->only('index');
-        $this->middleware(['permission:create_regions'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_regions'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_regions'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_regions', only: ['index']),
+            new Middleware('permission:create_regions', only: ['create', 'store']),
+            new Middleware('permission:edit_regions', only: ['edit', 'update']),
+            new Middleware('permission:delete_regions', only: ['destroy']),
+        ];
     }
 
     public function index(): View
@@ -40,10 +42,9 @@ class RegionController extends Controller
 
     public function store(RegionRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('regions.index')->with('success', 'Область успешно добавлена!');
+        return to_route('regions.index')->with('success', 'Область успешно добавлена!');
     }
 
     public function edit(Region $region): View
@@ -53,16 +54,15 @@ class RegionController extends Controller
 
     public function update(RegionRequest $request, Region $region): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($region, (array)$validated);
+        $this->service->update($region, $request->validated());
 
-        return redirect()->route('regions.index')->with('success', 'Область успешно обновлена!');
+        return to_route('regions.index')->with('success', 'Область успешно обновлена!');
     }
 
     public function destroy(Region $region): RedirectResponse
     {
         $this->service->destroy($region);
 
-        return redirect()->route('regions.index')->with('success', 'Область успешно удалена!');
+        return to_route('regions.index')->with('success', 'Область успешно удалена!');
     }
 }

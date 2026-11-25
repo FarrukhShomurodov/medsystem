@@ -1,101 +1,55 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA | Редактировать группу</title>
+@section('title', 'Изменить группу услуг')
+
+@section('header')
+    <x-page-header title="Изменить группу услуг" :breadcrumbs="['Группы услуг' => route('service.groups.index')]" />
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('service.groups.index') }}">Группы</a> /</span>Редактировать
-    </h6>
+    <div class="card">
+        <form method="POST" action="{{ route('service.groups.update', $group) }}">
+            @csrf
+            @method('PUT')
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label required" for="name">Название</label>
+                        <div class="input-group input-group-flat">
+                            <span class="input-group-text"><i class="bx bx-rename" aria-hidden="true"></i></span>
+                            <input type="text" id="name" name="name" class="form-control @error('name') is-invalid @enderror"
+                                   placeholder="Название" value="{{ old('name', $group->name) }}" required>
+                        </div>
+                        @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
 
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <fieldset class="col-md-6" data-row-list data-row-list-next="{{ $group->subGroups->count() }}">
+                        <legend class="form-label required">Подгруппы</legend>
+                        <div class="vstack gap-2" data-row-list-items>
+                            @foreach ($group->subGroups as $index => $subGroup)
+                                @include('admin.service_groups._sub-group', [
+                                    'idName' => "sub_groups[{$index}][id]",
+                                    'name' => "sub_groups[{$index}][name]",
+                                    'subGroup' => $subGroup,
+                                ])
+                            @endforeach
+                        </div>
+                        <template data-row-list-template>
+                            @include('admin.service_groups._sub-group', [
+                                'idName' => 'sub_groups[__INDEX__][id]',
+                                'name' => 'sub_groups[__INDEX__][name]',
+                                'subGroup' => null,
+                            ])
+                        </template>
+                        @error('sub_groups')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        @error('sub_groups.*')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <button type="button" class="btn btn-outline-primary mt-2" data-row-add><i class="bx bx-plus" aria-hidden="true"></i>Добавить подгруппу</button>
+                    </fieldset>
                 </div>
-            @endforeach
-        @endif
+            </div>
+            <div class="card-footer text-end">
+                <button class="btn btn-primary" type="submit">Сохранить</button>
+            </div>
+        </form>
     </div>
-
-    <div class="card shadow-sm mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Редактировать группу</h5>
-        </div>
-        <div class="card-body">
-            <form action="{{ route('service.groups.update', $group->id) }}" method="POST">
-                @csrf
-                @method('put')
-
-                {{-- Номер палаты --}}
-                <div class="mb-3">
-                    <label class="form-label" for="name">Названия <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-merge">
-                        <span class="input-group-text @error('name') text-danger icon-border @enderror">
-                            <i class="bx bx-rename"></i>
-                        </span>
-                        <input type="text" id="name"
-                               class="form-control @error('name') is-invalid @enderror"
-                               placeholder="Названия"
-                               name="name"
-                               value="{{ old('name', $group->name) }}" required/>
-                    </div>
-                    @error('name')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                {{-- Койки --}}
-                <div class="mb-3">
-                    <label class="form-label">Подгруппы <span class="text-danger">*</span></label>
-                    <div id="beds-container">
-                        @foreach($group->subGroups as $index => $subGroup)
-                            <div class="input-group mb-2">
-                                <input type="hidden" name="sub_groups[{{ $index }}][id]" value="{{ $subGroup->id }}">
-                                <input type="text" name="sub_groups[{{ $index }}][name]" class="form-control"
-                                       placeholder="Названия подгруппы"
-                                       value="{{ $subGroup->name }}"
-                                       required>
-                                <button type="button" class="btn btn-outline-danger remove-bed-sub-group"><i class="bx bx-x"></i>
-                                </button>
-                            </div>
-                        @endforeach
-                    </div>
-                    <button type="button" class="btn btn-outline-primary" id="add-sub-group"><i class="bx bx-plus"></i>
-                        Добавить подгруппу
-                    </button>
-                </div>
-                <button type="submit" class="btn btn-warning ">Редактировать</button>
-            </form>
-        </div>
-    </div>
-@endsection
-
-@section('scripts')
-    <script>
-        $(document).ready(function () {
-            let bedIndex = $('#beds-container .input-group').length;
-
-            $('#add-sub-group').on('click', function () {
-                const bedInput = `
-                    <div class="input-group mb-2">
-                        <input type="hidden" name="sub_groups[${bedIndex}][id]" value="">
-                        <input type="text" name="sub_groups[${bedIndex}][name]" class="form-control" placeholder="Названия подгруппы" required>
-                        <button type="button" class="btn btn-outline-danger remove-bed-sub-group"><i class="bx bx-x"></i></button>
-                    </div>
-                `;
-                $('#beds-container').append(bedInput);
-
-                bedIndex++;
-            });
-
-            $(document).on('click', '.remove-bed-sub-group', function () {
-                $(this).closest('.input-group').remove();
-            });
-        });
-    </script>
 @endsection

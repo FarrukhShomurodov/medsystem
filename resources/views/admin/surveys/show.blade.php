@@ -1,62 +1,57 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA | Просмотр мед. документа</title>
+@section('title', $survey->title)
+
+@section('header')
+    <x-page-header :title="$survey->title" :breadcrumbs="['Мед. документы' => route('surveys.index')]">
+        @can('edit_surveys')
+            <x-slot:actions>
+                <a href="{{ route('surveys.edit', $survey) }}" class="btn">Изменить</a>
+            </x-slot:actions>
+        @endcan
+    </x-page-header>
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('surveys.index') }}">Мед. документы </a> /</span>Просмотр
-    </h6>
-
-    <div class="card shadow-sm mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">{{ $survey->title }}</h4>
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <div class="text-secondary small">Тип</div>
+                <span class="badge bg-info-lt">{{ $survey->type->name }}</span>
+            </div>
         </div>
         <div class="card-body">
-            <p><strong>Тип:</strong> <span class="badge bg-info">{{ $survey->type->name }}</span></p>
-
-            @php
-                $groupedQuestions = $survey->questions->groupBy('group.title');
-            @endphp
-
-            @foreach($groupedQuestions as $groupName => $questions)
-                @if($groupName !== "")
-                    <h5 class="mt-4 text-primary">{{ $groupName }}</h5>
+            @forelse ($survey->questions->groupBy('group.title') as $groupName => $questions)
+                @if ($groupName !== '')
+                    <h2 class="h3 text-primary @unless ($loop->first) mt-4 @endunless">{{ $groupName }}</h2>
                 @endif
 
-                @foreach($questions as $question)
-                    <div class="mb-3 border-bottom pb-2">
-                        <h6 class="mb-1">{{ $question->question }}</h6>
-                        <span class="badge bg-primary">
-                            @php
-                                $types = ['choice' => 'Список', 'boolean' => 'Да / Нет', 'text' => 'Текст'];
-                            @endphp
-                            {{ $types[$question->type] ?? 'Неизвестный тип' }}
-                        </span>
+                @foreach ($questions as $question)
+                    <div class="mb-3 pb-3 border-bottom">
+                        <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                            <h3 class="h4 mb-0">{{ $question->question }}</h3>
+                            <span class="badge bg-primary-lt">{{ $question->type->label() }}</span>
+                        </div>
 
-                        @if($question->type === 'choice' && $question->options)
+                        @if ($question->type === \App\Enums\QuestionType::Choice && $question->options)
+                            {{-- A preview of the answers: nothing is submitted from here. --}}
                             <div class="mt-2">
-                                @foreach($question->options as $option)
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                               name="question_{{ $question['id'] }}"
-                                               id="option_{{ $loop->index }}" value="{{ $option['text'] }}">
-                                        <label class="form-check-label" for="option_{{ $loop->index }}">
-                                            {{ $option['text'] }} <small>(Бал: {{ $option['score'] }})</small>
-                                        </label>
-                                    </div>
+                                @foreach ($question->options as $option)
+                                    <label class="form-check">
+                                        <input class="form-check-input" type="radio" name="question_{{ $question->id }}" value="{{ $option['text'] }}" disabled>
+                                        <span class="form-check-label">{{ $option['text'] }} <small class="text-secondary">(баллы: {{ $option['score'] ?? 0 }})</small></span>
+                                    </label>
                                 @endforeach
                             </div>
                         @endif
                     </div>
                 @endforeach
-            @endforeach
-
-            <a href="{{ route('surveys.index') }}" class="btn btn-secondary btn-sm">
-                <i class="bx bx-arrow-back"></i> Назад
-            </a>
+            @empty
+                <x-empty-state title="В документе нет вопросов" icon="bx-list-check" />
+            @endforelse
+        </div>
+        <div class="card-footer">
+            <a href="{{ route('surveys.index') }}" class="btn"><i class="bx bx-arrow-back" aria-hidden="true"></i>Назад</a>
         </div>
     </div>
 @endsection

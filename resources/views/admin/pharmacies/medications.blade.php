@@ -1,36 +1,36 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA | Препараты</title>
+@php($pageTitle = 'Препараты: '.$pharmacy->name)
+
+@section('title', $pageTitle)
+
+@section('header')
+    <x-page-header :title="$pageTitle" :breadcrumbs="['Аптеки' => route('pharmacies.index')]" />
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('pharmacies.index') }}">Аптеки</a> /</span>Препараты
-    </h6>
-
-    <div class="card shadow-sm">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Препараты </h5>
-        </div>
-        <div class="card-datatable table-responsive">
-            <table class="datatables-users table border-top">
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table card-table table-vcenter">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th class="w-1">#</th>
                     <th>Препарат</th>
-                    <th>Кол-во</th>
+                    <th class="text-end">Кол-во</th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($medications as $medication)
+                @forelse ($medications as $medication)
                     <tr>
-                        <td>{{ $medication->id }}</td>
+                        <td class="text-secondary">{{ $medication->id }}</td>
                         <td>{{ $medication->name }}</td>
-                        <td>{{ $medication->pivot->quantity ?? 0 }}</td>
+                        <td class="text-end">{{ $medication->pivot->quantity ?? 0 }}</td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="3"><x-empty-state title="В аптеке нет препаратов" icon="bx-capsule" /></td>
+                    </tr>
+                @endforelse
                 </tbody>
             </table>
         </div>

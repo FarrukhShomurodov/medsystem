@@ -1,108 +1,58 @@
-<div class="mb-4">
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label class="form-label fw-bold">Основной медикамент:</label>
-                <p class="form-control-plaintext">{{ $data->medication->name }}</p>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-bold">Активное вещество:</label>
-                <p class="form-control-plaintext">{{ $data->medication->composition->active_substance_name }}</p>
-            </div>
-
-            <!-- Разовая доза -->
-            <div class="mb-3">
-                <label class="form-label fw-bold">Разовая доза:</label>
-                <p class="form-control-plaintext">{{ $data->single_dose }}</p>
-            </div>
-
-
-            <!-- Дата -->
-            <div class="mb-3">
-                <label class="form-label fw-bold">Дата:</label>
-                <p class="form-control-plaintext">{{ $data->date_of_end }}</p>
-            </div>
-
-
-            <!-- Статус -->
-            <div class="mb-3">
-                @php
-                    $status = $data->status;
-                    $label = \App\Models\PatientMedication::STATUS_LABELS[$status] ?? $status;
-                    $icon = \App\Models\PatientMedication::STATUS_ICONS[$status] ?? 'fa-question';
-                    $color = \App\Models\PatientMedication::STATUS_COLORS[$status] ?? 'text-secondary';
-                @endphp
-
-                <label class="form-label fw-bold">Статус:</label>
-                <p class="form-control-plaintext text-capitalize"> <i class="fas {{ $icon }} {{ $color }}" title="{{ $label }}"></i> {{ App\Models\PatientMedication::STATUS_LABELS[$data->status] }}</p>
-            </div>
+{{-- A prescription of the patient card history (api.patients.history.partial). --}}
+<div class="datagrid mb-3">
+    @foreach ([
+        'Основной медикамент' => $data->medication->name,
+        'Активное вещество' => $data->medication?->composition?->active_substance_name,
+        'Дозировка' => $data->dosage,
+        'Разовая доза' => $data->single_dose,
+        'Группа препарата' => $data->medication->group->name ?? 'Не указана',
+        'Дата' => $data->date_of_end,
+        'Способ приёма' => $data->method->label(),
+        'Правило приёма' => $data->admission_rules->label(),
+    ] as $label => $value)
+        <div class="datagrid-item">
+            <div class="datagrid-title">{{ $label }}</div>
+            <div class="datagrid-content">{{ filled($value) ? $value : '—' }}</div>
         </div>
-
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label class="form-label fw-bold">Дозировка:</label>
-                <p class="form-control-plaintext">{{ $data->dosage }}</p>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-bold">Группа препарата:</label>
-                <p class="form-control-plaintext">{{ $data->medication->group->name ?? 'Не указана' }}</p>
-            </div>
-
-            <!-- Способ приёма -->
-            <div class="mb-3">
-                <label class="form-label fw-bold">Способ приёма:</label>
-                <p class="form-control-plaintext text-capitalize">{{ App\Models\PatientMedication::METHOD_LABELS[$data->method] }}</p>
-            </div>
-
-            <!-- Правило приёма -->
-            <div class="mb-3">
-                <label class="form-label fw-bold">Правило приёма:</label>
-                <p class="form-control-plaintext text-capitalize">{{ App\Models\PatientMedication::ADMISSION_RULE_LABELS[$data->admission_rules] }}</p>
-            </div>
-        </div>
+    @endforeach
+    <div class="datagrid-item">
+        <div class="datagrid-title">Статус</div>
+        <div class="datagrid-content"><x-status-icon :status="$data->status" decorative /> {{ $data->status->label() }}</div>
     </div>
+</div>
 
-    <!-- Примечания (полноширинное поле) -->
-    <div class="mb-4">
-        <label class="form-label fw-bold">Примечания:</label>
-        <div class="border rounded p-3 bg-light">
-            {{ $data->medication_notes ?: 'Примечания отсутствуют' }}
-        </div>
+<div class="mb-3">
+    <div class="datagrid-title">Примечания</div>
+    <div class="border rounded p-3 bg-surface-secondary">{{ $data->medication_notes ?: 'Примечаний нет' }}</div>
+</div>
+
+<div class="mb-3">
+    <div class="datagrid-title">Время приёма</div>
+    <div class="tag-list">
+        @foreach (array_filter(explode(',', (string) $data->admission_period)) as $time)
+            <span class="badge bg-primary-lt">{{ $time }}</span>
+        @endforeach
     </div>
+</div>
 
-    <div class="mb-4">
-        <label class="form-label fw-bold">Время приёма:</label>
-        <div class="d-flex flex-wrap gap-2">
-            @foreach(explode(',', $data->admission_period) as $time)
-                <span class="badge bg-primary p-2">{{ $time }}</span>
-            @endforeach
-        </div>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label fw-bold">Совместимые медикаменты:</label>
-        @if($data->compatibleMedications->count() > 0)
-            <div class="list-group">
-                @foreach($data->compatibleMedications as $compatible)
-                    <div class="list-group-item">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-1">{{ $compatible->name }}</h6>
-                                <div class="d-flex gap-3">
-                                    <small>Активное
-                                        вещество: {{ $compatible->composition->active_substance_name }}</small>
-                                    <small>Дозировка: {{ $compatible->pivot->dosage }}</small>
-                                </div>
-                            </div>
-                            <span class="badge bg-success">Совместим</span>
+<div>
+    <div class="datagrid-title">Совместимые медикаменты</div>
+    @if ($data->compatibleMedications->isNotEmpty())
+        <div class="list-group">
+            @foreach ($data->compatibleMedications as $compatible)
+                <div class="list-group-item d-flex justify-content-between align-items-center gap-2">
+                    <div>
+                        <div class="fw-medium">{{ $compatible->name }}</div>
+                        <div class="text-secondary small">
+                            Активное вещество: {{ $compatible->composition?->active_substance_name ?? '—' }} ·
+                            Дозировка: {{ $compatible->pivot->dosage }}
                         </div>
                     </div>
-                @endforeach
-            </div>
-        @else
-            <div class="alert alert-info mb-0">Совместимые медикаменты не назначены</div>
-        @endif
-    </div>
+                    <span class="badge bg-success-lt">Совместим</span>
+                </div>
+            @endforeach
+        </div>
+    @else
+        <div class="text-secondary">Совместимые медикаменты не назначены.</div>
+    @endif
 </div>

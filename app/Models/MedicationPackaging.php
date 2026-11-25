@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\PackagingType;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property PackagingType $packaging_type
+ */
 class MedicationPackaging extends Model
 {
     protected $fillable = [
@@ -14,5 +18,10 @@ class MedicationPackaging extends Model
         'packaging_date',
     ];
 
-    const TYPE = ["блистер", "флакон", "тюбик"];
+    protected function casts(): array
+    {
+        return [
+            'packaging_type' => PackagingType::class,
+        ];
+    }
 }

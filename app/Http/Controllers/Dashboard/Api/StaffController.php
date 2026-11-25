@@ -2,59 +2,33 @@
 
 namespace App\Http\Controllers\Dashboard\Api;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Scheduling\AppointmentWeekRequest;
 use App\Models\Staff;
-use Illuminate\Http\Request;
+use App\Services\Scheduling\AppointmentCalendar;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Carbon;
 
-class StaffController
+/**
+ * The slots of an employee's calendar. The routes (routes/ajax.php) check the permission of the
+ * calling page and ReceptionPolicy: a doctor's account reads only its own.
+ */
+class StaffController extends Controller
 {
-    public function surveys(Staff $staff): JsonResponse
+    public function availabilityToday(Staff $staff): JsonResponse
     {
-        return response()->json($staff->surveys->map(function ($survey) {
-            return [
-                'id' => $survey->id,
-                'title' => $survey->title,
-            ];
-        }));
+        return response()->json($staff->availabilityOn(today()));
     }
 
-    public function availabilityWeek(Request $request, $doctorId)
+    public function bookedToday(Staff $staff): JsonResponse
     {
-        $doctor = Staff::findOrFail($doctorId);
-        $startDate = Carbon::parse($request->query('start'));
-        $endDate = $startDate->copy()->addDays(6);
+        return response()->json($staff->bookingsOn(today()));
+    }
 
-        $result = [];
+    public function availabilityWeek(AppointmentWeekRequest $request, Staff $staff): JsonResponse
+    {
+        $start = $request->start();
+        $end = $start->addDays(6);
 
-        for ($date = $startDate; $date <= $endDate; $date->addDay()) {
-            if (!$doctor->isWorkingToday($date)) {
-                continue;
-            }
-
-            $availability = $doctor->getTodayAvailability($date);
-            $bookings = $doctor->getBookedTime($date);
-
-            foreach ($availability as $avail) {
-                $slot = [
-                    'date' => $date->format('Y-m-d'),
-                    'time' => $avail['time'],
-                    'is_available' => $avail['is_available'],
-                    'is_booked' => false,
-                    'is_lunch' => false,
-                ];
-
-                $bookedSlot = collect($bookings)->firstWhere('time', $avail['time']);
-
-                if ($bookedSlot && $bookedSlot['is_booked']) {
-                    $slot['is_booked'] = true;
-                    $slot['reception_id'] = $bookedSlot['reception_id'];
-                }
-
-                $result[] = $slot;
-            }
-        }
-
-        return response()->json($result);
+        return response()->json(AppointmentCalendar::of($staff, $start, $end)->days($start, $end));
     }
 }

@@ -1,85 +1,62 @@
 @extends('admin.layouts.app')
+@use('App\Support\Display')
 
-@section('title')
-    <title>MED ERA | Назначеные услуги</title>
+@section('title', 'Назначенные услуги')
+
+@section('header')
+    <x-page-header title="Назначенные услуги" pretitle="Услуги">
+        @can('create_patient_services')
+            <x-slot:actions>
+                <a href="{{ route('patient.services.create') }}" class="btn btn-primary"><i class="bx bx-plus" aria-hidden="true"></i>Назначить услугу</a>
+            </x-slot:actions>
+        @endcan
+    </x-page-header>
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light">Назначеные услуги</span>
-    </h6>
-
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
-
-        @if(session()->has('success'))
-            <div class="alert alert-solid-success alert-dismissible d-flex align-items-center" role="alert">
-                <i class="bx bx-check-circle fs-4 me-2"></i>
-                {{ session()->get('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-    </div>
-
-    <div id="errors_alert"></div>
-
-    <div class="card shadow-sm">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Назначеные услуги </h5>
-            <a href="{{ route('patient.services.create') }}" class="btn btn-primary "
-               style="margin-right: 22px;">Назначить услугу</a>
-        </div>
-        <div class="card-datatable table-responsive">
-            <table class="datatables-users table border-top">
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table card-table table-vcenter">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th class="w-1">#</th>
                     <th>Услуга</th>
                     <th>Пациент</th>
                     <th>Дата оказания услуги</th>
                     <th>Статус</th>
-                    <th></th>
+                    <th class="w-1"><span class="visually-hidden">Действия</span></th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($services as $service)
+                @forelse ($services as $service)
                     <tr>
-                        <td>{{ $service->id }}</td>
+                        <td class="text-secondary">{{ $service->id }}</td>
                         <td>{{ $service->service->name }}</td>
-                        <td>{{ $service->patient->first_name }}</td>
-                        <td>{{ $service->service_date }}</td>
-                        <td> {!! $service->getStatusBadge() !!} </td>
+                        <td>{{ $service->patient?->full_name ?? '—' }}</td>
+                        <td class="text-nowrap">{{ Display::date($service->service_date) }}</td>
+                        <td><x-status-badge :status="$service->status" /></td>
                         <td>
-                            <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-warning"
-                                        onclick="location.href='{{ route('patient.services.edit', $service->id) }}'">
-                                    Редактировать
-                                </button>
-                                <form action="{{ route('patient.services.destroy', $service->id) }}" method="POST"
-                                      style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-danger">
-                                        Удалить
-                                    </button>
-                                </form>
+                            <div class="table-actions">
+                                @can('edit_patient_services')
+                                    <a href="{{ route('patient.services.edit', $service) }}" class="btn btn-sm">Изменить</a>
+                                @endcan
+                                {{-- A paid order is the record of the payment and is not deleted. --}}
+                                @if (! $service->isPaid())
+                                    @can('delete_patient_services')
+                                        <x-delete-button :action="route('patient.services.destroy', $service)" confirm="Удалить назначенную услугу? Действие нельзя отменить." />
+                                    @endcan
+                                @endif
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr><td colspan="6"><x-empty-state text="Назначенных услуг пока нет." /></td></tr>
+                @endforelse
                 </tbody>
             </table>
-            <div class="mt-4 p-1">
-                {{ $services->links('pagination::bootstrap-5') }}
-            </div>
         </div>
+        @if ($services->hasPages())
+            <div class="card-footer">{{ $services->links() }}</div>
+        @endif
     </div>
 @endsection

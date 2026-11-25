@@ -11,65 +11,56 @@ use App\Models\PatientMedication;
 use App\Models\PatientProcedure;
 use App\Models\PatientService;
 use App\Models\Reception;
-use App\Models\SurveyResponses;
+use App\Models\SurveyResponse;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 
+/**
+ * The detail partial of a row of the patient card's visit history.
+ */
 class PatientHistoryController extends Controller
 {
-    public function partial(Request $request)
+    /**
+     * Row type => the record it shows, the relations its partial renders, and the partial.
+     *
+     * @var array<string, array{0: class-string<Model>, 1: list<string>, 2: view-string}>
+     */
+    private const array RECORDS = [
+        'examination_map' => [ExaminationMap::class, ['department', 'doctor'], 'admin.patients.history.examination_map'],
+        'assignment' => [PatientAssignment::class, ['staff', 'service'], 'admin.patients.history.assignment'],
+        'service' => [PatientService::class, ['service', 'surveyResponses.survey', 'surveyResponses.answers.question'], 'admin.patients.history.service'],
+        'patient_med_document' => [SurveyResponse::class, ['survey', 'answers.question'], 'admin.patients.history.patient_med_document'],
+        'reception' => [Reception::class, ['staff', 'patient'], 'admin.patients.history.reception'],
+        'diagnosis' => [PatientDiagnosis::class, ['diagnosis'], 'admin.patients.history.diagnosis'],
+        'document' => [DocumentResponse::class, ['document.questions', 'answers'], 'admin.patients.history.document'],
+        'medication' => [PatientMedication::class, ['medication.composition', 'medication.group', 'compatibleMedications.composition'], 'admin.patients.history.medication'],
+        'procedure' => [PatientProcedure::class, ['procedure'], 'admin.patients.history.procedure'],
+    ];
+
+    /** The admission and the discharge row of a stay open the same partial. */
+    private const array ALIASES = [
+        'examination_map_start' => 'examination_map',
+        'examination_map_end' => 'examination_map',
+    ];
+
+    public function partial(Request $request): Response|JsonResponse
     {
-        $type = $request->input('type');
-        $id = $request->input('id');
+        $validated = $request->validate([
+            'type' => ['required', 'string', Rule::in([...array_keys(self::RECORDS), ...array_keys(self::ALIASES)])],
+            'id' => ['required', 'integer'],
+        ]);
 
-        if (!$type || !$id) {
-            return response()->json(['error' => 'Type and ID parameters are required'], 400);
+        $type = self::ALIASES[$validated['type']] ?? $validated['type'];
+        [$model, $relations, $partial] = self::RECORDS[$type];
+        $record = $model::query()->with($relations)->find($validated['id']);
+
+        if ($record === null) {
+            return response()->json(['error' => 'Запись не найдена.'], 404);
         }
 
-        if ($type == 'examination_map_start' || $type == 'examination_map_end') {
-            $type = 'examination_map';
-        }
-
-        // Получаем данные в зависимости от типа
-        switch ($type) {
-            case 'examination_map':
-                $data = ExaminationMap::with(['department'])->find($id);
-                break;
-            case 'assignment':
-                $data = PatientAssignment::with(['staff', 'service'])->find($id);
-                break;
-            case 'service':
-                $data = PatientService::with(['doctor'])->find($id);
-                break;
-            case 'patient_med_document':
-                $data = SurveyResponses::query()->find($id);
-                break;
-            case 'reception':
-                $data = Reception::with(['staff', 'patient'])->find($id);
-                break;
-            case 'diagnosis':
-                $data = PatientDiagnosis::find($id);
-                break;
-            case 'document':
-                $data = DocumentResponse::find($id);
-                break;
-            case 'medication':
-                $data = PatientMedication::find($id);
-                break;
-            case 'procedure':
-                $data = PatientProcedure::find($id);
-                break;
-            default:
-                return response()->json(['error' => 'Unknown type'], 400);
-        }
-
-        if (!$data) {
-            return response()->json(['error' => 'Record not found'], 404);
-        }
-
-        if (!view()->exists('admin.patients.history.' . $type)) {
-            return response()->json(['error' => 'View not found'], 404);
-        }
-
-        return view('admin.patients.history.' . $type, ['data' => $data])->render();
+        return response(view($partial, ['data' => $record])->render());
     }
 }

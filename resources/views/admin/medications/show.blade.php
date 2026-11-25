@@ -1,164 +1,135 @@
 @extends('admin.layouts.app')
+@use('App\Support\Display')
 
-@section('title')
-    <title>MED ERA | Препарат </title>
+@php
+    $composition = $medication->composition;
+    $application = $medication->application;
+    $license = $medication->licenseAndCertification;
+    $data = $medication->additionalData;
+
+    $sections = [
+        'Основные данные' => [
+            'Название:' => $medication->name,
+            'Форма выпуска:' => $medication->release_form,
+            'Дозировка:' => $medication->dosage,
+            'Фармакологическая группа:' => $medication->group?->name,
+            'Производитель:' => $medication->manufacturer?->name,
+            'Регистрационный номер:' => $medication->registration_number,
+            'Дата регистрации:' => Display::date($medication->registration_date),
+        ],
+        'Применение' => [
+            'Показания к применению:' => $application?->indications,
+            'Способ применения:' => $application?->administration_method,
+            'Режим дозирования:' => $application?->dosage_regimen,
+            'Взаимодействие с другими препаратами:' => $application?->drug_interactions,
+        ],
+        'Хранение' => [
+            'Температурный режим хранения:' => $medication->storage?->storage_temperature,
+            'Условия хранения:' => $medication->storage?->storage_conditions,
+        ],
+        'Прочие данные' => [
+            'Номер лицензии на производство:' => $data?->manufacturing_license_number,
+            'Дополнительные условия использования:' => $data?->additional_usage_conditions,
+            'Категория рецепта:' => $data?->prescription_category,
+            'Индивидуальные особенности:' => $data?->specific_features,
+        ],
+    ];
+
+    $documents = array_filter([
+        'Лицензия на продажу' => $license?->sales_license,
+        'Сертификат качества' => $license?->quality_certificate,
+        'Клинические исследования' => $license?->clinical_trials,
+        'Регистрационные документы' => $license?->registration_documents,
+    ]);
+@endphp
+
+@section('title', $medication->name)
+
+@section('header')
+    <x-page-header :title="$medication->name" :breadcrumbs="['Препараты' => route('medications.index')]" />
 @endsection
 
 @section('content')
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if(session()->has('success'))
-            <div class="alert alert-solid-success alert-dismissible d-flex align-items-center" role="alert">
-                <i class="bx bx-check-circle fs-4 me-2"></i>
-                {{ session()->get('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="row row-cards">
+        @foreach ($sections as $heading => $rows)
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h2 class="card-title">{{ $heading }}</h2>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            @foreach ($rows as $label => $value)
+                                <dt class="col-sm-5 fw-medium text-secondary">{{ $label }}</dt>
+                                <dd class="col-sm-7">{{ $value ?? '—' }}</dd>
+                            @endforeach
+                        </dl>
+                    </div>
+                </div>
             </div>
-        @endif
-    </div>
 
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('medications.index') }}">Препараты</a> /</span> {{ $medication->name }}
-    </h6>
-
-    <div class="card">
-        <div class="card-header">
-            <h5>Основные данные</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Название:</strong> {{ $medication->name }}</p>
-            <p><strong>Форма выпуска:</strong> {{ $medication->release_form }}</p>
-            <p><strong>Дозировка:</strong> {{ $medication->dosage }}</p>
-            <p><strong>Фармакологическая группа:</strong> {{ $medication->group->name }}</p>
-            <p><strong>Производитель:</strong> {{ $medication->manufacturer->name }}</p>
-            <p><strong>Регистрационный номер:</strong> {{ $medication->registration_number }}</p>
-            <p><strong>Дата регистрации:</strong> {{ $medication->registration_date }}</p>
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-header">
-            <h5>Состав</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Название активного вещества:</strong> {{ $medication->composition->active_substance_name }}</p>
-            <p><strong>Дозировка активного вещества:</strong> {{ $medication->composition->active_substance_dosage }}
-            </p>
-
-            <table class="datatables-users table border-top">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Вспомогательные вещества (Название):</th>
-                    <th>Вспомогательные вещества (Дозировка):</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                @php
-                    $i = 1;
-                @endphp
-
-                @foreach($medication->composition->additionalSubstance as $substance)
-                    <tr>
-                        <td>{{ $i++ }}</td>
-                        <td>{{ $substance->substance_name }}</td>
-                        <td>{{ $substance->substance_dosage }}</td>
-{{--                        <td>--}}
-{{--                            <div class="d-inline-block text-nowrap">--}}
-{{--                                <form action="{{ route('additional.substance.delete', $substance->id) }}" method="POST"--}}
-{{--                                      style="display:inline;">--}}
-{{--                                    @csrf--}}
-{{--                                    @method('DELETE')--}}
-{{--                                    <button class="btn btn-sm btn-danger">--}}
-{{--                                        Удалить--}}
-{{--                                    </button>--}}
-{{--                                </form>--}}
-{{--                            </div>--}}
-{{--                        </td>--}}
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-header">
-            <h5>Применение</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Показания к применению:</strong> {{ $medication->application->indications }}</p>
-            <p><strong>Способ применения:</strong> {{ $medication->application->administration_method }}</p>
-            <p><strong>Режим дозирования:</strong> {{ $medication->application->dosage_regimen }}</p>
-            <p><strong>Взаимодействие с другими
-                    препаратами:</strong> {{ $medication->application->drug_interactions }}</p>
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-header">
-            <h5>Хранение</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Температурный режим хранения:</strong> {{ $medication->storage->storage_temperature }}</p>
-            <p><strong>Условия хранения:</strong> {{ $medication->storage->storage_conditions }}</p>
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-header">
-            <h5>Лицензии и сертификация</h5>
-        </div>
-        <div class="card-body">
-            @if (!empty($medication->licenseAndCertification->sales_license))
-                <p><strong>Лицензия на продажу:</strong>
-                    <a href="{{ asset('storage/' . $medication->licenseAndCertification->sales_license) }}"
-                       target="_blank" class="btn btn-sm btn-outline-primary">
-                        <i class="bx bx-download"></i> Скачать
-                    </a>
-                </p>
+            @if ($loop->first)
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h2 class="card-title">Состав</h2>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-5 fw-medium text-secondary">Название активного вещества:</dt>
+                                <dd class="col-sm-7">{{ $composition?->active_substance_name ?? '—' }}</dd>
+                                <dt class="col-sm-5 fw-medium text-secondary">Дозировка активного вещества:</dt>
+                                <dd class="col-sm-7">{{ $composition?->active_substance_dosage ?? '—' }}</dd>
+                            </dl>
+                            <h3 class="subheader mb-2">Вспомогательные вещества</h3>
+                            @if (! $composition || $composition->additionalSubstance->isEmpty())
+                                <p class="text-secondary mb-0">Не указаны.</p>
+                            @else
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-vcenter mb-0">
+                                        <thead>
+                                        <tr>
+                                            <th class="w-1">#</th>
+                                            <th>Название</th>
+                                            <th>Дозировка</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach ($composition->additionalSubstance as $substance)
+                                            <tr>
+                                                <td class="text-secondary">{{ $loop->iteration }}</td>
+                                                <td>{{ $substance->substance_name }}</td>
+                                                <td>{{ $substance->substance_dosage }}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
             @endif
+        @endforeach
 
-            @if (!empty($medication->licenseAndCertification->quality_certificate))
-                <p><strong>Сертификат качества:</strong>
-                    <a href="{{ asset('storage/' . $medication->licenseAndCertification->quality_certificate) }}"
-                       target="_blank" class="btn btn-sm btn-outline-primary">
-                        <i class="bx bx-download"></i> Скачать
-                    </a>
-                </p>
-            @endif
-
-            @if (!empty($medication->licenseAndCertification->clinical_trials))
-                <p><strong>Клинические исследования:</strong>
-                    <a href="{{ asset('storage/' . $medication->licenseAndCertification->clinical_trials) }}"
-                       target="_blank" class="btn btn-sm btn-outline-primary">
-                        <i class="bx bx-download"></i> Скачать
-                    </a>
-                </p>
-            @endif
-
-            @if (!empty($medication->licenseAndCertification->registration_documents))
-                <p><strong>Регистрационные документы:</strong>
-                    <a href="{{ asset('storage/' . $medication->licenseAndCertification->registration_documents) }}"
-                       target="_blank" class="btn btn-sm btn-outline-primary">
-                        <i class="bx bx-download"></i> Скачать
-                    </a>
-                </p>
-            @endif
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-header">
-            <h5>Прочие данные</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Номер лицензии на
-                    производство:</strong> {{ $medication->additionalData->manufacturing_license_number }}</p>
-            <p><strong>Дополнительные условия использования
-                    :</strong> {{ $medication->additionalData->additional_usage_conditions }}</p>
-            <p><strong>Категория рецепта:</strong> {{ $medication->additionalData->prescription_category }}</p>
-            <p><strong>Индивидуальные особенности:</strong> {{ $medication->additionalData->specific_features }}</p>
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h2 class="card-title">Лицензии и сертификация</h2>
+                </div>
+                <div class="card-body">
+                    @forelse ($documents as $label => $path)
+                        <div @class(['d-flex align-items-center gap-2', 'mt-2' => ! $loop->first])>
+                            <span class="fw-medium text-secondary">{{ $label }}:</span>
+                            <a href="{{ asset('storage/'.$path) }}" target="_blank" rel="noopener" class="btn btn-sm ms-auto">
+                                <i class="bx bx-download" aria-hidden="true"></i>Скачать
+                            </a>
+                        </div>
+                    @empty
+                        <p class="text-secondary mb-0">Документы не загружены.</p>
+                    @endforelse
+                </div>
+            </div>
         </div>
     </div>
 @endsection

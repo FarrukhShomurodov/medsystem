@@ -3,51 +3,31 @@
 namespace App\Services;
 
 use App\Models\Service;
-use App\Models\ServiceCategory;
-use App\Models\ServiceType;
-use Illuminate\Support\Facades\DB;
 
+/**
+ * The price list stores what the cash desk charges, VAT included, exactly as the form or the
+ * import sheet gives it: orders copy services.price (ADR 0007) and billing never adjusts it.
+ */
 class ServiceService
 {
     /**
-     * @param array<string, mixed> $validated
+     * @param  array<string, mixed>  $validated
      */
     public function store(array $validated): Service
     {
-        $service = DB::transaction(function () use ($validated) {
-            if (!is_numeric($validated['service_type_id'])) {
-                $validated['service_type_id'] = ServiceType::query()->create(['name' => $validated['service_type_id']])->id;
-            }
+        return Service::query()->create($validated);
+    }
 
-            $validated['price'] -= $validated['price'] * 12 / 112;
-            return Service::query()->create($validated);
-        });
+    /**
+     * @param  array<string, mixed>  $validated
+     */
+    public function update(Service $service, array $validated): Service
+    {
+        $service->update($validated);
 
         return $service;
     }
 
-    /**
-     * @param array<string, mixed> $validated
-     */
-    public function update(Service $service, array $validated)
-    {
-        return DB::transaction(function () use ($validated, $service) {
-            if (!is_numeric($validated['service_type_id'])) {
-                $validated['service_type_id'] = ServiceType::query()->create(['name' => $validated['service_type_id']])->id;
-            }
-
-            if ($service->price !== $validated['price']) {
-                $validated['price'] -= $validated['price'] * 12 / 112;
-            }
-
-            return $service->update($validated);
-        });
-    }
-
-    /**
-     * @param Service $service
-     * @return void
-     */
     public function destroy(Service $service): void
     {
         $service->delete();

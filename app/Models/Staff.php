@@ -2,14 +2,26 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use App\Enums\Gender;
+use App\Services\Scheduling\AppointmentCalendar;
+use Carbon\CarbonInterface;
+use Database\Factories\StaffFactory;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @property Gender $gender
+ */
 class Staff extends Model
 {
+    /** @use HasFactory<StaffFactory> */
+    use HasFactory;
 
     protected $fillable = [
         'name',
@@ -22,235 +34,187 @@ class Staff extends Model
         'sign_url',
     ];
 
-    const GENDER = ['male', 'female'];
+    protected function casts(): array
+    {
+        return [
+            'gender' => Gender::class,
+        ];
+    }
 
+    /**
+     * "Last First Middle", the order staff names are shown in across the UI.
+     *
+     * @return Attribute<string, never>
+     */
+    protected function fullName(): Attribute
+    {
+        return Attribute::get(fn (): string => trim("{$this->last_name} {$this->name} {$this->middle_name}"));
+    }
+
+    /**
+     * @return HasOne<StaffContact, $this>
+     */
     public function contact(): HasOne
     {
         return $this->hasOne(StaffContact::class);
     }
 
+    /**
+     * @return HasOne<StaffDocument, $this>
+     */
     public function document(): HasOne
     {
         return $this->hasOne(StaffDocument::class);
     }
 
+    /**
+     * @return BelongsToMany<Service, $this>
+     */
     public function services(): BelongsToMany
     {
         return $this->belongsToMany(Service::class, 'staff_service_assignment', 'staff_id', 'staff_service_id');
     }
 
+    /**
+     * @return BelongsToMany<Survey, $this>
+     */
     public function surveys(): BelongsToMany
     {
         return $this->belongsToMany(Survey::class, 'staff_surveys', 'staff_id', 'survey_id');
     }
 
+    /**
+     * @return HasOne<StaffProfessionalData, $this>
+     */
     public function professionalData(): HasOne
     {
         return $this->hasOne(StaffProfessionalData::class);
     }
 
-    public function schedule(): hasMany
+    /**
+     * @return HasMany<StaffSchedule, $this>
+     */
+    public function schedule(): HasMany
     {
         return $this->hasMany(StaffSchedule::class);
     }
 
+    /**
+     * @return HasMany<StaffAbsence, $this>
+     */
     public function absence(): HasMany
     {
         return $this->hasMany(StaffAbsence::class);
     }
 
+    /**
+     * @return HasMany<Reception, $this>
+     */
     public function receptions(): HasMany
     {
         return $this->hasMany(Reception::class);
     }
 
-    public function admin(): hasOne
+    /**
+     * The login account of the employee, if they have one.
+     *
+     * @return HasOne<Admin, $this>
+     */
+    public function admin(): HasOne
     {
         return $this->hasOne(Admin::class);
     }
 
-    public function isWorkingToday(Carbon $date): bool
+    /**
+     * Staff not dismissed: the exact complement of dismissed(), so staff registered without
+     * employment documents count as employed, as they do at sign-in (Admin::active()).
+     *
+     * @param  Builder<static>  $query
+     */
+    #[Scope]
+    protected function employed(Builder $query): void
     {
-        if (!$this->document()->where('is_work', 1)->count() > 0) {
-            return false;
-        }
-
-        $dayMap = [
-            'Monday' => 'Понедельник',
-            'Tuesday' => 'Вторник',
-            'Wednesday' => 'Среда',
-            'Thursday' => 'Четверг',
-            'Friday' => 'Пятница',
-            'Saturday' => 'Суббота',
-            'Sunday' => 'Воскресенье',
-        ];
-
-        $date = Carbon::parse($date ?? now(), 'Asia/Tashkent');
-        $englishDay = $date->format('l');
-        $russianDay = $dayMap[$englishDay];
-
-        $dayOfWeekId = DayOfWeek::query()->where('name', $russianDay)->value('id');
-
-        $isScheduled = $this->schedule()->where('day_of_week_id', $dayOfWeekId)->exists();
-
-        $isAbsent = $this->absence()->where(function ($query) use ($date) {
-            $query->where(function ($q1) use ($date) {
-                $q1->where('type', 'day')->whereDate('start_date', '=', $date);
-            })
-                ->orWhere(function ($q2) use ($date) {
-                    $q2->where('type', 'period')
-                        ->whereDate('start_date', '<=', $date)
-                        ->whereDate('end_date', '>=', $date);
-                });
-        })->exists();
-
-        return $isScheduled && !$isAbsent;
+        $query->whereDoesntHave('document', fn (Builder $document) => $document->where('is_work', false));
     }
 
-
-    public function getTodayAvailability($date = null)
+    /**
+     * Staff whose dismissal is recorded on their employment documents (is_work = false); see isDismissed().
+     *
+     * @param  Builder<static>  $query
+     */
+    #[Scope]
+    protected function dismissed(Builder $query): void
     {
-        if (!$this->document()->where('is_work', 1)->exists()) {
-            return [];
-        }
-
-        if (!$this->services()->where('is_appointment', true)->exists()) {
-            return [];
-        }
-
-
-        $dayMap = [
-            'Monday' => 'Понедельник',
-            'Tuesday' => 'Вторник',
-            'Wednesday' => 'Среда',
-            'Thursday' => 'Четверг',
-            'Friday' => 'Пятница',
-            'Saturday' => 'Суббота',
-            'Sunday' => 'Воскресенье',
-        ];
-
-        $date = Carbon::parse($date ?? now(), 'Asia/Tashkent');
-
-        $englishDay = $date->format('l');
-        $russianDay = $dayMap[$englishDay];
-
-        $dayOfWeekId = DayOfWeek::query()->where('name', $russianDay)->value('id');
-
-        // Получаем все расписания на этот день
-        $schedules = $this->schedule()
-            ->where('day_of_week_id', $dayOfWeekId)
-            ->where('type', 'reception')
-            ->get();
-
-        if ($schedules->isEmpty()) {
-            return [];
-        }
-
-        // Проверка на отсутствие (отпуск и т.д.)
-        $isAbsent = $this->absence()
-            ->where(function ($query) use ($date) {
-                $query->where(function ($q1) use ($date) {
-                    $q1->where('type', 'day')->whereDate('start_date', '=', $date);
-                })
-                    ->orWhere(function ($q2) use ($date) {
-                        $q2->where('type', 'period')
-                            ->whereDate('start_date', '<=', $date)
-                            ->whereDate('end_date', '>=', $date);
-                    });
-            })->exists();
-
-        if ($isAbsent) {
-            return [];
-        }
-
-        $slots = [];
-        $intervalMinutes = $this->professionalData->admission_period;
-        $time = Carbon::createFromTime(0, 0);
-        $endOfDay = Carbon::createFromTime(23, 59);
-
-        while ($time <= $endOfDay) {
-            $isAvailable = false;
-
-            foreach ($schedules as $schedule) {
-                $startTime = Carbon::parse($schedule->start_time);
-                $endTime = Carbon::parse($schedule->end_time);
-
-                if ($time->betweenIncluded($startTime, $endTime)) {
-                    $isAvailable = true;
-                    break;
-                }
-            }
-
-            $slots[] = [
-                'time' => $time->format('H:i'),
-                'is_available' => $isAvailable,
-                'admission_period' => $intervalMinutes,
-            ];
-
-            $time->addMinutes($intervalMinutes);
-        }
-
-        return $slots;
+        $query->whereRelation('document', 'is_work', false);
     }
 
-    public function getBookedTime($date = null)
+    /**
+     * Employed staff with working or reception hours on the weekday of the date who are not absent that day.
+     *
+     * @param  Builder<static>  $query
+     */
+    #[Scope]
+    protected function workingOn(Builder $query, CarbonInterface $date): void
     {
-        if (!$this->document()->where('is_work', 1)->exists()) {
-            return [];
-        }
+        $query->employed()
+            ->whereRelation('schedule', 'day_of_week_id', DayOfWeek::idOf($date))
+            ->whereDoesntHave('absence', /** @param Builder<StaffAbsence> $absence */ fn (Builder $absence) => $absence->covering($date));
+    }
 
-        if (!$this->services()->where('is_appointment', true)->exists()) {
-            return [];
-        }
+    /**
+     * Staff whose main position is the given one (StaffPosition::DOCTOR, ...); an additional
+     * position does not count.
+     *
+     * @param  Builder<static>  $query
+     */
+    #[Scope]
+    protected function inPosition(Builder $query, int $positionId): void
+    {
+        $query->whereRelation('professionalData', 'position_id', $positionId);
+    }
 
-        $dayMap = [
-            'Monday' => 'Понедельник',
-            'Tuesday' => 'Вторник',
-            'Wednesday' => 'Среда',
-            'Thursday' => 'Четверг',
-            'Friday' => 'Пятница',
-            'Saturday' => 'Суббота',
-            'Sunday' => 'Воскресенье',
-        ];
+    /** Whether the employee works on the day by their schedule (workingOn()). */
+    public function isWorkingOn(CarbonInterface $date): bool
+    {
+        return static::query()->whereKey($this->getKey())->workingOn($date)->exists();
+    }
 
-        $date = Carbon::parse($date ?? now(), 'Asia/Tashkent');
+    /**
+     * Dismissal is recorded on the employment documents; staff registered without them count as
+     * employed. The one test of employment for a single employee, matching dismissed() and employed().
+     */
+    public function isDismissed(): bool
+    {
+        return $this->document()->where('is_work', false)->exists();
+    }
 
-        $englishDay = $date->format('l');
-        $russianDay = $dayMap[$englishDay];
+    /**
+     * Length of one appointment in minutes, or null when the employee takes no appointments.
+     */
+    public function slotMinutes(): ?int
+    {
+        $minutes = $this->professionalData?->admission_period;
 
-        $dayOfWeekId = DayOfWeek::query()->where('name', $russianDay)->value('id');
+        return $minutes > 0 ? (int) $minutes : null;
+    }
 
-        $receptions = $this->receptions()
-            ->where('status', '!=', 'cancelled')
-            ->whereDate('date', '=', $date->format('Y-m-d'))
-            ->get();
+    /**
+     * The appointment grid of the day, see AppointmentCalendar::availability().
+     *
+     * @return list<array{time: string, is_available: bool, admission_period: int}>
+     */
+    public function availabilityOn(CarbonInterface $date): array
+    {
+        return AppointmentCalendar::of($this, $date, $date)->availability($date);
+    }
 
-        if ($receptions->isEmpty()) {
-            return [];
-        }
-
-        $slots = [];
-        $intervalMinutes = $this->professionalData->admission_period;
-        $time = Carbon::createFromTime(0, 0);
-        $endOfDay = Carbon::createFromTime(23, 59);
-
-        while ($time <= $endOfDay) {
-            $reception = $receptions->first(function ($reception) use ($time, $intervalMinutes) {
-                return Carbon::parse($reception->start_time)->format('H:i') === $time->format('H:i');
-            });
-
-            $isBooked = $reception !== null;
-
-            $slots[] = [
-                'time' => $time->format('H:i'),
-                'admission_period' => $intervalMinutes,
-                'is_booked' => $isBooked,
-                'reception_id' => $isBooked ? $reception->id : null,
-            ];
-
-            $time->addMinutes($intervalMinutes);
-        }
-
-        return $slots;
+    /**
+     * The booked slots of the day, see AppointmentCalendar::bookings().
+     *
+     * @return list<array{time: string, admission_period: int, is_booked: bool, reception_id: int|null}>
+     */
+    public function bookingsOn(CarbonInterface $date): array
+    {
+        return AppointmentCalendar::of($this, $date, $date)->bookings($date);
     }
 }

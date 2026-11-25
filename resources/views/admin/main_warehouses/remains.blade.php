@@ -1,230 +1,170 @@
 @extends('admin.layouts.app')
+@use('App\Support\Display')
+@use('App\Services\Stock\StockSection')
 
-@section('title')
-    <title>MED ERA | Склад - Остатки</title>
+@section('title', 'Остатки общего склада')
+
+@section('header')
+    <x-page-header title="Остатки общего склада" pretitle="Склад и аптека">
+        <x-slot:actions>
+            @can('edit_main_warehouse')
+                <a href="{{ route('main.warehouse.receipts.goods.index') }}" class="btn btn-primary">
+                    <i class="bx bx-download" aria-hidden="true"></i>Приход
+                </a>
+            @endcan
+        </x-slot:actions>
+    </x-page-header>
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light">Остатки</span>
-    </h6>
-
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
-
-        @if(session()->has('success'))
-            <div class="alert alert-solid-success alert-dismissible d-flex align-items-center" role="alert">
-                <i class="bx bx-check-circle fs-4 me-2"></i>
-                {{ session()->get('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-    </div>
-
-    <div id="errors_alert"></div>
-
-    <div class="card shadow-sm">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Остатки </h5>
-
+    <div class="card">
+        <div class="card-header flex-wrap gap-3">
             <form method="GET" class="d-flex align-items-center gap-2">
-                <label for="type" class="form-label mb-0">Тип:</label>
-                <select name="type" id="type" class="form-select w-auto" onchange="this.form.submit()">
+                <label for="type" class="form-label mb-0">Тип</label>
+                <select name="type" id="type" class="form-select w-auto" data-autosubmit>
                     <option value="">Все</option>
-                    <option value="medications" {{ request('type') == 'medications' ? 'selected' : '' }}>Медикаменты
-                    </option>
-                    <option value="supplies" {{ request('type') == 'supplies' ? 'selected' : '' }}>Мед. принадлежности
-                    </option>
-                    <option value="household" {{ request('type') == 'household' ? 'selected' : '' }}>Хоз. материалы
-                    </option>
+                    @foreach (StockSection::cases() as $section)
+                        <option value="{{ $section->value }}" @selected($type === $section)>{{ $section->label() }}</option>
+                    @endforeach
                 </select>
+                <noscript><button type="submit" class="btn">Показать</button></noscript>
             </form>
 
-            <a href="{{ route('main.warehouse.receipts.goods.index') }}" class="btn btn-primary "
-               style="margin-right: 22px;">Приход</a>
+            @include('admin.main_warehouses._legend')
         </div>
 
-        <div class="card-header">
-            <ul class="d-flex justify-content-between align-items-center list-unstyled">
-                <li class="mb-1"><span class="badge bg-danger">Красный</span> — срок годности истекает менее чем через 30 дней</li>
-                <li class="mb-1"><span class="badge bg-warning text-dark">Жёлтый</span> — количество меньше 20</li>
-                <li class="mb-1"><span class="badge bg-danger">Красный</span> (приоритет) — если оба условия совпадают</li>
-            </ul>
-        </div>
-
-        <div class="card-datatable table-responsive">
-            <table class="datatables-users table border-top">
+        <div class="table-responsive">
+            <table class="table card-table table-vcenter">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th class="w-1">#</th>
                     <th>Тип</th>
                     <th>Название</th>
                     <th>Производитель</th>
                     <th>Форма выпуска</th>
-                    <th>Количество</th>
-{{--                    <th>Срок годности</th>--}}
-{{--                    <th>Дата поступления</th>--}}
-{{--                    <th>Партия</th>--}}
-{{--                    <th>Упаковка</th>--}}
+                    <th>Партия</th>
+                    <th>Срок годности</th>
+                    <th class="text-end">Количество</th>
                     <th>Кол-во в упаковке</th>
-{{--                    <th>Размер упаковки</th>--}}
-{{--                    <th>Дата упаковки</th>--}}
-                    <th>Розн. цена</th>
-                    <th>Опт. цена</th>
-                    <th>Наценка</th>
-                    <th>Цена вход. итого</th>
-                    <th>Цена вход. за ед.</th>
-                    <th>Сумма входящая</th>
-                    <th>Итоговая цена</th>
-{{--                    <th>Остаток на складе</th>--}}
-{{--                    <th>Поставщик</th>--}}
-                    <th></th>
+                    <th class="text-end">Розн. цена</th>
+                    <th class="text-end">Опт. цена</th>
+                    <th class="text-end">Наценка</th>
+                    <th class="text-end">Цена вход. итого</th>
+                    <th class="text-end">Цена вход. за ед.</th>
+                    <th class="text-end">Сумма входящая</th>
+                    <th class="text-end">Итоговая цена</th>
+                    <th class="w-1"><span class="visually-hidden">Действия</span></th>
                 </tr>
-
                 </thead>
                 <tbody>
                 @php $index = 1; @endphp
 
-                {{-- Медикаменты --}}
-                @foreach ($medications as $item)
+                {{-- Medication batches: one row per received batch; "мало" counts the drug's units in date over all its batches --}}
+                @foreach ($medications as $batch)
                     @php
-                        $class = '';
-
-                        $expirationDate = \Carbon\Carbon::parse($item->pivot->expiration_date);
-                        $isExpiringSoon = $expirationDate->lt(now()->addDays($item->pivot->notify_before_days));
-                        $isLowStock = $item->pivot->quantity < $item->pivot->notify_min_qty;
-
-                        if ($isExpiringSoon && $isLowStock) {
-                            $class = 'bg-danger text-white';
-                        } elseif ($isExpiringSoon) {
-                            $class = 'bg-danger text-white';
-                        } elseif ($isLowStock) {
-                            $class = 'bg-warning text-dark';
-                        }
+                        $medication = $batch->medication;
+                        $isExpired = $batch->isExpired($today);
+                        $isExpiringSoon = ! $isExpired && $medication->expiryWarningDue($batch->expiration_date, $today);
+                        $isLowStock = $medication->isLowStock($onHand[$batch->medication_id] ?? 0);
                     @endphp
-                    <tr class="{{ $class }}" onclick="window.location.href='{{ route('main.warehouse.show.medication.remain', $item->id) }}'">
-                        <td>{{ $index++ }}</td>
-                        <td><span class="badge bg-info">Медикамент</span></td>
-                        <td>{{ $item->name }}</td>
-                        <td>{{ $item->manufacturer->name }}</td>
-                        <td>{{ $item->release_form }}</td>
-                        <td>{{ $item->pivot->quantity }}</td>
-{{--                        <td>{{ $item->pivot->expiration_date?->format('d.m.Y') ?? '—' }}</td>--}}
-{{--                        <td>{{ $item->pivot->date_of_receipt ?? '—' }}</td>--}}
-{{--                        <td>{{ $item->pivot->batch_number ?? '—' }}</td>--}}
-{{--                        <td>{{ $item->pivot->packaging_type ?? '—' }}</td>--}}
-                        <td>{{ $item->pivot->quantity_per_package ?? '—' }}</td>
-{{--                        <td>{{ $item->pivot->package_size ?? '—' }}</td>--}}
-{{--                        <td>{{ $item->pivot->packaging_date ?? '—' }}</td>--}}
-                        <td>{{ $item->pivot->retail_price ?? '—' }}</td>
-                        <td>{{ $item->pivot->wholesale_price ?? '—' }}</td>
-
-                        {{-- 🔽 Новые поля --}}
-                        <td>{{ $item->pivot->markup ?? '—' }}</td>
-                        <td>{{ $item->pivot->incoming_price_total ?? '—' }}</td>
-                        <td>{{ $item->pivot->incoming_price_per_unit ?? '—' }}</td>
-                        <td>{{ $item->pivot->incoming_sum ?? '—' }}</td>
-                        <td>{{ $item->pivot->total_price ?? '—' }}</td>
-{{--                        <td>{{ $item->pivot->stock ?? '—' }}</td>--}}
-
-{{--                        <td>{{ $item->pivot->supplier?->name ?? '—' }}</td>--}}
+                    <tr @class(['table-danger' => $isExpired || $isExpiringSoon, 'fw-semibold' => $isExpired, 'table-warning' => ! $isExpired && ! $isExpiringSoon && $isLowStock])>
+                        <td class="text-secondary">{{ $index++ }}</td>
+                        <td><span class="badge bg-info-lt">Медикамент</span></td>
                         <td>
-                            <button class="btn btn-sm btn-primary" onclick="window.location.href='{{ route('main.warehouse.receipts.goods.discard', ['type' => 'medications', 'id' => $item->id]) }}'">
-                                Списать
-                            </button>
+                            <a href="{{ route('main.warehouse.show.medication.remain', $batch) }}">{{ $medication->name }}</a>
+                        </td>
+                        <td>{{ $medication->manufacturer?->name ?? '—' }}</td>
+                        <td>{{ $medication->release_form }}</td>
+                        <td class="text-nowrap">{{ $batch->batch_number }}</td>
+                        <td class="text-nowrap">
+                            {{ $batch->expiration_date->format('d.m.Y') }}
+                            @if ($isExpired)
+                                <span class="badge bg-danger text-white ms-1">просрочен</span>
+                            @elseif ($isExpiringSoon)
+                                <span class="badge bg-danger-lt ms-1">истекает</span>
+                            @endif
+                        </td>
+                        <td class="text-end text-nowrap">
+                            @if ($isLowStock)
+                                <span class="badge bg-warning-lt me-1">мало</span>
+                            @endif
+                            {{ $batch->quantity }}
+                        </td>
+                        <td>{{ $batch->quantity_per_package ?? '—' }}</td>
+                        <td class="text-end text-nowrap">{{ Display::money($batch->retail_price) }}</td>
+                        <td class="text-end text-nowrap">{{ Display::money($batch->wholesale_price) }}</td>
+                        <td class="text-end text-nowrap">{{ Display::percent($batch->markup) }}</td>
+                        <td class="text-end text-nowrap">{{ Display::money($batch->incoming_price_total) }}</td>
+                        <td class="text-end text-nowrap">{{ Display::unitPrice($batch->incoming_price_per_unit) }}</td>
+                        <td class="text-end text-nowrap">{{ Display::money($batch->incoming_sum) }}</td>
+                        <td class="text-end text-nowrap">{{ Display::money($batch->total_price) }}</td>
+                        <td>
+                            @can('edit_main_warehouse')
+                                @include('admin.main_warehouses._write_off', ['type' => StockSection::Medications, 'row' => $batch, 'name' => $medication->name, 'due' => $isExpired])
+                            @endcan
                         </td>
                     </tr>
                 @endforeach
 
-                {{-- Расходники --}}
-                @foreach ($supplies as $item)
-                    @php
-                        $class = '';
-                        $isLowStock = $item->pivot->quantity < 20;
-
-                        if ($isLowStock) {
-                            $class = 'bg-warning text-dark';
-                        }
-                    @endphp
-
-                    <tr class="{{ $class }}">
-                        <td>{{ $index++ }}</td>
-                        <td><span class="badge bg-success">Расходник</span></td>
-                        <td>{{ $item->name }}</td>
-                        <td>{{ $item->pivot->quantity }}</td>
+                @foreach ($supplies as $row)
+                    <tr @class(['table-warning' => $row->isLowStock()])>
+                        <td class="text-secondary">{{ $index++ }}</td>
+                        <td><span class="badge bg-success-lt">Расходник</span></td>
+                        <td>{{ $row->supply->name }}</td>
                         <td>—</td>
                         <td>—</td>
                         <td>—</td>
                         <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-{{--                        <td>—</td>--}}
-{{--                        <td>—</td>--}}
-{{--                        <td>—</td>--}}
-{{--                        <td>—</td>--}}
-{{--                        <td>—</td>--}}
-{{--                        <td>—</td>--}}
-                        <td>—</td>
+                        <td class="text-end text-nowrap">
+                            @if ($row->isLowStock())
+                                <span class="badge bg-warning-lt me-1">мало</span>
+                            @endif
+                            {{ $row->quantity }}
+                        </td>
+                        <td colspan="8"></td>
                         <td>
-                            <button class="btn btn-sm btn-primary" onclick="window.location.href='{{ route('main.warehouse.receipts.goods.discard', ['type' => 'supplies', 'id' => $item->id]) }}'">
-                                Списать
-                            </button>
+                            @can('edit_main_warehouse')
+                                @include('admin.main_warehouses._write_off', ['type' => StockSection::Supplies, 'row' => $row, 'name' => $row->supply->name])
+                            @endcan
                         </td>
                     </tr>
                 @endforeach
 
-                {{-- Хоз. материалы --}}
-                @foreach($household as $item)
-                    @php
-                        $class = '';
-                        $isLowStock = $item->pivot->quantity < 20;
-
-                        if ($isLowStock) {
-                            $class = 'bg-warning text-dark';
-                        }
-                    @endphp
-
-                    <tr class="{{ $class }}">
-                        <td>{{ $index++ }}</td>
-                        <td><span class="badge bg-warning">Хоз. материал</span></td>
-                        <td>{{ $item->name }}</td>
-                        <td>{{ $item->pivot->quantity }}</td>
+                @foreach ($household as $row)
+                    <tr @class(['table-warning' => $row->isLowStock()])>
+                        <td class="text-secondary">{{ $index++ }}</td>
+                        <td><span class="badge bg-warning-lt">Хоз. материал</span></td>
+                        <td>{{ $row->material->name }}</td>
                         <td>—</td>
                         <td>—</td>
+                        <td>{{ $row->material->batch_number }}</td>
                         <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-{{--                        <td>—</td>--}}
-{{--                        <td>—</td>--}}
-{{--                        <td>—</td>--}}
-{{--                        <td>—</td>--}}
-{{--                        <td>—</td>--}}
-{{--                        <td>—</td>--}}
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>—</td>
+                        <td class="text-end text-nowrap">
+                            @if ($row->isLowStock())
+                                <span class="badge bg-warning-lt me-1">мало</span>
+                            @endif
+                            {{ $row->quantity }}
+                        </td>
+                        <td colspan="8"></td>
                         <td>
-                            <button class="btn btn-sm btn-primary" onclick="window.location.href='{{ route('main.warehouse.receipts.goods.discard', ['type' => 'household', 'id' => $item->id]) }}'">
-                                Списать
-                            </button>
+                            @can('edit_main_warehouse')
+                                @include('admin.main_warehouses._write_off', ['type' => StockSection::Household, 'row' => $row, 'name' => $row->material->name])
+                            @endcan
                         </td>
                     </tr>
                 @endforeach
+
+                @if ($index === 1)
+                    <tr>
+                        <td colspan="17"><x-empty-state title="На складе ничего нет" icon="bx-store" /></td>
+                    </tr>
+                @endif
                 </tbody>
             </table>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    @include('admin.main_warehouses._autosubmit')
 @endsection

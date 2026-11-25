@@ -1,82 +1,78 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA | Переходы</title>
+@section('title', 'Заказы отделений')
+
+@section('header')
+    <x-page-header title="Заказы отделений" pretitle="Склад и аптека" />
 @endsection
 
 @section('content')
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
-
-        @if(session()->has('success'))
-            <div class="alert alert-solid-success alert-dismissible d-flex align-items-center" role="alert">
-                <i class="bx bx-check-circle fs-4 me-2"></i>
-                {{ session()->get('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-    </div>
-
-    <div class="container mt-4">
-        <h4>Переходы</h4>
-
-        @foreach($requests as $request)
-            <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between">
-                    <div>
-                        <strong>Склад:</strong> {{ $request->warehouse->name }} <br>
+    @forelse ($requests as $request)
+        @php($status = $request->status)
+        <div class="card mb-3">
+            <div class="card-header flex-wrap align-items-start gap-3">
+                <div>
+                    <h2 class="card-title">Заказ №{{ $request->id }} <x-status-badge :status="$status" class="ms-2" /></h2>
+                    <div class="text-secondary small mt-1">
+                        <strong>Склад:</strong> {{ $request->warehouse->name }}
+                        <span class="mx-1" aria-hidden="true">·</span>
                         <strong>Дата:</strong> {{ $request->created_at->format('d.m.Y H:i') }}
                     </div>
-                    <form action="{{ route('supply-requests.approve', $request->id) }}" method="POST">
-                        @csrf
-                        @if($request->status == 'pending')
-                            <button type="submit" class="btn btn-success">
-                                Принять заказ
-                            </button>
-                        @endif
-                    </form>
+                    @if ($request->rejection_reason)
+                        <div class="small mt-1"><strong>Причина отказа:</strong> {{ $request->rejection_reason }}</div>
+                    @endif
                 </div>
-
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead class="table-light">
-                        <tr>
-                            <th>Тип</th>
-                            <th>Наименование</th>
-                            <th>Количество</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($request->items as $item)
-                            <tr>
-                                <td>
-                                    @switch($item->type)
-                                        @case('medication') 🧪 Медикамент @break
-                                        @case('medical_supply') 💉 Расходник @break
-                                        @case('household_material') 🧼 Хоз. товар @break
-                                        @default ❓ Неизвестно
-                                    @endswitch
-                                </td>
-                                <td>{{ $item->supplyable->name ?? '—' }}</td>
-                                <td>{{ $item->requested_quantity }}</td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                @can('approve_supply_requests')
+                    @unless ($status->isFinal())
+                        <div class="card-actions d-flex flex-wrap align-items-start gap-2">
+                            <form action="{{ route('supply-requests.approve', $request) }}" method="POST"
+                                  data-confirm="Принять заказ? Товары будут перемещены на склад отделения." data-confirm-button="Принять">
+                                @csrf
+                                <button type="submit" class="btn btn-success text-nowrap"><i class="bx bx-check" aria-hidden="true"></i>Принять заказ</button>
+                            </form>
+                            <form action="{{ route('supply-requests.reject', $request) }}" method="POST" class="d-flex gap-2"
+                                  data-confirm="Отклонить заказ? Товары не будут перемещены." data-confirm-button="Отклонить">
+                                @csrf
+                                <label class="visually-hidden" for="reason-{{ $request->id }}">Причина отказа</label>
+                                <input type="text" id="reason-{{ $request->id }}" name="reason" class="form-control" maxlength="1000"
+                                       placeholder="Причина отказа">
+                                <button type="submit" class="btn btn-outline-danger text-nowrap">Отклонить</button>
+                            </form>
+                        </div>
+                    @endunless
+                @endcan
             </div>
-        @endforeach
 
-        @if($requests->isEmpty())
-            <div class="alert alert-info">Нет заказов в ожидании.</div>
-        @endif
-    </div>
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter">
+                    <thead>
+                    <tr>
+                        <th>Тип</th>
+                        <th>Наименование</th>
+                        <th class="text-end">Заказано</th>
+                        <th class="text-end">Отпущено</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach ($request->items as $item)
+                        <tr>
+                            <td>{{ $item->kindLabel() }}</td>
+                            <td>{{ $item->supplyable?->name ?? '—' }}</td>
+                            <td class="text-end">{{ $item->requested_quantity }}</td>
+                            <td class="text-end">{{ $item->approved_quantity ?? '—' }}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    @empty
+        <div class="card">
+            <x-empty-state title="Заказов пока нет" text="Здесь появятся заявки складов отделений на общий склад." icon="bx-cart" />
+        </div>
+    @endforelse
+
+    @if ($requests->hasPages())
+        <div class="mt-3">{{ $requests->links() }}</div>
+    @endif
 @endsection

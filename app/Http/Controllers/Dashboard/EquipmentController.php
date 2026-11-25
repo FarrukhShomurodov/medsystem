@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EquipmentRequest;
 use App\Models\Equipment;
@@ -12,19 +11,21 @@ use App\Models\Staff;
 use App\Services\EquipmentService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class EquipmentController extends Controller
+class EquipmentController extends Controller implements HasMiddleware
 {
-    protected EquipmentService $service;
+    public function __construct(private readonly EquipmentService $service) {}
 
-    public function __construct(EquipmentService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_equipments'])->only('index');
-        $this->middleware(['permission:create_equipments'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_equipments'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_equipments'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_equipments', only: ['index']),
+            new Middleware('permission:create_equipments', only: ['create', 'store']),
+            new Middleware('permission:edit_equipments', only: ['edit', 'update']),
+            new Middleware('permission:delete_equipments', only: ['destroy']),
+        ];
     }
 
     public function index(): View
@@ -48,10 +49,9 @@ class EquipmentController extends Controller
 
     public function store(EquipmentRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('equipment.index')->with('success', 'Обородувание успешно добавлена!');
+        return to_route('equipment.index')->with('success', 'Оборудование успешно добавлено!');
     }
 
     public function edit(Equipment $equipment): View
@@ -65,16 +65,15 @@ class EquipmentController extends Controller
 
     public function update(EquipmentRequest $request, Equipment $equipment): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($equipment, (array)$validated);
+        $this->service->update($equipment, $request->validated());
 
-        return redirect()->route('equipment.index')->with('success', 'Обородувание успешно обновлена!');
+        return to_route('equipment.index')->with('success', 'Оборудование успешно обновлено!');
     }
 
     public function destroy(Equipment $equipment): RedirectResponse
     {
         $this->service->destroy($equipment);
 
-        return redirect()->route('equipment.index')->with('success', 'Обородувание успешно удалена!');
+        return to_route('equipment.index')->with('success', 'Оборудование успешно удалено!');
     }
 }

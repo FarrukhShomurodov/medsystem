@@ -4,16 +4,18 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Toggles a favourite diagnosis of the signed-in admin; the admin is never taken from the request body.
+ */
 class SelectedDiagnosisRequest extends FormRequest
 {
     /**
-     * @return array<string>
+     * @return array<string, mixed>
      */
     public function rules(): array
     {
         return [
-            'admin_id' => 'required|int|exists:admins,id',
-            'diagnosis_id' => 'required|int|exists:diagnoses,id'
+            'diagnosis_id' => 'required|int|exists:diagnoses,id',
         ];
     }
 }

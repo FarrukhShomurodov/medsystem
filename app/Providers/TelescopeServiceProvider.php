@@ -2,11 +2,16 @@
 
 namespace App\Providers;
 
+use App\Models\Admin;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\Telescope;
 use Laravel\Telescope\TelescopeApplicationServiceProvider;
 
+/**
+ * Registered by AppServiceProvider in the local environment only;
+ * Telescope is a dev dependency and is absent from production installs.
+ */
 class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 {
     /**
@@ -14,20 +19,16 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      */
     public function register(): void
     {
-        // Telescope::night();
-
         $this->hideSensitiveRequestDetails();
 
         $isLocal = $this->app->environment('local');
 
-        Telescope::filter(function (IncomingEntry $entry) use ($isLocal) {
-            return $isLocal ||
-                   $entry->isReportableException() ||
-                   $entry->isFailedRequest() ||
-                   $entry->isFailedJob() ||
-                   $entry->isScheduledTask() ||
-                   $entry->hasMonitoredTag();
-        });
+        Telescope::filter(fn (IncomingEntry $entry): bool => $isLocal
+            || $entry->isReportableException()
+            || $entry->isFailedRequest()
+            || $entry->isFailedJob()
+            || $entry->isScheduledTask()
+            || $entry->hasMonitoredTag());
     }
 
     /**
@@ -55,10 +56,6 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      */
     protected function gate(): void
     {
-        Gate::define('viewTelescope', function ($user) {
-            return in_array($user->email, [
-                //
-            ]);
-        });
+        Gate::define('viewTelescope', fn (Admin $admin): bool => $admin->isMainAdmin());
     }
 }

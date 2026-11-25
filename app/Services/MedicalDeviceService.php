@@ -7,7 +7,7 @@ use App\Models\MedicalDevice;
 class MedicalDeviceService
 {
     /**
-     * @param array<string, mixed> $validated
+     * @param  array<string, mixed>  $validated
      */
     public function store(array $validated): MedicalDevice
     {
@@ -15,18 +15,15 @@ class MedicalDeviceService
     }
 
     /**
-     * @param array<string, mixed> $validated
+     * @param  array<string, mixed>  $validated
      */
     public function update(MedicalDevice $device, array $validated): MedicalDevice
     {
         $device->update($validated);
+
         return $device->refresh();
     }
 
-    /**
-     * @param MedicalDevice $device
-     * @return void
-     */
     public function destroy(MedicalDevice $device): void
     {
         $device->delete();

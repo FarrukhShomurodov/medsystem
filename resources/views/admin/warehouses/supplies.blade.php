@@ -1,46 +1,47 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA | Медикаменты склада</title>
+@section('title', 'Расходные материалы склада')
+
+@section('header')
+    <x-page-header title="Расходные материалы склада" pretitle="Склад и аптека" />
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light">Медикаменты склада</span>
-    </h6>
-
-    <div class="card shadow-sm">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Медикаменты склада </h5>
-        </div>
-        <div class="card-datatable table-responsive">
-            <table class="datatables-users table border-top">
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table card-table table-vcenter">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th class="w-1">#</th>
                     <th>Склад</th>
                     <th>Материал</th>
-                    <th>Кол-во</th>
+                    <th class="text-end">Кол-во</th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($supplies as $supply)
-                    @foreach($supply->warehouse as $warehouse)
-                        <tr>
-                            <td>{{ $supply->id }}</td>
-                            <td>
-                                <a class="text-primary"
-                                   href="{{ route('warehouses.show', $warehouse->id) }}">{{ $warehouse->name }}</a>
-                            </td>
-                            <td>{{ $supply->name }}</td>
-                            <td>{{ $warehouse->pivot->quantity }}</td>
-                        </tr>
-                @endforeach
-                @endforeach
+                @forelse ($supplies as $row)
+                    <tr>
+                        <td class="text-secondary">{{ $row->id }}</td>
+                        <td>
+                            @can('view_warehouses')
+                                <a href="{{ route('warehouses.show', $row->warehouse_id) }}">{{ $row->warehouse->name }}</a>
+                            @else
+                                {{ $row->warehouse->name }}
+                            @endcan
+                        </td>
+                        <td>{{ $row->supply->name }}</td>
+                        <td class="text-end">{{ $row->quantity }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4"><x-empty-state title="На складе нет расходных материалов" icon="bx-package" /></td>
+                    </tr>
+                @endforelse
+                </tbody>
             </table>
-            <div class="mt-4 p-1">
-                {{ $supplies->links('pagination::bootstrap-5') }}
-            </div>
         </div>
+        @if ($supplies->hasPages())
+            <div class="card-footer">{{ $supplies->links() }}</div>
+        @endif
     </div>
 @endsection

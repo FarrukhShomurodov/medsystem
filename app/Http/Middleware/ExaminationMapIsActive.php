@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\ExaminationMap;
+use App\Models\Patient;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -9,21 +11,24 @@ use Symfony\Component\HttpFoundation\Response;
 class ExaminationMapIsActive
 {
     /**
-     * @param Request $request
-     * @param Closure(Request): (Response) $next
-     * @return Response
+     * The patient and the map are the bound route parameters, never request input of the same name.
+     *
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->route()->action['as'] == 'patient.map.create' && $request->patient->examinationMaps()->where('is_active', 1)->count() >= 1) {
-            return redirect()->back()->withErrors(['Завершить работу с активной картой пациента!']);
+        $patient = $request->route('patient');
+
+        if ($request->routeIs('patient.map.create') && $patient instanceof Patient && $patient->activeExaminationMap()->exists()) {
+            return back()->withErrors(['Завершить работу с активной картой пациента!']);
         }
 
-        if ($request->route()->action['as'] == 'maps.show' || is_null($request->map)) {
+        $map = $request->route('map');
+
+        if ($request->routeIs('maps.show') || ! $map instanceof ExaminationMap) {
             return $next($request);
         }
 
-
-        return !$request->map->is_active ? redirect()->back()->withErrors(['Карта не активна!']) : $next($request);
+        return ! $map->is_active ? back()->withErrors(['Карта не активна!']) : $next($request);
     }
 }

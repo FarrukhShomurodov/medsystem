@@ -8,19 +8,21 @@ use App\Models\HouseholdMaterial;
 use App\Services\HouseholdMaterialService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class HouseholdMaterialController extends Controller
+class HouseholdMaterialController extends Controller implements HasMiddleware
 {
-    protected HouseholdMaterialService $service;
+    public function __construct(private readonly HouseholdMaterialService $service) {}
 
-    public function __construct(HouseholdMaterialService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_household_materials'])->only('index');
-        $this->middleware(['permission:create_household_materials'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_household_materials'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_household_materials'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_household_materials', only: ['index']),
+            new Middleware('permission:create_household_materials', only: ['create', 'store']),
+            new Middleware('permission:edit_household_materials', only: ['edit', 'update']),
+            new Middleware('permission:delete_household_materials', only: ['destroy']),
+        ];
     }
 
     public function index(): View
@@ -40,10 +42,9 @@ class HouseholdMaterialController extends Controller
 
     public function store(HouseholdMaterialRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('household.materials.index')->with('success', 'Хозяйственный материал успешно добавлен!');
+        return to_route('household.materials.index')->with('success', 'Хозяйственный материал успешно добавлен!');
     }
 
     public function edit(HouseholdMaterial $material): View
@@ -53,16 +54,15 @@ class HouseholdMaterialController extends Controller
 
     public function update(HouseholdMaterialRequest $request, HouseholdMaterial $material): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($material, (array)$validated);
+        $this->service->update($material, $request->validated());
 
-        return redirect()->route('household.materials.index')->with('success', 'Хозяйственный материал успешно обновлен!');
+        return to_route('household.materials.index')->with('success', 'Хозяйственный материал успешно обновлен!');
     }
 
     public function destroy(HouseholdMaterial $material): RedirectResponse
     {
         $this->service->destroy($material);
 
-        return redirect()->route('household.materials.index')->with('success', 'Хозяйственный материал успешно удален!');
+        return to_route('household.materials.index')->with('success', 'Хозяйственный материал успешно удален!');
     }
 }

@@ -9,18 +9,12 @@ use Illuminate\Http\RedirectResponse;
 
 class PatientInspectionController extends Controller
 {
-    protected PatientInspectionService $service;
-
-    public function __construct(PatientInspectionService $service)
-    {
-        $this->service = $service;
-    }
+    public function __construct(private readonly PatientInspectionService $service) {}
 
     public function store(PatientInspectionRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->back()->with('success', 'Осмотр добавлен!');
+        return back()->with('success', 'Осмотр добавлен!');
     }
 }

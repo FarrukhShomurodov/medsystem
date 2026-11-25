@@ -1,0 +1,151 @@
+// Pages of the staff and reception screens: the position form, the employee wizard and the
+// reception booking grids (resources/views/admin/{staff_positions,staffs,receptions}).
+
+// staff_positions/form: each group of permissions scrolls inside its card.
+.permission-list {
+    max-height: 18.75rem;
+    overflow-y: auto;
+}
+
+.permission-search {
+    min-width: min(100%, 15rem);
+}
+
+// staffs/form: the photo and signature previews.
+.staff-image-preview {
+    max-height: 9.375rem;
+}
+
+// staffs/form: one day of the weekly schedule. A day off, and the reception hours while they are
+// switched off, are dimmed (their fields are disabled and not sent).
+.schedule-day {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+.schedule-day.is-off .schedule-block,
+.schedule-block.is-off {
+    opacity: 0.55;
+}
+
+// receptions/appointment|calendar: the grid of slots (resources/js/pages/reception-*.js). The
+// header row and the time column stay in view while it scrolls.
+.slot-grid-scroll {
+    max-height: 70vh;
+    overflow: auto;
+
+    // Sticky cells carry their borders and cover the rows under them only in the separate border
+    // model (with collapsed borders the scrolled rows show through the header's top edge): each
+    // cell draws its right and bottom line, the card draws the outer ones.
+    .table {
+        border-collapse: separate;
+        border-spacing: 0;
+
+        > :not(caption) > * {
+            border-width: 0;
+        }
+
+        > :not(caption) > * > * {
+            border-width: 0 var(--border-width) var(--border-width) 0;
+
+            &:last-child {
+                border-right-width: 0;
+            }
+        }
+
+        > tbody > tr:last-child > * {
+            border-bottom-width: 0;
+        }
+    }
+
+    th,
+    td {
+        min-width: 8rem;
+        white-space: nowrap;
+    }
+
+    thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background-color: var(--bg-surface-secondary);
+    }
+
+    th[scope='row'],
+    thead th:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        min-width: 5rem;
+        background-color: var(--bg-surface-secondary);
+    }
+
+    thead th:first-child {
+        z-index: 3;
+    }
+}
+
+td.slot {
+    padding: 0.25rem;
+}
+
+td.slot-free {
+    color: var(--success);
+}
+
+td.slot-unavailable {
+    color: var(--danger);
+    background-color: color-mix(in srgb, var(--danger) 8%, transparent);
+}
+
+td.slot-past {
+    color: var(--secondary);
+    background-color: var(--bg-surface-secondary);
+}
+
+th.slot-today {
+    color: var(--primary);
+}
+
+// The legend above a grid: a swatch per kind of cell.
+.slot-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+}
+
+.slot-legend-item {
+    display: inline-flex;
+    gap: 0.375rem;
+    align-items: center;
+    color: var(--secondary);
+}
+
+.slot-swatch {
+    display: inline-block;
+    width: 0.875rem;
+    height: 0.875rem;
+    border: var(--border-width) solid transparent;
+    border-radius: var(--border-radius-sm);
+
+    &.slot-free {
+        background-color: var(--success);
+    }
+
+    &.slot-booked {
+        background-color: var(--info);
+    }
+
+    &.slot-unavailable {
+        background-color: color-mix(in srgb, var(--danger) 8%, transparent);
+        border-color: var(--danger);
+    }
+
+    &.slot-past {
+        background-color: var(--bg-surface-secondary);
+        border-color: var(--border-color);
+    }
+}

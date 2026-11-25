@@ -1,760 +1,270 @@
-<style>
-    :root {
-        --primary: #3a86ff;
-        --secondary: #8338ec;
-        --success: #06d6a0;
-        --danger: #ef476f;
-        --warning: #ffd166;
-        --light: #f8f9fa;
-        --dark: #212529;
-    }
-
-    body {
-        background-color: #f5f7fb;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    .section-card {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        margin-bottom: 25px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-
-    .section-card.active {
-        box-shadow: 0 8px 25px rgba(58, 134, 255, 0.2);
-        border-left: 4px solid var(--primary);
-    }
-
-    .section-header {
-        background-color: #f8fafc;
-        padding: 15px 20px;
-        border-bottom: 1px solid #e9ecef;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .section-header h5 {
-        margin: 0;
-        font-weight: 600;
-        color: #495057;
-    }
-
-    .section-content {
-        padding: 20px;
-    }
-
-    .form-label {
-        font-weight: 500;
-        color: #495057;
-        margin-bottom: 8px;
-    }
-
-    .input-group-text {
-        background-color: #e9ecef;
-        color: #6c757d;
-    }
-
-    .product-details {
-        background-color: #f8fafc;
-        border-radius: 8px;
-        padding: 15px;
-        margin-top: 20px;
-        border-left: 3px solid var(--primary);
-    }
-
-    .product-title {
-        color: var(--primary);
-        font-weight: 600;
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #dee2e6;
-    }
-
-    .sub-section-title {
-        color: var(--secondary);
-        font-weight: 600;
-        margin: 15px 0 10px;
-        font-size: 1.05rem;
-    }
-
-    .action-buttons {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 20px;
-        padding-top: 15px;
-        border-top: 1px solid #e9ecef;
-    }
-
-    .badge-count {
-        background-color: var(--primary);
-        color: white;
-        border-radius: 50%;
-        width: 24px;
-        height: 24px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
-        margin-left: 8px;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 30px;
-        color: #6c757d;
-    }
-
-    .empty-state i {
-        font-size: 3rem;
-        margin-bottom: 15px;
-        color: #dee2e6;
-    }
-
-    .toggle-icon {
-        transition: transform 0.3s ease;
-    }
-
-    .collapsed .toggle-icon {
-        transform: rotate(180deg);
-    }
-</style>
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA | Медикаменты склада</title>
+@php
+    $runningOutCount = count($remainMedications) + count($remainSupplies) + count($remainHousehold);
+
+    // The three parts of a receipt: the items picked in the select get a line each (resources/js/pages/main-warehouse-receipts.js).
+    $sections = [
+        'medications' => [
+            'title' => 'Медикаменты', 'icon' => 'bx-capsule', 'colour' => 'primary', 'select' => 'medication',
+            'label' => 'Выберите медикаменты', 'items' => $medications,
+            'empty' => 'Выберите медикаменты из списка выше, чтобы добавить их на склад',
+        ],
+        'supplies' => [
+            'title' => 'Расходные материалы', 'icon' => 'bx-injection', 'colour' => 'success', 'select' => 'supply',
+            'label' => 'Выберите расходные материалы', 'items' => $supplies,
+            'empty' => 'Выберите материалы из списка выше, чтобы добавить их на склад',
+        ],
+        'household' => [
+            'title' => 'Хозяйственные материалы', 'icon' => 'bx-brush', 'colour' => 'warning', 'select' => 'household',
+            'label' => 'Выберите хозяйственные материалы', 'items' => $householdMaterial,
+            'empty' => 'Выберите материалы из списка выше, чтобы добавить их на склад',
+        ],
+    ];
+
+    // The fields of a medication line: name => [label, required, icon, input attributes].
+    $batchFields = [
+        'quantity' => ['Количество', true, 'bx-calculator', ['type' => 'number']],
+        'expiration_date' => ['Срок годности', true, 'bx-calendar', ['type' => 'text', 'class' => 'flatpickr-date', 'placeholder' => 'ГГГГ-ММ-ДД', 'data-min-date' => today()->addDay()->toDateString()]],
+        'date_of_receipt' => ['Дата получения', true, 'bxs-truck', ['type' => 'text', 'class' => 'flatpickr-date', 'placeholder' => 'ГГГГ-ММ-ДД', 'data-max-date' => 'today']],
+        'batch_number' => ['Номер партии', true, 'bx-barcode', ['type' => 'text']],
+    ];
+    $packageFields = [
+        'quantity_per_package' => ['Кол-во в упаковке', false, 'bx-box', ['type' => 'number']],
+        'package_size' => ['Размер упаковки', false, 'bx-ruler', ['type' => 'number']],
+    ];
+    $priceFields = [
+        'retail_price' => ['Розничная цена', true, 'bx-tag', ['type' => 'number', 'step' => '0.01']],
+        'wholesale_price' => ['Закупочная цена', true, 'bx-receipt', ['type' => 'number', 'step' => '0.01']],
+    ];
+    $extraFields = [
+        'markup' => ['Наценка (%)', false, null, ['type' => 'number', 'step' => '0.01']],
+        'total_price' => ['Сумма', false, null, ['type' => 'number', 'step' => '0.01']],
+        'incoming_price_total' => ['Цена вх. (всего)', false, null, ['type' => 'number', 'step' => '0.01']],
+        'incoming_price_per_unit' => ['Цена вх. за ед.', false, null, ['type' => 'number', 'step' => '0.0001']],
+        'incoming_sum' => ['Сумма вх.', false, null, ['type' => 'number', 'step' => '0.01']],
+    ];
+@endphp
+
+@section('title', 'Приход на общий склад')
+
+@section('header')
+    <x-page-header title="Приход товаров" :breadcrumbs="['Остатки общего склада' => route('main.warehouse.remains')]">
+        <x-slot:actions>
+            <button type="submit" form="receipt-form" class="btn btn-primary"><i class="bx bx-save" aria-hidden="true"></i>Сохранить приход</button>
+        </x-slot:actions>
+    </x-page-header>
 @endsection
 
 @section('content')
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
-
-        @if(session()->has('success'))
-            <div class="alert alert-solid-success alert-dismissible d-flex align-items-center" role="alert">
-                <i class="bx bx-check-circle fs-4 me-2"></i>
-                {{ session()->get('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-    </div>
-
-    <div class="container">
-
-        <div class="accordion mb-3">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                        Заканчивающиейся позиции
-                    </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse"
-                     aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                        <table class="datatables-users table border-top">
+    <div class="accordion mb-3" id="running-out">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="running-out-heading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#running-out-list"
+                        aria-expanded="false" aria-controls="running-out-list">
+                    Заканчивающиеся позиции
+                    <span class="badge bg-warning-lt ms-2">{{ $runningOutCount }}</span>
+                </button>
+            </h2>
+            <div id="running-out-list" class="accordion-collapse collapse" aria-labelledby="running-out-heading">
+                <div class="accordion-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-vcenter mb-0">
                             <thead>
                             <tr>
-                                <th>#</th>
+                                <th class="w-1">#</th>
                                 <th>Тип</th>
                                 <th>Название</th>
-                                <th>Количество</th>
-                                <th>Срок годности</th>
-                                <th>Дата поступления</th>
-                                <th>Партия</th>
+                                <th class="text-end">Остаток</th>
                             </tr>
                             </thead>
                             <tbody>
                             @php $index = 1; @endphp
 
-                            {{-- Медикаменты --}}
-                            @foreach ($remainMedications as $item)
-                                <tr class="bg-warning text-dark">
-                                    <td>{{ $index++ }}</td>
-                                    <td><span class="badge bg-info">Медикамент</span></td>
-                                    <td>{{ $item->name }}</td>
-                                    <td>{{ $item->pivot->quantity }}</td>
-                                    <td>
-                                        {{ $item->pivot->expiration_date?->format('d.m.Y') ?? '—' }}
-                                    </td>
-                                    <td>{{ $item->pivot->date_of_receipt ?? '—' }}</td>
-                                    <td>{{ $item->pivot->batch_number ?? '—' }}</td>
+                            {{-- One row per drug: its units in date over all its batches --}}
+                            @foreach ($remainMedications as $line)
+                                <tr>
+                                    <td class="text-secondary">{{ $index++ }}</td>
+                                    <td><span class="badge bg-info-lt">Медикамент</span></td>
+                                    <td>{{ $line['medication']->name }}</td>
+                                    <td class="text-end">{{ $line['onHand'] }}</td>
                                 </tr>
                             @endforeach
 
-                            {{-- Расходники --}}
-                            @foreach ($remainSupplies as $item)
-                                <tr class="bg-warning text-dark">
-                                    <td>{{ $index++ }}</td>
-                                    <td><span class="badge bg-success">Расходник</span></td>
-                                    <td>{{ $item->name }}</td>
-                                    <td>{{ $item->pivot->quantity }}</td>
-                                    <td>—</td>
-                                    <td>—</td>
-                                    <td>—</td>
+                            @foreach ($remainSupplies as $row)
+                                <tr>
+                                    <td class="text-secondary">{{ $index++ }}</td>
+                                    <td><span class="badge bg-success-lt">Расходник</span></td>
+                                    <td>{{ $row->supply->name }}</td>
+                                    <td class="text-end">{{ $row->quantity }}</td>
                                 </tr>
                             @endforeach
 
-                            {{-- Хоз. материалы --}}
-                            @foreach($remainHousehold as $item)
-                                <tr class="bg-warning text-dark">
-                                    <td>{{ $index++ }}</td>
-                                    <td><span class="badge bg-warning">Хоз. материал</span></td>
-                                    <td>{{ $item->name }}</td>
-                                    <td>{{ $item->pivot->quantity }}</td>
-                                    <td>—</td>
-                                    <td>—</td>
-                                    <td>—</td>
+                            @foreach ($remainHousehold as $row)
+                                <tr>
+                                    <td class="text-secondary">{{ $index++ }}</td>
+                                    <td><span class="badge bg-warning-lt">Хоз. материал</span></td>
+                                    <td>{{ $row->material->name }}</td>
+                                    <td class="text-end">{{ $row->quantity }}</td>
                                 </tr>
                             @endforeach
+
+                            @if ($runningOutCount === 0)
+                                <tr>
+                                    <td colspan="4"><x-empty-state title="Всего достаточно" icon="bx-check-circle" /></td>
+                                </tr>
+                            @endif
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-
-        <form action="{{ route('main.warehouse.receipts.goods.store') }}" method="post">
-            @csrf
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <button class="btn btn-primary"><i class="fas fa-save me-2"></i>Сохранить</button>
-                </div>
-            </div>
-
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i>
-                Выберите тип товаров для добавления на склад и заполните детали прихода
-            </div>
-
-            <!-- Медикаменты -->
-            <div class="section-card" id="medications-section">
-                <div class="section-header">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="medications-toggle" checked>
-                        <label class="form-check-label" for="medications-toggle">
-                            <h5><i class="fas fa-pills me-2 text-primary"></i>Медикаменты</h5>
-                        </label>
-                    </div>
-                    <span class="badge bg-primary rounded-pill" id="medications-count">0</span>
-                </div>
-                <div class="section-content">
-                    <div class="row g-3">
-                        <div class="col-sm-12">
-                            <label class="form-label" for="medication">Выберите медикаменты</label>
-                            <select id="medication" class="form-control select2" multiple="multiple">
-                                @foreach($medications as $medication)
-                                    <option value="{{ $medication->id }}">{{ $medication->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div id="medication-details-container">
-                            <div class="empty-state">
-                                <i class="fas fa-pills"></i>
-                                <h5>Добавьте медикаменты</h5>
-                                <p class="mb-0">Выберите медикаменты из списка выше, чтобы добавить их на склад</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Расходные материалы -->
-            <div class="section-card" id="supplies-section">
-                <div class="section-header">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="supplies-toggle" checked>
-                        <label class="form-check-label" for="supplies-toggle">
-                            <h5><i class="fas fa-syringe me-2 text-success"></i>Расходные материалы</h5>
-                        </label>
-                    </div>
-                    <span class="badge bg-success rounded-pill" id="supplies-count">0</span>
-                </div>
-                <div class="section-content">
-                    <div class="row g-3">
-                        <div class="col-sm-12">
-                            <label class="form-label" for="supply">Выберите расходные материалы</label>
-                            <select id="supply" class="form-control select2" multiple="multiple">
-                                @foreach($supplies as $supply)
-                                    <option value="{{ $supply->id }}">{{ $supply->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div id="supply-details-container">
-                            <div class="empty-state">
-                                <i class="fas fa-box-open"></i>
-                                <h5>Добавьте расходные материалы</h5>
-                                <p class="mb-0">Выберите материалы из списка выше, чтобы добавить их на склад</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Хозяйственные материалы -->
-            <div class="section-card" id="household-section">
-                <div class="section-header">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="household-toggle" checked>
-                        <label class="form-check-label" for="household-toggle">
-                            <h5><i class="fas fa-broom me-2 text-warning"></i>Хозяйственные материалы</h5>
-                        </label>
-                    </div>
-                    <span class="badge bg-warning rounded-pill" id="household-count">0</span>
-                </div>
-                <div class="section-content">
-                    <div class="row g-3">
-                        <div class="col-sm-12">
-                            <label class="form-label" for="household">Выберите хозяйственные материалы</label>
-                            <select id="household" class="form-control select2" multiple="multiple">
-                                @foreach($householdMaterial as $material)
-                                    <option value="{{ $material->id }}">{{ $material->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div id="household-details-container">
-                            <div class="empty-state">
-                                <i class="fas fa-boxes"></i>
-                                <h5>Добавьте хозяйственные материалы</h5>
-                                <p class="mb-0">Выберите материалы из списка выше, чтобы добавить их на склад</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="action-buttons">
-                <button class="btn btn-primary"><i class="fas fa-save me-2"></i>Сохранить приход</button>
-            </div>
-        </form>
-
     </div>
+
+    <form id="receipt-form" action="{{ route('main.warehouse.receipts.goods.store') }}" method="POST">
+        @csrf
+
+        <div class="alert alert-info" role="note">
+            <i class="bx bx-info-circle alert-icon" aria-hidden="true"></i>
+            <div>Выберите тип товаров для добавления на склад и заполните детали прихода.</div>
+        </div>
+
+        @foreach ($sections as $key => $section)
+            <div class="card mb-3" data-receipt-section="{{ $key }}">
+                <div class="card-header">
+                    <label class="form-check form-switch m-0">
+                        <input class="form-check-input" type="checkbox" id="{{ $key }}-toggle" checked
+                               data-section-toggle aria-controls="{{ $key }}-body">
+                        <span class="form-check-label card-title">
+                            <i class="bx {{ $section['icon'] }} text-{{ $section['colour'] }} me-1" aria-hidden="true"></i>{{ $section['title'] }}
+                        </span>
+                    </label>
+                    <div class="card-actions">
+                        <span class="badge bg-{{ $section['colour'] }}-lt" title="Строк в приходе" data-section-count>0</span>
+                    </div>
+                </div>
+                <div class="card-body" id="{{ $key }}-body" data-section-body>
+                    <label class="form-label" for="{{ $section['select'] }}">{{ $section['label'] }}</label>
+                    <select id="{{ $section['select'] }}" class="form-select select2" multiple
+                            data-placeholder="Выберите товары" data-allow-clear="true" data-section-select>
+                        @foreach ($section['items'] as $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @endforeach
+                    </select>
+
+                    <div class="vstack gap-3 mt-3" data-section-lines></div>
+
+                    <div data-section-empty>
+                        <x-empty-state :title="'Добавьте '.mb_strtolower($section['title'])" :text="$section['empty']" :icon="$section['icon']" />
+                    </div>
+                </div>
+            </div>
+        @endforeach
+
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary"><i class="bx bx-save" aria-hidden="true"></i>Сохранить приход</button>
+        </div>
+    </form>
+
+    {{-- A line of the receipt. __LINE__ becomes the line's key: a running number for medications (a drug may come in
+         several batches, "+ партия"), the item's id for supplies and household materials. --}}
+    <template id="receipt-medications-line">
+        <div class="card card-sm" data-line>
+            <div class="card-status-start bg-primary"></div>
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <h3 class="card-title mb-0" data-line-title></h3>
+                    <div class="ms-auto btn-list flex-nowrap">
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-add-batch title="Ещё одна партия этого препарата">+ партия</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-icon" data-remove-line aria-label="Убрать строку">
+                            <i class="bx bx-x" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <input type="hidden" name="medications[__LINE__][id]" data-line-id>
+
+                @foreach ([['', $batchFields, 'col-md-6'], ['Упаковка', $packageFields, 'col-md-6 col-xl-4'], ['Стоимость и поставки', $priceFields, 'col-md-6 col-xl-4'], ['Дополнительные поля', $extraFields, 'col-md-6 col-xl-4']] as [$heading, $fields, $column])
+                    @if ($heading !== '')
+                        <h4 class="subheader mt-4 mb-2">{{ $heading }}</h4>
+                    @endif
+                    <div class="row g-3">
+                        @if ($heading === 'Упаковка')
+                            <div class="{{ $column }}">
+                                <label class="form-label" for="medication-__LINE__-packaging_type">Тип упаковки</label>
+                                <select id="medication-__LINE__-packaging_type" name="medications[__LINE__][packaging_type]" class="form-select">
+                                    @foreach (\App\Enums\PackagingType::options() as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
+
+                        @foreach ($fields as $name => [$label, $required, $icon, $input])
+                            @php
+                                $field = new \Illuminate\View\ComponentAttributeBag([
+                                    'id' => "medication-__LINE__-{$name}",
+                                    'name' => "medications[__LINE__][{$name}]",
+                                    ...$input,
+                                ]);
+                            @endphp
+                            <div class="{{ $column }}">
+                                <label @class(['form-label', 'required' => $required]) for="medication-__LINE__-{{ $name }}">{{ $label }}</label>
+                                @if ($icon)
+                                    <div class="input-group input-group-flat">
+                                        <span class="input-group-text"><i class="bx {{ $icon }}" aria-hidden="true"></i></span>
+                                        <input {{ $field->class('form-control') }}>
+                                    </div>
+                                @else
+                                    <input {{ $field->class('form-control') }}>
+                                @endif
+                            </div>
+                        @endforeach
+
+                        @if ($heading === 'Стоимость и поставки')
+                            <div class="{{ $column }}">
+                                <label class="form-label" for="medication-__LINE__-supplier_id">Поставщик</label>
+                                <select id="medication-__LINE__-supplier_id" name="medications[__LINE__][supplier_id]" class="form-select">
+                                    <option value="">Не указан</option>
+                                    @foreach ($suppliers as $supplier)
+                                        <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </template>
+
+    @foreach (['supplies' => 'success', 'household' => 'warning'] as $key => $colour)
+        <template id="receipt-{{ $key }}-line">
+            <div class="card card-sm" data-line>
+                <div class="card-status-start bg-{{ $colour }}"></div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <h3 class="card-title mb-0" data-line-title></h3>
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-icon ms-auto" data-remove-line aria-label="Убрать строку">
+                            <i class="bx bx-x" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <input type="hidden" name="{{ $key }}[__LINE__][id]" data-line-id>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label required" for="{{ $key }}-__LINE__-quantity">Количество</label>
+                            <div class="input-group input-group-flat">
+                                <span class="input-group-text"><i class="bx bx-calculator" aria-hidden="true"></i></span>
+                                <input type="number" id="{{ $key }}-__LINE__-quantity" name="{{ $key }}[__LINE__][quantity]" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    @endforeach
 @endsection
 
 @section('scripts')
-    <script>
-        $(document).ready(function () {
-            // Инициализация Select2
-            $('.select2').select2({
-                placeholder: "Выберите товары",
-                allowClear: true
-            });
-
-            // Инициализация Flatpickr
-            $('.form-control[type="date"]').flatpickr({
-                dateFormat: "Y-m-d",
-                locale: "ru"
-            });
-
-            // Функция для обновления счетчика
-            function updateCounter(containerId, counterId) {
-                const count = $(containerId).children('.product-details').length;
-                $(counterId).text(count);
-            }
-
-            // Переключение разделов
-            $('#medications-toggle').change(function () {
-                if (this.checked) {
-                    $('#medications-section .section-content').slideDown();
-                } else {
-                    $('#medications-section .section-content').slideUp();
-                    // Сброс выбора
-                    $('#medication').val(null).trigger('change');
-                    $('#medication-details-container').html('<div class="empty-state"><i class="fas fa-pills"></i><h5>Добавьте медикаменты</h5><p class="mb-0">Выберите медикаменты из списка выше, чтобы добавить их на склад</p></div>');
-                    $('#medications-count').text('0');
-                }
-            });
-
-            $('#supplies-toggle').change(function () {
-                if (this.checked) {
-                    $('#supplies-section .section-content').slideDown();
-                } else {
-                    $('#supplies-section .section-content').slideUp();
-                    $('#supply').val(null).trigger('change');
-                    $('#supply-details-container').html('<div class="empty-state"><i class="fas fa-box-open"></i><h5>Добавьте расходные материалы</h5><p class="mb-0">Выберите материалы из списка выше, чтобы добавить их на склад</p></div>');
-                    $('#supplies-count').text('0');
-                }
-            });
-
-            $('#household-toggle').change(function () {
-                if (this.checked) {
-                    $('#household-section .section-content').slideDown();
-                } else {
-                    $('#household-section .section-content').slideUp();
-                    $('#household').val(null).trigger('change');
-                    $('#household-details-container').html('<div class="empty-state"><i class="fas fa-boxes"></i><h5>Добавьте хозяйственные материалы</h5><p class="mb-0">Выберите материалы из списка выше, чтобы добавить их на склад</p></div>');
-                    $('#household-count').text('0');
-                }
-            });
-
-            // Шаблон для медикаментов
-            function createMedicationTemplate(id, name) {
-                return `
-        <div class="product-details" data-id="${id}">
-            <div class="d-flex justify-content-between align-items-center">
-                <h5 class="product-title">${name}</h5>
-                <button class="btn btn-sm btn-outline-danger remove-item"><i class="fas fa-times"></i></button>
-            </div>
-            <input type="hidden" name="medications[${id}][id]" value="${id}">
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label" for="quantity_${id}">Количество <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-calculator"></i></span>
-                            <input type="number" id="quantity_${id}" name="medications[${id}][quantity]" class="form-control" placeholder="Введите количество">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label" for="expiration_date_${id}">Срок годности <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                            <input type="date" id="expiration_date_${id}" name="medications[${id}][expiration_date]" class="form-control">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label" for="date_of_receipt_${id}">Дата получения <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-truck"></i></span>
-                            <input type="date" id="date_of_receipt_${id}" name="medications[${id}][date_of_receipt]" class="form-control">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label" for="batch_number_${id}">Номер партии <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-barcode"></i></span>
-                            <input type="text" id="batch_number_${id}" name="medications[${id}][batch_number]" class="form-control" placeholder="Введите номер партии">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <h6 class="sub-section-title">Упаковка</h6>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label" for="packaging_type_${id}">Тип упаковки</label>
-                        <select id="packaging_type_${id}" name="medications[${id}][packaging_type]" class="form-select">
-                            <option>блистер</option>
-                            <option>флакон</option>
-                            <option>тюбик</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label" for="quantity_per_package_${id}">Кол-во в упаковке</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-box"></i></span>
-                            <input type="number" id="quantity_per_package_${id}" name="medications[${id}][quantity_per_package]" class="form-control" placeholder="Введите количество">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label" for="package_size_${id}">Размер упаковки</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-ruler"></i></span>
-                            <input type="number" id="package_size_${id}" name="medications[${id}][package_size]" class="form-control" placeholder="Введите размер">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <h6 class="sub-section-title">Стоимость и поставки</h6>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label" for="retail_price_${id}">Розничная цена</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                            <input type="number" id="retail_price_${id}" name="medications[${id}][retail_price]" class="form-control" placeholder="Введите цену">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label" for="wholesale_price_${id}">Закупочная цена</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-file-invoice-dollar"></i></span>
-                            <input type="number" id="wholesale_price_${id}" name="medications[${id}][wholesale_price]" class="form-control" placeholder="Введите цену">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label" for="supplier_${id}">Поставщик</label>
-                        <select id="supplier_${id}" name="medications[${id}][supplier_id]" class="form-select">
-                                @foreach($suppliers as $supplier)
-                <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
-                                @endforeach
-
-                </select>
-            </div>
-        </div>
-    </div>
-
-    <h6 class="sub-section-title">Дополнительные поля</h6>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="mb-3">
-                <label class="form-label" for="markup_${id}">Наценка (%)</label>
-                        <input type="number" step="0.01" id="markup_${id}" name="medications[${id}][markup]" class="form-control" placeholder="Введите наценку">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label" for="total_price_${id}">Сумма</label>
-                        <input type="number" step="0.01" id="total_price_${id}" name="medications[${id}][total_price]" class="form-control" placeholder="Введите сумму">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label" for="incoming_price_total_${id}">Цена вх. (всего)</label>
-                        <input type="number" step="0.01" id="incoming_price_total_${id}" name="medications[${id}][incoming_price_total]" class="form-control" placeholder="Введите цену">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label" for="incoming_price_per_unit_${id}">Цена вх. за ед.</label>
-                        <input type="number" step="0.0001" id="incoming_price_per_unit_${id}" name="medications[${id}][incoming_price_per_unit]" class="form-control" placeholder="Введите цену">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label" for="incoming_sum_${id}">Сумма вх.</label>
-                        <input type="number" step="0.01" id="incoming_sum_${id}" name="medications[${id}][incoming_sum]" class="form-control" placeholder="Введите сумму">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label" for="stock_${id}">Остатки</label>
-                        <input type="number" id="stock_${id}" name="medications[${id}][stock]" class="form-control" placeholder="Введите остаток">
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-            }
-
-
-            // Шаблон для расходных материалов
-            function createSupplyTemplate(id, name) {
-                return `
-                    <div class="product-details" data-id="${id}" style="border-left-color: #06d6a0;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="product-title">${name}</h5>
-                            <button class="btn btn-sm btn-outline-danger remove-item"><i class="fas fa-times"></i></button>
-                        </div>
-                        <input type="hidden" name="supplies[${id}][id]" value="${id}">
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label" for="quantity_${id}">Количество <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-calculator"></i></span>
-                                        <input type="number" id="quantity_${id}" name="supplies[${id}][quantity]" class="form-control" placeholder="Введите количество">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // Шаблон для хозяйственных материалов
-            function createHouseholdTemplate(id, name) {
-                return `
-                    <div class="product-details" data-id="${id}" style="border-left-color: #ffd166;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="product-title">${name}</h5>
-                            <button class="btn btn-sm btn-outline-danger remove-item"><i class="fas fa-times"></i></button>
-                        </div>
-                        <input type="hidden" name="household[${id}][id]" value="${id}">
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label" for="quantity_${id}">Количество <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-calculator"></i></span>
-                                        <input type="number" id="quantity_${id}" name="household[${id}][quantity]" class="form-control" placeholder="Введите количество">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // Добавление медикамента
-            $('#medication').on('change', function () {
-                const container = $('#medication-details-container');
-                const selected = $(this).val();
-
-                if (selected && selected.length > 0) {
-                    // Удаляем пустое состояние если есть
-                    if (container.find('.empty-state').length) {
-                        container.empty();
-                    }
-
-                    // Добавляем новые элементы
-                    selected.forEach(id => {
-                        if (!container.find(`[data-id="${id}"]`).length) {
-                            const name = $(this).find('option[value="' + id + '"]').text();
-                            const template = createMedicationTemplate(id, name);
-                            container.append(template);
-                        }
-                    });
-
-                    // Удаляем элементы, которые не выбраны
-                    container.find('.product-details').each(function () {
-                        const id = $(this).data('id');
-                        if (!selected.includes(id.toString())) {
-                            $(this).remove();
-                        }
-                    });
-
-                    // Обновляем счетчик
-                    updateCounter('#medication-details-container', '#medications-count');
-                } else {
-                    container.html('<div class="empty-state"><i class="fas fa-pills"></i><h5>Добавьте медикаменты</h5><p class="mb-0">Выберите медикаменты из списка выше, чтобы добавить их на склад</p></div>');
-                    $('#medications-count').text('0');
-                }
-            });
-
-            // Добавление расходных материалов
-            $('#supply').on('change', function () {
-                const container = $('#supply-details-container');
-                const selected = $(this).val();
-
-                if (selected && selected.length > 0) {
-                    if (container.find('.empty-state').length) {
-                        container.empty();
-                    }
-
-                    selected.forEach(id => {
-                        if (!container.find(`[data-id="${id}"]`).length) {
-                            const name = $(this).find('option[value="' + id + '"]').text();
-                            const template = createSupplyTemplate(id, name);
-                            container.append(template);
-                        }
-                    });
-
-                    container.find('.product-details').each(function () {
-                        const id = $(this).data('id');
-                        if (!selected.includes(id.toString())) {
-                            $(this).remove();
-                        }
-                    });
-
-                    updateCounter('#supply-details-container', '#supplies-count');
-                } else {
-                    container.html('<div class="empty-state"><i class="fas fa-box-open"></i><h5>Добавьте расходные материалы</h5><p class="mb-0">Выберите материалы из списка выше, чтобы добавить их на склад</p></div>');
-                    $('#supplies-count').text('0');
-                }
-            });
-
-            // Добавление хозяйственных материалов
-            $('#household').on('change', function () {
-                const container = $('#household-details-container');
-                const selected = $(this).val();
-
-                if (selected && selected.length > 0) {
-                    if (container.find('.empty-state').length) {
-                        container.empty();
-                    }
-
-                    selected.forEach(id => {
-                        if (!container.find(`[data-id="${id}"]`).length) {
-                            const name = $(this).find('option[value="' + id + '"]').text();
-                            const template = createHouseholdTemplate(id, name);
-                            container.append(template);
-                        }
-                    });
-
-                    container.find('.product-details').each(function () {
-                        const id = $(this).data('id');
-                        if (!selected.includes(id.toString())) {
-                            $(this).remove();
-                        }
-                    });
-
-                    updateCounter('#household-details-container', '#household-count');
-                } else {
-                    container.html('<div class="empty-state"><i class="fas fa-boxes"></i><h5>Добавьте хозяйственные материалы</h5><p class="mb-0">Выберите материалы из списка выше, чтобы добавить их на склад</p></div>');
-                    $('#household-count').text('0');
-                }
-            });
-
-            // Удаление элемента
-            $(document).on('click', '.remove-item', function () {
-                const container = $(this).closest('.product-details');
-                const id = container.data('id');
-                const section = container.closest('.section-content');
-
-                // Удаляем элемент из выбора Select2
-                if (section.attr('id') === 'medication-details-container') {
-                    $('#medication option[value="' + id + '"]').prop('selected', false);
-                    $('#medication').trigger('change');
-                } else if (section.attr('id') === 'supply-details-container') {
-                    $('#supply option[value="' + id + '"]').prop('selected', false);
-                    $('#supply').trigger('change');
-                } else if (section.attr('id') === 'household-details-container') {
-                    $('#household option[value="' + id + '"]').prop('selected', false);
-                    $('#household').trigger('change');
-                }
-
-                container.remove();
-
-                // Обновляем счетчик
-                if (section.attr('id') === 'medication-details-container') {
-                    updateCounter('#medication-details-container', '#medications-count');
-                } else if (section.attr('id') === 'supply-details-container') {
-                    updateCounter('#supply-details-container', '#supplies-count');
-                } else if (section.attr('id') === 'household-details-container') {
-                    updateCounter('#household-details-container', '#household-count');
-                }
-
-                // Если контейнер пуст, показываем пустое состояние
-                if (section.children().length === 0) {
-                    if (section.attr('id') === 'medication-details-container') {
-                        section.html('<div class="empty-state"><i class="fas fa-pills"></i><h5>Добавьте медикаменты</h5><p class="mb-0">Выберите медикаменты из списка выше, чтобы добавить их на склад</p></div>');
-                    } else if (section.attr('id') === 'supply-details-container') {
-                        section.html('<div class="empty-state"><i class="fas fa-box-open"></i><h5>Добавьте расходные материалы</h5><p class="mb-0">Выберите материалы из списка выше, чтобы добавить их на склад</p></div>');
-                    } else if (section.attr('id') === 'household-details-container') {
-                        section.html('<div class="empty-state"><i class="fas fa-boxes"></i><h5>Добавьте хозяйственные материалы</h5><p class="mb-0">Выберите материалы из списка выше, чтобы добавить их на склад</p></div>');
-                    }
-                }
-            });
-        });
-    </script>
+    @vite('resources/js/pages/main-warehouse-receipts.js')
 @endsection

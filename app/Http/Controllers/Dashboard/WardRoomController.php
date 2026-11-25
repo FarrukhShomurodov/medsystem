@@ -8,35 +8,32 @@ use App\Models\WardRoom;
 use App\Services\WardRoomService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class WardRoomController extends Controller
+class WardRoomController extends Controller implements HasMiddleware
 {
-    protected WardRoomService $service;
+    public function __construct(private readonly WardRoomService $service) {}
 
-    public function __construct(WardRoomService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_department_rooms'])->only('index');
-        $this->middleware(['permission:create_department_rooms'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_department_rooms'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_department_rooms'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_department_rooms', only: ['index']),
+            new Middleware('permission:create_department_rooms', only: ['create', 'store']),
+            new Middleware('permission:edit_department_rooms', only: ['edit', 'update']),
+            new Middleware('permission:delete_department_rooms', only: ['destroy']),
+        ];
     }
 
     public function index(): View
     {
         $rooms = WardRoom::query()
             ->select(['id', 'room_number'])
-            ->with('beds')
-            ->orderBy('id', 'desc')
+            ->withCount('beds')
+            ->orderByDesc('id')
             ->paginate(10);
 
         return view('admin.department_rooms.index', compact('rooms'));
-    }
-
-    public function show(WardRoom $room): View
-    {
-        return view('admin.department_rooms.show', compact('room'));
     }
 
     public function create(): View
@@ -46,29 +43,29 @@ class WardRoomController extends Controller
 
     public function store(WardRoomRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('departments.room.index')->with('success', 'Палата успешно добавлена!');
+        return to_route('departments.room.index')->with('success', 'Палата успешно добавлена!');
     }
 
     public function edit(WardRoom $room): View
     {
+        $room->load('beds');
+
         return view('admin.department_rooms.edit', compact('room'));
     }
 
     public function update(WardRoomRequest $request, WardRoom $room): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($room, (array)$validated);
+        $this->service->update($room, $request->validated());
 
-        return redirect()->route('departments.room.index')->with('success', 'Палата успешно обновлена!');
+        return to_route('departments.room.index')->with('success', 'Палата успешно обновлена!');
     }
 
     public function destroy(WardRoom $room): RedirectResponse
     {
         $this->service->destroy($room);
 
-        return redirect()->route('departments.room.index')->with('success', 'Палата успешно удалена!');
+        return to_route('departments.room.index')->with('success', 'Палата успешно удалена!');
     }
 }

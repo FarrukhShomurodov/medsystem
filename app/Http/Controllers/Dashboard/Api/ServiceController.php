@@ -9,16 +9,16 @@ use Illuminate\Http\JsonResponse;
 
 class ServiceController extends Controller
 {
+    /**
+     * The active services of a type for the order form of the patient card.
+     */
     public function getByType(ServiceType $type): JsonResponse
     {
-        $query = Service::query();
-        $query->where('service_type_id', $type->id)->where('is_active', true);
-
-        if ($type->id == 4) {
-            $query->where('is_appointment', true);
-        }
-
-        $services = $query->get();
+        $services = Service::query()
+            ->whereBelongsTo($type, 'type')
+            ->where('is_active', true)
+            ->when($type->id === ServiceType::INSTRUMENTAL_STUDIES_ID, fn ($query) => $query->where('is_appointment', true))
+            ->get();
 
         return response()->json($services);
     }

@@ -9,7 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('survey_groups', function (Blueprint $table) {
+        Schema::create('survey_groups', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('survey_id')->constrained()->onDelete('cascade');
             $table->string('title');

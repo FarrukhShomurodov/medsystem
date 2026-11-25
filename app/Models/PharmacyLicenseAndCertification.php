@@ -16,6 +16,9 @@ class PharmacyLicenseAndCertification extends Model
         'compliance_standards',
     ];
 
+    /**
+     * @return BelongsTo<Pharmacy, $this>
+     */
     public function pharmacy(): BelongsTo
     {
         return $this->belongsTo(Pharmacy::class);

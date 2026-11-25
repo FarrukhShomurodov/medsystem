@@ -8,26 +8,28 @@ use App\Models\ServiceType;
 use App\Services\ServiceTypeService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ServiceTypeController extends Controller
+class ServiceTypeController extends Controller implements HasMiddleware
 {
-    protected ServiceTypeService $service;
+    public function __construct(private readonly ServiceTypeService $service) {}
 
-    public function __construct(ServiceTypeService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_service_types'])->only('index');
-        $this->middleware(['permission:create_service_types'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_service_types'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_service_types'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_service_types', only: ['index']),
+            new Middleware('permission:create_service_types', only: ['create', 'store']),
+            new Middleware('permission:edit_service_types', only: ['edit', 'update']),
+            new Middleware('permission:delete_service_types', only: ['destroy']),
+        ];
     }
 
     public function index(): View
     {
         $types = ServiceType::query()
             ->select(['id', 'name'])
-            ->orderBy('id', 'desc')
+            ->orderByDesc('id')
             ->paginate(10);
 
         return view('admin.service_types.index', compact('types'));
@@ -40,16 +42,15 @@ class ServiceTypeController extends Controller
 
     public function store(ServiceTypeRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('service.types.index')->with('success', 'Тип успешно добавлена!');
+        return to_route('service.types.index')->with('success', 'Тип услуги успешно добавлен!');
     }
 
-    public function edit(ServiceType $type)
+    public function edit(ServiceType $type): View|RedirectResponse
     {
-        if ($type->id == 1) {
-            return redirect()->back()->withErrors('Редактирования этого типа недоступно!');
+        if ($type->isSystem()) {
+            return to_route('service.types.index')->with('error', 'Этот тип услуг системный: его нельзя изменить.');
         }
 
         return view('admin.service_types.edit', compact('type'));
@@ -57,27 +58,23 @@ class ServiceTypeController extends Controller
 
     public function update(ServiceTypeRequest $request, ServiceType $type): RedirectResponse
     {
-        $validated = $request->validated();
-
-
-        if (collect(range(1, 21))->contains($type->id)) {
-            return redirect()->back()->withErrors('Редактирования этого типа недоступно!');
+        if ($type->isSystem()) {
+            return to_route('service.types.index')->with('error', 'Этот тип услуг системный: его нельзя изменить.');
         }
 
-        $this->service->update($type, (array)$validated);
+        $this->service->update($type, $request->validated());
 
-        return redirect()->route('service.types.index')->with('success', 'Тип успешно обновлена!');
+        return to_route('service.types.index')->with('success', 'Тип услуги успешно обновлен!');
     }
 
     public function destroy(ServiceType $type): RedirectResponse
     {
-
-        if (collect(range(1, 21))->contains($type->id)) {
-            return redirect()->back()->withErrors('Удаление этого типа недоступно!');
+        if ($type->isSystem()) {
+            return to_route('service.types.index')->with('error', 'Этот тип услуг системный: его нельзя удалить.');
         }
 
         $this->service->destroy($type);
 
-        return redirect()->route('service.types.index')->with('success', 'Тип успешно удалена!');
+        return to_route('service.types.index')->with('success', 'Тип услуги успешно удален!');
     }
 }

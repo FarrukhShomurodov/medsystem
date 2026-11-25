@@ -2,39 +2,47 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Exceptions\Stock\StockException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Stock\StockRemainsFilterRequest;
 use App\Http\Requests\WarehouseRequest;
 use App\Models\HouseholdMaterial;
 use App\Models\MainWarehouse;
 use App\Models\MedicalSupply;
 use App\Models\Medication;
-use App\Models\Supplier;
 use App\Models\Warehouse;
 use App\Models\WarehouseAccounting;
+use App\Models\WarehouseMedicalSupply;
 use App\Models\WarehouseType;
+use App\Queries\Stock\RemainsQuery;
 use App\Services\WarehouseService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class WarehouseController extends Controller
+class WarehouseController extends Controller implements HasMiddleware
 {
-    protected WarehouseService $service;
+    public function __construct(private readonly WarehouseService $service) {}
 
-    public function __construct(WarehouseService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_warehouses'])->only('index');
-        $this->middleware(['permission:create_warehouses'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_warehouses'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_warehouses'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_warehouses', only: ['index']),
+            new Middleware('permission:view_warehouses', only: ['show']),
+            new Middleware('permission:create_warehouses', only: ['create', 'store']),
+            new Middleware('permission:edit_warehouses', only: ['edit', 'update']),
+            new Middleware('permission:delete_warehouses', only: ['destroy']),
+        ];
     }
 
     public function index(): View
     {
         $warehouses = Warehouse::query()
             ->select(['id', 'name', 'warehouse_type_id'])
+            ->with('type')
             ->orderBy('id', 'desc')
             ->paginate(10);
 
@@ -43,145 +51,111 @@ class WarehouseController extends Controller
 
     public function show(Warehouse $warehouse): View
     {
+        $warehouse->load(['type', 'contact', 'capacity', 'storageHandling']);
+
         return view('admin.warehouses.show', compact('warehouse'));
     }
 
     public function create(): View
     {
-        $types = WarehouseType::query()->get();
-        $medications = Medication::query()->get();
-        $suppliers = Supplier::query()->get();
-        $supplies = MedicalSupply::query()->get();
-
-        return view('admin.warehouses.create', compact('types', 'medications', 'suppliers', 'supplies'));
+        return view('admin.warehouses.create', ['types' => WarehouseType::query()->get()]);
     }
 
     public function store(WarehouseRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('warehouses.index')->with('success', 'Склад успешно добавлен!');
+        return to_route('warehouses.index')->with('success', 'Склад успешно добавлен!');
     }
 
     public function edit(Warehouse $warehouse): View
     {
-        $types = WarehouseType::query()->get();
-        $medications = Medication::query()->get();
-        $suppliers = Supplier::query()->get();
-        $supplies = MedicalSupply::query()->get();
-
-        return view('admin.warehouses.edit', compact('warehouse', 'types', 'medications', 'suppliers', 'supplies'));
+        return view('admin.warehouses.edit', ['warehouse' => $warehouse, 'types' => WarehouseType::query()->get()]);
     }
 
     public function update(WarehouseRequest $request, Warehouse $warehouse): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($warehouse, (array)$validated);
+        try {
+            $this->service->update($warehouse, $request->validated());
+        } catch (StockException $e) {
+            return back()->withInput()->withErrors(['warehouse_type_id' => $e->getMessage()]);
+        }
 
-        return redirect()->route('warehouses.index')->with('success', 'Склад успешно обновлен!');
+        return to_route('warehouses.index')->with('success', 'Склад успешно обновлен!');
     }
 
     public function destroy(Warehouse $warehouse): RedirectResponse
     {
         $this->service->destroy($warehouse);
 
-        return redirect()->route('warehouses.index')->with('success', 'Склад успешно удален!');
+        return to_route('warehouses.index')->with('success', 'Склад успешно удален!');
     }
 
-
-    public function remains(Request $request): View
+    /**
+     * What is left in the department warehouses (one of them with ?warehouse_id=). A batch is
+     * marked "мало" by the units its drug has in date in that warehouse over all its batches.
+     */
+    public function remains(StockRemainsFilterRequest $request, RemainsQuery $remains): View
     {
-        $warehouse = MainWarehouse::query()->first();
-        $type = request('type');
-        $medications = collect();
-        $supplies = collect();
-        $household = collect();
+        $section = $request->section();
+        $today = today();
 
-        if (!$type || $type === 'medications') {
-            $medications = WarehouseAccounting::with('medication')
-                ->when($request->filled('warehouse_id'), function ($q) use ($request) {
-                    $q->where('warehouse_id', $request->input('warehouse_id'));
-                })
-                ->with('warehouse')
-                ->get();
-        }
-
-        if (!$type || $type === 'supplies') {
-            $supplies = MedicalSupply::with([
-                'warehouse' => function ($q) {
-                    $q->withPivot('quantity');
-                }
-            ])
-                ->when($request->filled('warehouse_id'), function ($q) use ($request) {
-                    $q->whereHas('warehouse', function ($query) use ($request) {
-                        $query->where('warehouses.id', $request->input('warehouse_id'));
-                    });
-                })
-                ->get();
-        }
-
-        if (!$type || $type === 'household') {
-            $household = HouseholdMaterial::with([
-                'warehouse' => function ($q) {
-                    $q->withPivot('quantity');
-                }
-            ])
-                ->when($request->filled('warehouse_id'), function ($q) use ($request) {
-                    $q->whereHas('warehouse', function ($query) use ($request) {
-                        $query->where('warehouses.id', $request->input('warehouse_id'));
-                    });
-                })
-                ->get();
-        }
-
-        return view('admin.warehouses.remains', compact(
-            'warehouse', 'medications', 'supplies', 'household', 'type'
-        ));
+        return view('admin.warehouses.remains', [
+            'type' => $section,
+            'today' => $today,
+            ...$remains->departmentWarehouses($section, $request->warehouseId(), $today),
+        ]);
     }
 
+    /** Medication batches of the department warehouses, earliest expiry first. */
     public function medications(Request $request): View
     {
-        $accountings = WarehouseAccounting::with('medication')
-            ->when($request->filled('warehouse_id'), function ($q) use ($request) {
-                $q->where('warehouse_id', $request->input('warehouse_id'));
-            })
-            ->with('packaging')
-            ->with('warehouse')
-            ->with('medicationCost')
-            ->orderBy('expiration_date', 'ASC')
-            ->paginate(30);
+        $accountings = $this->inWarehouse(WarehouseAccounting::query()->with(['medication', 'warehouse']), $request)
+            ->orderBy('expiration_date')
+            ->orderBy('id')
+            ->paginate(30)
+            ->withQueryString();
 
         return view('admin.warehouses.medications', compact('accountings'));
     }
 
     public function supplies(Request $request): View
     {
-        $supplies = MedicalSupply::with([
-            'warehouse' => function ($q) {
-                $q->withPivot('quantity');
-            }
-        ])
-            ->when($request->filled('warehouse_id'), function ($q) use ($request) {
-                $q->whereHas('warehouse', function ($query) use ($request) {
-                    $query->where('warehouses.id', $request->input('warehouse_id'));
-                });
-            })
-            ->paginate(30);
+        $supplies = $this->inWarehouse(WarehouseMedicalSupply::query()->with(['supply', 'warehouse']), $request)
+            ->orderBy('id')
+            ->paginate(30)
+            ->withQueryString();
 
         return view('admin.warehouses.supplies', compact('supplies'));
     }
 
+    /** The supply request form: items the main warehouse has in stock, by warehouse type. */
     public function orderShow(): View
     {
-        $medications = Medication::query()->whereHas('mainWarehouses')->get();
-        $supplies = MedicalSupply::query()->whereHas('mainWarehouses')->get();
-        $householdMaterial = HouseholdMaterial::query()->whereHas('mainWarehouses')->get();
+        return view('admin.warehouses.order', [
+            'medications' => Medication::query()->inMainWarehouseStock()->orderBy('name')->get(['id', 'name']),
+            'supplies' => MedicalSupply::query()
+                ->whereHas('mainWarehouses', fn (Builder $warehouses) => $warehouses
+                    ->where('main_warehouses.id', MainWarehouse::MAIN)
+                    ->where('main_warehouse_medical_supplies.quantity', '>', 0))
+                ->orderBy('name')->get(['id', 'name']),
+            'householdMaterial' => HouseholdMaterial::query()
+                ->whereHas('mainWarehouses', fn (Builder $warehouses) => $warehouses
+                    ->where('main_warehouses.id', MainWarehouse::MAIN)
+                    ->where('main_warehouse_household_materials.quantity', '>', 0))
+                ->orderBy('name')->get(['id', 'name']),
+            'warehouses' => Warehouse::query()->whereIn('warehouse_type_id', array_keys(WarehouseType::STOCK_ITEMS))->orderBy('name')->get(),
+        ]);
+    }
 
-        $warehouses = Warehouse::query()->get();
-
-        return view(
-            'admin.warehouses.order',
-            compact('medications',  'supplies', 'householdMaterial', 'warehouses'));
+    /**
+     * @template TModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  Builder<TModel>  $rows
+     * @return Builder<TModel>
+     */
+    private function inWarehouse(Builder $rows, Request $request): Builder
+    {
+        return $rows->when($request->integer('warehouse_id'), fn (Builder $query, int $warehouseId) => $query->where('warehouse_id', $warehouseId));
     }
 }

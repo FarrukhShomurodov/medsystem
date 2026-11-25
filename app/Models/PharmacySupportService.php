@@ -13,6 +13,16 @@ class PharmacySupportService extends Model
         'medication_consultation_available',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'medication_consultation_available' => 'boolean',
+        ];
+    }
+
+    /**
+     * @return BelongsTo<Pharmacy, $this>
+     */
     public function pharmacy(): BelongsTo
     {
         return $this->belongsTo(Pharmacy::class);

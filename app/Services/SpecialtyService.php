@@ -7,7 +7,7 @@ use App\Models\Specialty;
 class SpecialtyService
 {
     /**
-     * @param array<string, mixed> $validated
+     * @param  array{name: string}  $validated
      */
     public function store(array $validated): Specialty
     {
@@ -15,17 +15,17 @@ class SpecialtyService
     }
 
     /**
-     * @param array<string, mixed> $validated
+     * @param  array{name: string}  $validated
      */
     public function update(Specialty $specialty, array $validated): Specialty
     {
         $specialty->update($validated);
-        return $specialty->refresh();
+
+        return $specialty;
     }
 
     /**
-     * @param Specialty $specialty
-     * @return void
+     * A specialty held by staff is protected by ON DELETE RESTRICT.
      */
     public function destroy(Specialty $specialty): void
     {

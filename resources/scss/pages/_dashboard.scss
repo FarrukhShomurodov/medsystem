@@ -1,0 +1,23 @@
+// The dashboard home (resources/views/admin/dashboard.blade.php and admin/dashboard/*).
+
+// Figures line up digit under digit (Inter's tabular figures): counts, amounts, times and dates.
+.dashboard-figure {
+    font-variant-numeric: tabular-nums;
+}
+
+// The text column of a tile or a list row may shrink, so a long amount wraps and a long name is cut
+// with an ellipsis (.text-truncate) instead of pushing the card wider than a phone screen.
+.dashboard-shrink {
+    min-width: 0;
+}
+
+// A tile fills the height of its row, whatever the length of the line under its figure.
+.dashboard-tile {
+    height: 100%;
+}
+
+// The statuses above the day's appointments wrap onto several lines on a phone.
+.dashboard-statuses .list-inline-item {
+    margin-block: 0.125rem;
+    margin-inline-end: 1rem;
+}

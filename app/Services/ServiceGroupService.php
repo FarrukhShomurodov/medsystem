@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class ServiceGroupService
 {
     /**
-     * @param array<string, mixed> $validated
+     * @param  array<string, mixed>  $validated
      */
     public function store(array $validated): ServiceGroup
     {
@@ -28,9 +28,11 @@ class ServiceGroupService
     }
 
     /**
-     * @param ServiceGroup $group
-     * @param array<string, mixed> $validated
-     * @return ServiceGroup
+     * Saves the subgroups as the form lists them: one with an id is renamed (ServiceGroupRequest
+     * has checked it is one of this group's), one without is added, and the subgroups the form no
+     * longer lists are deleted. Only the ids of rows saved here are kept, never a posted one.
+     *
+     * @param  array<string, mixed>  $validated
      */
     public function update(ServiceGroup $group, array $validated): ServiceGroup
     {
@@ -39,36 +41,23 @@ class ServiceGroupService
                 'name' => $validated['name'],
             ]);
 
-            $submittedIds = [];
+            $savedIds = [];
 
-            foreach ($validated['sub_groups'] as $sub_group) {
-                if (isset($sub_group['id'])) {
-                    $group->subGroups()->updateOrCreate(
-                        ['id' => $sub_group['id']],
-                        ['name' => $sub_group['name']]
-                    );
-                    $submittedIds[] = $sub_group['id'];
-                } else {
-                    $newBed = $group->subGroups()->create([
-                        'name' => $sub_group['name'],
-                    ]);
-                    $submittedIds[] = $newBed->id;
-                }
+            foreach ($validated['sub_groups'] as $subGroup) {
+                $row = isset($subGroup['id']) ? $group->subGroups()->whereKey($subGroup['id'])->firstOrFail() : $group->subGroups()->make();
+                $row->fill(['name' => $subGroup['name']])->save();
+                $savedIds[] = $row->id;
             }
 
-            $group->subGroups()->whereNotIn('id', $submittedIds)->delete();
+            $group->subGroups()->whereNotIn('id', $savedIds)->delete();
 
             return $group->refresh();
         });
     }
 
-    /**
-     * @param ServiceGroup $group
-     * @return void
-     */
     public function destroy(ServiceGroup $group): void
     {
-        DB::transaction(function () use ($group) {
+        DB::transaction(function () use ($group): void {
             $group->subGroups()->delete();
             $group->delete();
         });

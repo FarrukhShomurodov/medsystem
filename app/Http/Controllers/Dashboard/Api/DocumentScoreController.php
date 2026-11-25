@@ -3,29 +3,33 @@
 namespace App\Http\Controllers\Dashboard\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\DocumentScore;
+use App\Models\Document;
+use App\Models\DocumentResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class DocumentScoreController extends Controller
 {
-    public function getActions(int $documentId, int $score): JsonResponse
+    /**
+     * The score range of a filled-in document with its recommended actions, and the actions
+     * already done for this response (not for other patients with the same range). Only for a
+     * sheet the nurse window shows the account (DocumentResponsePolicy).
+     */
+    public function getActions(Document $document, DocumentResponse $response): JsonResponse
     {
-        $matching = DocumentScore::query()
-            ->where('document_id', $documentId)
-            ->where(function ($query) use ($score) {
-                $query->where('from_score', '<=', $score)
-                    ->where(function ($q) use ($score) {
-                        $q->where('to_score', '>=', $score)
-                            ->orWhereNull('to_score');
-                    });
-            })
-            ->with('finished')
+        Gate::authorize('trackActions', $response);
+
+        $range = $document->scores()
+            ->containing($response->total_score)
             ->with('actions')
             ->first();
 
-        return response()->json(
-            $matching ?? [],
-        );
+        if ($range === null) {
+            return response()->json([]);
+        }
+
+        $range->setRelation('finished', $response->finishedScore()->where('document_score_id', $range->id)->get());
+
+        return response()->json($range);
     }
 }

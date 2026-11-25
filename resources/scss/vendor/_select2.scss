@@ -1,0 +1,195 @@
+// select2 (MIT) dressed as a Tabler .form-select. No maintained Bootstrap 5 theme exists, so the
+// default theme is loaded and these rules give it Tabler's sizes, borders, focus ring and dropdown.
+
+@use '@tabler/core/scss/config' as tb;
+@use 'select2/dist/css/select2.css' as *;
+
+// app.js makes every select2 as wide as its column (width: '100%'), like a .form-select.
+.select2-container--default {
+    .select2-selection--single,
+    .select2-selection--multiple {
+        min-height: tb.$input-height;
+        font-size: tb.$input-font-size;
+        background-color: tb.$input-bg;
+        border: var(--border-width) solid tb.$input-border-color;
+        border-radius: tb.$input-border-radius;
+        transition:
+            border-color 0.15s ease-in-out,
+            box-shadow 0.15s ease-in-out;
+    }
+
+    .select2-selection--single {
+        display: flex;
+        align-items: center;
+
+        .select2-selection__rendered {
+            flex: 1;
+            padding-inline: tb.$input-padding-x 2.25rem;
+            line-height: tb.$input-line-height;
+            color: tb.$input-color;
+        }
+
+        .select2-selection__placeholder {
+            color: tb.$input-placeholder-color;
+        }
+
+        .select2-selection__clear {
+            margin-inline-end: 0.25rem;
+            font-size: 1.125rem;
+            color: var(--secondary);
+        }
+
+        .select2-selection__arrow {
+            top: 0;
+            right: 0.5rem;
+            height: 100%;
+
+            b {
+                border-color: var(--secondary) transparent transparent;
+            }
+        }
+    }
+
+    .select2-selection--multiple {
+        padding: 0.125rem 0.375rem;
+
+        .select2-selection__rendered {
+            display: inline;
+        }
+
+        .select2-selection__choice {
+            margin: 0.1875rem 0.25rem 0 0;
+            padding: 0 0.5rem 0 1.25rem;
+            font-size: tb.$font-size-sm;
+            line-height: 1.5rem;
+            color: var(--primary);
+            background-color: color-mix(in oklab, var(--primary) 10%, var(--bg-surface));
+            border: 0;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .select2-selection__choice__remove {
+            top: 50%;
+            translate: 0 -50%;
+            height: 1.25rem;
+            padding: 0 0.375rem;
+            color: inherit;
+            border: 0;
+            background: transparent;
+
+            &:hover,
+            &:focus {
+                color: var(--danger);
+                background: transparent;
+            }
+        }
+
+        .select2-search__field {
+            margin-top: 0.3125rem;
+            font-family: inherit;
+        }
+    }
+
+    &.select2-container--focus,
+    &.select2-container--open {
+        .select2-selection--single,
+        .select2-selection--multiple {
+            border-color: tb.$input-focus-border-color;
+            box-shadow: 0 0 0 0.25rem color-mix(in oklab, var(--primary) 25%, transparent);
+            outline: 0;
+        }
+    }
+
+    &.select2-container--disabled {
+        .select2-selection--single,
+        .select2-selection--multiple {
+            background-color: tb.$input-disabled-bg;
+            cursor: not-allowed;
+        }
+    }
+
+    .select2-dropdown {
+        z-index: 1060; // above a Bootstrap modal (1055), which hosts its own dropdownParent
+        background-color: var(--bg-surface);
+        border: var(--border-width) solid var(--border-color);
+        border-radius: tb.$input-border-radius;
+        box-shadow: var(--shadow-dropdown);
+    }
+
+    .select2-search--dropdown {
+        padding: 0.5rem;
+
+        .select2-search__field {
+            padding: 0.375rem 0.625rem;
+            font-family: inherit;
+            color: tb.$input-color;
+            background-color: tb.$input-bg;
+            border: var(--border-width) solid tb.$input-border-color;
+            border-radius: var(--border-radius-sm);
+            outline: 0;
+
+            &:focus {
+                border-color: tb.$input-focus-border-color;
+            }
+        }
+    }
+
+    .select2-results > .select2-results__options {
+        max-height: 16rem;
+        padding: 0.25rem 0;
+    }
+
+    .select2-results__option {
+        padding: 0.375rem 0.75rem;
+        font-size: tb.$input-font-size;
+
+        &--selectable {
+            cursor: pointer;
+        }
+
+        &--selected {
+            color: var(--primary);
+            background-color: var(--active-bg);
+        }
+
+        &--highlighted.select2-results__option--selectable {
+            color: var(--body-color);
+            background-color: var(--hover-bg);
+        }
+
+        &--disabled {
+            color: var(--disabled-color);
+        }
+    }
+
+    .select2-results__group {
+        padding: 0.375rem 0.75rem 0.25rem;
+        font-size: tb.$font-size-sm;
+        font-weight: var(--font-weight-medium);
+        color: var(--secondary);
+    }
+}
+
+// Validation state of the underlying <select> (Laravel's @error adds .is-invalid to it).
+.is-invalid + .select2-container--default {
+    .select2-selection--single,
+    .select2-selection--multiple {
+        border-color: var(--danger);
+    }
+}
+
+// Inside an input group the select2 takes the remaining width like a .form-control.
+.input-group > .select2-container--default {
+    flex: 1 1 auto;
+    width: 1% !important;
+
+    &:not(:last-child) .select2-selection {
+        border-start-end-radius: 0;
+        border-end-end-radius: 0;
+    }
+
+    &:not(:first-child) .select2-selection {
+        border-start-start-radius: 0;
+        border-end-start-radius: 0;
+    }
+}

@@ -14,4 +14,3 @@ class MedicationAdditionalData extends Model
         'specific_features',
     ];
 }
-

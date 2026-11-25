@@ -2,37 +2,38 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Exceptions\ServiceImportValidationException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DiagnosisRequest;
+use App\Http\Requests\ImportSpreadsheetRequest;
 use App\Imports\DiagnosisImport;
 use App\Models\Diagnosis;
 use App\Models\Survey;
 use App\Services\DiagnosisService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Maatwebsite\Excel\Facades\Excel;
 
-class DiagnosisController extends Controller
+class DiagnosisController extends Controller implements HasMiddleware
 {
-    protected DiagnosisService $service;
+    public function __construct(private readonly DiagnosisService $service) {}
 
-    public function __construct(DiagnosisService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_diagnoses'])->only('index');
-        $this->middleware(['permission:create_diagnoses'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_diagnoses'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_diagnoses'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_diagnoses', only: ['index']),
+            new Middleware('permission:create_diagnoses', only: ['create', 'store']),
+            new Middleware('permission:edit_diagnoses', only: ['edit', 'update']),
+            new Middleware('permission:delete_diagnoses', only: ['destroy']),
+        ];
     }
 
     public function index(): View
     {
         $diagnoses = Diagnosis::query()
             ->select(['id', 'name', 'code'])
-            ->orderBy('id', 'desc')
+            ->orderByDesc('id')
             ->paginate(10);
 
         return view('admin.diagnoses.index', compact('diagnoses'));
@@ -40,56 +41,48 @@ class DiagnosisController extends Controller
 
     public function create(): View
     {
-        return view('admin.diagnoses.create',);
+        return view('admin.diagnoses.create');
     }
 
     public function store(DiagnosisRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('diagnoses.index')->with('success', 'Диагноз успешно добавлен!');
+        return to_route('diagnoses.index')->with('success', 'Диагноз успешно добавлен!');
     }
 
     public function edit(Diagnosis $diagnosis): View
     {
+        $diagnosis->load('surveys');
         $surveys = Survey::query()->get();
+
         return view('admin.diagnoses.edit', compact('diagnosis', 'surveys'));
     }
 
-    public function update(diagnosisRequest $request, Diagnosis $diagnosis): RedirectResponse
+    public function update(DiagnosisRequest $request, Diagnosis $diagnosis): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($diagnosis, (array)$validated);
+        $this->service->update($diagnosis, $request->validated());
 
-        return redirect()->route('diagnoses.index')->with('success', 'Диагноз  успешно обновлен!');
+        return to_route('diagnoses.index')->with('success', 'Диагноз успешно обновлен!');
     }
 
     public function destroy(Diagnosis $diagnosis): RedirectResponse
     {
         $this->service->destroy($diagnosis);
 
-        return redirect()->route('diagnoses.index')->with('success', 'Диагноз успешно удален!');
+        return to_route('diagnoses.index')->with('success', 'Диагноз успешно удален!');
     }
-
 
     public function showImportDiagnosis(): View
     {
         return view('admin.diagnoses.import');
     }
 
-    public function importDiagnosis(Request $request)
+    public function importDiagnosis(ImportSpreadsheetRequest $request): RedirectResponse
     {
-        $request->validate([
-            'file' => 'required|file|mimes:xlsx,csv,xls',
-        ]);
+        $import = new DiagnosisImport;
+        Excel::import($import, $request->file('file'));
 
-        try {
-            Excel::import(new DiagnosisImport(), $request->file('file'));
-        } catch (ServiceImportValidationException $e) {
-            return back()->withErrors(['import_error' => $e->getMessage()]);
-        }
-
-        return redirect()->route('diagnoses.index')->with('success', 'Успешно импортированы.');
+        return $import->report()->flashTo(to_route('diagnoses.index'));
     }
 }

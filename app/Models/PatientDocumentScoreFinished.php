@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * A recommended action of a score range that the nurse marked as done for a filled-in document.
+ */
 class PatientDocumentScoreFinished extends Model
 {
     protected $fillable = [
@@ -12,12 +15,17 @@ class PatientDocumentScoreFinished extends Model
         'document_action_id',
     ];
 
-    public static function storeFromRequest(array $data): self
+    /**
+     * Marking an action done twice (a double click, a retried request) keeps one record.
+     *
+     * @param  array{document_response_id: int, document_score_id: int, document_action_id: int}  $data
+     */
+    public static function markDone(array $data): self
     {
-        return self::create([
-            'document_response_id' => $data['document_response_id'],
-            'document_score_id' => $data['document_score_id'],
-            'document_action_id' => $data['document_action_id'],
+        return self::query()->firstOrCreate([
+            'document_response_id' => (int) $data['document_response_id'],
+            'document_score_id' => (int) $data['document_score_id'],
+            'document_action_id' => (int) $data['document_action_id'],
         ]);
     }
 }

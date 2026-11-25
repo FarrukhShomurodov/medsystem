@@ -1,81 +1,57 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA | Производители</title>
+@section('title', 'Производители')
+
+@section('header')
+    <x-page-header title="Производители" pretitle="Склад и аптека">
+        <x-slot:actions>
+            @can('create_manufacturers')
+                <a href="{{ route('manufacturers.create') }}" class="btn btn-primary"><i class="bx bx-plus" aria-hidden="true"></i>Создать</a>
+            @endcan
+        </x-slot:actions>
+    </x-page-header>
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light">Производители</span>
-    </h6>
-
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
-
-        @if(session()->has('success'))
-            <div class="alert alert-solid-success alert-dismissible d-flex align-items-center" role="alert">
-                <i class="bx bx-check-circle fs-4 me-2"></i>
-                {{ session()->get('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-    </div>
-
-    <div id="errors_alert"></div>
-
-    <div class="card shadow-sm">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Производители</h5>
-            <a href="{{ route('manufacturers.create') }}" class="btn btn-primary "
-               style="margin-right: 22px;">Создать</a>
-        </div>
-        <div class="card-datatable table-responsive">
-            <table class="datatables-users table border-top">
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table card-table table-vcenter">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th class="w-1">#</th>
                     <th>Название</th>
                     <th>Страна производства</th>
-                    <th></th>
+                    <th class="w-1"><span class="visually-hidden">Действия</span></th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($manufacturers as $manufacturer)
+                @forelse ($manufacturers as $manufacturer)
                     <tr>
-                        <td>{{ $manufacturer->id }}</td>
+                        <td class="text-secondary">{{ $manufacturer->id }}</td>
                         <td>{{ $manufacturer->name }}</td>
                         <td>{{ $manufacturer->country_of_manufacture }}</td>
                         <td>
-                            <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-warning"
-                                        onclick="location.href='{{ route('manufacturers.edit', $manufacturer->id) }}'">
-                                    Редактировать
-                                </button>
-                                <form action="{{ route('manufacturers.destroy', $manufacturer->id) }}" method="POST"
-                                      style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-danger">
-                                        Удалить
-                                    </button>
-                                </form>
+                            <div class="table-actions">
+                                @can('edit_manufacturers')
+                                    <a href="{{ route('manufacturers.edit', $manufacturer->id) }}" class="btn btn-sm">Изменить</a>
+                                @endcan
+                                @can('delete_manufacturers')
+                                    <x-delete-button :action="route('manufacturers.destroy', $manufacturer->id)"
+                                                     :confirm="'Удалить производителя «'.$manufacturer->name.'»? Действие нельзя отменить.'" />
+                                @endcan
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="4"><x-empty-state text="Добавьте первого производителя." icon="bx-buildings" /></td>
+                    </tr>
+                @endforelse
                 </tbody>
             </table>
-            <div class="mt-4 p-1">
-                {{ $manufacturers->links('pagination::bootstrap-5') }}
-            </div>
         </div>
+        @if ($manufacturers->hasPages())
+            <div class="card-footer">{{ $manufacturers->links() }}</div>
+        @endif
     </div>
 @endsection

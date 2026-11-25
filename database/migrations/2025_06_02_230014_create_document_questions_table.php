@@ -1,19 +1,18 @@
 <?php
 
-use App\Models\Document;
-use App\Models\DocumentQuestion;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
-        Schema::create('document_questions', function (Blueprint $table) {
+        Schema::create('document_questions', function (Blueprint $table): void {
             $table->id();
-            $table->foreignIdFor(Document::class);
+            $table->foreignId('document_id');
             $table->string('question');
-            $table->enum('type', [DocumentQuestion::TYPE]);
+            $table->enum('type', ['choice', 'boolean', 'text']);
             $table->json('options')->nullable();
 
             $table->timestamps();

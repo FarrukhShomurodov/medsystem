@@ -13,7 +13,7 @@ class ManufacturerRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'country_of_manufacture' => 'required|string|max:255'
+            'country_of_manufacture' => 'required|string|max:255',
         ];
     }
 }

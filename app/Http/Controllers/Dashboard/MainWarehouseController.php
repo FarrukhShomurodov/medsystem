@@ -4,124 +4,81 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MainWarehouseReceiptsGoodsRequest;
+use App\Http\Requests\Stock\StockRemainsFilterRequest;
 use App\Models\HouseholdMaterial;
 use App\Models\MainWarehouse;
+use App\Models\MainWarehouseMedication;
 use App\Models\MedicalSupply;
 use App\Models\Medication;
 use App\Models\Supplier;
-use App\Models\WarehouseAccounting;
-use App\Services\MainWarehouseService;
+use App\Queries\Stock\RemainsQuery;
+use App\Services\Stock\MainWarehouseService;
+use App\Services\Stock\StockSection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class MainWarehouseController extends Controller
 {
-    protected MainWarehouseService $service;
+    public function __construct(
+        private readonly MainWarehouseService $service,
+        private readonly RemainsQuery $remains,
+    ) {}
 
-    public function __construct(MainWarehouseService $service)
+    /**
+     * What is left in the main warehouse: medication batches, supplies and household materials.
+     * A batch is marked "мало" by the units its drug has in date over all its batches (onHand).
+     */
+    public function remains(StockRemainsFilterRequest $request): View
     {
-        $this->service = $service;
-    }
+        $section = $request->section();
+        $today = today();
 
-    public function remains(): View
-    {
-        $warehouse = MainWarehouse::query()->first();
-        $type = request('type');
-
-        $medications = collect();
-        $supplies = collect();
-        $household = collect();
-
-        if (!$type || $type === 'medications') {
-            $medications = $warehouse->medication()->withPivot([
-                'quantity', 'expiration_date', 'date_of_receipt', 'batch_number',
-                'retail_price', 'wholesale_price', 'supplier_id',
-                'packaging_type', 'quantity_per_package', 'package_size', 'packaging_date'
-            ])->get();
-        }
-
-        if (!$type || $type === 'supplies') {
-            $supplies = $warehouse->medicalSupplies()->get();
-        }
-
-        if (!$type || $type === 'household') {
-            $household = $warehouse->householdMaterial()->get();
-        }
-
-        return view('admin.main_warehouses.remains', compact(
-            'warehouse', 'medications', 'supplies', 'household', 'type'
-        ));
-    }
-
-    public function showMedicationRemain($medicationId): \Illuminate\Contracts\View\View
-    {
-        $warehouse = MainWarehouse::query()->first();
-
-        $pivot = $warehouse->medication()
-            ->where('medication_id', $medicationId)
-            ->first()?->pivot;
-
-        if ($pivot) {
-            $pivot->load('supplier');
-        }
-
-        return view('admin.main_warehouses.medication_show', [
-            'medication' => $pivot,
+        return view('admin.main_warehouses.remains', [
+            'type' => $section,
+            'today' => $today,
+            ...$this->remains->mainWarehouse($section, $today),
         ]);
     }
 
-
-
-    public function receiptsGoods(): View
+    public function showMedicationRemain(MainWarehouseMedication $batch): View
     {
-        $warehouse = MainWarehouse::query()->first();
-        $type = request('type');
+        abort_unless($batch->main_warehouse_id === MainWarehouse::MAIN, 404);
 
-        $remainMedications = collect();
-        $remainSupplies = collect();
-        $remainHousehold = collect();
+        $batch->load(['medication.manufacturer', 'supplier']);
 
-        if (!$type || $type === 'medications') {
-            $remainMedications = $warehouse->medication()->withPivot([
-                'quantity', 'expiration_date', 'date_of_receipt', 'batch_number',
-                'retail_price', 'wholesale_price', 'supplier_id',
-                'packaging_type', 'quantity_per_package', 'package_size', 'packaging_date',
-                'markup', 'markup', 'incoming_price_total', 'incoming_price_per_unit ', 'incoming_sum', 'total_price', 'stock',
+        return view('admin.main_warehouses.medication_show', compact('batch'));
+    }
 
-            ])->wherePivot('quantity', '<', 20)->get();
-        }
+    /** The receipt form, under the items the main warehouse runs low on. */
+    public function receiptsGoods(StockRemainsFilterRequest $request): View
+    {
+        $runningLow = $this->remains->runningLowInMainWarehouse($request->section(), today());
 
-        if (!$type || $type === 'supplies') {
-            $remainSupplies = $warehouse->medicalSupplies()->wherePivot('quantity', '<', 20)->get();
-        }
-
-        if (!$type || $type === 'household') {
-            $remainHousehold = $warehouse->householdMaterial()->wherePivot('quantity', '<', 20)->get();
-        }
-
-        $medications = Medication::query()->get();
-        $suppliers = Supplier::query()->get();
-        $supplies = MedicalSupply::query()->get();
-        $householdMaterial = HouseholdMaterial::query()->get();
-
-        return view(
-            'admin.main_warehouses.receipts_goods',
-            compact('medications', 'suppliers', 'supplies', 'householdMaterial', 'remainMedications', 'remainSupplies', 'remainHousehold')
-        );
+        return view('admin.main_warehouses.receipts_goods', [
+            'remainMedications' => $runningLow['medications'],
+            'remainSupplies' => $runningLow['supplies'],
+            'remainHousehold' => $runningLow['household'],
+            'medications' => Medication::query()->orderBy('name')->get(['id', 'name']),
+            'suppliers' => Supplier::query()->orderBy('name')->get(['id', 'name']),
+            'supplies' => MedicalSupply::query()->orderBy('name')->get(['id', 'name']),
+            'householdMaterial' => HouseholdMaterial::query()->orderBy('name')->get(['id', 'name']),
+        ]);
     }
 
     public function receiptsGoodsStore(MainWarehouseReceiptsGoodsRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->storeGoods((array)$validated);
+        $this->service->storeGoods($request->validated());
 
-        return redirect()->route('main.warehouse.remains')->with(['success' => 'Товары успешно добавлены!']);
+        return to_route('main.warehouse.remains')->with('success', 'Приход товаров принят на склад.');
     }
 
-    public function discardGood(string $type, $id): RedirectResponse
+    /** An unknown section in the URL is a 404 (implicit enum binding). */
+    public function discardGood(StockSection $type, int $id): RedirectResponse
     {
-        $this->service->discardGood($type, $id);
+        $row = $this->service->writeOff($type, $id);
+        $name = $row->getRelation('stockItem')?->getAttribute('name') ?? '';
 
-        return redirect()->route('main.warehouse.remains')->with(['success' => 'Товар был списан со склада!']);
+        return to_route('main.warehouse.remains')
+            ->with('success', "Списано со склада: «{$name}», {$row->getAttribute('quantity')} шт.");
     }
 }

@@ -2,21 +2,17 @@
 
 namespace App\Http\Controllers\Dashboard\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Survey;
 use Illuminate\Http\JsonResponse;
 
-class SurveyController
+class SurveyController extends Controller
 {
     public function getQuestions(Survey $survey): JsonResponse
     {
-        $groups = $survey->groups()->with('questions')->get();
-        $standaloneQuestions = $survey->questions()
-            ->whereNull('group_id')
-            ->get();
-
         return response()->json([
-            'groups' => $groups,
-            'standalone_questions' => $standaloneQuestions
+            'groups' => $survey->groups()->with('questions')->get(),
+            'standalone_questions' => $survey->questions()->whereNull('group_id')->get(),
         ]);
     }
 }

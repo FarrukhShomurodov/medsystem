@@ -1,523 +1,297 @@
 @extends('admin.layouts.app')
-<style>
-    .tab {
-        padding: 10px 15px;
-        cursor: pointer;
-        background-color: #f1f1f1;
-        margin-right: 5px;
-        border-radius: 5px;
-    }
+@use('App\Support\Display')
 
-    .tab.active {
-        background-color: #007bff;
-        color: #fff;
-    }
+@php
+    $fullName = $patient->full_name;
+    // Sections of the vital signs panel (NurseWindowController::MENU): icon and colour of each.
+    $sectionIcons = [
+        'general' => ['bx-line-chart', 'bg-green-lt'],
+        'breathing_rate' => ['bx-line-chart', 'bg-azure-lt'],
+        'consciousness' => ['bx-brain', 'bg-purple-lt'],
+        'oxygen_type' => ['bx-wind', 'bg-orange-lt'],
+        'total_score' => ['bx-star', 'bg-red-lt'],
+    ];
+    $journalColumns = [
+        'systolic' => 'Систолическое АД', 'diastolic' => 'Диастолическое АД', 'pulse' => 'Пульс',
+        'temperature' => 'Температура', 'saturation' => 'Сатурация', 'breathing_rate' => 'ЧДД',
+        'consciousness' => 'Сознание', 'oxygen_type' => 'Кислород/воздух', 'urine_balance' => 'Диурез',
+        'total_score' => 'Общий балл',
+    ];
+    $responses = $examinationMap->documentResponses;
+@endphp
 
-    .tab-content {
-        display: none;
-    }
+@section('title', "Сестринское окно: {$fullName}")
 
-    .tab-content.active {
-        display: block;
-    }
-
-    .status-indicator {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        margin-right: 5px;
-    }
-
-    .status-indicator.pending {
-        background: orange;
-    }
-
-    .status-indicator.completed {
-        background: green;
-    }
-
-    .status-indicator.not-completed {
-        background: red;
-    }
-</style>
+@section('header')
+    <x-page-header :title="$fullName" :breadcrumbs="['Сестринское окно' => route('sister.window.index')]">
+        <x-slot:actions>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addParameterModal">
+                <i class="bx bx-plus" aria-hidden="true"></i>Добавить данные
+            </button>
+            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#treatmentPlanModal">
+                <i class="bx bx-list-check" aria-hidden="true"></i>План лечения
+            </button>
+        </x-slot:actions>
+    </x-page-header>
+@endsection
 
 @section('content')
+    <script type="application/json" id="vital-signs-data">@json($jsChartData)</script>
 
-    <div class="telegram-alert alert-info">🩺 Новое: ЭКГ в 10:00</div>
-    <div class="telegram-alert alert-success">🔬 Лаб. анализ: ОАК</div>
-    <div class="telegram-alert alert-warning">💉 Инъекция: Цефтриаксон</div>
-
-    <style>
-        .telegram-alert {
-            border-radius: 10px;
-            padding: 10px 15px;
-            font-size: 15px;
-            margin-bottom: 8px;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-        }
-    </style>
-
-    <div class="card">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Пациенты </h5>
+    <div class="row row-cards" id="nurse-window"
+         data-actions-url="{{ route('api.document-scores.actions', ['document' => '__document__', 'response' => '__response__']) }}"
+         data-finish-url="{{ route('api.document-actions.finish') }}">
+        <div class="col-12">
+            @include('admin.sister_window.partials.patients', ['patients' => $patients, 'current' => $patient->id])
         </div>
-        <div class="card-datatable table-responsive">
-            <table class="datatables-users table border-top">
-                <thead>
-                <tr>
-                    <th>ФИО / ID</th>
-                    <th>№ Палаты</th>
-                    <th>Возраст</th>
-                    <th>Вес</th>
-                    <th>Рост и ИМТ</th>
-                    <th>Дней в стационаре</th>
-                    <th>Аллергия</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($patients as $p)
-                    <tr class="patient-row cursor-pointer @if($patient->id == $p->id) bg-warning text-dark @endif"
-                        onclick="window.location.href='{{ route('sister.window.show',$p->id) }}'">
-                        <td>{{ $p->first_name }} {{ $p->last_name }} {{ $p->middle_name }}
-                            ID{{ $p->id }}</td>
-                        <td>-</td>
-                        <td>{{ \Carbon\Carbon::parse($p->birth_date)->age }} лет</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>{{ \Carbon\Carbon::parse($p->admission_date)->age }}</td>
-                        <td>-</td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
 
-
-    <div class="text-end">
-        <button type="button" class="btn btn-primary mt-4" data-bs-toggle="modal"
-                data-bs-target="#addParameterModal">
-            Добавить данные
-        </button>
-
-        <button type="button" class="btn btn-primary mt-4" data-bs-toggle="modal"
-                data-bs-target="#treatmentPlanModal">
-            План лечения
-        </button>
-    </div>
-
-    {{-- Контейнер со страницей --}}
-    <div class="card mt-4">
-        <div class="row card-body">
-            {{-- Меню слева --}}
-            <div class="col-md-3">
-                <div class="list-group mb-4" id="parameter-menu"
-                     style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-                    @foreach($menu as $key => $item)
-                        <button
-                            class="list-group-item list-group-item-action d-flex align-items-center p-3 position-relative @if($loop->first) active @endif"
-                            data-target="{{ $key }}"
-                            style="
-                                @if($item['graphic']) border-left: 4px solid #4CAF50; @endif
-                                transition: all 0.3s ease;
-                                border: none;
-                                border-bottom: 1px solid #f0f0f0;
-                            ">
-                            <div class="d-flex align-items-center w-100">
-                                <div class="parameter-icon me-3" style="
-                                        width: 36px;
-                                        height: 36px;
-                                        background: #f5f7fa;
-                                        border-radius: 10px;
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;
-                                        transition: all 0.3s ease;
-                                    ">
-                                    @switch($key)
-                                        @case('general')
-                                            <i class='bx bx-line-chart'
-                                               style="color: #4CAF50; font-size: 1.2rem;"></i>
-                                            @break
-                                        @case('breathing_rate')
-                                            <i class='bx bx-line-chart'
-                                               style="color: #2196F3; font-size: 1.2rem;"></i>
-                                            @break
-                                        @case('consciousness')
-                                            <i class='bx bx-brain'
-                                               style="color: #9C27B0; font-size: 1.2rem;"></i>
-                                            @break
-                                        @case('oxygen_type')
-                                            <i class='bx bx-wind'
-                                               style="color: #FF9800; font-size: 1.2rem;"></i>
-                                            @break
-                                        @case('total_score')
-                                            <i class='bx bx-star'
-                                               style="color: #FF5722; font-size: 1.2rem;"></i>
-                                            @break
-                                    @endswitch
-                                </div>
-
-                                <span class="fw-medium">{{ $item['label'] }}</span>
-
-                                <div class="ms-auto">
-                                    <span class="badge bg-light text-dark rounded-pill" style="
-                                        background: rgba(0,0,0,0.05) !important;
-                                        font-weight: 500;
-                                        font-size: 0.8rem;
-                                    ">
-                                        {{ $loop->iteration }}
-                                    </span>
-                                </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header"><h2 class="card-title">Показатели</h2></div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="nav flex-column nav-pills gap-1" role="tablist" aria-orientation="vertical" aria-label="Показатели">
+                                @foreach ($menu as $key => $item)
+                                    @php [$icon, $tone] = $sectionIcons[$key] ?? ['bx-line-chart', 'bg-secondary-lt']; @endphp
+                                    <button type="button" id="vital-tab-{{ $key }}" role="tab"
+                                            @class(['nav-link d-flex align-items-center gap-2 text-start', 'active' => $loop->first])
+                                            data-bs-toggle="pill" data-bs-target="#vital-{{ $key }}" aria-controls="vital-{{ $key }}"
+                                            aria-selected="{{ $loop->first ? 'true' : 'false' }}">
+                                        <span class="avatar avatar-sm {{ $tone }}" aria-hidden="true"><i class="bx {{ $icon }}"></i></span>
+                                        {{ $item['label'] }}
+                                    </button>
+                                @endforeach
                             </div>
-
-                            <div class="active-indicator position-absolute end-0 me-3" style="
-                                    opacity: 0;
-                                    transform: translateX(-10px);
-                                    transition: all 0.3s ease;
-                            ">
-                                <i class="bi bi-chevron-right"></i>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="tab-content">
+                                @foreach ($menu as $key => $item)
+                                    <div id="vital-{{ $key }}" role="tabpanel" aria-labelledby="vital-tab-{{ $key }}" tabindex="0"
+                                         @class(['tab-pane fade', 'show active' => $loop->first])>
+                                        <div class="vital-chart" data-chart="{{ $key }}"></div>
+                                    </div>
+                                @endforeach
                             </div>
-                        </button>
-                    @endforeach
-                </div>
-            </div>
-
-            {{-- Секции графиков --}}
-            <div class="col-md-9">
-                {{-- Общие данные (mixed chart) --}}
-                <div id="general" class="chart-section mb-4">
-                    <div id="generalChart"></div>
-                </div>
-
-                {{-- Одиночные --}}
-                <div id="breathing_rate" class="chart-section d-none mb-4">
-                    <div id="breathingChart"></div>
-                </div>
-                <div id="consciousness" class="chart-section d-none mb-4">
-                    <div id="consciousnessChart"></div>
-                </div>
-                <div id="oxygen_type" class="chart-section d-none mb-4">
-                    <div id="oxygenChart"></div>
-                </div>
-                <div id="total_score" class="chart-section d-none mb-4">
-                    <div id="totalChart"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="card mt-4">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Журнал </h5>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header"><h2 class="card-title">Журнал</h2></div>
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter">
+                        <thead>
+                        <tr>
+                            <th>Дата / время</th>
+                            @foreach ($journalColumns as $columnLabel)
+                                <th>{{ $columnLabel }}</th>
+                            @endforeach
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @forelse ($records as $record)
+                            <tr>
+                                <td class="text-nowrap">{{ $record->datetime }}</td>
+                                @foreach (array_keys($journalColumns) as $column)
+                                    <td>{{ $record->{$column} }}</td>
+                                @endforeach
+                            </tr>
+                        @empty
+                            <tr><td colspan="{{ count($journalColumns) + 1 }}"><x-empty-state title="Измерений пока нет" icon="bx-pulse" /></td></tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="card-datatable table-responsive">
-            <table class="datatables-users table border-top">
-                <thead>
-                <tr>
-                    <th>Дата/Время</th>
-                    <th>Систолическое АД</th>
-                    <th>Диастолическое АД</th>
-                    <th>Пульс</th>
-                    <th>Температура</th>
-                    <th>Сатурация</th>
-                    <th>ЧДД</th>
-                    <th>Сознание</th>
-                    <th>Кислород/воздух</th>
-                    <th>Диурез</th>
-                    <th>Общий балл</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($records as $r)
-                    <tr>
-                        <td>{{ $r->datetime }}</td>
-                        <td>{{ $r->systolic }}</td>
-                        <td>{{ $r->diastolic }}</td>
-                        <td>{{ $r->pulse }}</td>
-                        <td>{{ $r->temperature }}</td>
-                        <td>{{ $r->saturation }}</td>
-                        <td>{{ $r->breathing_rate }}</td>
-                        <td>{{ $r->consciousness }}</td>
-                        <td>{{ $r->oxygen_type }}</td>
-                        <td>{{ $r->urine_balance }}</td>
-                        <td>{{ $r->total_score }}</td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
 
-    <div class="card mt-4">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Документы</h5>
-        </div>
-        <div class="card-datatable table-responsive">
-            <table class="datatables-users table border-top">
-                <thead>
-                <tr>
-                    <th></th>
-                    @foreach($examinationMap->documentResponse as $response)
-                        <th>{{ \Carbon\Carbon::parse($response->created_at)->format('Y-m-d') }}</th>
-                    @endforeach
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($documents as $document)
-                    <tr>
-                        <td>
-                            <a href="{{ route('documents.show', ['document' => $document->id , 'patient_id' => $patient->id] ) }}">
-                                <strong>{{ $document->title }}</strong>
-                            </a>
-                        </td>
-
-
-                        @foreach($examinationMap->documentResponse as $response)
-                            @if($response->document_id == $document->id)
-                                <td class="cursor-pointer"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#recommendActionModal"
-                                    data-document-id="{{ $response->document_id }}"
-                                    data-response-id="{{ $response->id }}">
-                                    {{ $response->total_score }}
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header"><h2 class="card-title">Документы</h2></div>
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter">
+                        <thead>
+                        <tr>
+                            <th>Документ</th>
+                            @foreach ($responses as $response)
+                                <th class="text-nowrap">{{ Display::date($response->created_at) }}</th>
+                            @endforeach
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach ($documents as $document)
+                            <tr>
+                                <td>
+                                    <a href="{{ route('documents.show', ['document' => $document->id, 'patient_id' => $patient->id]) }}">
+                                        <strong>{{ $document->title }}</strong>
+                                    </a>
                                 </td>
-                            @else
-                                <td></td>
-                            @endif
+                                @foreach ($responses as $response)
+                                    <td>
+                                        @if ($response->document_id == $document->id)
+                                            <button type="button" class="btn btn-sm btn-ghost-primary"
+                                                    data-bs-toggle="modal" data-bs-target="#recommendActionModal"
+                                                    data-document-id="{{ $response->document_id }}" data-response-id="{{ $response->id }}"
+                                                    aria-label="Рекомендованные действия: {{ $document->title }}, {{ $response->total_score }} баллов">
+                                                {{ $response->total_score }}
+                                            </button>
+                                        @endif
+                                    </td>
+                                @endforeach
+                            </tr>
                         @endforeach
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="modal fade" id="addParameterModal" tabindex="-1" aria-hidden="true">
+    <div class="modal modal-blur fade" id="addParameterModal" tabindex="-1" aria-labelledby="addParameterModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Добавить данные пациента</h5>
+                    <h2 class="modal-title" id="addParameterModalTitle">Добавить данные пациента</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
-                <div class="modal-body">
-                    <form action="{{ route('patient.vital.parameters.store',$patient->id) }}"
-                          method="post">
-                        @csrf
-
+                <form action="{{ route('patient.vital.parameters.store', $patient->id) }}" method="POST" class="modal-form">
+                    @csrf
+                    <div class="modal-body">
                         <div class="row g-3">
-                            @foreach($vitalParameters as $param)
-                                <div class="col-md-6 flex-fill">
+                            @foreach ($vitalParameters as $param)
+                                <div class="col-md-6">
                                     <label for="param_{{ $param->id }}" class="form-label">{{ $param->name }}</label>
-                                    <input
-                                        type="number"
-                                        step="0.1"
-                                        name="parameters[{{ $param->id }}]"
-                                        id="param_{{ $param->id }}"
-                                        class="form-control"
-                                        value="{{ old('parameters.' . $param->id) }}"
-                                    >
+                                    <input type="number" step="0.1" name="parameters[{{ $param->id }}]" id="param_{{ $param->id }}"
+                                           class="form-control @error('parameters.'.$param->id) is-invalid @enderror"
+                                           value="{{ old('parameters.'.$param->id) }}">
+                                    @error('parameters.'.$param->id)<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                             @endforeach
                         </div>
-
-                        <div class="text-end mt-3">
-                            <button type="submit" class="btn btn-primary">Сохранить</button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="treatmentPlanModal" tabindex="-1" aria-hidden="true">
+    <div class="modal modal-blur fade" id="treatmentPlanModal" tabindex="-1" aria-labelledby="treatmentPlanModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">План лечения пациента</h5>
+                    <h2 class="modal-title" id="treatmentPlanModalTitle">План лечения пациента</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="container">
-                        <div class="tabs d-flex mb-3" style="border: none">
-                            <div class="tab active" onclick="switchTab('medications')">Лист назначение</div>
-                            <div class="tab" onclick="switchTab('procedures')">Манипуляции</div>
-                            <div class="tab" onclick="switchTab('researches')">Исследования</div>
-                        </div>
+                    {{-- The orders of the open stay: every order made during a stay is attached to it. --}}
+                    <ul class="nav nav-tabs mb-3" role="tablist">
+                        @foreach (['medications' => 'Лист назначения', 'procedures' => 'Манипуляции', 'researches' => 'Исследования'] as $tab => $tabLabel)
+                            <li class="nav-item" role="presentation">
+                                <button type="button" id="plan-tab-{{ $tab }}" role="tab" @class(['nav-link', 'active' => $loop->first])
+                                        data-bs-toggle="tab" data-bs-target="#{{ $tab }}" aria-controls="{{ $tab }}"
+                                        aria-selected="{{ $loop->first ? 'true' : 'false' }}">{{ $tabLabel }}</button>
+                            </li>
+                        @endforeach
+                    </ul>
 
-                        <!-- Препараты -->
-                        <div id="medications" class="tab-content active">
-                            <table class="table table-bordered">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Дата и время назначения</th>
-                                    <th>Название препарата, Доза, Путь введения, Время приема ( час:мин)</th>
-                                    <th>Дата</th>
-                                    <th>Статус</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($patientMedicationsAllMedications as $index => $medication)
+                    <div class="tab-content">
+                        <div id="medications" class="tab-pane fade show active" role="tabpanel" aria-labelledby="plan-tab-medications" tabindex="0">
+                            <div class="table-responsive">
+                                <table class="table table-vcenter">
+                                    <thead>
                                     <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $medication->pivot->created_at }}</td>
-                                        <td>
-                                            {{ $medication->name }}, {{ $medication->pivot->dosage }}, {{ \App\Models\PatientMedication::ADMISSION_RULE_LABELS[$medication->pivot->admission_rules] ?? $medication->pivot->admission_rules }} ,
-
-                                            @foreach(explode(',', $medication->pivot->admission_period) as $time)
-                                                <span class="badge bg-primary p-2">{{ $time }}</span>
-                                            @endforeach
-                                        </td>
-
-                                        <td>{{ $medication->pivot->date_of_end }}</td>
-
-                                        <td>
-                                            @php
-                                                $status = $medication->pivot->status;
-                                                $label = \App\Models\PatientMedication::STATUS_LABELS[$status] ?? $status;
-                                                $icon = \App\Models\PatientMedication::STATUS_ICONS[$status] ?? 'fa-question';
-                                                $color = \App\Models\PatientMedication::STATUS_COLORS[$status] ?? 'text-secondary';
-                                            @endphp
-
-                                            <i class="fas {{ $icon }} {{ $color }}" title="{{ $label }}"></i>
-                                            {{ $label }}
-                                        </td>
+                                        <th class="w-1">#</th>
+                                        <th>Дата и время назначения</th>
+                                        <th>Препарат, доза, правило и время приёма (ч:мин)</th>
+                                        <th>Дата</th>
+                                        <th>Статус</th>
                                     </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                    @forelse ($examinationMap->patientMedications as $prescription)
+                                        <tr>
+                                            <td class="text-secondary">{{ $loop->iteration }}</td>
+                                            <td class="text-nowrap">{{ \Carbon\Carbon::parse($prescription->created_at)->format('d.m.Y H:i') }}</td>
+                                            <td>
+                                                {{ $prescription->medication->name }}, {{ $prescription->dosage }}, {{ $prescription->admission_rules->label() }}
+                                                <div class="tag-list mt-1">
+                                                    @foreach (array_filter(explode(',', (string) $prescription->admission_period)) as $time)
+                                                        <span class="badge bg-primary-lt">{{ $time }}</span>
+                                                    @endforeach
+                                                </div>
+                                            </td>
+                                            <td class="text-nowrap">{{ Display::date($prescription->date_of_end) }}</td>
+                                            <td class="text-nowrap">
+                                                <x-status-icon :status="$prescription->status" decorative />
+                                                {{ $prescription->status->label() }}
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr><td colspan="5"><x-empty-state title="Препараты не назначены" icon="bx-capsule" /></td></tr>
+                                    @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
-                        <!-- Манипуляции -->
-                        <div id="procedures" class="tab-content">
-                            <table class="table table-bordered">
-                                <thead>
-                                <tr>
-                                    <th>Время</th>
-                                    <th>Манипуляция</th>
-                                    <th>Статус</th>
-                                    <th>Действия</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>07:30</td>
-                                    <td>Забор крови на биохимию</td>
-                                    <td><span class="status-indicator completed"></span>Выполнено</td>
-                                    <td>
-                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
-                                        </button>
-                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
-                                        <input type="text" class="form-control mt-1 reason-input"
-                                               placeholder="Причина отказа..." style="display:none;"></td>
-                                </tr>
-                                <tr>
-                                    <td>09:00</td>
-                                    <td>Инъекция цефтриаксона</td>
-                                    <td><span class="status-indicator completed"></span>Выполнено</td>
-                                    <td>
-                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
-                                        </button>
-                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
-                                        <input type="text" class="form-control mt-1 reason-input"
-                                               placeholder="Причина отказа..." style="display:none;"></td>
-                                </tr>
-                                <tr>
-                                    <td>11:00</td>
-                                    <td>Катетеризация вены</td>
-                                    <td><span class="status-indicator pending"></span>Ожидает</td>
-                                    <td>
-                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
-                                        </button>
-                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
-                                        <input type="text" class="form-control mt-1 reason-input"
-                                               placeholder="Причина отказа..." style="display:none;"></td>
-                                </tr>
-                                <tr>
-                                    <td>14:00</td>
-                                    <td>Перевязка раны</td>
-                                    <td><span class="status-indicator not-completed"></span>Отказ: пациент отказался
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
-                                        </button>
-                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
-                                        <input type="text" class="form-control mt-1 reason-input"
-                                               placeholder="Причина отказа..." style="display:none;"></td>
-                                </tr>
-                                <tr>
-                                    <td>17:00</td>
-                                    <td>Промывание катетера</td>
-                                    <td><span class="status-indicator pending"></span>Ожидает</td>
-                                    <td>
-                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
-                                        </button>
-                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
-                                        <input type="text" class="form-control mt-1 reason-input"
-                                               placeholder="Причина отказа..." style="display:none;"></td>
-                                </tr>
-                                </tbody>
-                            </table>
+                        <div id="procedures" class="tab-pane fade" role="tabpanel" aria-labelledby="plan-tab-procedures" tabindex="0">
+                            <div class="table-responsive">
+                                <table class="table table-vcenter">
+                                    <thead>
+                                    <tr>
+                                        <th>Дата</th>
+                                        <th>Манипуляция</th>
+                                        <th>Статус</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @forelse ($examinationMap->patientProcedures as $order)
+                                        <tr>
+                                            <td class="text-nowrap">{{ $order->procedure_date ? \Carbon\Carbon::parse($order->procedure_date)->format('d.m.Y') : '—' }}</td>
+                                            <td>{{ $order->procedure->name }}</td>
+                                            <td><x-status-badge :status="$order->status" /></td>
+                                        </tr>
+                                    @empty
+                                        <tr><td colspan="3"><x-empty-state title="Манипуляции не назначены" icon="bx-injection" /></td></tr>
+                                    @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
-                        <!-- Исследования -->
-                        <div id="researches" class="tab-content">
-                            <table class="table table-bordered">
-                                <thead>
-                                <tr>
-                                    <th>Время</th>
-                                    <th>Тип</th>
-                                    <th>Исследование</th>
-                                    <th>Статус</th>
-                                    <th>Действия</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>10:00</td>
-                                    <td>Лабораторное</td>
-                                    <td>Общий анализ крови</td>
-                                    <td><span class="status-indicator pending"></span>Назначено</td>
-                                    <td>
-                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
-                                        </button>
-                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
-                                        <input type="text" class="form-control mt-1 reason-input"
-                                               placeholder="Причина отказа..." style="display:none;"></td>
-                                </tr>
-                                <tr>
-                                    <td>13:00</td>
-                                    <td>Инструментальное</td>
-                                    <td>УЗИ брюшной полости</td>
-                                    <td><span class="status-indicator pending"></span>Ожидает</td>
-                                    <td>
-                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
-                                        </button>
-                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
-                                        <input type="text" class="form-control mt-1 reason-input"
-                                               placeholder="Причина отказа..." style="display:none;"></td>
-                                </tr>
-                                <tr>
-                                    <td>15:00</td>
-                                    <td>Инструментальное</td>
-                                    <td>Рентген легких</td>
-                                    <td><span class="status-indicator pending"></span>Ожидает</td>
-                                    <td>
-                                        <button class="btn btn-success btn-sm" onclick="markCompleted(this)">Принято
-                                        </button>
-                                        <button class="btn btn-danger btn-sm" onclick="showReason(this)">Отказ</button>
-                                        <input type="text" class="form-control mt-1 reason-input"
-                                               placeholder="Причина отказа..." style="display:none;"></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="save-btn mt-3">
-                            <button class="btn btn-primary"><i class="fas fa-save me-2"></i> Сохранить изменения
-                            </button>
+                        <div id="researches" class="tab-pane fade" role="tabpanel" aria-labelledby="plan-tab-researches" tabindex="0">
+                            <div class="table-responsive">
+                                <table class="table table-vcenter">
+                                    <thead>
+                                    <tr>
+                                        <th>Дата и время</th>
+                                        <th>Исследование</th>
+                                        <th>Статус</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @forelse ($examinationMap->services as $order)
+                                        <tr>
+                                            <td class="text-nowrap">
+                                                {{ $order->service_date ? \Carbon\Carbon::parse($order->service_date)->format('d.m.Y') : '—' }}
+                                                {{ $order->service_time ? \Carbon\Carbon::parse($order->service_time)->format('H:i') : '' }}
+                                            </td>
+                                            <td>{{ $order->service->name }}</td>
+                                            <td><x-status-badge :status="$order->status" /></td>
+                                        </tr>
+                                    @empty
+                                        <tr><td colspan="3"><x-empty-state title="Исследования не назначены" icon="bx-test-tube" /></td></tr>
+                                    @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -525,418 +299,19 @@
         </div>
     </div>
 
-
-    <div class="modal fade" id="recommendActionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal modal-blur fade" id="recommendActionModal" tabindex="-1" aria-labelledby="recommendActionModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Действия</h5>
+                    <h2 class="modal-title" id="recommendActionModalTitle">Рекомендованные действия</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
-                <div class="modal-body">
-                    <div id="recommendation-content">Загрузка...</div>
-                </div>
+                <div class="modal-body" id="recommendation-content" aria-live="polite"></div>
             </div>
         </div>
     </div>
 @endsection
 
-@php
-    $jsChartData = collect($chartData)->map(function($item) {
-        $item['t'] = \Carbon\Carbon::parse($item['t'])->timestamp * 1000;
-        return $item;
-    })->toArray();
-@endphp
-
 @section('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script>
-        $(function () {
-            const records = @json($jsChartData);
-
-            // Функция для создания опций графика
-            function getChartOptions(title, series, colors, yFormatter = null) {
-                const options = {
-                    chart: {
-                        type: 'line',
-                        height: 350,
-                        toolbar: {
-                            show: false,
-                            tools: {
-                                zoom: true,
-                                zoomin: true,
-                                zoomout: true,
-                                pan: true,
-                                reset: true,
-                            }
-                        },
-                        zoom: {
-                            enabled: true,
-                            type: 'x', // можно x, y или xy
-                            autoScaleYaxis: true // автоматически масштабирует ось Y при зуме
-                        },
-                    },
-                    title: {
-                        text: title,
-                        align: 'center',
-                        style: {
-                            fontSize: '16px',
-                            fontWeight: 'bold'
-                        }
-                    },
-                    colors: colors,
-                    stroke: {
-                        curve: 'smooth',
-                        width: 3
-                    },
-                    markers: {
-                        size: 4,
-                        hover: {
-                            sizeOffset: 3
-                        }
-                    },
-                    dataLabels: {
-                        enabled: false
-                    },
-                    legend: {
-                        position: 'top',
-                        fontSize: '14px',
-                    },
-                    grid: {
-                        borderColor: '#eee',
-                        strokeDashArray: 4
-                    },
-                    tooltip: {
-                        x: {
-                            format: 'dd.MM.yyyy HH:mm'
-                        }
-                    },
-                    xaxis: {
-                        type: 'datetime',
-                        title: {
-                            text: 'Дата и время'
-                        }
-                    },
-                    yaxis: [
-                        {
-                            labels: {style: {colors: '#FF7043'}},
-                            axisTicks: {show: true},
-                            axisBorder: {show: true, color: '#FF7043'}
-                        },
-                        {
-                            opposite: true,
-                            labels: {style: {colors: '#29B6F6'}},
-                            axisTicks: {show: true},
-                            axisBorder: {show: true, color: '#29B6F6'}
-                        },
-                        {
-                            labels: {style: {colors: '#66BB6A'}},
-                            axisTicks: {show: true},
-                            axisBorder: {show: true, color: '#66BB6A'}
-                        },
-                        {
-                            opposite: true,
-                            labels: {style: {colors: '#AB47BC'}},
-                            axisTicks: {show: true},
-                            axisBorder: {show: true, color: '#AB47BC'}
-                        },
-                        {
-                            labels: {style: {colors: '#FFA726'}},
-                            axisTicks: {show: true},
-                            axisBorder: {show: true, color: '#FFA726'}
-                        }
-                    ]
-                    ,
-
-                    series: series
-                };
-
-                if (yFormatter) {
-                    options.yaxis.labels = {
-                        formatter: yFormatter
-                    };
-                }
-
-                return options;
-            }
-
-            // Функция проверки данных
-            function hasData(key) {
-                return records.some(r => r[key] !== null);
-            }
-
-            // Переключение меню
-            $('#parameter-menu button').on('click', function () {
-                const target = $(this).data('target');
-                $('.chart-section').addClass('d-none');
-
-                if (target === 'breathing_rate' && !hasData('breathing_rate')) {
-                    $(`#${target}`).html('<p class="text-center p-4">Нет данных для ЧДД</p>').removeClass('d-none');
-                } else if (target === 'oxygen_type' && !hasData('oxygen_type')) {
-                    $(`#${target}`).html('<p class="text-center p-4">Нет данных для Кислород/воздух</p>').removeClass('d-none');
-                } else {
-                    $(`#${target}`).removeClass('d-none');
-                }
-
-                $('#parameter-menu button').removeClass('active');
-                $(this).addClass('active');
-            });
-
-            // Инициализация графиков
-            try {
-                // Общий график
-                const generalSeries = [
-                    {
-                        name: 'Систолическое АД',
-                        data: records.filter(r => r.systolic !== null).map(r => [r.t, r.systolic])
-                    },
-                    {
-                        name: 'Диастолическое АД',
-                        data: records.filter(r => r.diastolic !== null).map(r => [r.t, r.diastolic])
-                    },
-                    {
-                        name: 'Пульс',
-                        data: records.filter(r => r.pulse !== null).map(r => [r.t, r.pulse])
-                    },
-                    {
-                        name: 'Температура',
-                        data: records.filter(r => r.temperature !== null).map(r => [r.t, r.temperature])
-                    },
-                    {
-                        name: 'Сатурация',
-                        data: records.filter(r => r.saturation !== null).map(r => [r.t, r.saturation])
-                    }
-                ];
-
-                new ApexCharts(document.querySelector('#generalChart'), getChartOptions(
-                    'Общие жизненные показатели',
-                    generalSeries,
-                    ['#FF7043', '#29B6F6', '#66BB6A', '#AB47BC', '#FFA726']
-                )).render();
-
-                // График ЧДД
-                if (hasData('breathing_rate')) {
-                    new ApexCharts(document.querySelector('#breathingChart'), getChartOptions(
-                        'Частота дыхания (ЧДД)',
-                        [{
-                            name: 'ЧДД',
-                            data: records
-                                .filter(r => r.breathing_rate !== null)
-                                .map(r => [r.t, r.breathing_rate])
-                        }],
-                        ['#42A5F5']
-                    )).render();
-                }
-
-                // График кислорода
-                if (hasData('oxygen_type')) {
-                    const oxygenOptions = getChartOptions(
-                        'Кислород/воздух',
-                        [{
-                            name: 'Тип подачи кислорода',
-                            data: records
-                                .filter(r => r.oxygen_type !== null)
-                                .map(r => [r.t, r.oxygen_type])
-                        }],
-                        ['#FF7043'],
-                    );
-
-                    new ApexCharts(document.querySelector('#oxygenChart'), oxygenOptions).render();
-                }
-
-                // График сознания
-                if (hasData('consciousness')) {
-                    new ApexCharts(document.querySelector('#consciousnessChart'), getChartOptions(
-                        'Уровень сознания',
-                        [{
-                            name: 'Уровень сознания',
-                            data: records
-                                .filter(r => r.consciousness !== null)
-                                .map(r => [r.t, r.consciousness])
-                        }],
-                        ['#AB47BC']
-                    )).render();
-                }
-
-                // График общего балла
-                if (hasData('total_score')) {
-                    new ApexCharts(document.querySelector('#totalChart'), getChartOptions(
-                        'Общий балл',
-                        [{
-                            name: 'Общий балл',
-                            data: records
-                                .filter(r => r.total_score !== null)
-                                .map(r => [r.t, r.total_score])
-                        }],
-                        ['#66BB6A']
-                    )).render();
-                }
-
-            } catch (e) {
-                console.error('Ошибка инициализации графиков:', e);
-                $('#general').html('<p class="text-danger text-center p-4">Ошибка при создании графиков: ' + e.message + '</p>');
-            }
-        });
-
-        // treatment plan modal
-        // Переключение между табами
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-
-            document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active');
-            document.getElementById(tabId).classList.add('active');
-        }
-
-        // Отметка как выполненного
-        function markCompleted(button) {
-            const row = button.closest('tr');
-            const statusCell = row.querySelector('.status');
-
-            statusCell.innerHTML = `
-                <span class="status-indicator completed"></span>
-                ${statusCell.textContent.includes('Отказ') ? 'Выполнено' : statusCell.textContent.replace('Ожидает', 'Выполнено')}
-            `;
-
-            // Скрываем поле для причины отказа
-            const reasonInput = row.querySelector('.reason-input');
-            reasonInput.style.display = 'none';
-        }
-
-        // Показать поле для причины отказа
-        function showReason(button) {
-            const row = button.closest('tr');
-            const statusCell = row.querySelector('.status');
-            const reasonInput = row.querySelector('.reason-input');
-
-            reasonInput.style.display = 'block';
-            reasonInput.focus();
-
-            reasonInput.onblur = function () {
-                if (reasonInput.value.trim() !== '') {
-                    statusCell.innerHTML = `
-                        <span class="status-indicator not-completed"></span>
-                        Отказ: ${reasonInput.value}
-                    `;
-                }
-                reasonInput.style.display = 'none';
-            };
-        }
-
-        // Сортировка таблиц по времени при загрузке
-        document.addEventListener('DOMContentLoaded', function () {
-            sortTableByTime('medications');
-            sortTableByTime('procedures');
-        });
-
-        function sortTableByTime(tabId) {
-            const table = document.getElementById(tabId).querySelector('tbody');
-            const rows = Array.from(table.querySelectorAll('tr'));
-
-            rows.sort((a, b) => {
-                const timeA = a.cells[0].textContent;
-                const timeB = b.cells[0].textContent;
-                return timeA.localeCompare(timeB);
-            });
-
-            // Очищаем и перезаполняем таблицу
-            table.innerHTML = '';
-            rows.forEach(row => table.appendChild(row));
-        }
-
-
-        // document score
-        $(document).on('show.bs.modal', '#recommendActionModal', function (event) {
-            const button = $(event.relatedTarget);
-            const documentId = button.data('document-id');
-            const responseId = button.data('response-id');
-            const $modal = $('#recommendActionModal');
-            const $container = $('#recommendation-content');
-
-            // Сохраняем responseId
-            $modal.data('response-id', responseId);
-
-            $container.html('Загрузка...');
-
-            $.ajax({
-                url: `/api/document-scores/${documentId}/${responseId}`,
-                method: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    if (data.actions && data.actions.length > 0) {
-                        const finishedIds = data.finished.map(el => el.document_action_id);
-
-                        const listUnfinished = data.actions
-                            .filter(action => !finishedIds.includes(action.id))
-                            .map(action => `
-                <li class="d-flex justify-content-between align-items-center mb-2">
-                    <span>${action.action}</span>
-                    <button class="btn btn-sm btn-success mark-done-btn"
-                            data-action-id="${action.id}"
-                            data-score-id="${data.id}">
-                        ✔️
-                    </button>
-                </li>
-            `).join('');
-
-                        const listFinished = data.actions
-                            .filter(action => finishedIds.includes(action.id))
-                            .map(action => `
-                <li class="d-flex justify-content-between align-items-center mb-2">
-                    <span>${action.action}</span>
-                </li>
-            `).join('');
-
-                        $container.html(`
-            <div>
-                <h6>Рекомендованные действия:</h6>
-                <ul id="recommendation-list">${listUnfinished || '<li>Все действия выполнены.</li>'}</ul>
-                <hr>
-                <h6>Выполненные действия:</h6>
-                <ul id="done-list" class="text-muted" style="font-style: italic;">
-                    ${listFinished || '<li>Нет выполненных действий.</li>'}
-                </ul>
-            </div>
-        `);
-                    } else {
-                        $container.html('Рекомендации не найдены.');
-                    }
-                },
-                error: function () {
-                    $container.html('Ошибка при загрузке рекомендаций.');
-                }
-            });
-        });
-
-        $(document).on('click', '.mark-done-btn', function () {
-            const $btn = $(this);
-            const $item = $btn.closest('li');
-            const $modal = $('#recommendActionModal');
-            const responseId = $modal.data('response-id');
-            const scoreId = $btn.data('score-id');
-            const actionId = $btn.data('action-id');
-
-            $.ajax({
-                url: '/api/document/finish/action',
-                method: 'POST',
-                data: {
-                    document_response_id: responseId,
-                    document_score_id: scoreId,
-                    document_action_id: actionId,
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function () {
-                    $btn.remove();
-                    $('#done-list').append($item);
-                },
-                error: function () {
-                    alert('Ошибка при сохранении. Повторите попытку.');
-                }
-            });
-        });
-    </script>
+    @vite('resources/js/pages/nurse-window.js')
 @endsection

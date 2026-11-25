@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('ward_rooms', function (Blueprint $table) {
+        Schema::create('ward_rooms', function (Blueprint $table): void {
             $table->id();
             $table->string('room_number');
             $table->timestamps();

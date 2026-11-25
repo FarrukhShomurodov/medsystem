@@ -1,82 +1,64 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>Медицинская система | Кабинеты</title>
+@section('title', 'Кабинеты')
+
+@section('header')
+    <x-page-header title="Кабинеты" pretitle="Организация">
+        @can('create_offices')
+            <x-slot:actions>
+                <a href="{{ route('offices.create') }}" class="btn btn-primary"><i class="bx bx-plus" aria-hidden="true"></i>Создать</a>
+            </x-slot:actions>
+        @endcan
+    </x-page-header>
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light">Кабинеты</span>
-    </h6>
-
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
-
-        @if(session()->has('success'))
-            <div class="alert alert-solid-success alert-dismissible d-flex align-items-center" role="alert">
-                <i class="bx bx-check-circle fs-4 me-2"></i>
-                {{ session()->get('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-    </div>
-
-    <div id="errors_alert"></div>
-
-    <div class="card shadow-sm">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Кабинеты</h5>
-            <a href="{{ route('offices.create') }}" class="btn btn-primary "
-               style="margin-right: 22px;">Создать</a>
-        </div>
-        <div class="card-datatable table-responsive">
-            <table class="datatables-users table border-top">
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table card-table table-vcenter">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th class="w-1">#</th>
                     <th>Название</th>
                     <th>Этаж</th>
-                    <th></th>
+                    <th class="w-1"><span class="visually-hidden">Действия</span></th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($offices as $office)
+                @forelse ($offices as $office)
                     <tr>
-                        <td>{{ $office->id }}</td>
+                        <td class="text-secondary">{{ $office->id }}</td>
                         <td>{{ $office->name }}</td>
-                        <td><a href="{{ route('floors.show', $office->floor->id) }}">{{ $office->floor->name }}</a></td>
-
+                        <td class="text-nowrap">
+                            @if ($office->floor)
+                                @can('view_floors')
+                                    <a href="{{ route('floors.show', $office->floor) }}">{{ $office->floor->name }}</a>
+                                @else
+                                    {{ $office->floor->name }}
+                                @endcan
+                            @else
+                                <span class="text-secondary">—</span>
+                            @endif
+                        </td>
                         <td>
-                            <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-warning"
-                                        onclick="location.href='{{ route('offices.edit', $office->id) }}'">
-                                    Редактировать
-                                </button>
-                                <form action="{{ route('offices.destroy', $office->id) }}" method="POST"
-                                      style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-danger">
-                                        Удалить
-                                    </button>
-                                </form>
+                            <div class="table-actions">
+                                @can('edit_offices')
+                                    <a href="{{ route('offices.edit', $office) }}" class="btn btn-sm">Изменить</a>
+                                @endcan
+                                @can('delete_offices')
+                                    <x-delete-button :action="route('offices.destroy', $office)" />
+                                @endcan
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr><td colspan="4"><x-empty-state text="Добавьте первый кабинет." /></td></tr>
+                @endforelse
                 </tbody>
             </table>
-            <div class="mt-4 p-1">
-                {{ $offices->links('pagination::bootstrap-5') }}
-            </div>
         </div>
+        @if ($offices->hasPages())
+            <div class="card-footer">{{ $offices->links() }}</div>
+        @endif
     </div>
 @endsection

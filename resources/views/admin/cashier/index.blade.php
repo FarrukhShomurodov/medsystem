@@ -1,144 +1,173 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA | Статистика кассира</title>
+@section('title', 'Касса')
+
+@section('header')
+    <x-page-header title="Касса" pretitle="Статистика кассира">
+        <x-slot:actions>
+            <a href="{{ route('cashier.export', request()->query()) }}" class="btn"><i class="bx bx-download" aria-hidden="true"></i>Экспорт в Excel</a>
+        </x-slot:actions>
+    </x-page-header>
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light">Статистика</span>
-    </h6>
+    @php
+        $filtered = request()->anyFilled(['first_name', 'last_name', 'status', 'service_date']);
+    @endphp
 
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
-
-        @if(session()->has('success'))
-            <div class="alert alert-solid-success alert-dismissible d-flex align-items-center" role="alert">
-                <i class="bx bx-check-circle fs-4 me-2"></i>
-                {{ session()->get('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-    </div>
-
-    <div class="card shadow-sm">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Услуги пациентов</h5>
-
-            <div>
-                <a href="{{ route('cashier.export', request()->all()) }}" class="btn btn-outline-primary">
-                    <i class="bx bx-download"></i> Экспорт в Excel
-                </a>
-                <button class="btn btn-link collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
-                    <i class="bx bx-filter-alt"></i> Фильтры
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Услуги пациентов</h2>
+            <div class="card-actions">
+                <button class="btn btn-sm @unless ($filtered) collapsed @endunless" type="button" data-bs-toggle="collapse" data-bs-target="#cashier-filters"
+                        aria-expanded="{{ $filtered ? 'true' : 'false' }}" aria-controls="cashier-filters">
+                    <i class="bx bx-filter-alt" aria-hidden="true"></i>Фильтры
                 </button>
             </div>
         </div>
 
-        {{-- Фильтры --}}
-        <div id="filtersCollapse" class="collapse @if(request()->anyFilled(['first_name','last_name','status','service_id','service_date'])) show @endif">
-            <div class="card-body">
-                <form method="GET" action="{{ route('cashier.index') }}">
-                    <div class="row g-3">
-                        <div class="col-md-2">
-                            <input type="text" name="first_name" value="{{ request('first_name') }}" class="form-control" placeholder="Имя пациента">
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" name="last_name" value="{{ request('last_name') }}" class="form-control" placeholder="Фамилия пациента">
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" name="service_date" value="{{ request('service_date') }}"
-                                   class="form-control flatpickr-date"
-                                   placeholder="Дата услуги (YYYY-MM-DD)">
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary">Применить</button>
+        <div id="cashier-filters" class="collapse @if ($filtered) show @endif">
+            <form method="GET" action="{{ route('cashier.index') }}" class="card-body border-bottom">
+                <div class="row g-3 align-items-end">
+                    <div class="col-sm-6 col-lg">
+                        <label class="form-label" for="filter-first-name">Имя пациента</label>
+                        <input type="text" id="filter-first-name" name="first_name" value="{{ $filter->firstName }}" class="form-control">
+                    </div>
+                    <div class="col-sm-6 col-lg">
+                        <label class="form-label" for="filter-last-name">Фамилия пациента</label>
+                        <input type="text" id="filter-last-name" name="last_name" value="{{ $filter->lastName }}" class="form-control">
+                    </div>
+                    <div class="col-sm-6 col-lg">
+                        <label class="form-label" for="filter-date">Дата</label>
+                        <input type="text" id="filter-date" name="service_date" value="{{ $filter->date?->format('Y-m-d') }}"
+                               class="form-control flatpickr-date" placeholder="ГГГГ-ММ-ДД">
+                    </div>
+                    <div class="col-sm-6 col-lg">
+                        <label class="form-label" for="filter-status">Статус оплаты</label>
+                        <select id="filter-status" name="status" class="form-select">
+                            @foreach ($paymentStates as $value => $label)
+                                <option value="{{ $value }}" @selected($filter->state->value === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-12 col-lg-auto">
+                        <div class="btn-list">
+                            <button class="btn btn-primary" type="submit">Применить</button>
+                            @if ($filtered)
+                                <a href="{{ route('cashier.index') }}" class="btn">Сбросить</a>
+                            @endif
                         </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
 
-
-        {{-- Таблица --}}
-        <form action="{{ route('cashier.updateAll') }}" method="POST" id="bulkForm">
+        <form action="{{ route('cashier.updateAll') }}" method="POST" id="paymentForm">
             @csrf
             @method('PUT')
 
-            <div class="card-datatable table-responsive">
-                <table class="table">
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter">
                     <thead>
                     <tr>
-                        <th><input type="checkbox" id="select-all"></th>
-                        <th>#</th>
+                        @if ($canPay)
+                            <th class="w-1"><input type="checkbox" class="form-check-input m-0 align-middle" id="select-all" aria-label="Выбрать все"></th>
+                        @endif
+                        <th class="w-1">#</th>
                         <th>Тип</th>
                         <th>Услуга</th>
                         <th>Пациент</th>
                         <th>Ответственный</th>
-                        <th>Цена</th>
+                        <th class="text-end">Цена</th>
                         <th>Дата и время</th>
                         <th>Статус</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @forelse($records as $row)
+                    @forelse ($records as $item)
                         <tr>
-                            <td>
-                                @if($row['type'] !== 'procedure' && strip_tags($row['status']) !== 'Оплачено')
-                                    <input type="checkbox" name="records[]" value="{{ $row['type'] }}:{{ $row['id'] }}">
-                                @endif
-                            </td>
-                            <td>{{ $row['id'] }}</td>
-                            <td>
-                                @if($row['type'] === 'service')
-                                    <span class="badge bg-primary">Услуга</span>
-                                @elseif($row['type'] === 'reception')
-                                    <span class="badge bg-success">Приём</span>
-                                @elseif($row['type'] === 'medication')
-                                    <span class="badge bg-success">Лист назначение</span>
-                                @elseif($row['type'] === 'procedure')
-                                    <span class="badge bg-warning text-dark">Процедура</span>
-                                @endif
-                            </td>
-                            <td>{{ $row['name'] }}</td>
-                            <td>{{ $row['patient'] }}</td>
-                            <td>{{ $row['doctor'] ?? '-' }}</td>
-                            <td>{{ $row['price'] }} {{ $row['currency'] }}</td>
-                            <td>{{ $row['date_time'] }}</td>
-                            <td>{!! $row['status'] !!}</td>
+                            @if ($canPay)
+                                <td>
+                                    @if ($item->isPayable())
+                                        <input type="checkbox" class="form-check-input m-0 align-middle" name="records[]" value="{{ $item->key() }}"
+                                               data-patient="{{ $item->patientId }}" aria-label="Выбрать: {{ $item->name }}, {{ $item->patientName }}">
+                                    @endif
+                                </td>
+                            @endif
+                            <td class="text-secondary">{{ $item->id }}</td>
+                            <td><x-status-badge :status="$item->type" /></td>
+                            <td>{{ $item->name }}</td>
+                            <td>{{ $item->patientName }}</td>
+                            <td>{{ $item->staffName ?? '—' }}</td>
+                            <td class="text-end text-nowrap">{{ $item->price->format() }} {{ $item->currency }}</td>
+                            <td class="text-nowrap">{{ $item->occurredAt }}</td>
+                            <td><x-status-badge :status="$item->status" /></td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="text-center">Нет данных</td>
+                            <td colspan="{{ $canPay ? 9 : 8 }}"><x-empty-state title="Нет данных" text="Нет заказов с выбранными условиями." icon="bx-receipt" /></td>
                         </tr>
                     @endforelse
                     </tbody>
                 </table>
-
-                <div class="mt-4 p-1 d-flex justify-content-between align-items-center">
-                    {{ $records->links('pagination::bootstrap-5') }}
-
-                    <button type="submit" class="btn btn-success">
-                        Оплатить выбранные
-                    </button>
-                </div>
             </div>
-        </form>
 
-        {{-- JS для выделения всех чекбоксов --}}
-        <script>
-            document.getElementById('select-all').addEventListener('change', function() {
-                const checkboxes = document.querySelectorAll('input[name="records[]"]');
-                checkboxes.forEach(cb => cb.checked = this.checked);
-            });
-        </script>
+            @if ($records->hasPages() || $canPay)
+                <div class="card-footer d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <div>{{ $records->links() }}</div>
+
+                    @if ($canPay)
+                        <div class="d-flex flex-wrap align-items-center gap-3 ms-auto">
+                            <span id="severalPatientsHint" class="text-danger d-none" role="status">
+                                Оплата проводится по одному пациенту: выберите записи одного пациента.
+                            </span>
+                            <button class="btn btn-success" type="submit" id="payButton">
+                                <i class="bx bx-wallet" aria-hidden="true"></i>Оплатить выбранные
+                            </button>
+                        </div>
+                    @endif
+                </div>
+            @endif
+        </form>
     </div>
+@endsection
+
+@section('scripts')
+    @if ($canPay)
+        <script>
+            (function () {
+                const checkboxes = document.querySelectorAll('input[name="records[]"]');
+                const selectAll = document.getElementById('select-all');
+                const payButton = document.getElementById('payButton');
+                const hint = document.getElementById('severalPatientsHint');
+
+                // The server refuses a payment that mixes patients; say so before the cashier submits.
+                function checkSelection() {
+                    const patients = new Set();
+                    let checked = 0;
+
+                    checkboxes.forEach((checkbox) => {
+                        if (checkbox.checked) {
+                            checked++;
+                            patients.add(checkbox.dataset.patient);
+                        }
+                    });
+
+                    payButton.disabled = patients.size !== 1;
+                    hint.classList.toggle('d-none', patients.size <= 1);
+                    selectAll.checked = checked > 0 && checked === checkboxes.length;
+                    selectAll.indeterminate = checked > 0 && checked < checkboxes.length;
+                }
+
+                selectAll.addEventListener('change', () => {
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.checked = selectAll.checked;
+                    });
+                    checkSelection();
+                });
+                checkboxes.forEach((checkbox) => checkbox.addEventListener('change', checkSelection));
+                checkSelection();
+            })();
+        </script>
+    @endif
 @endsection

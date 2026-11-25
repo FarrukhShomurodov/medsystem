@@ -1,106 +1,75 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA | Услуги</title>
+@section('title', 'Услуги')
+
+@section('header')
+    <x-page-header title="Услуги" pretitle="Справочники">
+        @can('create_services')
+            <x-slot:actions>
+                <a href="{{ route('services.import.show') }}" class="btn"><i class="bx bx-import" aria-hidden="true"></i>Импорт</a>
+                <a href="{{ route('services.create') }}" class="btn btn-primary"><i class="bx bx-plus" aria-hidden="true"></i>Создать</a>
+            </x-slot:actions>
+        @endcan
+    </x-page-header>
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light">Услуги</span>
-    </h6>
-
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
-
-        @if(session()->has('success'))
-            <div class="alert alert-solid-success alert-dismissible d-flex align-items-center" role="alert">
-                <i class="bx bx-check-circle fs-4 me-2"></i>
-                {{ session()->get('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-    </div>
-
-    <div id="errors_alert"></div>
-
-    <div class="card shadow-sm">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Услуги </h5>
-
-            <div>
-                <a href="{{ route('services.create') }}" class="btn btn-primary "
-                   style="margin-right: 22px;">Создать</a>
-                <a href="{{ route('services.import.show') }}" class="btn btn-primary "
-                   style="margin-right: 22px;">Импорт</a>
-            </div>
-        </div>
-        <div class="card-datatable table-responsive">
-            <table class="datatables-users table border-top">
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table card-table table-vcenter">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th class="w-1">#</th>
                     <th>Наименование</th>
-                    <th>Цена (с учетам НДС)</th>
-                    <th>Скидка</th>
+                    <th class="text-end">Цена (с учётом НДС)</th>
+                    <th class="text-end">Скидка</th>
                     <th>Группа</th>
                     <th>Статус</th>
                     <th>По записи</th>
-                    <th></th>
+                    <th class="w-1"><span class="visually-hidden">Действия</span></th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($services as $service)
+                @forelse ($services as $service)
                     <tr>
-                        <td>{{ $service->id }}</td>
+                        <td class="text-secondary">{{ $service->id }}</td>
                         <td>{{ $service->name }}</td>
-                        <td>{{ $service->price  }}</td>
-                        <td>{{ $service->discount ?? 0 }}%</td>
+                        <td class="text-end text-nowrap">{{ \App\Services\Billing\Amount::fromDecimal($service->price)->format() }}</td>
+                        <td class="text-end">{{ $service->discount ?? 0 }}%</td>
                         <td>{{ $service->group->name }}</td>
                         <td>
                             @if ($service->is_active)
-                                <span class="badge bg-success">Активна</span>
+                                <span class="badge bg-success-lt">Активна</span>
                             @else
-                                <span class="badge bg-danger">Не активна</span>
+                                <span class="badge bg-danger-lt">Не активна</span>
                             @endif
                         </td>
                         <td>
                             @if ($service->is_appointment)
-                                <span class="badge bg-success">Активна</span>
+                                <span class="badge bg-success-lt">Активна</span>
                             @else
-                                <span class="badge bg-danger">Не активна</span>
+                                <span class="badge bg-danger-lt">Не активна</span>
                             @endif
                         </td>
                         <td>
-                            <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-warning"
-                                        onclick="location.href='{{ route('services.edit', $service->id) }}'">
-                                    Редактировать
-                                </button>
-                                <form action="{{ route('services.destroy', $service->id) }}" method="POST"
-                                      style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-danger">
-                                        Удалить
-                                    </button>
-                                </form>
+                            <div class="table-actions">
+                                @can('edit_services')
+                                    <a href="{{ route('services.edit', $service) }}" class="btn btn-sm">Изменить</a>
+                                @endcan
+                                @can('delete_services')
+                                    <x-delete-button :action="route('services.destroy', $service)" />
+                                @endcan
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr><td colspan="8"><x-empty-state text="Добавьте услугу или импортируйте прайс-лист." /></td></tr>
+                @endforelse
                 </tbody>
             </table>
-            <div class="mt-4 p-1">
-                {{ $services->links('pagination::bootstrap-5') }}
-            </div>
         </div>
+        @if ($services->hasPages())
+            <div class="card-footer">{{ $services->links() }}</div>
+        @endif
     </div>
 @endsection

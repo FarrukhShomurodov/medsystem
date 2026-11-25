@@ -2,11 +2,17 @@
 
 namespace App\Models;
 
+use Database\Factories\HouseholdMaterialFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class HouseholdMaterial extends Model
 {
+    /** @use HasFactory<HouseholdMaterialFactory> */
+    use HasFactory;
+
     protected $fillable = [
         'batch_number',
         'name',
@@ -14,11 +20,17 @@ class HouseholdMaterial extends Model
         'entry_price_unit',
     ];
 
-    public function warehouse(): BelongsToMany
+    protected function casts(): array
     {
-        return $this->belongsToMany(Warehouse::class, 'warehouse_household_materials', 'household_material_id', 'warehouse_id')->withPivot('quantity');
+        return [
+            'entry_price_total' => 'decimal:2',
+            'entry_price_unit' => 'decimal:2',
+        ];
     }
 
+    /**
+     * @return BelongsToMany<MainWarehouse, $this, Pivot>
+     */
     public function mainWarehouses(): BelongsToMany
     {
         return $this->belongsToMany(MainWarehouse::class, 'main_warehouse_household_materials', 'household_material_id', 'main_warehouse_id');

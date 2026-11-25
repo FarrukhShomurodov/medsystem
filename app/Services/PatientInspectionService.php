@@ -7,7 +7,7 @@ use App\Models\PatientInspection;
 class PatientInspectionService
 {
     /**
-     * @param array<string, mixed> $validated
+     * @param  array<string, mixed>  $validated
      */
     public function store(array $validated): PatientInspection
     {

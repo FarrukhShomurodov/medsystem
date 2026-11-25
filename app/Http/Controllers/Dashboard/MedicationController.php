@@ -4,45 +4,43 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MedicationRequest;
+use App\Http\Requests\Stock\MedicationFilterRequest;
 use App\Models\Manufacturer;
 use App\Models\Medication;
 use App\Models\MedicationGroup;
 use App\Models\Supplier;
 use App\Services\MedicationService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\View\View;
 
-class MedicationController extends Controller
+class MedicationController extends Controller implements HasMiddleware
 {
-    protected MedicationService $service;
+    public function __construct(private readonly MedicationService $service) {}
 
-    public function __construct(MedicationService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_medications'])->only('index');
-        $this->middleware(['permission:create_medications'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_medications'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_medications'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_medications', only: ['index']),
+            new Middleware('permission:view_medications', only: ['show']),
+            new Middleware('permission:create_medications', only: ['create', 'store']),
+            new Middleware('permission:edit_medications', only: ['edit', 'update']),
+            new Middleware('permission:delete_medications', only: ['destroy']),
+        ];
     }
 
-    public function index(Request $request): View
+    public function index(MedicationFilterRequest $request): View
     {
         $medications = Medication::query()
             ->select(['id', 'name', 'release_form', 'dosage', 'manufacturer_id', 'group_id', 'registration_number'])
+            ->with(['manufacturer:id,name', 'group:id,name'])
             ->orderBy('id', 'desc')
-            ->when($request->filled('active_substance_name'), function ($q) use ($request) {
-                $q->whereHas('composition', function ($q) use ($request) {
-                    $q->where('active_substance_name', $request->input('active_substance_name'));
-                });
-            })
-            ->when($request->filled('group_id'), function ($q) use ($request) {
-                $q->where('group_id', $request->input('group_id'));
-            })
-            ->when($request->filled('manufacturer_id'), function ($q) use ($request) {
-                $q->where('manufacturer_id', $request->input('manufacturer_id'));
-            })
+            ->when($request->activeSubstance(), fn (Builder $query, string $substance) => $query
+                ->whereHas('composition', fn (Builder $composition) => $composition->where('active_substance_name', $substance)))
+            ->when($request->groupId(), fn (Builder $query, int $groupId) => $query->where('group_id', $groupId))
+            ->when($request->manufacturerId(), fn (Builder $query, int $manufacturerId) => $query->where('manufacturer_id', $manufacturerId))
             ->paginate(10);
 
         $manufacturers = Manufacturer::query()->get();
@@ -53,6 +51,8 @@ class MedicationController extends Controller
 
     public function show(Medication $medication): View
     {
+        $medication->load(['group', 'manufacturer', 'composition.additionalSubstance', 'application', 'storage', 'licenseAndCertification', 'additionalData']);
+
         return view('admin.medications.show', compact('medication'));
     }
 
@@ -67,14 +67,14 @@ class MedicationController extends Controller
 
     public function store(MedicationRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('medications.index')->with('success', 'Препарат успешно добавлен!');
+        return to_route('medications.index')->with('success', 'Препарат успешно добавлен!');
     }
 
     public function edit(Medication $medication): View
     {
+        $medication->load(['composition.additionalSubstance', 'application', 'storage', 'additionalData']);
         $suppliers = Supplier::query()->get();
         $manufacturers = Manufacturer::query()->get();
         $groups = MedicationGroup::query()->get();
@@ -84,16 +84,15 @@ class MedicationController extends Controller
 
     public function update(MedicationRequest $request, Medication $medication): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($medication, (array)$validated);
+        $this->service->update($medication, $request->validated());
 
-        return redirect()->route('medications.index')->with('success', 'Препарат успешно обновлен!');
+        return to_route('medications.index')->with('success', 'Препарат успешно обновлен!');
     }
 
     public function destroy(Medication $medication): RedirectResponse
     {
         $this->service->destroy($medication);
 
-        return redirect()->route('medications.index')->with('success', 'Препарат успешно удален!');
+        return to_route('medications.index')->with('success', 'Препарат успешно удален!');
     }
 }

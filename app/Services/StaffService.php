@@ -2,230 +2,277 @@
 
 namespace App\Services;
 
+use App\Enums\AbsenceType;
+use App\Enums\ScheduleType;
+use App\Exceptions\Scheduling\AccountException;
+use App\Models\Admin;
 use App\Models\Staff;
+use App\Models\StaffContact;
+use App\Models\StaffDocument;
 use App\Models\StaffPosition;
+use App\Models\StaffProfessionalData;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Spatie\Permission\Models\Role;
+use RuntimeException;
+use Throwable;
 
+/**
+ * Registers employees with their contacts, documents, professional data, schedule and the login
+ * account that holds the role of their position.
+ */
 class StaffService
 {
+    private const string DISK = 'public';
+
+    private const array FILES = ['avatar_url', 'sign_url'];
+
+    public function __construct(
+        private readonly StaffPositionService $positions,
+        private readonly AdminService $accounts,
+    ) {}
+
     /**
-     * @param array<string, mixed> $validated
+     * @param  array<string, mixed>  $validated  StaffRequest data
      */
     public function store(array $validated): Staff
     {
-        return DB::transaction(function () use ($validated) {
-            $staff = Staff::query()->create($validated);
+        $files = $this->storeUploads($validated);
 
-            if (isset($validated['avatar_url'])) {
-                $photoPath = $validated['avatar_url']->store('staff_photo', 'public');
-                $staff->update(['avatar_url' => $photoPath]);
-            }
+        try {
+            return DB::transaction(function () use ($validated, $files): Staff {
+                $staff = Staff::query()->create([...Arr::except($validated, self::FILES), ...$files]);
 
-            if (isset($validated['sign_url'])) {
-                $photoPath = $validated['sign_url']->store('staff_photo', 'public');
-                $staff->update(['sign_url' => $photoPath]);
-            }
+                $staff->contact()->create([...$this->only(StaffContact::class, $validated), 'email' => $validated['login_email']]);
+                $staff->document()->create($this->documentAttributes($validated));
+                $staff->professionalData()->create($this->only(StaffProfessionalData::class, $validated));
 
+                $this->syncRelations($staff, $validated);
 
-            $validated['staff_id'] = $staff->id;
+                return $staff;
+            });
+        } catch (Throwable $e) {
+            Storage::disk(self::DISK)->delete(array_values($files));
 
-            $validated['email'] = $validated['login_email'];
-
-            // Создание связанных записей
-            $staff->contact()->create($validated);
-            $staff->document()->create($validated);
-            $staff->professionalData()->create($validated);
-
-            foreach ($validated['days'] as $day) {
-                $dayId = $day['id'];
-
-                foreach ($day['work'] ?? [] as $work) {
-                    $staff->schedule()->create([
-                        'day_of_week_id' => $dayId,
-                        'start_time' => $work['start_time'],
-                        'end_time' => $work['end_time'],
-                        'type' => 'work',
-                    ]);
-                }
-
-                foreach ($day['reception'] ?? [] as $reception) {
-                    $staff->schedule()->create([
-                        'day_of_week_id' => $dayId,
-                        'start_time' => $reception['start_time'],
-                        'end_time' => $reception['end_time'],
-                        'type' => 'reception',
-                    ]);
-                }
-            }
-
-
-            // Синхронизация услуг
-            if (!empty($validated['services'])) {
-                $staff->services()->sync($validated['services']);
-            }
-
-            if (isset($validated['surveys'])) {
-                $staff->surveys()->sync($validated['surveys']);
-            }
-
-            $authValidated['email'] = $validated['login_email'];
-            $authValidated['password'] = $validated['password'];
-
-            $this->staffAuth($staff, $authValidated, 'store', $validated['position_id']);
-
-            return $staff;
-        }, 5);
+            throw $e;
+        }
     }
 
     /**
-     * @param array<string, mixed> $validated
+     * Replaced photos and signatures are deleted once the change is committed. A dismissal date
+     * dismisses the employee, which also ends their login (Admin::isActive()).
+     *
+     * @param  array<string, mixed>  $validated  StaffRequest data
+     *
+     * @throws AccountException when it would dismiss the last main administrator who can sign in
      */
-    public function update(Staff $staff, array $validated)
+    public function update(Staff $staff, array $validated): Staff
     {
-        return DB::transaction(function () use ($validated, $staff) {
-            $staff->update($validated);
+        $files = $this->storeUploads($validated);
+        $replaced = array_filter(Arr::only($staff->getAttributes(), array_keys($files)));
 
-            if (isset($validated['avatar_url'])) {
-                if (Storage::disk('public')->exists($validated['avatar_url'])) {
-                    Storage::disk('public')->delete($validated['avatar_url']);
-                }
-                $photoPath = $validated['avatar_url']->store('staff_photo', 'public');
-                $staff->update(['avatar_url' => $photoPath]);
-            }
+        try {
+            DB::transaction(function () use ($staff, $validated, $files): void {
+                // As a booking does (ReceptionService::book()): a booking waits for the new hours and
+                // absences, so it is either refused by them or listed by uncoveredAppointmentsOf().
+                $this->lock($staff);
 
-            if (isset($validated['sign_url'])) {
-                if (Storage::disk('public')->exists($validated['sign_url'])) {
-                    Storage::disk('public')->delete($validated['sign_url']);
-                }
-                $photoPath = $validated['sign_url']->store('staff_photo', 'public');
-                $staff->update(['sign_url' => $photoPath]);
-            }
-
-            $validated['staff_id'] = $staff->id;
-
-            // Создание связанных записей
-            $staff->contact()->update(
-                array_intersect_key($validated, array_flip($staff->contact->getFillable()))
-            );
-            $staff->document()->update(
-                array_intersect_key($validated, array_flip($staff->document->getFillable()))
-            );
-            $staff->professionalData()->update(
-                array_intersect_key($validated, array_flip($staff->professionalData->getFillable()))
-            );
-
-            $staff->surveys()->sync($validated['surveys'] ?? []);
-
-            $staff->schedule()->delete();
-
-            foreach ($validated['days'] as $day) {
-                $dayId = $day['id'];
-
-                foreach ($day['work'] ?? [] as $work) {
-                    $staff->schedule()->create([
-                        'day_of_week_id' => $dayId,
-                        'start_time' => $work['start_time'],
-                        'end_time' => $work['end_time'],
-                        'type' => 'work',
-                    ]);
+                if ($this->dismisses($validated) && $staff->admin !== null && $this->accounts->isLastMainAdmin($staff->admin)) {
+                    throw AccountException::lastMainAdminDismissed();
                 }
 
-                foreach ($day['reception'] ?? [] as $reception) {
-                    $staff->schedule()->create([
-                        'day_of_week_id' => $dayId,
-                        'start_time' => $reception['start_time'],
-                        'end_time' => $reception['end_time'],
-                        'type' => 'reception',
-                    ]);
-                }
-            }
+                $staff->update([...Arr::except($validated, self::FILES), ...$files]);
 
-            $staff->absence()->delete();
+                $staff->contact()->updateOrCreate([], $this->only(StaffContact::class, $validated));
+                $staff->document()->updateOrCreate([], $this->documentAttributes($validated));
+                $staff->professionalData()->updateOrCreate([], $this->only(StaffProfessionalData::class, $validated));
 
-            if (isset($validated['absence'])) {
-                foreach ($validated['absence'] as $absence) {
-                    if ($absence['type'] == 'day') {
-                        $staff->absence()->create([
-                            'type' => $absence['type'],
-                            'start_date' => $absence['date'],
-                            'reason' => $absence['reason'],
-                        ]);
-                    } else {
-                        if (strpos($absence['date'], 'to') !== false) {
-                            list($startDate, $endDate) = explode(' to ', $absence['date']);
-                            $staff->absence()->create([
-                                'type' => $absence['type'],
-                                'start_date' => $startDate,
-                                'end_date' => $endDate,
-                                'reason' => $absence['reason'],
-                            ]);
-                        } else {
-                            $staff->absence()->create([
-                                'type' => $absence['type'],
-                                'start_date' => $absence['date'],
-                                'end_date' => $absence['date'],
-                                'reason' => $absence['reason'],
-                            ]);
-                        }
-                    }
-                }
-            }
+                $this->syncRelations($staff, $validated);
+            });
+        } catch (Throwable $e) {
+            Storage::disk(self::DISK)->delete(array_values($files));
 
-            // Синхронизация услуг
-            if (!empty($validated['services'])) {
-                $staff->services()->sync($validated['services']);
-            }
-
-            if (isset($validated['dismissal_reception_date'])) {
-                $staff->document->update(['is_work' => false]);
-            }
-
-            $authValidated['email'] = $validated['login_email'];
-            $authValidated['password'] = isset($validated['password']) ? $validated['password'] : null;
-
-            $this->staffAuth($staff, $authValidated, 'update', $validated['position_id']);
-
-            return $staff;
-        });
-    }
-
-    public function staffAuth($staff, $validated, $method, $positionId): void
-    {
-        $positionName = StaffPosition::find($positionId)->name;
-
-        if ($method == 'update') {
-            if (isset($validated['password']) && $validated['password'] !== '') {
-                $validated['password'] = Hash::make((string)$validated['password']);
-            } else {
-                unset($validated['password']);
-            }
-
-            $staff->admin()->update($validated);
-            $admin = $staff->admin;
-        } else {
-            $validated['password'] = isset($validated['password'])
-                ? Hash::make((string)$validated['password'])
-                : null;
-
-            $admin = $staff->admin()->create($validated);
+            throw $e;
         }
 
-        $role = Role::firstOrCreate(['name' => $positionName]);
+        Storage::disk(self::DISK)->delete(array_values($replaced));
 
-        $admin->assignRole($role->name);
+        return $staff->refresh();
     }
 
     /**
-     * @param Staff $staff
-     * @return void
+     * The employee's login account goes with them, under the same rules as on the admins screen.
+     * A record other data still points to (receptions, examination maps) is protected by
+     * ON DELETE RESTRICT and stays, account included.
+     *
+     * @throws AccountException
      */
-    public
-    function destroy(
-        Staff $staff
-    ): void {
-        $staff->delete();
+    public function destroy(Staff $staff, Admin $actor): void
+    {
+        $files = array_filter(Arr::only($staff->getAttributes(), self::FILES));
+
+        DB::transaction(function () use ($staff, $actor): void {
+            // The staff row before the accounts' rows, in the order update() takes them.
+            $this->lock($staff);
+
+            if ($staff->admin !== null) {
+                $this->accounts->ensureDeletable($staff->admin, $actor);
+                $staff->admin->delete();
+            }
+
+            $staff->delete();
+        });
+
+        Storage::disk(self::DISK)->delete(array_values($files));
+    }
+
+    private function lock(Staff $staff): void
+    {
+        Staff::query()->whereKey($staff->getKey())->lockForUpdate()->first();
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     */
+    private function syncRelations(Staff $staff, array $validated): void
+    {
+        $staff->services()->sync($validated['services'] ?? []);
+        $staff->surveys()->sync($validated['surveys'] ?? []);
+
+        $this->replaceSchedule($staff, $validated['days'] ?? []);
+        $this->replaceAbsences($staff, $validated['absence'] ?? []);
+        $this->syncLoginAccount($staff, $validated);
+    }
+
+    /**
+     * @param  list<array{id: int|string, work?: list<array{start_time: string, end_time: string}>, reception?: list<array{start_time: string, end_time: string}>}>  $days
+     */
+    private function replaceSchedule(Staff $staff, array $days): void
+    {
+        $staff->schedule()->delete();
+
+        foreach ($days as $day) {
+            foreach (ScheduleType::cases() as $type) {
+                foreach ($day[$type->value] ?? [] as $hours) {
+                    $staff->schedule()->create([
+                        'day_of_week_id' => $day['id'],
+                        'type' => $type,
+                        'start_time' => $hours['start_time'],
+                        'end_time' => $hours['end_time'],
+                    ]);
+                }
+            }
+        }
+    }
+
+    /**
+     * A one-day absence has no end date; a period picked as a single day ends that day.
+     *
+     * @param  list<array{type: string, start_date: string, end_date?: string|null, reason: string}>  $absences
+     */
+    private function replaceAbsences(Staff $staff, array $absences): void
+    {
+        $staff->absence()->delete();
+
+        foreach ($absences as $absence) {
+            $type = AbsenceType::from($absence['type']);
+
+            $staff->absence()->create([
+                'type' => $type,
+                'reason' => $absence['reason'],
+                'start_date' => $absence['start_date'],
+                'end_date' => $type === AbsenceType::Period ? ($absence['end_date'] ?? $absence['start_date']) : null,
+            ]);
+        }
+    }
+
+    /**
+     * The login holds exactly one position role, the one of the current position: a position
+     * change revokes the previous one. System roles given outside the staff structure (main_admin)
+     * stay. Any other role is a former position's, including roles left on accounts by renames
+     * before positions were linked to roles by id, so it is revoked too.
+     *
+     * @param  array<string, mixed>  $validated
+     */
+    private function syncLoginAccount(Staff $staff, array $validated): void
+    {
+        $role = $this->positions->roleOf(StaffPosition::query()->findOrFail((int) $validated['position_id']));
+
+        $admin = $staff->admin ?? new Admin(['staff_id' => $staff->id]);
+        $admin->email = $validated['login_email'];
+
+        if (filled($validated['password'] ?? null)) {
+            $admin->password = $validated['password'];
+        }
+
+        $admin->save();
+
+        $systemRoleIds = $admin->roles->whereIn('name', StaffPosition::RESERVED_ROLE_NAMES)->modelKeys();
+
+        $admin->syncRoles([...$systemRoleIds, $role->getKey()]);
+
+        $staff->setRelation('admin', $admin);
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     * @return array<string, string> column => stored path
+     *
+     * @throws RuntimeException when the disk refuses a file; the files stored before it are deleted
+     */
+    private function storeUploads(array $validated): array
+    {
+        $paths = [];
+
+        foreach (self::FILES as $column) {
+            if (($validated[$column] ?? null) instanceof UploadedFile) {
+                $path = $validated[$column]->store('staff_photo', self::DISK);
+
+                if ($path === false) {
+                    Storage::disk(self::DISK)->delete(array_values($paths));
+
+                    throw new RuntimeException("The upload of {$column} could not be stored.");
+                }
+
+                $paths[$column] = $path;
+            }
+        }
+
+        return $paths;
+    }
+
+    /**
+     * The employment documents of the form. A dismissal date dismisses the employee, also when a
+     * former employee is registered with one: their login must not work either.
+     *
+     * @param  array<string, mixed>  $validated
+     * @return array<string, mixed>
+     */
+    private function documentAttributes(array $validated): array
+    {
+        return [
+            ...$this->only(StaffDocument::class, $validated),
+            ...($this->dismisses($validated) ? ['is_work' => false] : []),
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     */
+    private function dismisses(array $validated): bool
+    {
+        return isset($validated['dismissal_reception_date']);
+    }
+
+    /**
+     * @param  class-string<Model>  $model
+     * @param  array<string, mixed>  $validated
+     * @return array<string, mixed>
+     */
+    private function only(string $model, array $validated): array
+    {
+        return Arr::except(Arr::only($validated, (new $model)->getFillable()), ['staff_id']);
     }
 }

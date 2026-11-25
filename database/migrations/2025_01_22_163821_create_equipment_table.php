@@ -4,10 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
-        Schema::create('equipment', function (Blueprint $table) {
+        Schema::create('equipment', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
             $table->foreignId('equipment_type_id')->constrained()->cascadeOnDelete();
@@ -23,13 +24,13 @@ return new class extends Migration {
             $table->string('location');
             $table->decimal('price');
             $table->date('last_inspection')->nullable();
-            $table->enum('status', \App\Models\Equipment::STATUS)->nullable();
+            $table->enum('status', ['работает', 'сломан'])->nullable();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('department_equipment');
+        Schema::dropIfExists('equipment');
     }
 };

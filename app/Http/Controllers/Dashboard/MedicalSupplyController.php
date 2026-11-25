@@ -8,19 +8,21 @@ use App\Models\MedicalSupply;
 use App\Services\MedicalSupplyService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class MedicalSupplyController extends Controller
+class MedicalSupplyController extends Controller implements HasMiddleware
 {
-    protected MedicalSupplyService $service;
+    public function __construct(private readonly MedicalSupplyService $service) {}
 
-    public function __construct(MedicalSupplyService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_supplies'])->only('index');
-        $this->middleware(['permission:create_supplies'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_supplies'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_supplies'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_supplies', only: ['index']),
+            new Middleware('permission:create_supplies', only: ['create', 'store']),
+            new Middleware('permission:edit_supplies', only: ['edit', 'update']),
+            new Middleware('permission:delete_supplies', only: ['destroy']),
+        ];
     }
 
     public function index(): View
@@ -40,10 +42,9 @@ class MedicalSupplyController extends Controller
 
     public function store(MedicalSupplyRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('supplies.index')->with('success', 'Расходный материал успешно добавлен!');
+        return to_route('supplies.index')->with('success', 'Расходный материал успешно добавлен!');
     }
 
     public function edit(MedicalSupply $supply): View
@@ -53,16 +54,15 @@ class MedicalSupplyController extends Controller
 
     public function update(MedicalSupplyRequest $request, MedicalSupply $supply): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($supply, (array)$validated);
+        $this->service->update($supply, $request->validated());
 
-        return redirect()->route('supplies.index')->with('success', 'Расходный материал успешно обновлен!');
+        return to_route('supplies.index')->with('success', 'Расходный материал успешно обновлен!');
     }
 
     public function destroy(MedicalSupply $supply): RedirectResponse
     {
         $this->service->destroy($supply);
 
-        return redirect()->route('supplies.index')->with('success', 'Расходный материал успешно удален!');
+        return to_route('supplies.index')->with('success', 'Расходный материал успешно удален!');
     }
 }

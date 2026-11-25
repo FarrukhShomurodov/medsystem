@@ -9,19 +9,21 @@ use App\Models\Office;
 use App\Services\OfficeService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class OfficeController extends Controller
+class OfficeController extends Controller implements HasMiddleware
 {
-    protected OfficeService $service;
+    public function __construct(private readonly OfficeService $service) {}
 
-    public function __construct(OfficeService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_offices'])->only('index');
-        $this->middleware(['permission:create_offices'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_offices'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_offices'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_offices', only: ['index']),
+            new Middleware('permission:create_offices', only: ['create', 'store']),
+            new Middleware('permission:edit_offices', only: ['edit', 'update']),
+            new Middleware('permission:delete_offices', only: ['destroy']),
+        ];
     }
 
     public function index(): View
@@ -30,7 +32,6 @@ class OfficeController extends Controller
             ->with('floor')
             ->orderBy('id', 'desc')
             ->paginate(10);
-
 
         return view('admin.offices.index', compact('offices'));
     }
@@ -44,10 +45,9 @@ class OfficeController extends Controller
 
     public function store(OfficeRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('offices.index')->with('success', 'Кабинет  успешно добавлен!');
+        return to_route('offices.index')->with('success', 'Кабинет успешно добавлен!');
     }
 
     public function edit(Office $office): View
@@ -59,16 +59,15 @@ class OfficeController extends Controller
 
     public function update(OfficeRequest $request, Office $office): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($office, (array)$validated);
+        $this->service->update($office, $request->validated());
 
-        return redirect()->route('offices.index')->with('success', 'Кабинет  успешно обновлен!');
+        return to_route('offices.index')->with('success', 'Кабинет успешно обновлен!');
     }
 
     public function destroy(Office $office): RedirectResponse
     {
         $this->service->destroy($office);
 
-        return redirect()->route('offices.index')->with('success', 'Кабинет  успешно удален!');
+        return to_route('offices.index')->with('success', 'Кабинет успешно удален!');
     }
 }

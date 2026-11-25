@@ -9,6 +9,9 @@ class EquipmentType extends Model
 {
     protected $fillable = ['name'];
 
+    /**
+     * @return HasMany<Equipment, $this>
+     */
     public function equipments(): HasMany
     {
         return $this->hasMany(Equipment::class);

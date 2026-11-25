@@ -9,25 +9,28 @@ use App\Models\PharmacyType;
 use App\Services\PharmacyService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class PharmacyController extends Controller
+class PharmacyController extends Controller implements HasMiddleware
 {
-    protected PharmacyService $service;
+    public function __construct(private readonly PharmacyService $service) {}
 
-    public function __construct(PharmacyService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_pharmacies'])->only('index');
-        $this->middleware(['permission:create_pharmacies'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_pharmacies'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_pharmacies'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_pharmacies', only: ['index']),
+            new Middleware('permission:create_pharmacies', only: ['create', 'store']),
+            new Middleware('permission:edit_pharmacies', only: ['edit', 'update']),
+            new Middleware('permission:delete_pharmacies', only: ['destroy']),
+        ];
     }
 
     public function index(): View
     {
         $pharmacies = Pharmacy::query()
             ->select(['id', 'name', 'type_id'])
+            ->with('type')
             ->orderBy('id', 'desc')
             ->paginate(10);
 
@@ -36,22 +39,23 @@ class PharmacyController extends Controller
 
     public function medications(Pharmacy $pharmacy): View
     {
-        $medications = $pharmacy->medication;
-        return view('admin.pharmacies.medications', compact('medications'));
+        $medications = $pharmacy->medication()->orderBy('name')->get();
+
+        return view('admin.pharmacies.medications', compact('pharmacy', 'medications'));
     }
 
     public function create(): View
     {
         $types = PharmacyType::query()->get();
+
         return view('admin.pharmacies.create', compact('types'));
     }
 
     public function store(PharmacyRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('pharmacies.index')->with('success', 'Аптека успешно добавлена!');
+        return to_route('pharmacies.index')->with('success', 'Аптека успешно добавлена!');
     }
 
     public function edit(Pharmacy $pharmacy): View
@@ -63,16 +67,15 @@ class PharmacyController extends Controller
 
     public function update(PharmacyRequest $request, Pharmacy $pharmacy): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($pharmacy, (array)$validated);
+        $this->service->update($pharmacy, $request->validated());
 
-        return redirect()->route('pharmacies.index')->with('success', 'Аптека успешно обновлена!');
+        return to_route('pharmacies.index')->with('success', 'Аптека успешно обновлена!');
     }
 
     public function destroy(Pharmacy $pharmacy): RedirectResponse
     {
         $this->service->destroy($pharmacy);
 
-        return redirect()->route('pharmacies.index')->with('success', 'Аптека успешно удалена!');
+        return to_route('pharmacies.index')->with('success', 'Аптека успешно удалена!');
     }
 }

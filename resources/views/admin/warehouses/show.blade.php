@@ -1,73 +1,84 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA | Склад </title>
+@section('title', $warehouse->name)
+
+@section('header')
+    <x-page-header :title="$warehouse->name" :breadcrumbs="['Склады' => route('warehouses.index')]">
+        <x-slot:actions>
+            @can('view_warehouse_medications')
+                <a href="{{ route('warehouses.medications', ['warehouse_id' => $warehouse->id]) }}" class="btn">
+                    <i class="bx bx-capsule" aria-hidden="true"></i>Медикаменты
+                </a>
+            @endcan
+            @can('view_warehouse_supplies')
+                <a href="{{ route('warehouses.supplies', ['warehouse_id' => $warehouse->id]) }}" class="btn">
+                    <i class="bx bx-package" aria-hidden="true"></i>Расходные материалы
+                </a>
+            @endcan
+        </x-slot:actions>
+    </x-page-header>
 @endsection
 
+@php
+    $contact = $warehouse->contact;
+    $capacity = $warehouse->capacity;
+    $storage = $warehouse->storageHandling;
+
+    $sections = [
+        'Основные данные' => [
+            'Название:' => $warehouse->name,
+            'Тип:' => $warehouse->type?->name,
+            'Описание:' => $warehouse->description,
+            'Адрес:' => $warehouse->address,
+        ],
+        'Контактная информация' => [
+            'Телефон:' => $contact?->phone,
+            'Адрес:' => $contact?->address,
+            'Email:' => $contact?->email,
+            'Время работы:' => $contact?->work_time,
+            'ФИО руководителя:' => $contact?->head_name,
+            'Должность:' => $contact?->head_position,
+            'Контакт:' => $contact?->head_contact,
+        ],
+        'Вместимость' => [
+            'Общий объём:' => $capacity?->total_volume,
+            'Занятый объём:' => $capacity?->occupied_volume,
+            'Занятый объём в процентах:' => $capacity?->occupied_volume_percentage,
+            'Максимальная вместимость:' => $capacity?->max_capacity,
+        ],
+        'Хранение' => [
+            'Температура:' => $storage?->temperature,
+            'Влажность:' => $storage?->humidity,
+            'Защита от солнечных лучей:' => $storage?->light_protected,
+            'Опасные вещества:' => $storage === null ? null : ($storage->is_dangerous ? 'имеются' : 'не имеются'),
+            'Охлаждение:' => $storage?->refrigeration,
+            'Заморозка:' => $storage?->freezing,
+            'Легковоспламеняющиеся вещества:' => $storage?->flammable,
+            'Расположение на полке:' => $storage?->shelf_location,
+            'Специальная зона:' => $storage?->special_zone,
+            'Метка:' => $storage?->label,
+        ],
+    ];
+@endphp
+
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('warehouses.index') }}">Склад</a> /</span> {{ $warehouse->name }}
-    </h6>
-
-    <div class="card">
-        <div class="card-header">
-            <h5>Основные данные</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Название:</strong> {{ $warehouse->name }}</p>
-            <p><strong>Тип:</strong> {{ $warehouse->description }}</p>
-            <p><strong>Описание:</strong> {{ $warehouse->type->name }}</p>
-            <p><strong>Медикаменты :</strong> <a
-                    href="{{ route('warehouses.medications', ['warehouse_id' => $warehouse->id ]) }}">Смотреть</a></p>
-            <p><strong>Расходные материалы :</strong> <a
-                    href="{{ route('warehouses.supplies', ['supply_id' => $warehouse->id ]) }}">Смотреть</a></p>
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-header">
-            <h5>Контактная информация</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Телефон:</strong> {{ $warehouse->contact->phone }}</p>
-            <p><strong>Адрес:</strong> {{ $warehouse->contact->address }}</p>
-            <p><strong>Email:</strong> {{ $warehouse->contact->phone }}</p>
-            <p><strong>Время работы:</strong> {{ $warehouse->contact->work_time }}</p>
-            <p><strong>ФИО (руководителя):</strong> {{ $warehouse->contact->head_name }}</p>
-            <p><strong>Должность:</strong> {{ $warehouse->contact->head_position }}</p>
-            <p><strong>Контакт:</strong> {{ $warehouse->contact->head_contact }}</p>
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-header">
-            <h5>Вместимость</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Общий объем:</strong> {{ $warehouse->capacity->total_volume }}</p>
-            <p><strong>Занятый объем:</strong> {{ $warehouse->capacity->occupied_volume }}</p>
-            <p><strong>Занятый объем в процентах:</strong> {{ $warehouse->capacity->occupied_volume_percentage }}</p>
-            <p><strong>Максимальная вместимость :</strong> {{ $warehouse->capacity->max_capacity }}</p>
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-header">
-            <h5>Хранение</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Температура:</strong> {{ $warehouse->storageHandling->temperature }}</p>
-            <p><strong>Влажность:</strong> {{ $warehouse->storageHandling->humidity }}</p>
-            <p><strong>Защита от солнечных лучей:</strong> {{ $warehouse->storageHandling->light_protected }}</p>
-            <p><strong>Опасные
-                    вешества:</strong> {{ $warehouse->storageHandling->is_dangerous ? "имеется" : "не имеется"}}</p>
-            <p><strong>Охлаждение:</strong> {{ $warehouse->storageHandling->refrigeration }}</p>
-            <p><strong>Заморозка лучей:</strong> {{ $warehouse->storageHandling->freezing }}</p>
-            <p><strong>Легковоспламеняющийся лучей:</strong> {{ $warehouse->storageHandling->flammable }}</p>
-            <p><strong>Расположение на полке:</strong> {{ $warehouse->storageHandling->shelf_location }}</p>
-            <p><strong>Специальная зона:</strong> {{ $warehouse->storageHandling->special_zone }}</p>
-            <p><strong>Метка:</strong> {{ $warehouse->storageHandling->label }}</p>
-        </div>
+    <div class="row row-cards">
+        @foreach ($sections as $heading => $rows)
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h2 class="card-title">{{ $heading }}</h2>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            @foreach ($rows as $label => $value)
+                                <dt class="col-sm-5 fw-medium text-secondary">{{ $label }}</dt>
+                                <dd class="col-sm-7">{{ $value ?? '—' }}</dd>
+                            @endforeach
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
 @endsection
