@@ -4,37 +4,36 @@ namespace App\Services;
 
 use App\Models\Diagnosis;
 use App\Models\Survey;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class DiagnosisService
 {
     /**
-     * @param array<string, mixed> $validated
+     * @param  array<string, mixed>  $validated
      */
     public function store(array $validated): Diagnosis
     {
-        return Diagnosis::query()->create($validated);
+        return Diagnosis::query()->create(Arr::only($validated, ['code', 'name']));
     }
 
     /**
-     * @param array<string, mixed> $validated
+     * The surveys picked on the form are the ones suggested for the diagnosis; the others lose the link.
+     *
+     * @param  array<string, mixed>  $validated
      */
     public function update(Diagnosis $diagnosis, array $validated): Diagnosis
     {
-        Survey::where('diagnosis_id', $diagnosis->id)->update(['diagnosis_id' => null]);
+        return DB::transaction(function () use ($diagnosis, $validated): Diagnosis {
+            $diagnosis->update(Arr::only($validated, ['code', 'name']));
 
-        if (!empty($validated['surveys'])) {
-            Survey::whereIn('id', $validated['surveys'])
-                ->update(['diagnosis_id' => $diagnosis->id]);
-        }
+            Survey::query()->whereBelongsTo($diagnosis)->update(['diagnosis_id' => null]);
+            Survey::query()->whereKey($validated['surveys'] ?? [])->update(['diagnosis_id' => $diagnosis->id]);
 
-        $diagnosis->update($validated);
-        return $diagnosis->refresh();
+            return $diagnosis;
+        });
     }
 
-    /**
-     * @param Diagnosis $diagnosis
-     * @return void
-     */
     public function destroy(Diagnosis $diagnosis): void
     {
         $diagnosis->delete();

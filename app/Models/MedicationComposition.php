@@ -14,11 +14,17 @@ class MedicationComposition extends Model
         'active_substance_dosage',
     ];
 
+    /**
+     * @return BelongsTo<Medication, $this>
+     */
     public function medication(): BelongsTo
     {
         return $this->belongsTo(Medication::class);
     }
 
+    /**
+     * @return HasMany<MedicationAdditionalSubstance, $this>
+     */
     public function additionalSubstance(): HasMany
     {
         return $this->hasMany(MedicationAdditionalSubstance::class);

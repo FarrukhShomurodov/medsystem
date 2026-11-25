@@ -5,22 +5,24 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ManufacturerRequest;
 use App\Models\Manufacturer;
-use App\Services\ManufactureService;
+use App\Services\ManufacturerService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ManufacturerController extends Controller
+class ManufacturerController extends Controller implements HasMiddleware
 {
-    protected ManufactureService $service;
+    public function __construct(private readonly ManufacturerService $service) {}
 
-    public function __construct(ManufactureService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_manufacturers'])->only('index');
-        $this->middleware(['permission:create_manufacturers'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_manufacturers'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_manufacturers'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_manufacturers', only: ['index']),
+            new Middleware('permission:create_manufacturers', only: ['create', 'store']),
+            new Middleware('permission:edit_manufacturers', only: ['edit', 'update']),
+            new Middleware('permission:delete_manufacturers', only: ['destroy']),
+        ];
     }
 
     public function index(): View
@@ -40,10 +42,9 @@ class ManufacturerController extends Controller
 
     public function store(ManufacturerRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('manufacturers.index')->with('success', 'Производитель успешно добавлен!');
+        return to_route('manufacturers.index')->with('success', 'Производитель успешно добавлен!');
     }
 
     public function edit(Manufacturer $manufacturer): View
@@ -53,16 +54,15 @@ class ManufacturerController extends Controller
 
     public function update(ManufacturerRequest $request, Manufacturer $manufacturer): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($manufacturer, (array)$validated);
+        $this->service->update($manufacturer, $request->validated());
 
-        return redirect()->route('manufacturers.index')->with('success', 'Производитель успешно обновлен!');
+        return to_route('manufacturers.index')->with('success', 'Производитель успешно обновлен!');
     }
 
     public function destroy(Manufacturer $manufacturer): RedirectResponse
     {
         $this->service->destroy($manufacturer);
 
-        return redirect()->route('manufacturers.index')->with('success', 'Производитель успешно удален!');
+        return to_route('manufacturers.index')->with('success', 'Производитель успешно удален!');
     }
 }

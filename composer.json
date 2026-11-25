@@ -1,29 +1,36 @@
 {
-    "name": "laravel/laravel",
+    "name": "farrukhshomurodov/medsystem",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Hospital information system: patients and inpatient cards, appointments and staff schedules, prescriptions with drug-interaction checks, pharmacy and warehouse stock, scored medical documents, cashier.",
     "keywords": [
         "laravel",
-        "framework"
+        "healthcare",
+        "hospital",
+        "his",
+        "emr",
+        "pharmacy",
+        "inventory"
     ],
     "license": "MIT",
     "require": {
         "php": "^8.3",
-        "laravel/framework": "^11.29",
-        "laravel/tinker": "^2.10",
-        "maatwebsite/excel": "^3.1",
-        "spatie/laravel-permission": "^6.17"
+        "laravel/framework": "^13.0",
+        "laravel/tinker": "^3.0",
+        "maatwebsite/excel": "^4.0",
+        "spatie/laravel-permission": "^8.0"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.23.1",
-        "laravel/pail": "^1.2",
-        "laravel/pint": "^1.18.1",
-        "laravel/sail": "^1.37",
-        "laravel/telescope": "^5.2",
-        "mockery/mockery": "^1.6.12",
-        "nunomaduro/collision": "^8.5",
-        "phpstan/phpstan": "^1.12",
-        "phpunit/phpunit": "^11.4.2"
+        "driftingly/rector-laravel": "^2.0",
+        "fakerphp/faker": "^1.24",
+        "larastan/larastan": "^3.0",
+        "laravel/pail": "^1.3",
+        "laravel/pint": "^1.32",
+        "laravel/telescope": "^5.28",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.9",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "rector/rector": "^2.0"
     },
     "autoload": {
         "psr-4": {
@@ -38,6 +45,34 @@
         }
     },
     "scripts": {
+        "setup": [
+            "@composer install --no-interaction",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan key:generate --ansi",
+            "@php artisan storage:link --ansi",
+            "@php artisan migrate --seed --ansi",
+            "npm ci --no-audit --no-fund",
+            "npm run build"
+        ],
+        "lint": "pint --test",
+        "lint:fix": "pint",
+        "analyse": "phpstan analyse --memory-limit=2G",
+        "refactor": "rector process --dry-run",
+        "refactor:fix": "rector process",
+        "test": [
+            "@php artisan config:clear --ansi @no_additional_args",
+            "pest"
+        ],
+        "test:coverage": [
+            "@php artisan config:clear --ansi @no_additional_args",
+            "pest --coverage"
+        ],
+        "ci": [
+            "@lint",
+            "@analyse",
+            "@refactor",
+            "@test"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
@@ -49,27 +84,17 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@php artisan key:generate --ansi",
-            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
-            "@php artisan migrate --graceful --ansi"
+            "@php artisan key:generate --ansi"
         ],
-        "dev": [
-            "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
-        ],
-        "pint": [
-            "./vendor/bin/pint"
-        ],
-        "stan": [
-            "./vendor/bin/phpstan analyse --memory-limit=3g"
-        ],
-        "test": [
-            "@php artisan test"
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
         ]
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "laravel/telescope"
+            ]
         }
     },
     "config": {

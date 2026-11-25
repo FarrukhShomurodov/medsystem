@@ -2,46 +2,64 @@
 
 namespace App\Models;
 
+use Database\Factories\MainWarehouseFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * The hospital's main warehouse ("Общий склад"). There is exactly one, seeded with a fixed id.
+ */
 class MainWarehouse extends Model
 {
+    /** @use HasFactory<MainWarehouseFactory> */
+    use HasFactory;
+
+    /** Seeded by WarehouseSeeder; stock code and seeders rely on this id. */
+    public const MAIN = 1;
+
     protected $fillable = [
         'name',
     ];
 
-    public function medicalSupplies(): BelongsToMany
+    public static function main(): self
     {
-        return $this->belongsToMany(
-            MedicalSupply::class,
-            'main_warehouse_medical_supplies',
-            'main_warehouse_id',
-            'supply_id'
-
-        )->withPivot('quantity');
+        return static::query()->findOrFail(self::MAIN);
     }
 
-    public function householdMaterial(): BelongsToMany
+    /** @return HasMany<MainWarehouseMedication, $this> */
+    public function medicationBatches(): HasMany
     {
-        return $this->belongsToMany(
-            HouseholdMaterial::class,
-            'main_warehouse_household_materials',
-            'main_warehouse_id',
-            'household_material_id'
-        )->withPivot('quantity');
+        return $this->hasMany(MainWarehouseMedication::class);
     }
 
+    /** @return HasMany<MainWarehouseMedicalSupply, $this> */
+    public function supplyStock(): HasMany
+    {
+        return $this->hasMany(MainWarehouseMedicalSupply::class);
+    }
+
+    /** @return HasMany<MainWarehouseHouseholdMaterial, $this> */
+    public function householdStock(): HasMany
+    {
+        return $this->hasMany(MainWarehouseHouseholdMaterial::class);
+    }
+
+    /**
+     * @return BelongsToMany<Medication, $this, MainWarehouseMedication>
+     */
     public function medication(): BelongsToMany
     {
         return $this->belongsToMany(
             Medication::class,
             'main_warehouse_medications',
             'main_warehouse_id',
-            'medication_id'
+            'medication_id',
         )
             ->using(MainWarehouseMedication::class)
             ->withPivot([
+                'id',
                 'quantity',
                 'expiration_date',
                 'date_of_receipt',
@@ -58,7 +76,6 @@ class MainWarehouse extends Model
                 'incoming_price_total',
                 'incoming_price_per_unit',
                 'incoming_sum',
-                'stock',
             ]);
     }
 }

@@ -1,0 +1,62 @@
+// The frame of admin/layouts/app: sidebar brand, skip link, main area. The layout itself is Tabler's
+// vertical one (.page > aside.navbar-vertical + .page-wrapper).
+
+// "Перейти к содержимому": the first focusable element, visible only while focused.
+.skip-link:focus {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 1100;
+    padding: 0.5rem 1rem;
+    color: var(--primary-fg, #fff);
+    background-color: var(--primary);
+    border-radius: var(--border-radius);
+}
+
+// Tabler spreads the logo and a "pin" button apart; the dashboard has no pin button.
+#sidebar .navbar-brand {
+    justify-content: flex-start;
+    gap: 0.625rem;
+    font-size: 1.0625rem;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.01em;
+}
+
+.brand-mark {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    font-size: 1.25rem;
+    color: #fff;
+    background-color: var(--primary);
+    border-radius: var(--border-radius);
+}
+
+.navbar-vertical .navbar-collapse {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--white) 25%, transparent) transparent;
+}
+
+// A group's toggle is a <button>: drop the button chrome so it looks like the links around it.
+.navbar-vertical .nav-link.dropdown-toggle {
+    width: 100%;
+    text-align: start;
+    background: none;
+    border: 0;
+}
+
+// <main> holds the page header and .page-body: it takes the height .page-body would take in
+// Tabler's layout, so the footer stays at the bottom of short pages. The skip link moves focus
+// here; an outline would frame the whole page.
+#main-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+
+    &:focus {
+        outline: none;
+    }
+}

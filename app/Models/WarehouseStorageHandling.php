@@ -25,4 +25,11 @@ class WarehouseStorageHandling extends Model
         'special_zone',
         'label',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_dangerous' => 'boolean',
+        ];
+    }
 }

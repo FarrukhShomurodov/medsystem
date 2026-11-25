@@ -5,35 +5,33 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PatientDiagnosisRequest;
 use App\Services\PatientDiagnosisService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use LogicException;
 
 class PatientDiagnosisController extends Controller
 {
-    protected PatientDiagnosisService $service;
+    public function __construct(private readonly PatientDiagnosisService $service) {}
 
-    public function __construct(PatientDiagnosisService $service)
+    /**
+     * The patient card posts it with AJAX and offers the surveys linked to the diagnosis.
+     */
+    public function store(PatientDiagnosisRequest $request): JsonResponse|RedirectResponse
     {
-        $this->service = $service;
-    }
-
-
-    public function store(PatientDiagnosisRequest $request)
-    {
-        $validated = $request->validated();
-        $diagnosis = $this->service->store((array)$validated);
-
-        $diagnosis->load(['diagnosis.surveys']);
+        $diagnosis = $this->service->store($request->diagnosis());
 
         if ($request->ajax()) {
+            $diagnosis->load('diagnosis.surveys');
+            $catalogued = $diagnosis->diagnosis ?? throw new LogicException("Patient diagnosis {$diagnosis->id} has no catalogue diagnosis.");
+
             return response()->json([
                 'status' => true,
                 'diagnosis_id' => $diagnosis->id,
-                'surveys' => $diagnosis->diagnosis->surveys ?? []
+                'surveys' => $catalogued->surveys,
             ]);
         }
 
-        return redirect()
-            ->route('patients.show', $validated['patient_id'])
+        return to_route('patients.show', $diagnosis->patient_id)
             ->with('success', 'Диагноз успешно добавлен!');
     }
-
 }

@@ -1,0 +1,110 @@
+// bs-stepper (MIT): the multi-step forms (.bs-stepper.wizard-vertical) drawn as a Tabler card with
+// the steps in a column on the left and the current step's fields on the right. app.js creates
+// one Stepper per wizard; the markup stays bs-stepper's own (.step > .step-trigger, .content).
+
+@use '@tabler/core/scss/config' as tb;
+@use 'bs-stepper/dist/css/bs-stepper.css' as *;
+
+.bs-stepper {
+    background-color: var(--bg-surface);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-card);
+
+    .step-trigger {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 0.75rem;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: tb.$font-size-base;
+        font-weight: var(--font-weight-medium);
+        color: var(--secondary);
+        white-space: normal;
+        text-align: start;
+        border-radius: var(--border-radius);
+
+        &:hover {
+            background-color: var(--hover-bg);
+        }
+
+        &:focus-visible {
+            color: var(--body-color);
+            outline: 2px solid color-mix(in oklab, var(--primary) 50%, transparent);
+            outline-offset: -2px;
+        }
+    }
+
+    .bs-stepper-circle {
+        flex-shrink: 0;
+        align-items: center;
+        width: 2rem;
+        height: 2rem;
+        padding: 0;
+        margin: 0;
+        font-size: tb.$font-size-sm;
+        color: var(--secondary);
+        background-color: var(--bg-surface-secondary);
+        border: var(--border-width) solid var(--border-color);
+        border-radius: 50%;
+    }
+
+    .bs-stepper-label {
+        margin: 0;
+    }
+
+    .step.active {
+        .step-trigger {
+            color: var(--body-color);
+            background-color: var(--active-bg);
+        }
+
+        .bs-stepper-circle {
+            color: #fff;
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+    }
+
+    // A step whose fields failed validation (app.js marks it after a server or browser error).
+    .step.has-error .bs-stepper-circle {
+        color: #fff;
+        background-color: var(--danger);
+        border-color: var(--danger);
+    }
+
+    .bs-stepper-content {
+        padding: 1.5rem;
+    }
+
+    // Only the current step is laid out; bs-stepper's vertical mode would keep the others'
+    // (hidden) space.
+    .bs-stepper-content .content:not(.active) {
+        display: none;
+    }
+}
+
+.bs-stepper.vertical {
+    flex-direction: column;
+
+    .bs-stepper-header {
+        gap: 0.25rem;
+        padding: 1rem;
+        border-bottom: var(--border-width) solid var(--border-color);
+    }
+
+    @include tb.media-breakpoint-up(lg) {
+        flex-direction: row;
+
+        .bs-stepper-header {
+            flex: 0 0 16rem;
+            border-bottom: 0;
+            border-inline-end: var(--border-width) solid var(--border-color);
+        }
+
+        .bs-stepper-content {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+    }
+}

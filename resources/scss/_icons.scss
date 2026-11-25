@@ -1,0 +1,39 @@
+// Boxicons (MIT), the dashboard's only icon set: <i class="bx bx-user" aria-hidden="true"></i>.
+//
+// The package's stylesheet declares five font formats for very old browsers; vite.config.js serves
+// its class rules without that @font-face ('boxicons:classes'), and the face below keeps woff2 + woff.
+
+@use 'boxicons:classes' as *;
+
+$boxicons-fonts: '../../node_modules/boxicons/fonts';
+
+@font-face {
+    font-family: 'boxicons';
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+    src:
+        url('#{$boxicons-fonts}/boxicons.woff2') format('woff2'),
+        url('#{$boxicons-fonts}/boxicons.woff') format('woff');
+}
+
+// An icon before a button's label gets the spacing Tabler gives its own .icon; a .btn-icon button
+// holds an icon alone (give it an aria-label).
+.btn > .bx {
+    font-size: var(--btn-icon-size);
+    margin: 0 calc(var(--btn-padding-x) / 2) 0 calc(var(--btn-padding-x) / -4);
+}
+
+.btn-icon > .bx {
+    margin: 0;
+}
+
+.nav-link-icon > .bx {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.dropdown-item > .bx {
+    font-size: 1.125rem;
+    vertical-align: -0.1875rem;
+}

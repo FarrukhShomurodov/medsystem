@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Exceptions\ServiceImportValidationException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ImportSpreadsheetRequest;
 use App\Http\Requests\ServiceRequest;
 use App\Imports\ServicesImport;
 use App\Models\Service;
@@ -12,42 +12,30 @@ use App\Models\ServiceType;
 use App\Services\ServiceService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ServiceController extends Controller
+class ServiceController extends Controller implements HasMiddleware
 {
-    protected ServiceService $service;
+    public function __construct(private readonly ServiceService $service) {}
 
-    public function __construct(ServiceService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_services'])->only('index');
-        $this->middleware(['permission:create_services'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_services'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_services'])->only('destroy');
-
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_services', only: ['index']),
+            new Middleware('permission:create_services', only: ['create', 'store']),
+            new Middleware('permission:edit_services', only: ['edit', 'update']),
+            new Middleware('permission:delete_services', only: ['destroy']),
+        ];
     }
 
     public function index(): View
     {
         $services = Service::query()
-            ->select(
-                [
-                    'id',
-                    'name',
-                    'price',
-                    'discount',
-                    'service_group_id',
-                    'is_active',
-                    'service_type_id',
-                    'is_appointment'
-                ]
-            )
-            ->with('group')
-            ->with('type')
-            ->orderBy('id', 'desc')
+            ->select(['id', 'name', 'price', 'discount', 'service_group_id', 'is_active', 'service_type_id', 'is_appointment'])
+            ->with(['group', 'type'])
+            ->orderByDesc('id')
             ->paginate(10);
 
         return view('admin.services.index', compact('services'));
@@ -63,10 +51,9 @@ class ServiceController extends Controller
 
     public function store(ServiceRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('services.index')->with('success', 'Услуга успешно добавлена!');
+        return to_route('services.index')->with('success', 'Услуга успешно добавлена!');
     }
 
     public function edit(Service $service): View
@@ -79,17 +66,16 @@ class ServiceController extends Controller
 
     public function update(ServiceRequest $request, Service $service): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($service, (array)$validated);
+        $this->service->update($service, $request->validated());
 
-        return redirect()->route('services.index')->with('success', 'Услуга  успешно обновлена!');
+        return to_route('services.index')->with('success', 'Услуга успешно обновлена!');
     }
 
     public function destroy(Service $service): RedirectResponse
     {
         $this->service->destroy($service);
 
-        return redirect()->route('services.index')->with('success', 'Услуга успешно удалена!');
+        return to_route('services.index')->with('success', 'Услуга успешно удалена!');
     }
 
     public function showImportServices(): View
@@ -97,18 +83,11 @@ class ServiceController extends Controller
         return view('admin.services.import');
     }
 
-    public function importServices(Request $request)
+    public function importServices(ImportSpreadsheetRequest $request): RedirectResponse
     {
-        $request->validate([
-            'file' => 'required|file|mimes:xlsx,csv,xls',
-        ]);
+        $import = new ServicesImport;
+        Excel::import($import, $request->file('file'));
 
-        try {
-            Excel::import(new ServicesImport, $request->file('file'));
-        } catch (ServiceImportValidationException $e) {
-            return back()->withErrors(['import_error' => $e->getMessage()]);
-        }
-
-        return redirect()->route('services.index')->with('success', 'Услуги успешно импортированы.');
+        return $import->report()->flashTo(to_route('services.index'));
     }
 }

@@ -1,94 +1,73 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA | Персонал</title>
+@section('title', 'Персонал')
+
+@section('header')
+    <x-page-header title="Персонал" pretitle="Организация">
+        @can('create_staffs')
+            <x-slot:actions>
+                <a href="{{ route('staffs.create') }}" class="btn btn-primary"><i class="bx bx-plus" aria-hidden="true"></i>Создать</a>
+            </x-slot:actions>
+        @endcan
+    </x-page-header>
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light">Персонал</span>
-    </h6>
-
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
-
-        @if(session()->has('success'))
-            <div class="alert alert-solid-success alert-dismissible d-flex align-items-center" role="alert">
-                <i class="bx bx-check-circle fs-4 me-2"></i>
-                {{ session()->get('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-    </div>
-
-    <div id="errors_alert"></div>
-
-    <div class="card shadow-sm">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Персонал </h5>
-            <a href="{{ route('staffs.create') }}" class="btn btn-primary "
-               style="margin-right: 22px;">Создать</a>
-        </div>
-        <div class="card-datatable table-responsive">
-            <table class="datatables-users table border-top">
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table card-table table-vcenter">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th class="w-1">#</th>
                     <th>Имя</th>
                     <th>Фамилия</th>
                     <th>Должность</th>
                     <th>Статус</th>
-                    <th></th>
+                    <th class="w-1"><span class="visually-hidden">Действия</span></th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($staffs as $staff)
-                    <tr class="cursor-pointer">
-                        <td>{{ $staff->id }}</td>
-                        <td>{{ $staff->name }}</td>
+                @forelse($staffs as $staff)
+                    {{-- The form edits the employee's login too: AdminPolicy guards a main administrator's account. --}}
+                    @php($account = $staff->admin)
+                    <tr>
+                        <td class="text-secondary">{{ $staff->id }}</td>
+                        <td><a href="{{ route('staffs.show', $staff) }}">{{ $staff->name }}</a></td>
                         <td>{{ $staff->last_name }}</td>
-                        <td>{{ $staff->professionalData->position->name }}</td>
+                        <td>{{ $staff->professionalData?->position?->name }}</td>
                         <td>
-                            @php
-                                $isWorking = $staff->isWorkingToday(now());
-                            @endphp
-                            @if ($isWorking)
-                                <span class="badge bg-success">На работе</span>
+                            @if($workingToday->contains($staff->id))
+                                <span class="badge bg-success-lt">На работе</span>
                             @else
-                                <span class="badge bg-danger">Не работает</span>
+                                <span class="badge bg-danger-lt">Не работает</span>
                             @endif
                         </td>
                         <td>
-                            <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-warning"
-                                        onclick="location.href='{{ route('staffs.edit', $staff->id) }}'">
-                                    Редактировать
-                                </button>
-                                <form action="{{ route('staffs.destroy', $staff->id) }}" method="POST"
-                                      style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-danger">
-                                        Удалить
-                                    </button>
-                                </form>
+                            <div class="table-actions">
+                                @can('edit_staffs')
+                                    @if($account === null || auth('admin')->user()->can('update', $account))
+                                        <a href="{{ route('staffs.edit', $staff) }}" class="btn btn-sm">Изменить</a>
+                                    @endif
+                                @endcan
+                                @can('delete_staffs')
+                                    @if($account === null || auth('admin')->user()->can('delete', $account))
+                                        <x-delete-button :action="route('staffs.destroy', $staff)"
+                                                         :confirm="'Удалить сотрудника '.$staff->full_name.'?'.($account ? ' Его учётная запись для входа тоже будет удалена.' : '').' Действие нельзя отменить.'" />
+                                    @endif
+                                @endcan
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="6"><x-empty-state text="Добавьте первого сотрудника." /></td>
+                    </tr>
+                @endforelse
                 </tbody>
             </table>
-            <div class="mt-4 p-1">
-                {{ $staffs->links('pagination::bootstrap-5') }}
-            </div>
         </div>
+        @if($staffs->hasPages())
+            <div class="card-footer">{{ $staffs->links() }}</div>
+        @endif
     </div>
 @endsection

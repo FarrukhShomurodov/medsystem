@@ -1,30 +1,18 @@
 @extends('admin.layouts.app')
 
+@section('title', $documentResponse->document->title)
+
+@section('header')
+    <x-page-header :title="$documentResponse->document->title" pretitle="Ответы на документ">
+        {{-- The stay forms open this page in a new tab: there is no page to go back to, only the patient. --}}
+        @can('view_patients')
+            <x-slot:actions>
+                <a href="{{ route('patients.show', $documentResponse->patient_id) }}" class="btn"><i class="bx bx-user" aria-hidden="true"></i>К карте пациента</a>
+            </x-slot:actions>
+        @endcan
+    </x-page-header>
+@endsection
+
 @section('content')
-    <div class="container mt-4">
-        <h3 class="mb-4">Ответы на документ: {{ $documentResponse->document->title }}</h3>
-
-        <div class="card">
-            <div class="card-body">
-                @foreach($documentResponse->document->questions as $question)
-                    @php
-                        $answer = $documentResponse->answers->firstWhere('question_id', $question->id);
-                    @endphp
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">{{ $question->question }}</label>
-                        <div class="form-control bg-light">
-                            @if($question->type === 'boolean')
-                                {{ $answer?->answer ? 'Да' : 'Нет' }}
-                            @else
-                                {{ $answer?->answer ?? '-' }}
-                            @endif
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-
-        <a href="{{ url()->previous() }}" class="btn btn-secondary mt-4">Назад</a>
-    </div>
+    @include('admin.patients.documents.answer-list', ['documentResponse' => $documentResponse])
 @endsection

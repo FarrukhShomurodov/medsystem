@@ -1,82 +1,54 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA | Процедуры </title>
+@section('title', 'Процедуры')
+
+@section('header')
+    <x-page-header title="Процедуры" pretitle="Услуги">
+        @can('create_service_procedures')
+            <x-slot:actions>
+                <a href="{{ route('procedures.create') }}" class="btn btn-primary"><i class="bx bx-plus" aria-hidden="true"></i>Создать</a>
+            </x-slot:actions>
+        @endcan
+    </x-page-header>
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light">Процедуры </span>
-    </h6>
-
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
-
-        @if(session()->has('success'))
-            <div class="alert alert-solid-success alert-dismissible d-flex align-items-center" role="alert">
-                <i class="bx bx-check-circle fs-4 me-2"></i>
-                {{ session()->get('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-    </div>
-
-    <div id="errors_alert"></div>
-
-    <div class="card shadow-sm">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-header">Процедуры </h5>
-            <a href="{{ route('procedures.create') }}" class="btn btn-primary "
-               style="margin-right: 22px;">Создать</a>
-        </div>
-        <div class="card-datatable table-responsive">
-            <table class="datatables-users table border-top">
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table card-table table-vcenter">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th class="w-1">#</th>
                     <th>Название</th>
-                    <th>Стоимость</th>
-                    <th></th>
+                    <th class="text-end">Стоимость</th>
+                    <th class="w-1"><span class="visually-hidden">Действия</span></th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($procedures as $procedure)
+                @forelse ($procedures as $procedure)
                     <tr>
-                        <td>{{ $procedure->id }}</td>
+                        <td class="text-secondary">{{ $procedure->id }}</td>
                         <td>{{ $procedure->name }}</td>
-                        <td>{{ round($procedure->price) }}</td>
-
+                        <td class="text-end text-nowrap">{{ \App\Services\Billing\Amount::fromDecimal($procedure->price)->format() }}</td>
                         <td>
-                            <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-warning"
-                                        onclick="location.href='{{ route('procedures.edit', $procedure->id) }}'">
-                                    Редактировать
-                                </button>
-                                <form action="{{ route('procedures.destroy', $procedure->id) }}" method="POST"
-                                      style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-danger">
-                                        Удалить
-                                    </button>
-                                </form>
+                            <div class="table-actions">
+                                @can('edit_service_procedures')
+                                    <a href="{{ route('procedures.edit', $procedure) }}" class="btn btn-sm">Изменить</a>
+                                @endcan
+                                @can('delete_service_procedures')
+                                    <x-delete-button :action="route('procedures.destroy', $procedure)" />
+                                @endcan
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr><td colspan="4"><x-empty-state text="Добавьте первую процедуру." /></td></tr>
+                @endforelse
                 </tbody>
             </table>
-            <div class="mt-4 p-1">
-                {{ $procedures->links('pagination::bootstrap-5') }}
-            </div>
         </div>
+        @if ($procedures->hasPages())
+            <div class="card-footer">{{ $procedures->links() }}</div>
+        @endif
     </div>
 @endsection

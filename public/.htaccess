@@ -5,6 +5,10 @@
 
     RewriteEngine On
 
+    # Patient documents are private (PatientFileController): never serve the folder 1.x stored
+    # them in on the public disk, also before `php artisan patient-files:privatize` has moved them.
+    RewriteRule ^storage/patient_files/ - [F,L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

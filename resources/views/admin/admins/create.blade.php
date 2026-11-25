@@ -1,57 +1,54 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA - Создать пользователя панеля</title>
+@section('title', 'Создать пользователя панели')
+
+@section('header')
+    <x-page-header title="Создать пользователя панели" :breadcrumbs="['Пользователи панели' => route('admins.index')]" />
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('admins.index') }}">Пользователи панели</a> /</span>Создать
-    </h6>
-
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
-    </div>
-
-    <div class="card shadow-sm mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Создать</h5>
-        </div>
-        <div class="card-body">
-            <form action="{{ route('admins.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="row">
-                    <div class="mb-3 col-6">
-                        <label class="form-label" for="email">Email <span
-                                class="text-danger">*</span></label>
-                        <input type="text" name="email" class="form-control @error('email') is-invalid @enderror"
-                               id="email" placeholder="Email" required>
+    <div class="card">
+        <form action="{{ route('admins.store') }}" method="POST">
+            @csrf
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label required" for="email">Email</label>
+                        <input type="email" id="email" name="email" value="{{ old('email') }}"
+                               class="form-control @error('email') is-invalid @enderror"
+                               placeholder="name@example.com" autocomplete="off" required
+                               @error('email') aria-describedby="email-error" aria-invalid="true" @enderror>
                         @error('email')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback" id="email-error">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="mb-3 col-6">
-                        <label for="password" class="form-label">Пароль <span
-                                class="text-danger">*</span></label>
-                        <input class="form-control @error('password') is-invalid @enderror" type="password"
-                               name="password" id="password"
-                               placeholder="Пароль" required>
+
+                    <div class="col-md-6">
+                        <label class="form-label required" for="password">Пароль</label>
+                        <div class="input-group input-group-flat">
+                            <input type="password" id="password" name="password"
+                                   class="form-control @error('password') is-invalid @enderror"
+                                   placeholder="Не короче 8 символов" autocomplete="new-password" required
+                                   @error('password') aria-describedby="password-error" aria-invalid="true" @enderror>
+                            <span class="input-group-text">
+                                <button type="button" class="link-secondary border-0 bg-transparent p-0 lh-1" data-password-toggle="#password"
+                                        aria-controls="password" aria-pressed="false" aria-label="Показать пароль">
+                                    <i class="bx bx-show" aria-hidden="true"></i>
+                                </button>
+                            </span>
+                        </div>
                         @error('password')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback" id="password-error">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Сохранить</button>
-            </form>
-        </div>
+            </div>
+            <div class="card-footer">
+                <div class="btn-list justify-content-end">
+                    <a href="{{ route('admins.index') }}" class="btn">Отмена</a>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </div>
+        </form>
     </div>
 @endsection

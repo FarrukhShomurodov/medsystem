@@ -14,6 +14,6 @@ class WarehouseContact extends Model
         'work_time',
         'head_name',
         'head_position',
-        'head_contact'
+        'head_contact',
     ];
 }

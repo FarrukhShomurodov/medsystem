@@ -2,17 +2,30 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentMethod;
+use App\Enums\PaymentStatus;
+use App\Enums\ServicePlace;
+use App\Enums\ServiceStatus;
+use Database\Factories\PatientServiceFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property ServiceStatus $status
+ * @property ServicePlace|null $place
+ * @property array<string, mixed>|null $payment
+ * @property Carbon|null $paid_at
+ */
 class PatientService extends Model
 {
-    const PLACE = ['institution', 'cabinet'];
-    const STATUS = ['assigned', 'in_process', 'completed', 'cancelled', 'confirmed', 'paid'];
-    const PAYMENT_STATUS = ['paid', 'unpaid', 'partially_paid'];
-    const PAYMENT_METHOD = ['cash', 'card', 'insurance_company'];
+    /** @use HasFactory<PatientServiceFactory> */
+    use HasFactory;
 
     protected $fillable = [
         'service_id',
@@ -24,139 +37,104 @@ class PatientService extends Model
         'result',
         'status',
         'payment',
-        'insurance_policy'
+        'insurance_policy',
+        'price',
+        'currency',
     ];
 
-    protected $casts = [
-        'insurance_policy' => 'array',
-        'payment' => 'array',
-    ];
-
-    public static function getStatusTranslate($status)
-    {
-        $statusRu = [
-            'assigned' => 'Назначена',
-            'in_process' => 'В процессе',
-            'completed' => 'Завершена',
-            'cancelled' => 'Отменена',
-            'confirmed' => 'Подтверждено',
-            'paid' => 'Оплачено',
-        ];
-
-        return $statusRu[$status];
-    }
-
-    public static function getPaymentStatusTranslate($status)
-    {
-        $statusRu = [
-            'paid' => 'Оплачено',
-            'unpaid' => 'Не оплачено',
-            'partially_paid' => 'Частично оплачено',
-        ];
-
-        return $statusRu[$status];
-    }
-
-    public static function getPaymentMethodTranslate($status)
-    {
-        $statusRu = [
-            'cash' => 'Наличные',
-            'card' => 'Карта',
-            'insurance_company' => 'Страховая компания',
-        ];
-
-        return $statusRu[$status];
-    }
-
-    public static function getPlaceTranslate($status)
-    {
-        $statusRu = [
-            'institution' => 'Учреждение',
-            'cabinet' => 'Кабинет',
-        ];
-
-        return $statusRu[$status];
-    }
-
-    public static function getStatusStyles(): array
+    protected function casts(): array
     {
         return [
-            'assigned' => [
-                'class' => 'bg-label-success',
-                'text' => 'Назначена',
-            ],
-
-            'confirmed' => [
-                'class' => 'bg-label-success',
-                'text' => 'Подтверждено',
-            ],
-            'in_process' => [
-                'class' => 'bg-label-info',
-                'text' => 'В процессе',
-            ],
-            'completed' => [
-                'class' => 'bg-label-info',
-                'text' => 'Завершена',
-            ],
-            'cancelled' => [
-                'class' => 'bg-label-warning',
-                'text' => 'Отменена',
-            ],
+            'status' => ServiceStatus::class,
+            'place' => ServicePlace::class,
+            // The price list's price when the service was ordered (in its kept currency): what the cash desk charges.
+            'price' => 'decimal:2',
+            // When the cash desk took the payment; NULL for an unpaid order, or one paid before it was recorded.
+            'paid_at' => 'datetime',
+            'payment' => 'array',
+            'insurance_policy' => 'array',
         ];
     }
 
-    public function getStatusBadge(): string
+    public function isPaid(): bool
     {
-        $statusStyles = self::getStatusStyles();
-        $status = $this->status;
-
-        if (!array_key_exists($status, $statusStyles)) {
-            return '<span class="badge bg-label-secondary me-1">Неизвестно</span>';
-        }
-
-        $class = $statusStyles[$status]['class'];
-        $text = $statusStyles[$status]['text'];
-
-        return "<span class='badge $class me-1'>$text</span>";
+        return $this->status->isPaid();
     }
 
+    /** The payment status noted on the order form (payment.status), if one was picked. */
+    public function paymentStatus(): ?PaymentStatus
+    {
+        return PaymentStatus::tryFrom((string) ($this->payment['status'] ?? ''));
+    }
+
+    /** The payment method noted on the order form (payment.method), if one was picked. */
+    public function paymentMethod(): ?PaymentMethod
+    {
+        return PaymentMethod::tryFrom((string) ($this->payment['method'] ?? ''));
+    }
+
+    /**
+     * @return BelongsTo<Service, $this>
+     */
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
     }
 
+    /**
+     * @return BelongsTo<Patient, $this>
+     */
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class);
     }
 
-    public function examinaitonMap(): BelongsTo
+    /**
+     * The staff member performing the service; patient_services has no doctor column of its own.
+     *
+     * @return HasOneThrough<Staff, PatientServiceStaff, $this>
+     */
+    public function doctor(): HasOneThrough
     {
-        return $this->belongsTo(ExaminationMap::class);
+        return $this->hasOneThrough(
+            Staff::class,
+            PatientServiceStaff::class,
+            'patient_service_id',
+            'id',
+            'id',
+            'service_staff_id',
+        );
     }
 
-    public function doctor(): BelongsTo
-    {
-        return $this->belongsTo(Staff::class);
-    }
-
-    public function equipments(): belongsToMany
+    /**
+     * @return BelongsToMany<Equipment, $this, Pivot>
+     */
+    public function equipments(): BelongsToMany
     {
         return $this->belongsToMany(Equipment::class, 'patient_service_to_equipments_assignment', 'patient_service_id', 'service_equipment_id');
     }
 
-    public function methods(): belongsToMany
+    /**
+     * @return BelongsToMany<ServiceMethod, $this, Pivot>
+     */
+    public function methods(): BelongsToMany
     {
         return $this->belongsToMany(ServiceMethod::class, 'patient_service_to_methods_assignments', 'patient_service_id', 'service_methods_id');
     }
 
-    public function staffs(): belongsToMany
+    /**
+     * @return BelongsToMany<Staff, $this, Pivot>
+     */
+    public function staffs(): BelongsToMany
     {
         return $this->belongsToMany(Staff::class, 'patient_service_to_staffs_assignment', 'patient_service_id', 'service_staff_id');
     }
 
+    /**
+     * @return HasMany<SurveyResponse, $this>
+     */
     public function surveyResponses(): HasMany
     {
-        return $this->hasMany(SurveyResponses::class);
+        return $this->hasMany(SurveyResponse::class);
     }
 }

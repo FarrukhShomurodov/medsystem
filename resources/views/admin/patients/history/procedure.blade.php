@@ -1,15 +1,12 @@
-<div class="mb-4">
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label class="form-label fw-bold">Процедура:</label>
-                <p class="form-control-plaintext">{{ $data->procedure->name }}</p>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-bold">Дата:</label>
-                <p class="form-control-plaintext">{{ $data->procedure_date}}</p>
-            </div>
-        </div>
+{{-- A procedure of the patient card history (api.patients.history.partial). --}}
+@use('App\Support\Display')
+<div class="datagrid">
+    <div class="datagrid-item">
+        <div class="datagrid-title">Процедура</div>
+        <div class="datagrid-content">{{ $data->procedure->name }}</div>
+    </div>
+    <div class="datagrid-item">
+        <div class="datagrid-title">Дата</div>
+        <div class="datagrid-content">{{ Display::date($data->procedure_date) }}</div>
     </div>
 </div>

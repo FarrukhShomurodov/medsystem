@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\QuestionType;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property QuestionType $type
+ */
 class DocumentQuestion extends Model
 {
     protected $fillable = [
@@ -13,10 +17,11 @@ class DocumentQuestion extends Model
         'options',
     ];
 
-    protected $casts = [
-        'options' => 'json',
-    ];
-
-    const TYPE = ['choice', 'boolean', 'text'];
-
+    protected function casts(): array
+    {
+        return [
+            'type' => QuestionType::class,
+            'options' => 'array',
+        ];
+    }
 }

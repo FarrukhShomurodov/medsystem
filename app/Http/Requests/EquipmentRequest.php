@@ -2,14 +2,14 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Equipment;
+use App\Enums\EquipmentStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class EquipmentRequest extends FormRequest
 {
-    /**2
-     * @return array<string>
+    /**
+     * @return array<string, mixed>
      */
     public function rules(): array
     {
@@ -19,21 +19,21 @@ class EquipmentRequest extends FormRequest
             'equipment_type_id' => 'required|int|exists:equipment_types,id',
             'manufacturer_id' => 'required|int|exists:manufacturers,id',
 
-            'serial_number' => 'required|string',
+            'serial_number' => 'required|string|max:255',
 
             'date_purchase' => 'required|date',
             'calibration_date' => 'required|date',
-            'repair' => 'required|string',
+            'repair' => 'required|string|max:255',
             'term_date' => 'required|date',
-            'term_notify_days' => 'required|int',
-            'upcoming_service_at' => 'required|int',
-            'location' => 'required|string',
+            'term_notify_days' => 'required|int|min:0|max:36500',
+            'upcoming_service_at' => 'required|int|min:0|max:36500',
+            'location' => 'required|string|max:255',
             'staff_id' => 'required|int|exists:staff,id',
 
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|min:0|max:999999999999.99',
 
             'last_inspection' => 'nullable|date',
-            'status' => ['nullable', Rule::in(Equipment::STATUS)],
+            'status' => ['nullable', Rule::enum(EquipmentStatus::class)],
         ];
     }
 }

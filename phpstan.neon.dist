@@ -1,0 +1,19 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/nesbot/carbon/extension.neon
+
+parameters:
+    paths:
+        - app/
+        - bootstrap/app.php
+        - database/
+        - routes/
+
+    level: 8
+
+    # Read each model's casts() method: enum, date and decimal (numeric-string) attributes get
+    # the cast's type instead of the column's (Larastan 3 otherwise only sees the declared
+    # array<string, string> return type and falls back to the migrations, e.g. decimal as float).
+    parseModelCastsMethod: true
+
+    tmpDir: storage/framework/cache/phpstan

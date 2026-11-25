@@ -8,19 +8,21 @@ use App\Models\WarehouseType;
 use App\Services\WarehouseTypeService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class WarehouseTypeController extends Controller
+class WarehouseTypeController extends Controller implements HasMiddleware
 {
-    protected WarehouseTypeService $service;
+    public function __construct(private readonly WarehouseTypeService $service) {}
 
-    public function __construct(WarehouseTypeService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_warehouse_types'])->only('index');
-        $this->middleware(['permission:create_warehouse_types'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_warehouse_types'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_warehouse_types'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_warehouse_types', only: ['index']),
+            new Middleware('permission:create_warehouse_types', only: ['create', 'store']),
+            new Middleware('permission:edit_warehouse_types', only: ['edit', 'update']),
+            new Middleware('permission:delete_warehouse_types', only: ['destroy']),
+        ];
     }
 
     public function index(): View
@@ -40,10 +42,9 @@ class WarehouseTypeController extends Controller
 
     public function store(WarehouseTypeRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('warehouses.type.index')->with('success', 'Тип склада успешно добавлен!');
+        return to_route('warehouses.type.index')->with('success', 'Тип склада успешно добавлен!');
     }
 
     public function edit(WarehouseType $type): View
@@ -53,16 +54,15 @@ class WarehouseTypeController extends Controller
 
     public function update(WarehouseTypeRequest $request, WarehouseType $type): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($type, (array)$validated);
+        $this->service->update($type, $request->validated());
 
-        return redirect()->route('warehouses.type.index')->with('success', 'Тип склада успешно обновлен!');
+        return to_route('warehouses.type.index')->with('success', 'Тип склада успешно обновлен!');
     }
 
     public function destroy(WarehouseType $type): RedirectResponse
     {
         $this->service->destroy($type);
 
-        return redirect()->route('warehouses.type.index')->with('success', 'Тип склада успешно удален!');
+        return to_route('warehouses.type.index')->with('success', 'Тип склада успешно удален!');
     }
 }

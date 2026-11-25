@@ -7,7 +7,7 @@ use App\Models\EquipmentType;
 class EquipmentTypeService
 {
     /**
-     * @param array<string, mixed> $validated
+     * @param  array<string, mixed>  $validated
      */
     public function store(array $validated): EquipmentType
     {
@@ -15,7 +15,7 @@ class EquipmentTypeService
     }
 
     /**
-     * @param array<string, mixed> $validated
+     * @param  array<string, mixed>  $validated
      */
     public function update(EquipmentType $type, array $validated): EquipmentType
     {

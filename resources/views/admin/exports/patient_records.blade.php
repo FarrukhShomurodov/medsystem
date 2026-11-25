@@ -5,24 +5,29 @@
         <th>Тип</th>
         <th>Название</th>
         <th>Цена</th>
+        <th>Валюта</th>
         <th>Статус</th>
     </tr>
     </thead>
     <tbody>
-    @foreach($allRecords as $i => $item)
+    @foreach($items as $item)
         <tr>
-            <td>{{ $i+1 }}</td>
-            <td>{{ $item['type'] }}</td>
-            <td>{{ $item['name'] }}</td>
-            <td>{{ $item['price'] }}</td>
-            <td>{{ $item['status'] }}</td>
+            <td>{{ $loop->iteration }}</td>
+            <td>{{ $item->type->label() }}</td>
+            <td>{{ $item->name }}</td>
+            <td>{{ $item->price->toDecimal() }}</td>
+            <td>{{ $item->currency }}</td>
+            <td>{{ $item->status->label() }}</td>
         </tr>
     @endforeach
     </tbody>
     <tfoot>
-    <tr>
-        <td colspan="3"><strong>Итого:</strong></td>
-        <td colspan="2">{{ $total }} UZS</td>
-    </tr>
+    @foreach($totals->all() as $currency => $sum)
+        <tr>
+            <td colspan="3"><strong>Итого:</strong></td>
+            <td><strong>{{ $sum->toDecimal() }}</strong></td>
+            <td colspan="2"><strong>{{ $currency }}</strong></td>
+        </tr>
+    @endforeach
     </tfoot>
 </table>

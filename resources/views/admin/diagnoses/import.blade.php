@@ -1,25 +1,27 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA | Импорт</title>
+@section('title', 'Импорт диагнозов')
+
+@section('header')
+    <x-page-header title="Импорт диагнозов" :breadcrumbs="['Диагнозы' => route('diagnoses.index')]" />
 @endsection
 
 @section('content')
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="card">
+        <form method="POST" action="{{ route('diagnoses.import') }}" enctype="multipart/form-data">
+            @csrf
+            <div class="card-body">
+                <div class="col-lg-6">
+                    <label class="form-label required" for="file">Файл</label>
+                    <input type="file" id="file" name="file" class="form-control @error('file') is-invalid @enderror"
+                           accept=".xlsx,.xls,.csv" aria-describedby="file-hint" required>
+                    @error('file')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    <div class="form-hint" id="file-hint">Таблица Excel (xlsx, xls) или CSV, до 10 МБ.</div>
                 </div>
-            @endforeach
-        @endif
+            </div>
+            <div class="card-footer text-end">
+                <button class="btn btn-primary" type="submit"><i class="bx bx-import" aria-hidden="true"></i>Импортировать</button>
+            </div>
+        </form>
     </div>
-
-    <form action="{{ route('diagnoses.import') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <input type="file" name="file" required>
-        <button type="submit" class="btn btn-primary mt-2">Импортировать</button>
-    </form>
 @endsection

@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProcedureRequest;
 use App\Models\Procedure;
 use App\Services\ProcedureService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ProcedureController extends Controller
+class ProcedureController extends Controller implements HasMiddleware
 {
-    protected ProcedureService $service;
+    public function __construct(private readonly ProcedureService $service) {}
 
-    public function __construct(ProcedureService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_service_procedures'])->only('index');
-        $this->middleware(['permission:create_service_procedures'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_service_procedures'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_service_procedures'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_service_procedures', only: ['index']),
+            new Middleware('permission:create_service_procedures', only: ['create', 'store']),
+            new Middleware('permission:edit_service_procedures', only: ['edit', 'update']),
+            new Middleware('permission:delete_service_procedures', only: ['destroy']),
+        ];
     }
 
     public function index(): View
@@ -42,9 +43,9 @@ class ProcedureController extends Controller
     public function store(ProcedureRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($validated);
 
-        return redirect()->route('procedures.index')->with('success', 'Процедура успешно добавлена!');
+        return to_route('procedures.index')->with('success', 'Процедура успешно добавлена!');
     }
 
     public function edit(Procedure $procedure): View
@@ -55,15 +56,15 @@ class ProcedureController extends Controller
     public function update(ProcedureRequest $request, Procedure $procedure): RedirectResponse
     {
         $validated = $request->validated();
-        $this->service->update($procedure, (array)$validated);
+        $this->service->update($procedure, $validated);
 
-        return redirect()->route('procedures.index')->with('success', 'Процедура успешно обновлена!');
+        return to_route('procedures.index')->with('success', 'Процедура успешно обновлена!');
     }
 
     public function destroy(Procedure $procedure): RedirectResponse
     {
         $this->service->destroy($procedure);
 
-        return redirect()->route('procedures.index')->with('success', 'Процедура успешно удалена!');
+        return to_route('procedures.index')->with('success', 'Процедура успешно удалена!');
     }
 }

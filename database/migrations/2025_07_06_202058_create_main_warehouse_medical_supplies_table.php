@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('main_warehouse_medical_supplies', function (Blueprint $table) {
+        Schema::create('main_warehouse_medical_supplies', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('main_warehouse_id')->constrained()->cascadeOnDelete();
             $table->foreignId('supply_id')->constrained('medical_supplies')->cascadeOnDelete();

@@ -4,11 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
-
+return new class extends Migration
+{
     public function up(): void
     {
-        Schema::create('transfers', function (Blueprint $table) {
+        Schema::create('transfers', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('from_warehouse_id')->constrained('warehouses');
             $table->foreignId('to_pharmacy_id')->constrained('pharmacies');

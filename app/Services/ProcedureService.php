@@ -7,7 +7,7 @@ use App\Models\Procedure;
 class ProcedureService
 {
     /**
-     * @param array<string, mixed> $validated
+     * @param  array<string, mixed>  $validated
      */
     public function store(array $validated): Procedure
     {
@@ -15,18 +15,15 @@ class ProcedureService
     }
 
     /**
-     * @param array<string, mixed> $validated
+     * @param  array<string, mixed>  $validated
      */
     public function update(Procedure $procedure, array $validated): Procedure
     {
         $procedure->update($validated);
-        return $procedure->refresh();
+
+        return $procedure;
     }
 
-    /**
-     * @param Procedure $procedure
-     * @return void
-     */
     public function destroy(Procedure $procedure): void
     {
         $procedure->delete();

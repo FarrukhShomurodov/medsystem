@@ -3,55 +3,45 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Patients\VitalParametersRequest;
+use App\Models\Admin;
 use App\Models\Patient;
+use App\Queries\Patients\NursePatientsQuery;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PatientParameterController extends Controller
 {
-    public function storeNormalVitalParameter(Request $request, Patient $patient): RedirectResponse
+    /**
+     * The patient's normal values (patient card): a value replaces the previous normal of that parameter.
+     */
+    public function storeNormalVitalParameter(VitalParametersRequest $request, Patient $patient): RedirectResponse
     {
-        $validated = $request->validate([
-            'parameters' => 'required|array',
-        ]);
+        $normals = array_map(fn (string $value): array => ['normal' => $value], $request->filledValues());
 
-        foreach ($validated['parameters'] as $paramId => $value) {
-            if ($value === null || $value === '') {
-                continue;
-            }
+        DB::transaction(fn () => $patient->vitalNormalParameters()->syncWithoutDetaching($normals));
 
-            if ($patient->vitalNormalParameters()->wherePivot('vital_parameter_id', $paramId)->exists()) {
-                $patient->vitalNormalParameters()->updateExistingPivot($paramId, ['normal' => $value]);
-            } else {
-                $patient->vitalNormalParameters()->attach($paramId, ['normal' => $value]);
-            }
-        }
-
-        return redirect()->back()->with('success', 'Нормальные показатели успешно сохранены!');
+        return back()->with('success', 'Нормальные показатели успешно сохранены!');
     }
 
-    public function store(Request $request, Patient $patient)
+    /**
+     * A measurement of the nurse window, recorded on the patient's open stay.
+     */
+    public function store(VitalParametersRequest $request, Patient $patient, #[CurrentUser(Admin::GUARD)] Admin $nurse): RedirectResponse
     {
-        $data = $request->validate([
-            'parameters' => 'required|array',
-        ]);
+        $map = NursePatientsQuery::for($nurse)->activeMapOf($patient);
 
-        $now = now();
-
-        $examinationMap = $patient->examinationMaps->where('is_active', true)->first();
-
-        foreach ($data['parameters'] as $paramId => $value) {
-            if ($value === null || $value === '') {
-                continue;
-            }
-
-            $examinationMap->vitalParameters()->attach($paramId, [
-                'value' => $value,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+        if ($map === null) {
+            return back()->with('error', 'У пациента нет открытой госпитализации в вашем отделении: показатели не сохранены.');
         }
 
-        return redirect()->back()->with('success', 'Данные успешно сохранены');
+        $measuredAt = now();
+        $map->vitalParameters()->attach(array_map(
+            fn (string $value): array => ['value' => $value, 'created_at' => $measuredAt, 'updated_at' => $measuredAt],
+            $request->filledValues(),
+        ));
+
+        return back()->with('success', 'Данные успешно сохранены');
     }
 }

@@ -1,0 +1,28 @@
+// The dashboard stylesheet: Tabler (MIT, Bootstrap 5.3) configured with the MedSystem colour and
+// font, the vendor widgets restyled to match it, then our own layer. Later modules win at equal
+// specificity, so keep the order.
+//
+// Tabler's Sass sources write custom properties without a prefix: use var(--primary),
+// var(--border-color), var(--secondary) ... (not --bs-* or --tblr-*).
+
+@use '@tabler/core/scss/tabler' with (
+    // The blue of the dashboard since its first version, so the screens keep their identity.
+    $primary: #5a8dee,
+    $font-family-sans-serif: ('Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif),
+    // The sidebar lists some forty pages with long Russian names: wider and a little denser.
+    $sidebar-width: 17.5rem,
+    $sidebar-nav-padding-y: 0.5rem,
+);
+
+@use 'fonts';
+@use 'icons';
+@use 'vendor/select2';
+@use 'vendor/flatpickr';
+@use 'vendor/stepper';
+@use 'layout';
+@use 'components';
+@use 'pages';
+@use 'pages/scheduling';
+@use 'pages/clinical';
+@use 'pages/patients';
+@use 'pages/dashboard';

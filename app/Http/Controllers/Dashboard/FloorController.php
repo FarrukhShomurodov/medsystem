@@ -8,20 +8,22 @@ use App\Models\Floor;
 use App\Services\FloorService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class FloorController extends Controller
+class FloorController extends Controller implements HasMiddleware
 {
-    protected FloorService $service;
+    public function __construct(private readonly FloorService $service) {}
 
-    public function __construct(FloorService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_floors'])->only('index');
-        $this->middleware(['permission:view_floors'])->only('show');
-        $this->middleware(['permission:create_floors'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_floors'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_floors'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_floors', only: ['index']),
+            new Middleware('permission:view_floors', only: ['show']),
+            new Middleware('permission:create_floors', only: ['create', 'store']),
+            new Middleware('permission:edit_floors', only: ['edit', 'update']),
+            new Middleware('permission:delete_floors', only: ['destroy']),
+        ];
     }
 
     public function index(): View
@@ -41,34 +43,34 @@ class FloorController extends Controller
 
     public function show(Floor $floor): View
     {
+        $floor->load(['departments.warehouse', 'offices']);
+
         return view('admin.floors.show', compact('floor'));
     }
 
     public function store(FloorRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('floors.index')->with('success', 'Этаж  успешно добавлен!');
+        return to_route('floors.index')->with('success', 'Этаж успешно добавлен!');
     }
 
-    public function edit(floor $floor): View
+    public function edit(Floor $floor): View
     {
         return view('admin.floors.edit', compact('floor'));
     }
 
     public function update(FloorRequest $request, Floor $floor): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($floor, (array)$validated);
+        $this->service->update($floor, $request->validated());
 
-        return redirect()->route('floors.index')->with('success', 'Этаж  успешно обновлен!');
+        return to_route('floors.index')->with('success', 'Этаж успешно обновлен!');
     }
 
     public function destroy(Floor $floor): RedirectResponse
     {
         $this->service->destroy($floor);
 
-        return redirect()->route('floors.index')->with('success', 'Этаж  успешно удален!');
+        return to_route('floors.index')->with('success', 'Этаж успешно удален!');
     }
 }

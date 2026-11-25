@@ -1,436 +1,264 @@
 @extends('admin.layouts.app')
+@use('App\Support\Display')
 
-@section('title')
-    <title>MED ERA | Пациент</title>
+@php
+    $patientId = $patientDetails['patient_id'];
+    $fullName = $patientDetails['basic_info']['full_name'];
+    $info = $patientDetails['basic_info'];
+    $searching = request()->anyFilled(['id', 'first_name', 'second_name', 'middle_name', 'birth_date']);
+    $historyTitles = [
+        'examination_map_start' => 'Госпитализация (начало)',
+        'examination_map_end' => 'Госпитализация (конец)',
+        'assignment' => 'Направление',
+        'patient_med_document' => 'Мед. документ',
+        'reception' => 'Приём',
+        'service' => 'Услуга',
+        'document' => 'Документ',
+        'medication' => 'Лист назначения',
+        'procedure' => 'Процедура',
+        'diagnosis' => 'Диагноз',
+    ];
+@endphp
+
+@section('title', $fullName)
+
+@section('header')
+    <x-page-header :title="$fullName" :breadcrumbs="['Пациенты' => auth()->user()?->can('list_patients') ? route('patients.index') : null]">
+        <x-slot:actions>
+            {{-- An explicit target, not url()->previous(): after a form of the card posts, the previous
+                 page is the card itself. --}}
+            @can('list_patients')
+                @if ($activeDepartmentId !== null)
+                    <a class="btn" href="{{ route('patients.index', ['department_id' => $activeDepartmentId]) }}"><i class="bx bx-arrow-back" aria-hidden="true"></i>Вернуться в отделение</a>
+                @else
+                    <a class="btn" href="{{ route('patients.index') }}"><i class="bx bx-arrow-back" aria-hidden="true"></i>К списку пациентов</a>
+                @endif
+            @endcan
+            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#generalInformationModal">
+                <i class="bx bx-id-card" aria-hidden="true"></i>Общая информация
+            </button>
+            @can('list_patients')
+                <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse"
+                        aria-expanded="{{ $searching ? 'true' : 'false' }}" aria-controls="filtersCollapse">
+                    <i class="bx bx-filter-alt" aria-hidden="true"></i>Поиск пациента
+                </button>
+            @endcan
+        </x-slot:actions>
+    </x-page-header>
 @endsection
 
 @section('content')
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
+    <div id="patient-card" class="d-flex flex-column gap-3"
+         data-patient-id="{{ $patientId }}"
+         data-history-url="{{ route('api.patients.history.partial') }}"
+         data-substance-url="{{ route('api.medications.by-active-substance', ['substance' => '__substance__']) }}"
+         data-document-url="{{ route('documents.show', ['document' => '__document__', 'patient_id' => $patientId]) }}">
 
-        @if(session()->has('success'))
-            <div class="alert alert-solid-success alert-dismissible d-flex align-items-center" role="alert">
-                <i class="bx bx-check-circle fs-4 me-2"></i>
-                {{ session()->get('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-    </div>
-
-    <div class="position-sticky bg-white p-4 text-center shadow-sm card" style="top: 0; z-index: 1030;">
-        <div class="d-flex justify-content-between align-items-center text-center">
-            <h6 class="breadcrumb-wrapper m-0 p-0">
-                <span class="text-muted fw-light"><a class="text-muted"
-                                                     href="{{ route('patients.index') }}">Пациент</a> /</span> {{ $patientDetails['basic_info']['full_name'] }}
-            </h6>
-
-            <div class="d-flex flex-row">
-                <a class="btn btn-primary me-3" href="{{ url()->previous() }}">
-                    Вернуться в отделение
-                </a>
-
-                <button type="button" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal"
-                        data-bs-target="#generalInformationModal">
-                    Общая информация
-                </button>
-
-                <button class="btn btn-link collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#filtersCollapse">
-                    <i class="bx bx-filter-alt"></i> Фильтры
-                </button>
-            </div>
-        </div>
-
-
-        {{-- Фильтры --}}
-        <div id="filtersCollapse"
-             class="collapse @if(request()->anyFilled(['first_name','last_name','middle_name','birth_date'])) show @endif">
-            <div class="card-body">
-                <form method="GET" action="{{ route('patients.index') }}">
-                    <div class="row g-3 align-items-center">
-                        <div class="col-md-2 form-group">
-                            <label class="form-label" for="id">ID</label>
-                            <div class="input-group input-group-merge">
-                                <input type="text" name="id" value="{{ request("id") }}"
-                                       id="id"
-                                       class="form-control"
-                                       placeholder="ID"/>
-                            </div>
-                        </div>
-
-                        <div class="col-md-2 form-group">
-                            <label class="form-label" for="first_name">Имя</label>
-                            <div class="input-group input-group-merge">
-                                <input type="text" name="first_name" value="{{ request("first_name") }}"
-                                       id="first_name"
-                                       class="form-control"
-                                       placeholder="Имя"/>
-                            </div>
-                        </div>
-
-                        <div class="col-md-2 form-group">
-                            <label class="form-label" for="second_name">Фамилия</label>
-                            <div class="input-group input-group-merge">
-                                <input type="text" name="second_name" value="{{ request("second_name") }}"
-                                       id="second_name"
-                                       class="form-control"
-                                       placeholder="Фамилия"/>
-                            </div>
-                        </div>
-
-                        <div class="col-md-2 form-group">
-                            <label class="form-label" for="middle_name">Отчество</label>
-                            <div class="input-group input-group-merge">
-                                <input type="text" name="middle_name" value="{{ request("middle_name") }}"
-                                       id="middle_name"
-                                       class="form-control"
-                                       placeholder="Отчество"/>
-                            </div>
-                        </div>
-
-                        <div class="col-md-2 form-group">
-                            <label class="form-label" for="basic-icon-birth-date">Дата рождения </label>
-                            <div class="input-group input-group-merge">
-                                    <span id="basic-icon-birth-date2" class="input-group-text"><i
-                                            class="bx bx-calendar"></i></span>
-                                <input type="text" name="birth_date" value="{{ request("birth_date") }}"
-                                       id="basic-icon-birth-date"
-                                       class="form-control flatpickr-date"
-                                       placeholder="YYYY-MM-DD" aria-describedby="basic-icon-birth-date2"/>
-                            </div>
-                        </div>
-
-                        @php
-                            $filters = [
-                                ['id' => 'department', 'label' => 'Отделения', 'items' => $departments],
-                            ];
-                        @endphp
-
-                        @foreach($filters as $filter)
-                            <div class="col-md-2 form-group">
-                                <label for="{{ $filter['id'] }}">{{ $filter['label'] }}</label>
-                                <select id="{{ $filter['id'] }}" name="{{ $filter['id'] }}_id"
-                                        class="form-control select2">
-                                    <option value="">Все</option>
-                                    @foreach($filter['items'] as $item)
-                                        <option value="{{ $item->id }}"
-                                            @selected(request("{$filter['id']}_id") == $item->id)>
-                                            {{ $item->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        @endforeach
-
-                        <div class="w-100">
-                            <label class="form-label" for="basic-icon-birth-date"></label>
-                            <div class="d-flex flex-row justify-content-between align-items-center w-100">
-                                <button type="submit" class="btn btn-primary">Поиск</button>
-                            </div>
-                        </div>
+        {{-- Orders: the buttons stay on screen while the history scrolls. --}}
+        <div class="card patient-toolbar">
+            @can('list_patients')
+                <div id="filtersCollapse" class="collapse @if ($searching) show @endif">
+                    <div class="card-body border-bottom">
+                        @include('admin.patients.partials.filters', ['departments' => $departments, 'doctors' => null])
                     </div>
-                </form>
+                </div>
+            @endcan
+
+            <div class="card-body">
+                <div class="btn-list">
+                    @can('create_patient_services')
+                        <div class="btn-group" role="group" aria-label="Инструментальные исследования">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#instrumentalModal">
+                                <i class="bx bx-pulse" aria-hidden="true"></i>Инструментальные
+                            </button>
+                            <button type="button" class="btn btn-primary btn-icon" data-bs-toggle="modal" data-bs-target="#createServiceModal"
+                                    aria-label="Назначить услугу" title="Назначить услугу">
+                                <i class="bx bx-plus" aria-hidden="true"></i>
+                            </button>
+                        </div>
+
+                        {{-- Service type 5: "Лабораторное тестирование" (ServiceTypeSeeder). --}}
+                        <div class="btn-group" role="group" aria-label="Лаборатория">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#indicativeModal">
+                                <i class="bx bx-test-tube" aria-hidden="true"></i>Лаборатория
+                            </button>
+                            <button type="button" class="btn btn-primary btn-icon" data-bs-toggle="modal" data-bs-target="#createServiceModal"
+                                    data-services-url="{{ route('api.services.by-type', 5) }}"
+                                    aria-label="Назначить анализ" title="Назначить анализ">
+                                <i class="bx bx-plus" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    @endcan
+
+                    @can('create_receptions')
+                        <a class="btn btn-primary" target="_blank" href="{{ route('receptions.appointment') }}">
+                            <i class="bx bx-message-dots" aria-hidden="true"></i>Консультация
+                        </a>
+                    @endcan
+
+                    @canany(['list_patient_diagnoses', 'create_patient_diagnoses'])
+                        <div class="btn-group" role="group" aria-label="Диагнозы">
+                            @can('list_patient_diagnoses')
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#showDiagnosisesModal">
+                                    <i class="bx bx-book-content" aria-hidden="true"></i>Диагноз
+                                </button>
+                            @endcan
+                            @can('create_patient_diagnoses')
+                                <button type="button" class="btn btn-primary btn-icon" data-bs-toggle="modal" data-bs-target="#diagnosesModal"
+                                        aria-label="Добавить диагноз" title="Добавить диагноз">
+                                    <i class="bx bx-plus" aria-hidden="true"></i>
+                                </button>
+                            @endcan
+                        </div>
+                    @endcanany
+
+                    @canany(['list_patient_medication', 'create_patient_medication'])
+                        <div class="btn-group" role="group" aria-label="Лист назначения">
+                            @can('list_patient_medication')
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#showMedicationModal">
+                                    <i class="bx bx-capsule" aria-hidden="true"></i>Лист назначения
+                                </button>
+                            @endcan
+                            @can('create_patient_medication')
+                                <button type="button" class="btn btn-primary btn-icon" data-bs-toggle="modal" data-bs-target="#medicationModal"
+                                        aria-label="Назначить медикамент" title="Назначить медикамент">
+                                    <i class="bx bx-plus" aria-hidden="true"></i>
+                                </button>
+                            @endcan
+                        </div>
+                    @endcanany
+
+                    @can('create_patient_procedure')
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#proceduresModal">
+                            <i class="bx bx-wrench" aria-hidden="true"></i>Процедуры
+                        </button>
+                    @endcan
+
+                    @can('create_patient_services')
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createMapModal">
+                            <i class="bx bx-directions" aria-hidden="true"></i>Направление
+                        </button>
+                    @endcan
+
+                    @can('create_patient_map')
+                        @if ($hasActiveMap)
+                            <button type="button" class="btn btn-primary" disabled title="У пациента уже есть активная карта обследования">
+                                <i class="bx bx-clinic" aria-hidden="true"></i>Госпитализация
+                            </button>
+                        @else
+                            <a class="btn btn-primary" href="{{ route('patient.map.create', $patientId) }}">
+                                <i class="bx bx-clinic" aria-hidden="true"></i>Госпитализация
+                            </a>
+                        @endif
+                    @endcan
+                </div>
+
+                @canany(['create_patient_map', 'edit_maps', 'sister_window_show'])
+                    <form id="select-document-form" method="GET" class="row g-2 align-items-end mt-2">
+                        <div class="col-sm-6 col-lg-4">
+                            <label for="document_id" class="form-label">Документ</label>
+                            <select id="document_id" name="document_id" class="form-select select2" required>
+                                <option value="" disabled selected>Выберите документ</option>
+                                @foreach ($documents as $document)
+                                    <option value="{{ $document->id }}">{{ $document->title }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn"><i class="bx bx-file" aria-hidden="true"></i>Заполнить документ</button>
+                        </div>
+                    </form>
+                @endcanany
             </div>
         </div>
 
-        {{-- Кнопки --}}
-       <div class="mt-4">
-           <!-- flex-wrap вместо btn-toolbar -->
-           <div class="d-flex flex-wrap gap-3 mb-3">
-               <!-- Инструментальные исследования -->
-               @can('create_patient_services')
-                   <div class="d-flex">
-                       <button
-                           type="button"
-                           class="btn btn-primary d-flex align-items-center"
-                           data-bs-toggle="modal"
-                           data-bs-target="#instrumentalModal"
-                       >
-                           <i class="bi bi-activity me-2"></i>Инструментальные
-                       </button>
-                       <button
-                           type="button"
-                           class="btn btn-outline-primary d-flex align-items-center ms-1"
-                           data-bs-toggle="modal"
-                           data-bs-target="#createServiceModal"
-                       >
-                           <i class="bi bi-plus-lg"></i>
-                       </button>
-                   </div>
-
-                   <!-- Лаборатория -->
-                   <div class="d-flex">
-                       <button
-                           type="button"
-                           class="btn btn-primary d-flex align-items-center"
-                           data-bs-toggle="modal"
-                           data-type-id="5"
-                           data-bs-target="#indicativeModal"
-                       >
-                           <i class="bi bi-beaker me-2"></i>Лаборатория
-                       </button>
-
-                       <button
-                           type="button"
-                           class="btn btn-outline-primary d-flex align-items-center ms-1"
-                           data-bs-toggle="modal"
-                           data-type-id="5"
-                           data-bs-target="#createServiceModal"
-                       >
-                           <i class="bi bi-plus-lg"></i>
-                       </button>
-                   </div>
-               @endcan
-
-
-               <!-- Консультация -->
-               @can('create_receptions')
-                   <a
-                       class="btn btn-primary d-flex align-items-center"
-                       target="_blank"
-                       href="{{ route('receptions.appointment') }}">
-                       <i class="bi bi-chat-dots me-2"></i>Консультация
-                   </a>
-               @endcan
-
-               <!-- Диагноз -->
-               <div class="d-flex">
-                   @can('list_patient_diagnoses')
-                       <button
-                           type="button"
-                           class="btn btn-primary d-flex align-items-center"
-                           data-bs-toggle="modal"
-                           data-bs-target="#showDiagnosisesModal"
-                       >
-                           <i class="bi bi-journal-medical me-2"></i>Диагноз
-                       </button>
-                   @endcan
-
-
-                   @can('create_patient_diagnoses')
-                       <button
-                           type="button"
-                           class="btn btn-outline-primary d-flex align-items-center ms-1"
-                           data-bs-toggle="modal"
-                           data-bs-target="#diagnosisesModal"
-                       >
-                           <i class="bi bi-plus-lg"></i>
-                       </button>
-                   @endcan
-               </div>
-
-               <div class="d-flex">
-                   @can('list_patient_medication')
-                       <button
-                           type="button"
-                           class="btn btn-primary d-flex align-items-center"
-                           data-bs-toggle="modal"
-                           data-bs-target="#showMedicationModal"
-                       >
-                           <i class="bi bi-capsule me-2"></i>Лист назначение
-                       </button>
-                   @endcan
-
-
-                   @can('create_patient_medication')
-                       <button
-                           type="button"
-                           class="btn btn-outline-primary d-flex align-items-center ms-1"
-                           data-bs-toggle="modal"
-                           data-bs-target="#medicationModal"
-                       >
-                           <i class="bi bi-plus-lg"></i>
-                       </button>
-                   @endcan
-               </div>
-
-               <!-- Процедуры -->
-               @can('create_patient_procedure')
-                   <button
-                       type="button"
-                       class="btn btn-primary d-flex align-items-center"
-                       data-bs-toggle="modal"
-                       data-bs-target="#proceduresModal"
-                   >
-                       <i class="bi bi-tools me-2"></i>Процедуры
-                   </button>
-               @endcan
-
-               <!-- Госпитализация -->
-               @can('create_patient_map')
-                   <button
-                       onclick="window.location.href='{{ route('patient.map.create', $patientDetails['patient_id']) }}'"
-                       class="btn btn-primary d-flex align-items-center"
-                       @disabled(!$patientDetails['history']['map_is_active'])
-                   >
-                       <i class="bi bi-hospital me-2"></i>Госпитализация
-                   </button>
-               @endcan
-
-           </div>
-
-           <!-- Форма выбора документа -->
-           <form id="select-document-form" method="GET" action="" class="mb-3">
-               <div class="row g-3 align-items-end">
-                   <div class="col-auto">
-                       <label for="document_id" class="form-label">Выберите документ</label>
-                       <select id="document_id" name="document_id" class="form-select select2">
-                           <option disabled selected>Выберите</option>
-                           @foreach($documents as $document)
-                               <option value="{{ $document->id }}">{{ $document->title }}</option>
-                           @endforeach
-                       </select>
-                   </div>
-                   <div class="col-auto">
-                       <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
-                       <button type="submit" class="btn btn-primary">Добавить документ</button>
-                   </div>
-               </div>
-           </form>
-       </div>
-    </div>
-
-    <div class="accordion mt-3" id="accordionLastPatients">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingLastPatients">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseLastPatients" aria-expanded="false"
-                        aria-controls="collapseLastPatients">
-                    Последние пациенты
-                </button>
-            </h2>
-            <div id="collapseLastPatients" class="accordion-collapse collapse"
-                 aria-labelledby="headingLastPatients" data-bs-parent="#accordionLastPatients">
-                <div class="accordion-bodyс card">
-                    <table class="datatables-users table border-top">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Дата поступления</th>
-                            <th>Отделения</th>
-                            <th>ФИО</th>
-                            <th>Дата рождения / Возвраст</th>
-                            <th>Палаты</th>
-                            <th>Диагноз</th>
-                            <th>Дата и название операции</th>
-                            <th>Лечащий врач</th>
-                            <th>Дней в стационаре</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @php $count = 1; @endphp
-                        @foreach($lastViews as $patient)
-                            <tr class="cursor-pointer">
-                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $count++ }}</td>
-                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">{{ $patient->created_at }}</td>
-                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
-                                    {{ $patient->examinationMaps()->first()?->department->name ?? '-' }}
-                                </td>
-                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
-                                    {{ $patient->first_name }} {{ $patient->last_name }} {{ $patient->middle_name }}
-                                </td>
-                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
-                                    {{ $patient->birth_date }} / {{ \Carbon\Carbon::parse($patient->birth_date)->age }}
-                                </td>
-                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">-</td>
-                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
-                                    {{ $patient->examinationMaps()->first()?->admission_diagnosis_description ?? '-' }}
-                                </td>
-                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">-</td>
-                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
-                                    {{ $patient->examinationMaps()->first()?->doctor->name ?? '-' }}
-                                </td>
-                                <td onclick="location.href='{{ route('patients.show', $patient->id) }}'">
-                                    {{ \Carbon\Carbon::parse($patient->examinationMaps()->first()?->admission_date)->age }}
-                                </td>
-                                <td>
-                                    <div class="d-inline-block text-nowrap">
-                                        <button class="btn btn-sm btn-warning"
-                                                onclick="location.href='{{ route('patients.edit', $patient->id) }}'">
-                                            Редактировать
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+        {{-- The patients this account opened last --}}
+        <div class="accordion" id="accordionLastPatients">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingLastPatients">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseLastPatients" aria-expanded="false" aria-controls="collapseLastPatients">
+                        Последние пациенты
+                    </button>
+                </h2>
+                <div id="collapseLastPatients" class="accordion-collapse collapse" aria-labelledby="headingLastPatients"
+                     data-bs-parent="#accordionLastPatients">
+                    <div class="table-responsive">
+                        <table class="table card-table table-vcenter mb-0">
+                            <thead>
+                            @include('admin.patients.partials.list-head')
+                            </thead>
+                            <tbody>
+                            @forelse ($lastViews as $viewed)
+                                @include('admin.patients.partials.list-row', ['patient' => $viewed, 'number' => $loop->iteration, 'current' => $viewed->id === $patientId])
+                            @empty
+                                <tr><td colspan="9"><x-empty-state title="Вы ещё не открывали пациентов" icon="bx-history" /></td></tr>
+                            @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-
-    <div class="card accordion mt-3" id="warningsAccordion">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingWarnings">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseWarnings" aria-expanded="false" aria-controls="collapseWarnings">
-                    Предупреждения о взаимодействии препаратов
-                </button>
-            </h2>
-            <div id="collapseWarnings" class="accordion-collapse collapse" aria-labelledby="headingWarnings"
-                 data-bs-parent="#warningsAccordion">
-                <div class="accordion-body">
-                    @if ($warnings->isEmpty())
-                        <div class="alert alert-success mb-0">
-                            <i class="bx bx-check-circle me-2"></i>
-                            Опасные взаимодействия не обнаружены.
-                        </div>
-                    @else
-                        <div class="list-group list-group-flush">
-                            @foreach ($warnings as $warning)
-                                <div class="list-group-item">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <div>
-                                            <strong
-                                                class="text-primary">{{ $warning->drug1_ru ?? $warning->drug1_en }}</strong>
-                                            <span class="mx-2 text-danger">×</span>
-                                            <strong
-                                                class="text-primary">{{ $warning->drug2_ru ?? $warning->drug2_en }}</strong>
+        <div class="accordion" id="warningsAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingWarnings">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseWarnings" aria-expanded="false" aria-controls="collapseWarnings">
+                        Предупреждения о взаимодействии препаратов
+                        @if ($warnings->isNotEmpty())
+                            <span class="badge bg-danger text-white ms-2">{{ $warnings->count() }}</span>
+                        @endif
+                    </button>
+                </h2>
+                <div id="collapseWarnings" class="accordion-collapse collapse" aria-labelledby="headingWarnings"
+                     data-bs-parent="#warningsAccordion">
+                    <div class="accordion-body">
+                        @if ($warnings->isEmpty())
+                            <div class="alert alert-success mb-0">
+                                <i class="bx bx-check-circle alert-icon" aria-hidden="true"></i>
+                                <div>Опасные взаимодействия не обнаружены.</div>
+                            </div>
+                        @else
+                            <div class="list-group list-group-flush">
+                                @foreach ($warnings as $warning)
+                                    <div class="list-group-item px-0">
+                                        <div class="d-flex justify-content-between align-items-center gap-2 mb-1">
+                                            <div>
+                                                <strong class="text-primary">{{ $warning->drug1_ru ?? $warning->drug1_en }}</strong>
+                                                <span class="mx-2 text-danger">×</span>
+                                                <strong class="text-primary">{{ $warning->drug2_ru ?? $warning->drug2_en }}</strong>
+                                            </div>
+                                            <span class="badge bg-danger text-white">{{ $warning->severity_ru ?? $warning->severity_en }}</span>
                                         </div>
-                                        <span class="badge bg-danger">
-                                {{ $warning->severity_ru ?? $warning->severity_en }}
-                            </span>
-                                    </div>
-                                    <div class="text-muted small mb-1">
-                                        Механизм: {{ $warning->mechanism_ru ?? $warning->mechanism_en }}
-                                    </div>
-                                    @if ($warning->comment_ru || $warning->comment_en)
-                                        <div class="small text-dark">
-                                            <i class="bx bx-info-circle me-1 text-warning"></i>
-                                            {{ $warning->comment_ru ?? $warning->comment_en }}
+                                        <div class="text-secondary small mb-1">
+                                            Механизм: {{ $warning->mechanism_ru ?? $warning->mechanism_en }}
                                         </div>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
-                    @endif
+                                        @if ($warning->comment_ru || $warning->comment_en)
+                                            <div class="small">
+                                                <i class="bx bx-info-circle text-warning me-1" aria-hidden="true"></i>
+                                                {{ $warning->comment_ru ?? $warning->comment_en }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="card mt-3">
-        <div>
-            <h5 class="card-header">История посещений</h5>
-        </div>
-
-        <div class="card-body">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">История посещений</h3>
+            </div>
             <div class="table-responsive">
-                <table class="table table-bordered align-middle">
-                    <thead class="table-light">
+                <table class="table card-table table-vcenter">
+                    <thead>
                     <tr>
-                        <th>№</th>
+                        <th class="w-1">№</th>
                         <th>Записи</th>
                         <th>Физические показатели</th>
                         <th>Лист назначения</th>
@@ -438,190 +266,33 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @php
-                        $groupedTimeline = collect();
-
-                        foreach ($patientDetails['timeline'] as $event) {
-                            $item = [
-                                'type' => $event['type'],
-                                'date' => $event['date'],
-                                'data' => $event['data'],
-                                'is_main' => true,
-                                'parent_id' => null
-                            ];
-
-                            // Если это госпитализация, добавляем ее первой
-                            if ($event['type'] === 'examination_map') {
-                                  $groupedTimeline->push([
-                                        'type'       => 'examination_map_start',
-                                        'date'       => $event['date'],
-                                        'data'       => $event['data'],
-                                        'is_main'    => true,
-                                        'parent_id'  => null,
-                                    ]);
-
-                                 if ($event['end_date']) {
-                                    $groupedTimeline->push([
-                                        'type'       => 'examination_map_end',
-                                        'date'       => $event['end_date'],
-                                        'data'       => $event['data'],
-                                        'is_main'    => true,
-                                        'parent_id'  => null,
-                                    ]);
-                                }
-
-                                // Добавляем связанные элементы как дочерние
-                                foreach ($event['data']->services as $service) {
-                                    $groupedTimeline->push([
-                                        'type' => 'service',
-                                        'date' => $service->created_at,
-                                        'data' => $service,
-                                        'is_main' => false,
-                                        'parent_id' => $event['data']->id
-                                    ]);
-                                }
-
-                                foreach ($event['data']->diagnosises as $diagnosis) {
-                                    $groupedTimeline->push([
-                                        'type' => 'diagnosis',
-                                        'date' => $diagnosis->created_at,
-                                        'data' => $diagnosis,
-                                        'is_main' => false,
-                                        'parent_id' => $event['data']->id
-                                    ]);
-                                }
-
-                                foreach ($event['data']->receptions as $reception) {
-                                    $groupedTimeline->push([
-                                        'type' => 'reception',
-                                        'date' => $reception->created_at,
-                                        'data' => $reception,
-                                        'is_main' => false,
-                                        'parent_id' => $event['data']->id
-                                    ]);
-                                }
-
-                                foreach ($event['data']->surveyResponses as $response) {
-                                    $groupedTimeline->push([
-                                        'type' => 'patient_med_document',
-                                        'date' => $response->created_at,
-                                        'data' => $response,
-                                        'is_main' => false,
-                                        'parent_id' => $event['data']->id
-                                    ]);
-                                }
-
-
-                                foreach (\App\Models\PatientProcedure::query()->where('patient_id', $patientDetails['patient_id'])->where('examination_map_id', $event['data']->id)->get(
-                                ) as $response) {
-                                    $groupedTimeline->push([
-                                        'type' => 'procedure',
-                                        'date' => $response->created_at,
-                                        'data' => $response,
-                                        'is_main' => false,
-                                        'parent_id' => $event['data']->id
-                                    ]);
-                                }
-
-                                foreach (\App\Models\PatientMedication::query()->where('patient_id', $patientDetails['patient_id'])->where('examination_map_id', $event['data']->id)->get(
-                                    ) as $response
-                                ) {
-                                    $groupedTimeline->push([
-                                        'type' => 'medication',
-                                        'date' => $response->created_at,
-                                        'data' => $response,
-                                        'is_main' => false,
-                                        'parent_id' => $event['data']->id
-                                    ]);
-                                }
-
-
-                              foreach ($event['data']->documentResponse as $response) {
-                                $groupedTimeline->push([
-                                    'type' => 'document',
-                                    'date' => $response->created_at,
-                                    'data' => $response,
-                                    'is_main' => false,
-                                    'parent_id' => $event['data']->id
-                                ]);
-                                }
-                            } else {
-                                // Добавляем независимые элементы
-                                $groupedTimeline->push($item);
-                            }
-                        }
-
-                        // Сортируем по дате (главные элементы первыми)
-                        $groupedTimeline = $groupedTimeline->sortByDesc('date');
-                    @endphp
-
-                    @forelse($groupedTimeline as $index => $event)
-                        <tr class="@if(!$event['is_main'] || $event['type'] == 'examination_map_start' || $event['type'] == 'examination_map_end') nested-item @endif">
-                            <td>
-                                @if($event['is_main'])
+                    @forelse ($timeline as $event)
+                        @php $nested = ! $event['is_main']; @endphp
+                        <tr>
+                            <td class="text-secondary">
+                                @if ($event['is_main'])
                                     {{ $loop->iteration }}
                                 @endif
                             </td>
 
-                            <!-- Записи -->
-                            <td>
-                                <div class="history-item"
-                                     @if(!$event['is_main'] || $event['type'] !== 'examination_map_start' || $event['type'] !== 'examination_map_end') style="margin-left: 20px;" @endif>
-                                    <div class="history-header"
-                                         data-bs-toggle="modal"
-                                         data-bs-target="#eventDetailModal"
-                                         data-id='{{ $event['data']->id }}'
-                                         data-type='{{ $event['type'] }}'>
-                                        <div>
-                                <span class="history-title">
-                                    @switch($event['type'])
-                                        @case('examination_map_start')
-                                            Госпитализация (начало)
-                                            @break
-                                        @case('examination_map_end')
-                                            Госпитализация (конец)
-                                            @break
-                                        @case('assignment')
-                                            Направление
-                                            @break
-                                        @case('service')
-                                            Услуга
-                                            ( {{ \App\Models\PatientService::getStatusTranslate($event['data']->status)  }}
-                                            )
-                                            @break
-                                        @case('patient_med_document')
-                                            Мед. Документ
-                                            @break
-                                        @case('reception')
-                                            Прием
-                                            @break
-                                        @case('document')
-                                            Документ
-                                            @break
-                                        @case('medication')
-                                            Лист назначение
-                                            @break
-                                        @case('procedure')
-                                            Процедура
-                                            @break
-                                        @case('diagnosis')
-
-                                            @break
-                                    @endswitch
-                                </span>
-                                            <span class="history-date">
-                                    {{ \Carbon\Carbon::parse($event['date'])->format('d.m.Y') }}
-                                </span>
-                                        </div>
-                                    </div>
-                                </div>
+                            <td @class(['ps-5' => $nested])>
+                                <button type="button" class="btn btn-link p-0 text-start history-event"
+                                        data-bs-toggle="modal" data-bs-target="#eventDetailModal"
+                                        data-id="{{ $event['data']->id }}" data-type="{{ $event['type'] }}">
+                                    @if ($event['type'] === 'service')
+                                        <span class="fw-medium">{{ $historyTitles['service'] }}: {{ $event['data']->service?->name ?? '—' }}</span>
+                                        <x-status-badge :status="$event['data']->status" class="ms-1" />
+                                    @else
+                                        <span class="fw-medium">{{ $historyTitles[$event['type']] ?? 'Запись' }}</span>
+                                    @endif
+                                </button>
+                                <span class="text-secondary ms-2">{{ \Carbon\Carbon::parse($event['date'])->format('d.m.Y') }}</span>
                             </td>
 
-                            <!-- Физические показатели -->
                             <td>
-                                @if($event['type'] === 'reception' && $event['data']->physical)
-                                    <ul class="mb-0">
-                                        @foreach($event['data']->physical as $key => $value)
+                                @if ($event['type'] === 'reception' && $event['data']->physical)
+                                    <ul class="mb-0 ps-3">
+                                        @foreach ($event['data']->physical as $key => $value)
                                             <li><strong>{{ $key }}:</strong> {{ $value }}</li>
                                         @endforeach
                                     </ul>
@@ -630,11 +301,10 @@
                                 @endif
                             </td>
 
-                            <!-- Лист назначения -->
                             <td>
-                                @if($event['type'] === 'assignment' && $event['data']->assignments)
-                                    <ul class="mb-0">
-                                        @foreach($event['data']->assignments as $assignment)
+                                @if ($event['type'] === 'assignment' && $event['data']->assignments)
+                                    <ul class="mb-0 ps-3">
+                                        @foreach ($event['data']->assignments as $assignment)
                                             <li>{{ $assignment }}</li>
                                         @endforeach
                                     </ul>
@@ -643,1911 +313,621 @@
                                 @endif
                             </td>
 
-                            <!-- Диагноз -->
                             <td>
-                                @if($event['type'] == 'diagnosis')
-                                    <div class="history-item" @if(!$event['is_main']) style="margin-left: 20px;" @endif>
-                                        <div class="history-header"
-                                             data-bs-toggle="modal"
-                                             data-bs-target="#eventDetailModal"
-                                             data-id='{{ $event['data']->id }}'
-                                             data-type='{{ $event['type'] }}'>
-                                            <div>
-                                                <span class="history-title">
-                                                    {{ \Illuminate\Support\Str::limit($event['data']->diagnosis->name, 10, '...') }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                @if ($event['type'] === 'diagnosis')
+                                    @php $diagnosisName = $event['data']->diagnosis?->name ?? '—'; @endphp
+                                    <button type="button" class="btn btn-link p-0 text-start history-event" title="{{ $diagnosisName }}"
+                                            data-bs-toggle="modal" data-bs-target="#eventDetailModal"
+                                            data-id="{{ $event['data']->id }}" data-type="{{ $event['type'] }}">
+                                        {{ \Illuminate\Support\Str::limit($diagnosisName, 10, '…') }}
+                                    </button>
                                 @else
                                     —
                                 @endif
                             </td>
                         </tr>
                     @empty
-                        <tr>
-                            <td colspan="5" class="text-center">Нет данных о посещениях</td>
-                        </tr>
+                        <tr><td colspan="5"><x-empty-state title="Нет данных о посещениях" icon="bx-calendar" /></td></tr>
                     @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
-    </div>
 
-    <div class="card mt-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5>Регистрация: услуги, приёмы и процедуры</h5>
-
-                {{-- Todo permisiion--}}
-                <a href="{{ route('registrar.export', $patientDetails['patient_id']) }}" class="btn btn-primary">
-                    Экспорт в Excel
-                </a>
-        </div>
-        <div class="card-body">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Тип</th>
-                    <th>Название</th>
-                    <th>Цена</th>
-                    <th>Статус</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($allRecords as $i => $item)
+        {{-- The dashboard's registrar queue links here (#registration). --}}
+        <div class="card" id="registration">
+            <div class="card-header">
+                <h3 class="card-title">Регистрация: услуги, приёмы и процедуры</h3>
+                <div class="card-actions">
+                    <a href="{{ route('registrar.export', $patientId) }}" class="btn">
+                        <i class="bx bx-download" aria-hidden="true"></i>Экспорт в Excel
+                    </a>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter">
+                    <thead>
                     <tr>
-                        <td>{{ $i+1 }}</td>
-                        <td>
-                            @if($item['type'] === 'service')
-                                <span class="badge bg-primary">Услуга</span>
-                            @elseif($item['type'] === 'reception')
-                                <span class="badge bg-success">Приём</span>
-                            @elseif($item['type'] === 'medication')
-                                <span class="badge bg-success">Лист назначение</span>
-                            @else
-                                <span class="badge bg-warning text-dark">Процедура</span>
-                            @endif
-                        </td>
-                        <td>{{ $item['name'] }}</td>
-                        <td>{{ $item['price'] }}</td>
-                        <td>
-                            {{ $item['status'] }}
-                        </td>
+                        <th class="w-1">#</th>
+                        <th>Тип</th>
+                        <th>Название</th>
+                        <th>Цена</th>
+                        <th>Статус</th>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
-        </div>
-        <div class="card-footer d-flex justify-content-between">
-            <h5>Итого: {{ $total }} UZS</h5>
-            <form method="POST" action="{{ route('registrar.confirm', $patientDetails['patient_id']) }}">
-                @csrf
-                <button type="submit" class="btn btn-success">Подтвердить</button>
-            </form>
-        </div>
-    </div>
-
-    @php $accordionId = uniqid('accordion_'); @endphp
-
-    <div class="accordion mt-3" id="{{ $accordionId }}">
-
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="{{ $accordionId }}-headingOne">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#{{ $accordionId }}-collapseOne" aria-expanded="false"
-                        aria-controls="{{ $accordionId }}-collapseOne">
-                    Нормальные показатели пациента
-                </button>
-            </h2>
-            <div id="{{ $accordionId }}-collapseOne" class="accordion-collapse collapse"
-                 aria-labelledby="{{ $accordionId }}-headingOne" data-bs-parent="#{{ $accordionId }}">
-                <div class="accordion-body">
-                    <form action="{{ route('patient.normal.vital.parameter.store', $patientDetails['patient_id']) }}"
-                          method="POST">
+                    </thead>
+                    <tbody>
+                    @forelse ($allRecords as $i => $item)
+                        <tr>
+                            <td class="text-secondary">{{ $i + 1 }}</td>
+                            <td><x-status-badge :status="$item->type" /></td>
+                            <td>{{ $item->name }}</td>
+                            <td class="text-nowrap">{{ $item->price->format() }} {{ $item->currency }}</td>
+                            <td><x-status-badge :status="$item->status" /></td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="5"><x-empty-state title="Нечего подтверждать" text="Назначенные услуги, приёмы и процедуры появятся здесь." icon="bx-receipt" /></td></tr>
+                    @endforelse
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div class="fs-3 fw-bold">Итого: {{ $total }}</div>
+                @can('confirm_patient_registration')
+                    <form method="POST" action="{{ route('registrar.confirm', $patientId) }}">
                         @csrf
-
-                        <table class="table table-bordered align-middle">
-                            <thead>
-                            <tr>
-                                <th>Параметр</th>
-                                <th>Норма</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @php
-                                $normMap = $patient->vitalNormalParameters
-                                    ->pluck('pivot.normal', 'id');
-                            @endphp
-
-                            @foreach($vitalParameters as $param)
-                                @php
-                                    $existingValue = old('parameters.' . $param->id, $normMap->get($param->id, ''));
-                                @endphp
-                                <tr>
-                                    <td>{{ $param->name }}</td>
-                                    <td>
-                                        <input
-                                            type="number"
-                                            step="0.1"
-                                            name="parameters[{{ $param->id }}]"
-                                            class="form-control"
-                                            placeholder="Норма"
-                                            value="{{ $existingValue }}"
-                                        >
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary mt-2">Сохранить</button>
-                        </div>
+                        <button type="submit" class="btn btn-success"><i class="bx bx-check" aria-hidden="true"></i>Подтвердить</button>
                     </form>
-
-                </div>
+                @endcan
             </div>
         </div>
 
-        {{-- Контактная информация --}}
-        <div class="accordion-item mt-3">
-            <h2 class="accordion-header" id="{{ $accordionId }}-headingOne">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#{{ $accordionId }}-collapseOne" aria-expanded="false"
-                        aria-controls="{{ $accordionId }}-collapseOne">
-                    Контактная информация
-                </button>
-            </h2>
-            <div id="{{ $accordionId }}-collapseOne" class="accordion-collapse collapse"
-                 aria-labelledby="{{ $accordionId }}-headingOne" data-bs-parent="#{{ $accordionId }}">
-                <div class="accordion-body">
-                    <p><strong>Телефон:</strong> {{ $patientDetails['contact_info']['phone'] }}</p>
-                    <p><strong>Доп. телефон:</strong> {{ $patientDetails['contact_info']['additional_phone'] }}</p>
-                    <p><strong>Email:</strong> {{ $patientDetails['contact_info']['email'] }}</p>
-                    <p><strong>Адрес проживания:</strong> {{ $patientDetails['contact_info']['residential_address'] }}
-                    </p>
-                    <p><strong>Адрес регистрации:</strong> {{ $patientDetails['contact_info']['registered_address'] }}
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        {{-- Страховая информация --}}
-        <div class="accordion-item mt-3">
-            <h2 class="accordion-header" id="{{ $accordionId }}-headingTwo">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#{{ $accordionId }}-collapseTwo" aria-expanded="false"
-                        aria-controls="{{ $accordionId }}-collapseTwo">
-                    Страховая информация
-                </button>
-            </h2>
-            <div id="{{ $accordionId }}-collapseTwo" class="accordion-collapse collapse"
-                 aria-labelledby="{{ $accordionId }}-headingTwo" data-bs-parent="#{{ $accordionId }}">
-                <div class="accordion-body">
-                    <p><strong>Номер полиса:</strong> {{ $patientDetails['insurance_info']['policy_number'] }}</p>
-                    <p><strong>Компания:</strong> {{ $patientDetails['insurance_info']['company'] }}</p>
-                    <p><strong>Тип:</strong> {{ $patientDetails['insurance_info']['type'] }}</p>
-                    <p><strong>Срок действия:</strong> {{ $patientDetails['insurance_info']['expiry_date'] }}</p>
-                </div>
-            </div>
-        </div>
-
-        {{-- Экстренный контакт --}}
-        <div class="accordion-item mt-3">
-            <h2 class="accordion-header" id="{{ $accordionId }}-headingThree">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#{{ $accordionId }}-collapseThree" aria-expanded="false"
-                        aria-controls="{{ $accordionId }}-collapseThree">
-                    Экстренный контакт
-                </button>
-            </h2>
-            <div id="{{ $accordionId }}-collapseThree" class="accordion-collapse collapse"
-                 aria-labelledby="{{ $accordionId }}-headingThree" data-bs-parent="#{{ $accordionId }}">
-                <div class="accordion-body">
-                    <p><strong>ФИО:</strong> {{ $patientDetails['emergency_contact']['full_name'] }}</p>
-                    <p><strong>Отношение:</strong> {{ $patientDetails['emergency_contact']['relation'] }}</p>
-                    <p><strong>Телефон:</strong> {{ $patientDetails['emergency_contact']['phone'] }}</p>
-                    <p><strong>Адрес:</strong> {{ $patientDetails['emergency_contact']['address'] }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="accordion mt-3" id="patientInfoAccordion">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingInfo">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo">
-                    Общая информация
-                </button>
-            </h2>
-            <div id="collapseInfo" class="accordion-collapse collapse" aria-labelledby="headingInfo"
-                 data-bs-parent="#patientInfoAccordion">
-                <div class="accordion-body">
-                    <p><strong>ФИО:</strong> {{ $patientDetails['basic_info']['full_name'] }}</p>
-                    <p><strong>Дата рождения:</strong> {{ $patientDetails['basic_info']['birth_date'] }}</p>
-                    <p><strong>Пол:</strong> {{ $patientDetails['basic_info']['gender'] }}</p>
-                    <p><strong>Гражданство:</strong> {{ $patientDetails['basic_info']['citizenship'] }}</p>
-                    <p><strong>Откуда услышали о нас
-                            ?:</strong> {{ $patientDetails['basic_info']['referral_source'] ?? 'N/A' }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal for creating direction -->
-    <div class="modal fade" id="createMapModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Создание направления</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="{{ route('patient.assignment.store') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="row">
-                            <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
-                            <div class="col-12 mb-3">
-                                <label for="service" class="form-label">Услуга</label>
-                                <select id="service" class="form-control select2" name="service_id" required>
-                                    <option disabled selected>Выберите услугу</option>
-                                    @foreach($patientDetails['services'] as $service)
-                                        <option value="{{$service->id}}">{{ $service->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <label for="comment" class="form-label">Коментарий</label>
-                                <textarea name="comment" class="form-control" id="comment"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Закрыть</button>
-                        <button type="submit" class="btn btn-primary">Создать направление</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    {{-- Assign Serice --}}
-    <div class="modal fade" id="createServiceModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Назначение услуги</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="{{ route('patient.services.store') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="row">
-                            <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
-                            <div class="col-sm-6 mb-3">
-                                <label for="service_create" class="form-label">Услуга</label>
-                                <select id="service_create" class="form-control select2" name="service_id" required>
-                                    <option disabled selected>Выберите услугу</option>
-                                    @foreach($patientDetails['services'] as $service)
-                                        <option value="{{$service->id}}">{{ $service->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <input type="hidden" name="status" value="assigned">
-
-                            <!-- Service Date -->
-                            <div class="col-sm-6">
-                                <label class="form-label" for="service_date">Дата услуги</label>
-                                <input type="text" name="service_date" id="service_date"
-                                       class="form-control flatpickr-date @error('service_date') is-invalid @enderror"
-                                       value="{{ old('service_date') }}">
-                                @error('service_date')
-                                <div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Закрыть</button>
-                        <button type="submit" class="btn btn-primary">Создать</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    {{-- Assign Document --}}
-    <div class="modal fade" id="createDocumentModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Назначение Мед. Документ</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="{{ route('response.survey.store') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="row">
-                            <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
-                            <input type="hidden" name="patient_service_id" id="modal_service_id">
-
-                            <div class="row mb-3 mt-3">
-                                <div class="col-12">
-                                    <label class="form-label" for="survey-select">Мед. документы </label>
-                                    <select id="survey-select" name="survey_id"
-                                            class="form-control select2 @error('survey_id') is-invalid @enderror">
-                                        <option value="" disabled selected>Выберите документ</option>
-                                        @foreach($patientDetails['surveys'] as $survey)
-                                            <option value="{{ $survey->id }}"
-                                                    @selected($survey->id == old('survey_id')) style="background-color: {{ $survey->color }} !important;">{{ $survey->title }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('survey_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div id="questions-container" class="mt-3"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Закрыть</button>
-                        <button type="submit" class="btn btn-primary">Создать</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно -->
-    <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="responseModalLabel">Ответы документа</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="response-content">
-                        <p class="text-muted">Загрузка...</p>
+        <div class="accordion" id="patient-info">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="patient-info-general-heading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#patient-info-general" aria-expanded="false" aria-controls="patient-info-general">
+                        Общая информация
+                    </button>
+                </h2>
+                <div id="patient-info-general" class="accordion-collapse collapse" aria-labelledby="patient-info-general-heading"
+                     data-bs-parent="#patient-info">
+                    <div class="accordion-body">
+                        @include('admin.patients.partials.general-info', ['info' => $info])
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-
-    <div class="modal fade" id="generalInformationModal" tabindex="-1" aria-labelledby="generalInformationModal"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="generalInformationModal">Ответы документа</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="">
-                        <p><strong>ФИО:</strong> {{ $patientDetails['basic_info']['full_name'] }}</p>
-                        <p><strong>Дата рождения:</strong> {{ $patientDetails['basic_info']['birth_date'] }}</p>
-                        <p><strong>Пол:</strong> {{ $patientDetails['basic_info']['gender'] }}</p>
-                        <p><strong>Гражданство:</strong> {{ $patientDetails['basic_info']['citizenship'] }}</p>
-                        <p><strong>Откуда услышали о нас
-                                ?:</strong> {{ $patientDetails['basic_info']['referral_source'] ?? 'N/A' }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- универсальное модальное окно  --}}
-    <div class="modal fade" id="eventDetailModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content" id="eventModalContent">
-                <div class="modal-header">
-                    <h5 class="modal-title">Детали события</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    Загрузка...
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Assign Serice --}}
-    <div class="modal fade" id="diagnosisesModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Создать диагноз</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="m-3">
-                    <input type="text" class="form-control" id="diagnosisSearchInput" placeholder="Поиск диагноза...">
-                </div>
-
-                <form action="{{ route('patient.diagnoses.store') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <input type="hidden" id="patient_id" name="patient_id"
-                               value="{{ $patientDetails['patient_id'] }}">
-
-                        {{-- Избранные диагнозы --}}
-                        @if($favoriteDiagnoses->count())
-                            <div class="mb-3">
-                                <h6 class="text-warning fw-bold">⭐ Избранные диагнозы</h6>
-                                <div class="list-group" id="favoriteDiagnosisList">
-                                    @foreach($favoriteDiagnoses as $diagnosis)
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <a href="#"
-                                               class="list-group-item list-group-item-action diagnosis-item"
-                                               data-diagnosis-id="{{ $diagnosis->id }}">
-                                                {{ $diagnosis->name }} {{ $diagnosis->code }}
-                                            </a>
-                                            <span class="ms-2 diagnosis-favorite text-warning cursor-pointer"
-                                                  data-diagnosis-id="{{ $diagnosis->id }}"
-                                                  title="Убрать из избранного"
-                                                  style="font-size: 28px;">★</span>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
-
-                        {{-- Все остальные диагнозы --}}
-                        <div>
-                            <h6 class="text-secondary fw-bold">Все диагнозы</h6>
-                            <div class="list-group" id="regularDiagnosisList">
-                                @foreach($regularDiagnoses as $diagnosis)
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <a href="#"
-                                           class="list-group-item list-group-item-action diagnosis-item"
-                                           data-diagnosis-id="{{ $diagnosis->id }}">
-                                            {{ $diagnosis->name }} {{ $diagnosis->code }}
-                                        </a>
-                                        <span class="ms-2 diagnosis-favorite text-muted cursor-pointer"
-                                              data-diagnosis-id="{{ $diagnosis->id }}"
-                                              title="Добавить в избранное"
-                                              style="font-size: 28px;">★</span>
+            @foreach ([
+                'contacts' => ['Контактная информация', [
+                    'Телефон' => $patientDetails['contact_info']['phone'],
+                    'Доп. телефон' => $patientDetails['contact_info']['additional_phone'],
+                    'Email' => $patientDetails['contact_info']['email'],
+                    'Адрес проживания' => $patientDetails['contact_info']['residential_address'],
+                    'Адрес регистрации' => $patientDetails['contact_info']['registered_address'],
+                ]],
+                'insurance' => ['Страховая информация', [
+                    'Номер полиса' => $patientDetails['insurance_info']['policy_number'],
+                    'Компания' => $patientDetails['insurance_info']['company'],
+                    'Тип' => $patientDetails['insurance_info']['type'],
+                    'Срок действия' => filled($patientDetails['insurance_info']['expiry_date']) ? Display::date($patientDetails['insurance_info']['expiry_date']) : 'Не указана',
+                ]],
+                'emergency' => ['Экстренный контакт', [
+                    'ФИО' => $patientDetails['emergency_contact']['full_name'],
+                    'Отношение' => $patientDetails['emergency_contact']['relation'],
+                    'Телефон' => $patientDetails['emergency_contact']['phone'],
+                    'Адрес' => $patientDetails['emergency_contact']['address'],
+                ]],
+            ] as $section => [$sectionTitle, $rows])
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="patient-info-{{ $section }}-heading">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#patient-info-{{ $section }}" aria-expanded="false" aria-controls="patient-info-{{ $section }}">
+                            {{ $sectionTitle }}
+                        </button>
+                    </h2>
+                    <div id="patient-info-{{ $section }}" class="accordion-collapse collapse"
+                         aria-labelledby="patient-info-{{ $section }}-heading" data-bs-parent="#patient-info">
+                        <div class="accordion-body">
+                            <div class="datagrid">
+                                @foreach ($rows as $rowLabel => $rowValue)
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">{{ $rowLabel }}</div>
+                                        <div class="datagrid-content">{{ filled($rowValue) ? $rowValue : '—' }}</div>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            @endforeach
+
+            @can('edit_patients')
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="patient-info-norms-heading">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#patient-info-norms" aria-expanded="false" aria-controls="patient-info-norms">
+                            Нормальные показатели пациента
+                        </button>
+                    </h2>
+                    <div id="patient-info-norms" class="accordion-collapse collapse" aria-labelledby="patient-info-norms-heading"
+                         data-bs-parent="#patient-info">
+                        <div class="accordion-body">
+                            <form action="{{ route('patient.normal.vital.parameter.store', $patientId) }}" method="POST">
+                                @csrf
+                                <div class="row g-3">
+                                    @foreach ($vitalParameters as $param)
+                                        <div class="col-sm-6 col-lg-4">
+                                            <label class="form-label" for="norm-{{ $param->id }}">{{ $param->name }}</label>
+                                            <input type="number" step="0.1" id="norm-{{ $param->id }}" name="parameters[{{ $param->id }}]"
+                                                   class="form-control @error('parameters.'.$param->id) is-invalid @enderror" placeholder="Норма"
+                                                   value="{{ old('parameters.'.$param->id, $normalVitalValues->get($param->id, '')) }}">
+                                            @error('parameters.'.$param->id)<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <div class="text-end mt-3">
+                                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            @endcan
         </div>
     </div>
 
-    <div class="modal fade" id="showDiagnosisesModal" tabindex="-1" aria-hidden="true">
+    <div class="modal modal-blur fade" id="generalInformationModal" tabindex="-1" aria-labelledby="generalInformationModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="generalInformationModalTitle">Общая информация</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
                 <div class="modal-body">
-                    @foreach($patientDetails['allDiagnosises'] as $data)
-                        <div class="border-bottom pb-4 mb-4">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="mb-0">
-                                    <i class="bi bi-clipboard-data me-2 text-info"></i>
-                                    {{ $data->date }}
-                                </h5>
-                                <div>
-                            <span class="text-muted">
-                                {{ \Carbon\Carbon::parse($data->created_at)->format('d.m.Y') }}
-                            </span>
-                                </div>
-                            </div>
+                    @include('admin.patients.partials.general-info', ['info' => $info])
+                </div>
+            </div>
+        </div>
+    </div>
 
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <small class="text-muted d-block">
-                                        <i class="bx bx-time-five text-info me-1"></i>
-                                        Время</small>
-                                    <div class="fs-5">
-                                        {{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d H:i') }}
-                                    </div>
-                                </div>
+    {{-- The detail of a history row, loaded from api.patients.history.partial --}}
+    <div class="modal modal-blur fade" id="eventDetailModal" tabindex="-1" aria-labelledby="eventDetailModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="eventDetailModalTitle">Детали события</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body" aria-live="polite"></div>
+            </div>
+        </div>
+    </div>
 
-                                <!-- Комментарий -->
-                                @if($data->diagnosis->name)
-                                    <div class="col-12 mt-3">
-                                        <div class="medical-comment-block">
-                                            <div class="comment-header">
-                                                <h6 class="mb-0"><i class="bx bx-comment-detail me-1"></i>Диагноз</h6>
-                                            </div>
-                                            <div class="fs-5">
-                                                {{ $data->diagnosis->name }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
+    @can('create_patient_services')
+        {{-- Results of the studies: not recorded by the system yet. --}}
+        @foreach (['instrumentalModal' => 'Инструментальные исследования', 'indicativeModal' => 'Результаты медицинских анализов'] as $modalId => $modalTitle)
+            <div class="modal modal-blur fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalId }}Title" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title" id="{{ $modalId }}Title">{{ $modalTitle }}</h2>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                         </div>
-                    @endforeach
+                        <div class="modal-body">
+                            <x-empty-state title="Результатов пока нет" icon="bx-test-tube"
+                                           text="Результаты исследований пациента в системе пока не хранятся." />
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        @endforeach
 
-
-    {{-- indicativeModal --}}
-    <div class="modal fade" id="indicativeModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Результаты медицинских анализов</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <style>
-                        table {
-                            border-collapse: collapse;
-                            width: 100%;
-                            margin: 20px 0;
-                            font-family: Arial, sans-serif;
-                            font-size: 14px;
-                        }
-
-                        th, td {
-                            border: 1px solid #ddd;
-                            padding: 8px;
-                            text-align: left;
-                        }
-
-                        th {
-                            background-color: #f2f2f2;
-                            font-weight: bold;
-                        }
-
-                        .analysis-header {
-                            background-color: #e6f7ff;
-                            font-weight: bold;
-                        }
-
-                        .parameter-name {
-                            font-weight: bold;
-                            background-color: #f9f9f9;
-                        }
-                    </style>
-
-                    <table>
-                        <!-- Биохимический анализ крови -->
-                        <tr class="analysis-header">
-                            <td colspan="6">Биохимический анализ крови</td>
-                        </tr>
-                        <tr>
-                            <th>Показатель</th>
-                            <th>15.01.2023</th>
-                            <th>20.03.2023</th>
-                            <th>10.05.2023</th>
-                            <th>25.08.2023</th>
-                            <th>12.11.2023</th>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">Глюкоза (ммоль/л)</td>
-                            <td>5.2 (ммоль/л)</td>
-                            <td>5.4</td>
-                            <td>5.1</td>
-                            <td>5.7</td>
-                            <td>5.3 норма (20)</td>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">АЛТ (Ед/л)</td>
-                            <td>22 (ммоль/л)</td>
-                            <td>25</td>
-                            <td>28</td>
-                            <td>20</td>
-                            <td>23 норма (20)</td>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">АСТ (Ед/л)</td>
-                            <td>18 (ммоль/л)</td>
-                            <td>20</td>
-                            <td>19</td>
-                            <td>17</td>
-                            <td>21 норма (20)</td>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">Креатинин (мкмоль/л)</td>
-                            <td>78 (ммоль/л)</td>
-                            <td>82</td>
-                            <td>80</td>
-                            <td>85</td>
-                            <td>79 норма (20)</td>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">Мочевина (ммоль/л)</td>
-                            <td>5.5 (ммоль/л)</td>
-                            <td>5.8</td>
-                            <td>5.6</td>
-                            <td>6.0</td>
-                            <td>5.7 норма (20)</td>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">Билирубин общий (мкмоль/л)</td>
-                            <td>12.5 (ммоль/л)</td>
-                            <td>13.2</td>
-                            <td>11.8</td>
-                            <td>14.0</td>
-                            <td>12.7 норма (20)</td>
-                        </tr>
-
-                        <!-- Общий анализ крови -->
-                        <tr class="analysis-header">
-                            <td colspan="6">Общий анализ крови</td>
-                        </tr>
-                        <tr>
-                            <th>Показатель</th>
-                            <th>10.02.2023</th>
-                            <th>05.04.2023</th>
-                            <th>20.06.2023</th>
-                            <th>15.09.2023</th>
-                            <th>30.12.2023</th>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">Гемоглобин (г/л)</td>
-                            <td>135</td>
-                            <td>138</td>
-                            <td>132</td>
-                            <td>140</td>
-                            <td>136</td>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">Лейкоциты (×10⁹/л)</td>
-                            <td>6.2</td>
-                            <td>6.5</td>
-                            <td>6.8</td>
-                            <td>6.0</td>
-                            <td>6.3</td>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">Эритроциты (×10¹²/л)</td>
-                            <td>4.5</td>
-                            <td>4.6</td>
-                            <td>4.4</td>
-                            <td>4.7</td>
-                            <td>4.5</td>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">Тромбоциты (×10⁹/л)</td>
-                            <td>220</td>
-                            <td>230</td>
-                            <td>210</td>
-                            <td>240</td>
-                            <td>225</td>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">СОЭ (мм/ч)</td>
-                            <td>8</td>
-                            <td>10</td>
-                            <td>9</td>
-                            <td>7</td>
-                            <td>8</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="instrumentalModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Инструментальные исследования</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <style>
-                        table {
-                            border-collapse: collapse;
-                            width: 100%;
-                            margin: 20px 0;
-                            font-family: Arial, sans-serif;
-                            font-size: 14px;
-                        }
-
-                        th, td {
-                            border: 1px solid #ddd;
-                            padding: 8px;
-                            text-align: left;
-                        }
-
-                        th {
-                            background-color: #f2f2f2;
-                            font-weight: bold;
-                        }
-
-                        .analysis-header {
-                            background-color: #e6f7ff;
-                            font-weight: bold;
-                        }
-
-                        .parameter-name {
-                            font-weight: bold;
-                            background-color: #f9f9f9;
-                        }
-                    </style>
-
-                    <table>
-                        <!-- УЗИ органов брюшной полости -->
-                        <tr class="analysis-header">
-                            <td colspan="6">УЗИ органов брюшной полости</td>
-                        </tr>
-                        <tr>
-                            <th>Исследование</th>
-                            <th>01.02.2023</th>
-                            <th>10.04.2023</th>
-                            <th>15.07.2023</th>
-                            <th>20.10.2023</th>
-                            <th>05.12.2023</th>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">Печень</td>
-                            <td>Не увеличена</td>
-                            <td>Не изменена</td>
-                            <td>Умеренная жировая инфильтрация</td>
-                            <td>Не увеличена</td>
-                            <td>В норме</td>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">Желчный пузырь</td>
-                            <td>Без изменений</td>
-                            <td>Перегиб шейки</td>
-                            <td>Холестериноз</td>
-                            <td>Без конкрементов</td>
-                            <td>В норме</td>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">Поджелудочная железа</td>
-                            <td>Четкие контуры</td>
-                            <td>Слегка увеличена</td>
-                            <td>Нормальная эхогенность</td>
-                            <td>Без патологии</td>
-                            <td>Без изменений</td>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">Селезёнка</td>
-                            <td>Размер 110 мм</td>
-                            <td>Размер 112 мм</td>
-                            <td>Размер 108 мм</td>
-                            <td>Размер 113 мм</td>
-                            <td>Размер 109 мм</td>
-                        </tr>
-
-                        <!-- ЭКГ -->
-                        <tr class="analysis-header">
-                            <td colspan="6">ЭКГ (электрокардиограмма)</td>
-                        </tr>
-                        <tr>
-                            <th>Параметр</th>
-                            <th>05.01.2023</th>
-                            <th>15.03.2023</th>
-                            <th>10.06.2023</th>
-                            <th>25.09.2023</th>
-                            <th>01.12.2023</th>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">Ритм</td>
-                            <td>Синусовый</td>
-                            <td>Синусовый</td>
-                            <td>Синусовая тахикардия</td>
-                            <td>Синусовый</td>
-                            <td>Синусовая брадикардия</td>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">ЧСС (уд/мин)</td>
-                            <td>78</td>
-                            <td>80</td>
-                            <td>98</td>
-                            <td>76</td>
-                            <td>62</td>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">QT интервал</td>
-                            <td>0.38 с</td>
-                            <td>0.36 с</td>
-                            <td>0.40 с</td>
-                            <td>0.39 с</td>
-                            <td>0.37 с</td>
-                        </tr>
-                        <tr>
-                            <td class="parameter-name">Отклонение электрической оси</td>
-                            <td>Норма</td>
-                            <td>Норма</td>
-                            <td>Умеренное отклонение влево</td>
-                            <td>Норма</td>
-                            <td>Норма</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{--  Add medication Model  --}}
-    <div class="modal fade" id="medicationModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Добавить медикамент</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('patient.medication.store') }}" method="post">
+        {{-- Referral (направление) to a service --}}
+        <div class="modal modal-blur fade" id="createMapModal" tabindex="-1" aria-labelledby="createMapModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="createMapModalTitle">Создание направления</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <form action="{{ route('patient.assignment.store') }}" method="POST">
                         @csrf
-                        <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
-
-                        <div class="mb_3">
-                            <div id="medications-container"></div>
-
-                            <div class="text-end">
-                                <button type="button" class="btn btn-primary" id="btn-add-medication">
-                                    <i class="fas fa-plus me-2"></i> Добавить медикамент
-                                </button>
+                        <input type="hidden" name="patient_id" value="{{ $patientId }}">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="service" class="form-label required">Услуга</label>
+                                <select id="service" class="form-select select2" name="service_id" data-placeholder="Выберите услугу" required>
+                                    <option value="" disabled selected>Выберите услугу</option>
+                                    @foreach ($patientDetails['services'] as $service)
+                                        <option value="{{ $service->id }}">{{ $service->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
-
-                            <template id="medication-template">
-                                <div class="card mb-4 medication-row shadow-sm">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <h6 class="card-title mb-0 medication-title">медикамент #1</h6>
-                                            <button type="button" class="btn btn-sm btn-danger btn-remove-medication">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-
-                                        <!-- Основной медикамент -->
-                                        <div class="mb-3">
-                                            <label class="form-label">Основной медикамент</label>
-                                            <select name="medications[]" class="form-control medication-select"
-                                                    required>
-                                                @foreach($medications as $medication)
-                                                    <option value="{{ $medication->id }}"
-                                                            data-active-substance="{{ $medication->composition->active_substance_name }}">
-                                                        {{ $medication->name }}
-                                                        ({{ $medication->composition->active_substance_name }})
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <div class="d-flex flex-row gap-2 medication_information mt-2"></div>
-                                        </div>
-
-                                        <!-- Дозировка -->
-                                        <div class="mb-3">
-                                            <label class="form-label">Дозировка</label>
-                                            <input type="text" name="dosages[]" class="form-control"
-                                                   value=""
-                                                   placeholder="Дозировка" required>
-                                        </div>
-
-                                        <!-- Разовая доза -->
-                                        <div class="mb-3">
-                                            <label class="form-label">Разовая доза</label>
-                                            <input type="text" name="single_doses[]" class="form-control"
-                                                   placeholder="Разовая доза" required maxlength="50">
-                                        </div>
-
-                                        <!-- Дата -->
-                                        <div class="mb-3">
-                                            <label class="form-label">Дата</label>
-                                            <input type="date" name="date_of_ends[]" class="form-control"
-                                                   placeholder="Разовая доза" required maxlength="50">
-                                        </div>
-
-                                        <!-- Статус -->
-                                        <div class="mb-3">
-                                            <label class="form-label">Статус</label>
-                                            <select name="statuses[]" class="form-select" required>
-                                                @foreach(App\Models\PatientMedication::STATUS as $status)
-                                                    @if($status !== 'cancelled')
-                                                        <option
-                                                            value="{{ $status }}">{{ App\Models\PatientMedication::STATUS_LABELS[$status] }}</option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <!-- Способ приёма -->
-                                        <div class="mb-3">
-                                            <label class="form-label">Способ приёма</label>
-                                            <select name="methods[]" class="form-select" required>
-                                                @foreach(App\Models\PatientMedication::METHOD as $method)
-                                                    <option
-                                                        value="{{ $method }}">{{ App\Models\PatientMedication::METHOD_LABELS[$method] }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <!-- Правило приёма -->
-                                        <div class="mb-3">
-                                            <label class="form-label">Правило приёма</label>
-                                            <select name="admission_rules[]" class="form-select" required>
-                                                @foreach(App\Models\PatientMedication::ADMISSION_RULES as $rule)
-                                                    <option
-                                                        value="{{ $rule }}">{{ App\Models\PatientMedication::ADMISSION_RULE_LABELS[$rule] }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <!-- Примечания -->
-                                        <div class="mb-3">
-                                            <label class="form-label">Примечания</label>
-                                            <textarea name="medication_notes[]" class="form-control"
-                                                      placeholder="Примечания" required maxlength="500"></textarea>
-                                        </div>
-
-                                        <!-- Период приёма -->
-                                        <div class="col-12 mb-3">
-                                            <label class="form-label">Период приёма</label>
-                                            <div class="admission-period-wrapper border rounded p-2">
-                                                <div class="d-flex align-items-center gap-2 mb-2">
-                                                    <select class="form-select w-auto admission-hour">
-                                                        @for($h = 0; $h < 24; $h++)
-                                                            <option
-                                                                value="{{ sprintf('%02d', $h) }}">{{ sprintf('%02d', $h) }}</option>
-                                                        @endfor
-                                                    </select>
-                                                    <span>:</span>
-                                                    <select class="form-select w-auto admission-minute">
-                                                        @for($m = 0; $m < 60; $m += 5)
-                                                            <option
-                                                                value="{{ sprintf('%02d', $m) }}">{{ sprintf('%02d', $m) }}</option>
-                                                        @endfor
-                                                    </select>
-                                                    <button type="button" class="btn btn-outline-success btn-add-time"
-                                                            title="Добавить время">
-                                                        <i class="fas fa-clock"></i>
-                                                    </button>
-                                                </div>
-                                                <div class="admission-times-list d-flex flex-wrap gap-2"></div>
-                                                <input type="hidden" name="admission_periods[]"
-                                                       required
-                                                       class="admission-hidden-input">
-                                            </div>
-                                        </div>
-
-                                        <!-- Совместимые медикаменты -->
-                                        <div class="mb-2 compatible-medications-wrapper">
-                                            <label class="form-label">Совместимые медикаменты</label>
-                                            <div class="compatible-list"></div>
-
-                                            <div class="row g-2 mt-2">
-                                                <div class="col-md-6">
-                                                    <select class="form-control compatible-medication-select">
-                                                        <option value="" disabled selected>Выберите медикамент</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <input type="text" class="form-control compatible-dosage"
-                                                           placeholder="Дозировка">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <button type="button"
-                                                            class="btn btn-outline-primary w-100 btn-add-compatible">
-                                                        Добавить
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
+                            <div>
+                                <label for="comment" class="form-label">Комментарий</label>
+                                <textarea name="comment" class="form-control" id="comment" rows="3"></textarea>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-outline-primary w-100 mt-3">
-                            Сохранить
-                        </button>
+                        <div class="modal-footer">
+                            <button type="button" class="btn" data-bs-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-primary">Создать направление</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
-    </div>
 
-    {{--  Show Model --}}
-    @can('list_patient_medication')
-        <div class="modal fade" id="showMedicationModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-fullscreen">
+        {{-- Order a service --}}
+        <div class="modal modal-blur fade" id="createServiceModal" tabindex="-1" aria-labelledby="createServiceModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Медикаменты</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h2 class="modal-title" id="createServiceModalTitle">Назначение услуги</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <form action="{{ route('patient.services.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="patient_id" value="{{ $patientId }}">
+                        <div class="modal-body">
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label for="service_create" class="form-label required">Услуга</label>
+                                    <select id="service_create" class="form-select select2" name="service_id" required>
+                                        <option value="" disabled selected>Выберите услугу</option>
+                                        @foreach ($patientDetails['services'] as $service)
+                                            <option value="{{ $service->id }}">{{ $service->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="service_date">Дата услуги</label>
+                                    <input type="text" name="service_date" id="service_date" placeholder="ГГГГ-ММ-ДД"
+                                           class="form-control flatpickr-date @error('service_date') is-invalid @enderror"
+                                           value="{{ old('service_date') }}">
+                                    @error('service_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn" data-bs-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-primary">Создать</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endcan
+
+    {{-- A medical document for the patient (or for one of the patient's services): response.survey.store --}}
+    @can('store_survey_response')
+        <div class="modal modal-blur fade" id="createDocumentModal" tabindex="-1" aria-labelledby="createDocumentModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="createDocumentModalTitle">Мед. документ</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <form action="{{ route('response.survey.store') }}" method="POST" class="modal-form">
+                        @csrf
+                        <input type="hidden" name="patient_id" value="{{ $patientId }}">
+                        <input type="hidden" name="patient_service_id" id="modal_service_id">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label required" for="survey-select">Мед. документ</label>
+                                <select id="survey-select" name="survey_id" required
+                                        class="form-select select2 @error('survey_id') is-invalid @enderror"
+                                        data-questions-url="{{ route('api.surveys.questions', ['survey' => '__survey__']) }}">
+                                    <option value="" disabled selected>Выберите документ</option>
+                                    @foreach ($patientDetails['surveys'] as $survey)
+                                        <option value="{{ $survey->id }}" @selected($survey->id == old('survey_id'))>{{ $survey->title }}</option>
+                                    @endforeach
+                                </select>
+                                @error('survey_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div id="questions-container"
+                                 data-choice-type="{{ \App\Enums\QuestionType::Choice->value }}"
+                                 data-boolean-type="{{ \App\Enums\QuestionType::Boolean->value }}"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn" data-bs-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endcan
+
+    @can('create_patient_diagnoses')
+        <div class="modal modal-blur fade" id="diagnosesModal" tabindex="-1" aria-labelledby="diagnosesModalTitle" aria-hidden="true"
+             data-store-url="{{ route('patient.diagnoses.store') }}"
+             data-favorite-url="{{ route('api.selected-diagnoses.toggle') }}"
+             data-search-url="{{ route('api.diagnoses.search') }}">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="diagnosesModalTitle">Добавить диагноз</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                     </div>
                     <div class="modal-body">
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Дата и время назначения</th>
-                                <th>Название препарата, Доза, Путь введения, Время приема ( час:мин)</th>
-                                <th>Дата</th>
-                                <th>Статус</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($patientMedicationsAllMedications as $index => $medication)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $medication->pivot->created_at }}</td>
-                                <td>
-                                    {{ $medication->name }}, {{ $medication->pivot->dosage }}
-                                    , {{ \App\Models\PatientMedication::ADMISSION_RULE_LABELS[$medication->pivot->admission_rules] ?? $medication->pivot->admission_rules }}
-                                    ,
+                        <div class="input-icon mb-3">
+                            <span class="input-icon-addon"><i class="bx bx-search" aria-hidden="true"></i></span>
+                            <input type="search" class="form-control" id="diagnosisSearchInput" placeholder="Поиск диагноза…"
+                                   aria-label="Поиск диагноза">
+                        </div>
 
-                                    @foreach(explode(',', $medication->pivot->admission_period) as $time)
-                                        <span class="badge bg-primary p-2">{{ $time }}</span>
-                                    @endforeach
-                                </td>
+                        <section class="diagnosis-section mb-3 @if ($favoriteDiagnoses->isEmpty()) d-none @endif" data-list="favorite">
+                            <h3 class="subheader mb-2">Избранные диагнозы</h3>
+                            <div class="list-group" id="favoriteDiagnosisList">
+                                @foreach ($favoriteDiagnoses as $diagnosis)
+                                    @include('admin.patients.partials.diagnosis-option', ['diagnosis' => $diagnosis, 'favorite' => true])
+                                @endforeach
+                            </div>
+                        </section>
 
-                                <td>{{ $medication->pivot->date_of_end }}</td>
+                        {{-- The rest of the ICD-10 catalogue is searched as the user types (api.diagnoses.search). --}}
+                        <section class="diagnosis-section mb-3" data-list="regular">
+                            <h3 class="subheader mb-2">Все диагнозы</h3>
+                            <p class="text-secondary mb-2" id="diagnosisSearchStatus" role="status">Введите код или название диагноза.</p>
+                            <div class="list-group" id="regularDiagnosisList"></div>
+                        </section>
 
-                                <td>
-                                    @php
-                                            $status = $medication->pivot->status;
-                                            $label = \App\Models\PatientMedication::STATUS_LABELS[$status] ?? $status;
-                                            $icon = \App\Models\PatientMedication::STATUS_ICONS[$status] ?? 'fa-question';
-                                            $color = \App\Models\PatientMedication::STATUS_COLORS[$status] ?? 'text-secondary';
-                                        @endphpf
-
-                                    <i class="fas {{ $icon }} {{ $color }}" title="{{ $label }}"></i>
-                                    {{ $label }}
-                                </td>
-
-                                <td>
-                                    @if($medication->pivot->status !== 'cancelled')
-                                        <div class="d-flex flex-wrap gap-2">
-                                            <button id="extend_medication" data-id="{{ $medication->pivot->id }}"
-                                                    class="btn btn-sm btn-warning">
-                                                Продлить
-                                            </button>
-
-                                            @if($medication->pivot->status !== 'completed')
-                                                <a href="{{ route('patient.medication.edit', $medication->pivot->id) }}"
-                                                   class="btn btn-sm btn-warning">
-                                                    Изменить
-                                                </a>
-
-                                                <button id="cancel_medication" data-id="{{ $medication->pivot->id }}"
-                                                        class="btn btn-sm btn-danger">
-                                                    Отменить
-                                                </button>
-                                            @endif
-                                        </div>
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
+                        <template id="diagnosis-option-template">
+                            @include('admin.patients.partials.diagnosis-option', ['diagnosis' => null, 'favorite' => false])
+                        </template>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" data-bs-dismiss="modal">Закрыть</button>
                     </div>
                 </div>
             </div>
         </div>
     @endcan
 
+    @can('list_patient_diagnoses')
+        <div class="modal modal-blur fade" id="showDiagnosisesModal" tabindex="-1" aria-labelledby="showDiagnosisesModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="showDiagnosisesModalTitle">Диагнозы пациента</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body">
+                        @forelse ($patientDetails['diagnoses'] as $data)
+                            @include('admin.patients.history.diagnosis', ['data' => $data])
+                        @empty
+                            <x-empty-state title="Диагнозов пока нет" icon="bx-book-content" />
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endcan
 
-    @can('create_patient_procedure')
-        <div class="modal fade" id="proceduresModal" tabindex="-1" aria-hidden="true">
+    @can('create_patient_medication')
+        <div class="modal modal-blur fade" id="medicationModal" tabindex="-1" aria-labelledby="medicationModalTitle" aria-hidden="true">
             <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Добавить медикамент</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h2 class="modal-title" id="medicationModalTitle">Назначить медикаменты</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                     </div>
-                    <div class="modal-body">
-                        <form action="{{ route('patient.procedures.store') }}" method="post">
-                            @csrf
-                            <input type="hidden" name="patient_id" value="{{ $patientDetails['patient_id'] }}">
-
-                            <div class="mb-3">
-                                <label class="form-label">Процедуры</label>
-                                <div id="procedures-container">
-                                </div>
-
-                                <button type="button" class="btn btn-primary mt-2" id="btn-add-procedure">
-                                    <i class="fas fa-plus me-2"></i> Добавить процедуру
+                    <form action="{{ route('patient.medication.store') }}" method="POST" class="modal-form" id="medication-form">
+                        @csrf
+                        <input type="hidden" name="patient_id" value="{{ $patientId }}">
+                        <div class="modal-body">
+                            <div id="medications-container"></div>
+                            <x-empty-state class="medications-empty" title="Добавьте медикамент" icon="bx-capsule"
+                                           text="Каждый медикамент назначается с дозировкой, временем и правилами приёма." />
+                            <div class="text-end">
+                                <button type="button" class="btn btn-primary" id="btn-add-medication">
+                                    <i class="bx bx-plus" aria-hidden="true"></i>Добавить медикамент
                                 </button>
-
-                                <template id="procedure-template">
-                                    <div class="row mb-2 procedure-row">
-                                        <div class="col-sm-5">
-                                            <select name="procedures[]" class="form-control procedure-select"
-                                                    data-placeholder="Выберите или введите новую процедуру" required>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-5">
-                                            <input type="date" name="procedure_dates[]"
-                                                   class="form-control"
-                                                   value="{{ now()->format('Y-m-d') }}"
-                                                   required>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <button type="button" class="btn btn-danger btn-remove-procedure">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </template>
                             </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn" data-bs-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
-                            <button type="submit" class="btn btn-outline-primary w-100 mt-3">
-                                Сохранить
-                            </button>
-                        </form>
+        <template id="medication-template">
+            <div class="card mb-3 prescription-row medication-row">
+                <div class="card-header">
+                    <h3 class="card-title medication-title">Медикамент</h3>
+                    <div class="card-actions">
+                        <button type="button" class="btn btn-sm btn-ghost-danger btn-remove-medication">
+                            <i class="bx bx-trash" aria-hidden="true"></i>Убрать
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label required" data-for="medication">Основной медикамент</label>
+                            <select name="medications[]" class="form-select medication-select" data-id="medication" required>
+                                @foreach ($medications as $medication)
+                                    <option value="{{ $medication->id }}"
+                                            data-active-substance="{{ $medication->composition?->active_substance_name }}">
+                                        {{ $medication->name }} ({{ $medication->composition?->active_substance_name ?? '—' }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label required" data-for="dosage">Дозировка (количество единиц)</label>
+                            <input type="number" name="dosages[]" class="form-control" data-id="dosage"
+                                   min="1" max="10000" step="1" placeholder="Количество единиц" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label required" data-for="single-dose">Разовая доза</label>
+                            <input type="text" name="single_doses[]" class="form-control" data-id="single-dose"
+                                   placeholder="Разовая доза" required maxlength="50">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label required" data-for="date-of-end">Дата</label>
+                            <input type="text" name="date_of_ends[]" class="form-control flatpickr-date" data-id="date-of-end"
+                                   placeholder="ГГГГ-ММ-ДД" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label required" data-for="method">Способ приёма</label>
+                            <select name="methods[]" class="form-select" data-id="method" required>
+                                @foreach (\App\Enums\AdministrationRoute::options() as $value => $label)
+                                    <option value="{{ $value }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label required" data-for="admission-rule">Правило приёма</label>
+                            <select name="admission_rules[]" class="form-select" data-id="admission-rule" required>
+                                @foreach (\App\Enums\AdmissionRule::options() as $value => $label)
+                                    <option value="{{ $value }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label required" data-for="notes">Примечания</label>
+                            <textarea name="medication_notes[]" class="form-control" data-id="notes" rows="2"
+                                      placeholder="Примечания" required maxlength="255"></textarea>
+                        </div>
+                        <div class="col-12">
+                            @include('admin.patients.partials.admission-times', ['times' => ''])
+                        </div>
+                        <div class="col-12">
+                            @include('admin.patients.partials.compatible-medications', ['compatible' => collect()])
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    @endcan
+
+    @can('list_patient_medication')
+        <div class="modal modal-blur fade" id="showMedicationModal" tabindex="-1" aria-labelledby="showMedicationModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="showMedicationModalTitle">Лист назначения</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body p-0">
+                        <div class="table-responsive">
+                            <table class="table card-table table-vcenter">
+                                <thead>
+                                <tr>
+                                    <th class="w-1">#</th>
+                                    <th>Дата и время назначения</th>
+                                    <th>Препарат, доза, правило и время приёма (ч:мин)</th>
+                                    <th>Дата</th>
+                                    <th>Статус</th>
+                                    <th class="w-1"><span class="visually-hidden">Действия</span></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @forelse ($prescriptions as $index => $medication)
+                                    <tr>
+                                        <td class="text-secondary">{{ $index + 1 }}</td>
+                                        <td class="text-nowrap">{{ Display::dateTime($medication->pivot->created_at) }}</td>
+                                        <td>
+                                            {{ $medication->name }}, {{ $medication->pivot->dosage }}, {{ $medication->pivot->admission_rules->label() }}
+                                            <div class="tag-list mt-1">
+                                                @foreach (array_filter(explode(',', (string) $medication->pivot->admission_period)) as $time)
+                                                    <span class="badge bg-primary-lt">{{ $time }}</span>
+                                                @endforeach
+                                            </div>
+                                        </td>
+                                        <td class="text-nowrap">{{ Display::date($medication->pivot->date_of_end) }}</td>
+                                        <td class="text-nowrap">
+                                            <x-status-icon :status="$medication->pivot->status" decorative />
+                                            {{ $medication->pivot->status->label() }}
+                                        </td>
+                                        <td>
+                                            {{-- The three routes need edit_patient_medication and refuse a given, returned or cancelled prescription. --}}
+                                            @can('edit_patient_medication')
+                                                @unless ($medication->pivot->status->isFinal())
+                                                    <div class="table-actions">
+                                                        <button type="button" class="btn btn-sm js-extend-medication"
+                                                                data-url="{{ route('api.patient-medications.extend', $medication->pivot->id) }}">
+                                                            Продлить
+                                                        </button>
+                                                        <a href="{{ route('patient.medication.edit', $medication->pivot->id) }}" class="btn btn-sm">Изменить</a>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger js-cancel-medication"
+                                                                data-url="{{ route('api.patient-medications.cancel', $medication->pivot->id) }}">
+                                                            Отменить
+                                                        </button>
+                                                    </div>
+                                                @endunless
+                                            @endcan
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="6"><x-empty-state title="Медикаменты не назначены" icon="bx-capsule" /></td></tr>
+                                @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     @endcan
 
+    @can('create_patient_procedure')
+        <div class="modal modal-blur fade" id="proceduresModal" tabindex="-1" aria-labelledby="proceduresModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="proceduresModalTitle">Назначить процедуры</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <form action="{{ route('patient.procedures.store') }}" method="POST" class="modal-form">
+                        @csrf
+                        <input type="hidden" name="patient_id" value="{{ $patientId }}">
+                        <div class="modal-body">
+                            <div id="procedures-container" class="d-flex flex-column gap-2 mb-3"></div>
+                            <button type="button" class="btn btn-primary" id="btn-add-procedure">
+                                <i class="bx bx-plus" aria-hidden="true"></i>Добавить процедуру
+                            </button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn" data-bs-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <template id="procedure-template">
+            <div class="row g-2 align-items-end procedure-row">
+                <div class="col-sm-7">
+                    <label class="form-label required" data-for="procedure">Процедура</label>
+                    <select name="procedures[]" class="form-select select2 procedure-select" data-id="procedure"
+                            data-placeholder="Выберите процедуру" required>
+                        <option value=""></option>
+                        @foreach ($procedures as $procedure)
+                            <option value="{{ $procedure->id }}">{{ $procedure->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <label class="form-label required" data-for="procedure-date">Дата</label>
+                    <input type="text" name="procedure_dates[]" class="form-control flatpickr-date" data-id="procedure-date"
+                           value="{{ now()->format('Y-m-d') }}" required>
+                </div>
+                <div class="col-sm-1">
+                    <button type="button" class="btn btn-icon btn-ghost-danger btn-remove-procedure" aria-label="Убрать процедуру" title="Убрать процедуру">
+                        <i class="bx bx-trash" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </template>
+    @endcan
 @endsection
 
 @section('scripts')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <script>
-        $(document).on('click', '#cancel_medication', function (e) {
-            e.preventDefault();
-            let id = $(this).data('id');
-
-            if (!confirm("Вы уверены, что хотите отменить назначение?")) return;
-
-            $.ajax({
-                url: `/api/patient-medication/${id}/cancel`,
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function (response) {
-                    alert('Медикамент отменен');
-                    location.reload(); // или обнови UI вручную
-                },
-                error: function (xhr) {
-                    alert('Ошибка при отмене');
-                }
-            });
-        });
-
-        $(document).on('click', '#extend_medication', function (e) {
-            e.preventDefault();
-            let id = $(this).data('id');
-
-            if (!confirm("Вы уверены, что хотите отменить назначение?")) return;
-
-            $.ajax({
-                url: `/api/patient-medication/${id}/extend`,
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function (response) {
-                    alert('Медикамент продлен');
-                    location.reload(); // или обнови UI вручную
-                },
-                error: function (xhr) {
-                    alert('Ошибка при отмене');
-                }
-            });
-        });
-    </script>
-
-    {{-- show view modal  --}}
-    <script>
-        $(document).on('click', '.history-header', function () {
-            const id = $(this).data('id');
-            const type = $(this).data('type');
-
-            $.ajax({
-                url: '{{ route('admin.patients.history.partial') }}',
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    type: type,
-                    id: id
-                },
-                success: function (html) {
-                    console.log(html)
-                    $('#eventDetailModal .modal-body').html(html);
-                    $('#eventDetailModal').modal('show');
-                },
-                error: function () {
-                    $('#eventDetailModal .modal-body').html('<div class="text-danger">Ошибка загрузки данных</div>');
-                    $('#eventDetailModal').modal('show');
-                }
-            });
-        });
-    </script>
-
-    {{--  Modals  --}}
-    <script>
-        $(document).ready(function () {
-            $(document).on('shown.bs.modal', '#diagnosisesModal', function () {
-                $('#diagnosisSearchInput').off('input').on('input', function () {
-                    const searchText = $(this).val().toLowerCase();
-
-                    $('#diagnosisesModal .diagnosis-item').each(function () {
-                        const text = $(this).text().toLowerCase();
-                        const container = $(this).closest('.d-flex'); // или .parent() — смотри по DevTools
-
-                        if (text.includes(searchText)) {
-                            container.removeClass('d-none');
-                        } else {
-                            container.addClass('d-none');
-                        }
-                    });
-                });
-            });
-
-            $('button[data-type-id][data-bs-target="#createServiceModal"]').on('click', function (e) {
-                e.preventDefault();
-                var button = $(this);
-                var typeId = button.data('typeId');
-                var modal = $(button.data('bs-target'));
-
-                $.ajax({
-                    url: '/api/service/by-type/' + typeId,
-                    method: 'GET',
-                    cache: false,
-                    success: function (data) {
-                        var select = $('#service_create');
-                        select.empty().append('<option disabled selected>Выберите услугу</option>');
-                        $.each(data, function (index, service) {
-                            select.append(new Option(service.name, service.id));
-                        });
-                        modal.modal('show');
-                    },
-                    error: function () {
-                        console.error('Ошибка при загрузке услуг');
-                    }
-                });
-            });
-
-            $('#createServiceModal').on('shown.bs.modal', function () {
-                $('#service_create').select2({
-                    dropdownParent: $(this),
-                    width: '100%',
-                    placeholder: "Выберите услугу",
-                });
-                $('#place').select2({
-                    dropdownParent: $(this),
-                    width: '100%',
-                });
-            });
-
-            $('#createServiceModal').on('hidden.bs.modal', function () {
-                $('#service_create').select2('destroy');
-                $('#place').select2('destroy');
-                $('#service_create').empty().append('<option disabled selected>Выберите услугу</option>');
-            });
-
-            $('#createMapModal').on('shown.bs.modal', function () {
-                $('#service').select2({
-                    dropdownParent: $('#createMapModal'),
-                    width: '100%',
-                    placeholder: "Выберите услугу",
-                });
-            });
-
-            $('#createMapModal').on('hidden.bs.modal', function () {
-                $('#service').select2('destroy');
-            });
-
-            $('#createDocumentModal').on('shown.bs.modal', function (event) {
-                $('#survey-select').select2({
-                    dropdownParent: $('#createDocumentModal'),
-                    width: '100%',
-                    placeholder: "Выберите услугу",
-                });
-
-                const button = $(event.relatedTarget);
-                const serviceId = button.data('service-id') || null;
-
-                $('#modal_service_id').val(serviceId);
-            });
-
-            $('#createDocumentModal').on('hidden.bs.modal', function () {
-                $('#survey-select').select2('destroy');
-            });
-        });
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            // Мед. документы
-            $('#survey-select').on('change', function () {
-                let surveyId = $(this).val();
-                let questionsContainer = $('#questions-container');
-
-                questionsContainer.html('');
-
-                if (!surveyId) return;
-
-                $.ajax({
-                    url: `/api/surveys/${surveyId}/questions`,
-                    type: 'GET',
-                    success: function (data) {
-                        questionsContainer.append('<button type="button" class="mb-3 btn btn-sm btn-warning" id="clear_survey">Очистить</button>');
-
-                        // Обрабатываем группы
-                        if (data.groups.length > 0) {
-                            data.groups.forEach(group => {
-                                let groupHtml = `
-                        <div class="card mb-4 border-primary">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0 text-white">${group.title}</h5>
-                            </div>
-                            <div class="card-body">
-                    `;
-                                group.questions.forEach((q, index) => {
-                                    groupHtml += generateQuestionHtml(q, index + 1);
-                                });
-                                groupHtml += '</div></div>';
-                                questionsContainer.append(groupHtml);
-                            });
-                        }
-
-                        // Обрабатываем отдельные вопросы
-                        if (data.standalone_questions.length > 0) {
-                            let standaloneHtml = `
-                    <div class="card mb-4 border-secondary">
-                        <div class="card-header bg-secondary text-white">
-                            <h5 class="mb-0 text-white">Общие вопросы</h5>
-                        </div>
-                        <div class="card-body">
-                `;
-                            data.standalone_questions.forEach((q, index) => {
-                                standaloneHtml += generateQuestionHtml(q, index + 1);
-                            });
-                            standaloneHtml += '</div></div>';
-                            questionsContainer.append(standaloneHtml);
-                        }
-
-                        function generateQuestionHtml(q, index) {
-                            return `
-                    <div class="mb-3 question-item">
-                        <label class="form-label fw-semibold" data-question="${q.id}" >${index}. ${q.question}</label>
-                        ${getInputField(q, index)}
-                    </div>
-                `;
-                        }
-
-                        function getInputField(q) {
-                            if (q.type === 'choice') {
-                                return q.options.map(option => `
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio"
-                                   name="answers[${q.id}]"
-                                   value="${option.text}"
-                                   required>
-                            <label class="form-check-label">${option.text}</label>
-                        </div>
-                    `).join('');
-                            }
-                            if (q.type === 'boolean') {
-                                return `
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio"
-                                   name="answers[${q.id}]"
-                                   value="yes" required> Да
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio"
-                                   name="answers[${q.id}]"
-                                   value="no" required> Нет
-                        </div>
-                    `;
-                            }
-                            return `<input type="text" name="answers[${q.id}]"
-                             class="form-control" required>`;
-                        }
-
-                        $('#service-container').show();
-                    },
-                    error: function () {
-                        questionsContainer.html('<p class="text-danger">Ошибка загрузки вопросов</p>');
-                    }
-                });
-            });
-
-            $(document).on('click', '#clear_survey', function () {
-                $('#questions-container').html('');
-                $('#survey-select').val('').trigger('change');
-            });
-
-            function getInputField(q, index) {
-                console.log("OPTIONS RAW:", q.options);
-
-                let options = q.options;
-
-                if (q.type === 'choice') {
-                    return options.map(option => `
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="answers[${q.id}]" value="${option.text}" required>
-                            <label class="form-check-label">${option.text}</label>
-                        </div>
-                    `).join('');
-                }
-                if (q.type === 'boolean') {
-                    return `
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="answers[${q.id}]" value="yes" required> Да
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="answers[${q.id}]" value="no" required> Нет
-                        </div>
-                    `;
-                }
-                return `<input type="text" name="answers[${q.id}]" class="form-control" required>`;
-            }
-
-            // Функция загрузки ответов в модальное окно
-            $('.view-response').on('click', function () {
-                let responseId = $(this).data('id');
-                let modalBody = $('#response-content');
-
-                modalBody.html('<p class="text-muted">Загрузка...</p>');
-
-                $.ajax({
-                    url: `/api/surveys-response/show/${responseId}`,
-                    type: 'GET',
-                    success: function (response) {
-                        console.log(response);
-
-                        let html = `<h6 class="text-primary">${response.survey.title}</h6>`;
-
-                        if (response.answers.length > 0) {
-                            response.answers.forEach((answer, index) => {
-                                let localizedAnswer = answer.answer;
-
-                                if (localizedAnswer.toLowerCase() === 'yes') localizedAnswer = 'Да';
-                                if (localizedAnswer.toLowerCase() === 'no') localizedAnswer = 'Нет';
-
-                                html += `
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input select-answer"
-                                   data-question-id="${answer.question.id}"
-                                   data-answer="${answer.answer}">
-                            <label class="form-check-label">
-                                <strong>${index + 1}. ${answer.question.question}</strong>
-                                <br>Ответ: <span class="text-success">${localizedAnswer}</span>
-                            </label>
-                        </div>
-                    `;
-                            });
-
-                            html += `<p class="btn btn-sm btn-primary mt-2" id="apply-selected-answers">Использовать выбранные</p>`;
-                        } else {
-                            html += '<p class="text-muted">Ответов нет</p>';
-                        }
-
-                        modalBody.html(html);
-                    },
-                    error: function () {
-                        modalBody.html('<p class="text-danger">Ошибка загрузки данных</p>');
-                    }
-                });
-            });
-
-            // Обработчик для кнопки "Использовать выбранные"
-            $(document).on('click', '#apply-selected-answers', function () {
-                $('.select-answer:checked').each(function () {
-                    let questionId = $(this).data('question-id');
-                    let answer = $(this).data('answer');
-
-                    let targetInput = $(`input[name="answers[${questionId}]"]`);
-                    let targetRadio = $(`input[name="answers[${questionId}]"][value="${answer}"]`);
-
-                    let question = $(`label[data-question="${questionId}"]`);
-
-                    question.append('<small> (Ответ скопирован) </small>');
-
-                    if (targetInput.length > 0) {
-                        if (targetInput.attr('type') === 'radio') {
-                            if (targetRadio.length > 0) {
-                                targetRadio.prop('checked', true);
-                            } else {
-                                alert(`Ответ "${answer}" не найден среди вариантов.`);
-                            }
-                        } else {
-                            targetInput.val(answer);
-                        }
-                    } else {
-                        alert(`Вопрос с ID ${questionId} не найден.`);
-                    }
-                });
-
-                $('#responseModal').modal('hide');
-            });
-        });
-
-        function toggleHistoryItem(header) {
-            const content = header.nextElementSibling;
-            const icon = header.querySelector('.collapsible-icon');
-
-            content.classList.toggle('show');
-            icon.classList.toggle('rotated');
-        }
-    </script>
-
-    <script>
-        $(function () {
-            $('#select-document-form').on('submit', function (e) {
-                e.preventDefault();
-
-                let documentId = $('#document_id').val();
-                let patientId = $('#patient_id').val();
-
-                if (!documentId) {
-                    alert('Пожалуйста, выберите документ');
-                    return;
-                }
-                if (!patientId) {
-                    alert('Не найден patient_id');
-                    return;
-                }
-
-                let url = '/dashboard/documents/'
-                    + encodeURIComponent(documentId)
-                    + '?patient_id='
-                    + encodeURIComponent(patientId);
-
-                window.location.href = url;
-            });
-        });
-    </script>
-
-    {{-- medications --}}
-    <script>
-        const containerMedicaments = document.getElementById('medications-container');
-        const templateMedicaments = document.getElementById('medication-template');
-
-        // Удалена инициализация Select2
-
-        $('.admission-hidden-input').each(function () {
-            const $input = $(this);
-            const $wrapper = $input.closest('.admission-period-wrapper');
-            const $list = $wrapper.find('.admission-times-list');
-
-            const times = ($input.data('times') || '').split(',');
-            times.forEach(function (time) {
-                if (!time) return;
-                const $chip = $(`
-                <span class="badge bg-secondary d-flex align-items-center gap-1" data-time="${time}">
-                    ${time}
-                    <button type="button" class="btn-close btn-close-white btn-sm ms-1" aria-label="Удалить"></button>
-                </span>
-            `);
-                $list.append($chip);
-            });
-        });
-
-        // Добавление совместимого медикамента
-        $(document).on('click', '.btn-add-compatible', function () {
-            const $wrapper = $(this).closest('.compatible-medications-wrapper');
-            const $medicationRow = $(this).closest('.medication-row');
-            const index = $('.medication-row').index($medicationRow);
-
-            const $select = $wrapper.find('.compatible-medication-select');
-            const selectedId = $select.val();
-            const selectedText = $select.find('option:selected').text();
-            const dosage = $wrapper.find('.compatible-dosage').val();
-
-            if (!selectedId || !dosage) {
-                alert('Пожалуйста, выберите медикамент и введите дозу');
-                return;
-            }
-
-            const item = `
-            <div class="input-group compatible-item mb-1">
-                <input type="hidden" name="compatible_medications[${index}][]" value="${selectedId}">
-                <input type="hidden" name="compatible_dosages[${index}][]" value="${dosage}">
-                <span class="input-group-text">${selectedText} (${dosage})</span>
-                <button type="button" class="btn btn-outline-danger btn-remove-compatible">×</button>
-            </div>
-        `;
-            $wrapper.find('.compatible-list').append(item);
-            $select.val(''); // Сбрасываем значение
-            $wrapper.find('.compatible-dosage').val('');
-        });
-
-        $(containerMedicaments).on('click', '.btn-add-time', function () {
-            const $wrapper = $(this).closest('.admission-period-wrapper');
-            const hour = $wrapper.find('.admission-hour').val();
-            const minute = $wrapper.find('.admission-minute').val();
-            const time = `${hour}:${minute}`;
-
-            const $timesList = $wrapper.find('.admission-times-list');
-
-            // Если уже есть такое время — не добавлять
-            if ($timesList.find(`[data-time="${time}"]`).length > 0) return;
-
-            const $chip = $(`
-            <span class="badge bg-secondary d-flex align-items-center gap-1" data-time="${time}">
-                ${time}
-                <button type="button" class="btn-close btn-close-white btn-sm ms-1" aria-label="Удалить"></button>
-            </span>
-        `);
-
-            $timesList.append($chip);
-
-            updateHiddenAdmissionInput($wrapper);
-        });
-
-        // Удаление совместимого медикамента
-        $(containerMedicaments).on('click', '.btn-remove-compatible', function () {
-            $(this).closest('.compatible-item').remove();
-        });
-
-        // Удаление времени
-        $(containerMedicaments).on('click', '.admission-times-list .btn-close', function () {
-            const $wrapper = $(this).closest('.admission-period-wrapper');
-            $(this).closest('[data-time]').remove();
-            updateHiddenAdmissionInput($wrapper);
-        });
-
-        // Обновление скрытого input
-        function updateHiddenAdmissionInput($wrapper) {
-            const times = [];
-            $wrapper.find('.admission-times-list [data-time]').each(function () {
-                times.push($(this).data('time'));
-            });
-
-            $wrapper.find('.admission-hidden-input').val(times.join(','));
-        }
-
-        function bindMedicationChange(select) {
-            $(select).on('change', function (e) {
-                const selectedOption = this.options[this.selectedIndex];
-                const selectedId = selectedOption.value;
-                const activeSubstance = $(selectedOption).data('active-substance');
-                const $row = $(this).closest('.medication-row');
-                const $compatibleSelect = $row.find('.compatible-medication-select');
-
-                // Загрузка совместимых медикаментов
-                fetch(`/api/medication/active-substance/${activeSubstance}`)
-                    .then(response => {
-                        if (!response.ok) throw new Error('Ошибка загрузки');
-                        return response.json();
-                    })
-                    .then(data => {
-                        // Сохраняем текущее значение
-                        const currentValue = $compatibleSelect.val();
-
-                        // Очищаем и добавляем новые опции
-                        $compatibleSelect.empty();
-                        $compatibleSelect.append(
-                            '<option value="" disabled selected>Выберите медикамент</option>'
-                        );
-
-                        data.forEach(item => {
-                            const option = new Option(
-                                `${item.name} (${item.composition.active_substance_name})`,
-                                item.id
-                            );
-                            $compatibleSelect.append(option);
-                        });
-
-                        // Восстанавливаем значение
-                        if (currentValue) {
-                            $compatibleSelect.val(currentValue);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Ошибка:', error);
-                        $compatibleSelect.empty().append(
-                            '<option value="" disabled selected>Ошибка загрузки</option>'
-                        );
-                    });
-            });
-        }
-
-        // Добавление новой строки
-        let medicationCount = 0;
-        $('#btn-add-medication').click(function () {
-            const clone = templateMedicaments.content.cloneNode(true);
-            containerMedicaments.appendChild(clone);
-            medicationCount++;
-
-            const $lastRow = $(containerMedicaments).find('.medication-row').last();
-            $lastRow.find('.medication-title').text(`медикамент #${medicationCount}`);
-
-            // Инициализация основного медикамента
-            const $medicationSelect = $lastRow.find('.medication-select');
-            bindMedicationChange($medicationSelect[0]);
-
-            // Инициализация события change для совместимых медикаментов
-            $medicationSelect.trigger('change');
-        });
-
-        // Удаление строки
-        $(containerMedicaments).on('click', '.btn-remove-medication', function () {
-            $(this).closest('.medication-row').remove();
-
-            // Пересчитываем количество медикаментов после удаления
-            medicationCount = 0;
-            $('.medication-row').each(function (index) {
-                $(this).find('.medication-title').text(`медикамент # ${index + 1}`);
-                medicationCount = index + 1;
-            });
-        });
-
-        // Инициализация существующих элементов
-        $(document).ready(function () {
-            $('.medication-select').each(function () {
-                bindMedicationChange(this);
-            });
-        });
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            $('.diagnosis-item').on('click', function (e) {
-                e.preventDefault();
-
-                let diagnosisId = $(this).data('diagnosis-id');
-                let patientId = $('#patient_id').val();
-
-                $.ajax({
-                    url: "{{ route('patient.diagnoses.store') }}",
-                    method: "POST",
-                    headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    },
-                    contentType: "application/json",
-                    dataType: "json",
-                    data: JSON.stringify({
-                        patient_id: patientId,
-                        diagnosis_id: diagnosisId
-                    }),
-                    success: function (response) {
-                        if (!response.status) {
-                            alert("Ошибка при добавлении диагноза");
-                            return;
-                        }
-
-                        let surveys = response.surveys || [];
-
-                        if (surveys.length === 0) {
-                            alert("Диагноз успешно добавлен (без мед. документов).");
-                            location.reload(); // сразу перезагружаем
-                            return;
-                        }
-
-                        // Закрываем модалку диагнозов перед началом
-                        $('#diagnosisesModal').modal('hide');
-
-                        // Запускаем показ модалок мед. документов
-                        startSurveyModalSequence(surveys, patientId);
-                    },
-                    error: function (xhr) {
-                        alert("Ошибка при добавлении диагноза.");
-                        console.error(xhr.responseText);
-                    }
-                });
-            });
-
-            function startSurveyModalSequence(surveys, patientId) {
-                let currentIndex = 0;
-
-                function showNextSurvey() {
-                    if (currentIndex >= surveys.length) {
-                        alert("Все мед. документы успешно добавлены.");
-                        location.reload(); // перезагружаем после последнего
-                        return;
-                    }
-
-                    let survey = surveys[currentIndex];
-
-                    // Заполняем форму
-                    $('#createDocumentModal input[name="patient_id"]').val(patientId);
-                    $('#survey-select').val(survey.id).trigger('change');
-
-                    // Отключаем возможность выбора другого документа
-                    $('#survey-select')
-                        .attr('readonly', true) // просто визуально блокируем
-                        .css('pointer-events', 'none'); // чтобы нельзя было открыть список
-
-
-                    // Открываем модалку
-                    $('#createDocumentModal').modal('show');
-
-                    // AJAX отправка формы
-                    $('#createDocumentModal form').off('submit').on('submit', function (e) {
-                        e.preventDefault();
-
-                        $.ajax({
-                            url: $(this).attr('action'),
-                            method: "POST",
-                            data: $(this).serialize(),
-                            success: function () {
-                                $('#createDocumentModal').modal('hide');
-                            },
-                            error: function () {
-                                alert("Ошибка при добавлении мед. документа");
-                            }
-                        });
-                    });
-                }
-
-                // После закрытия открываем следующий
-                $('#createDocumentModal').off('hidden.bs.modal').on('hidden.bs.modal', function () {
-                    currentIndex++;
-                    showNextSurvey();
-                });
-
-                // Запускаем первый
-                showNextSurvey();
-            }
-
-            // Добавление/удаление из избранного
-            $('.diagnosis-favorite').on('click', function (e) {
-                e.stopPropagation(); // Не даём сработать родительскому click
-
-                const star = $(this);
-                const diagnosisId = star.data('diagnosis-id');
-
-                $.ajax({
-                    url: '/api/selected-diagnosis', // твой API
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    data: {
-                        diagnosis_id: diagnosisId,
-                        admin_id: {{ auth()->user()->id }}
-                    },
-                    success: function () {
-                        location.reload(); // Можно заменить на DOM-обновление без reload
-                    },
-                    error: function () {
-                        alert("Ошибка при обновлении избранных.");
-                    }
-                });
-            });
-        });
-
-
-        const container = document.getElementById('procedures-container');
-        const template = document.getElementById('procedure-template');
-
-        function initSelect2(element) {
-            const procedureData = {!! json_encode($procedures->map(function($procedure) {
-                    return ['id' => $procedure->id, 'text' => $procedure->name];
-                })) !!};
-
-            $(element).select2({
-                tags: true,
-                placeholder: $(element).data('placeholder'),
-                data: procedureData,
-                createTag: function (params) {
-                    return {
-                        id: params.term,
-                        text: params.term + ' (новая)'
-                    };
-                }
-            });
-        }
-
-        document.getElementById('btn-add-procedure').addEventListener('click', function () {
-            const clone = template.content.cloneNode(true);
-            const select = clone.querySelector('.procedure-select');
-            container.appendChild(clone);
-            initSelect2(select);
-        });
-
-        container.addEventListener('click', function (e) {
-            if (e.target.closest('.btn-remove-procedure')) {
-                e.target.closest('.procedure-row').remove();
-            }
-        });
-    </script>
+    @vite('resources/js/pages/patient-card.js')
 @endsection

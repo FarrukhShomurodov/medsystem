@@ -6,24 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PatientProcedureRequest;
 use App\Services\PatientProcedureService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class PatientProcedureController extends Controller
+class PatientProcedureController extends Controller implements HasMiddleware
 {
-    protected PatientProcedureService $service;
+    public function __construct(private readonly PatientProcedureService $service) {}
 
-    public function __construct(PatientProcedureService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:create_patient_procedure'])->only(['store']);
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:create_patient_procedure', only: ['store']),
+        ];
     }
 
-    function store(PatientProcedureRequest $request): RedirectResponse
+    public function store(PatientProcedureRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
+        $this->service->store($request->orders());
 
-        $this->service->store($validated);
-
-        return redirect()->back();
+        return back()->with('success', 'Процедуры назначены!');
     }
 }

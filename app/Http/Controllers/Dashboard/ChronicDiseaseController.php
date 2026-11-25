@@ -8,19 +8,21 @@ use App\Models\ChronicDisease;
 use App\Services\ChronicDiseaseService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ChronicDiseaseController extends Controller
+class ChronicDiseaseController extends Controller implements HasMiddleware
 {
-    protected ChronicDiseaseService $service;
+    public function __construct(private readonly ChronicDiseaseService $service) {}
 
-    public function __construct(ChronicDiseaseService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_diseases'])->only('index');
-        $this->middleware(['permission:create_diseases'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_diseases'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_diseases'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_diseases', only: ['index']),
+            new Middleware('permission:create_diseases', only: ['create', 'store']),
+            new Middleware('permission:edit_diseases', only: ['edit', 'update']),
+            new Middleware('permission:delete_diseases', only: ['destroy']),
+        ];
     }
 
     public function index(): View
@@ -40,10 +42,9 @@ class ChronicDiseaseController extends Controller
 
     public function store(ChronicDiseaseRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('diseases.index')->with('success', 'Хроническая болезнь успешно добавлена!');
+        return to_route('diseases.index')->with('success', 'Хроническая болезнь успешно добавлена!');
     }
 
     public function edit(ChronicDisease $disease): View
@@ -53,16 +54,15 @@ class ChronicDiseaseController extends Controller
 
     public function update(ChronicDiseaseRequest $request, ChronicDisease $disease): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($disease, (array)$validated);
+        $this->service->update($disease, $request->validated());
 
-        return redirect()->route('diseases.index')->with('success', 'Хроническая болезнь успешно обновлена!');
+        return to_route('diseases.index')->with('success', 'Хроническая болезнь успешно обновлена!');
     }
 
     public function destroy(ChronicDisease $disease): RedirectResponse
     {
         $this->service->destroy($disease);
 
-        return redirect()->route('diseases.index')->with('success', 'Хроническая болезнь успешно удалена!');
+        return to_route('diseases.index')->with('success', 'Хроническая болезнь успешно удалена!');
     }
 }

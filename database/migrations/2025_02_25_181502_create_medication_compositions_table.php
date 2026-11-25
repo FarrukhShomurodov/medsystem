@@ -4,11 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
-
+return new class extends Migration
+{
     public function up(): void
     {
-        Schema::create('medication_compositions', function (Blueprint $table) {
+        Schema::create('medication_compositions', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('medication_id')->constrained()->cascadeOnDelete();
             $table->string('active_substance_name');

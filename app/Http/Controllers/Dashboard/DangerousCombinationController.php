@@ -2,35 +2,34 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Exceptions\ServiceImportValidationException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ImportSpreadsheetRequest;
 use App\Imports\DangerousCombinationImport;
 use App\Models\DangerousCombination;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Maatwebsite\Excel\Facades\Excel;
 
+/**
+ * The drug interaction list behind the prescription warnings, imported from Excel.
+ */
 class DangerousCombinationController extends Controller
 {
-    public function showImportServices(): View
+    /** More than the catalogues' ten: the real list has about 2 450 rows. */
+    private const int PER_PAGE = 50;
+
+    public function showImport(): View
     {
-        $combinations = DangerousCombination::query()->get();
+        $combinations = DangerousCombination::query()->orderBy('id')->paginate(self::PER_PAGE);
 
         return view('admin.medications.import', compact('combinations'));
     }
 
-    public function importServices(Request $request)
+    public function import(ImportSpreadsheetRequest $request): RedirectResponse
     {
-        $request->validate([
-            'file' => 'required|file|mimes:xlsx,csv,xls',
-        ]);
+        $import = new DangerousCombinationImport;
+        Excel::import($import, $request->file('file'));
 
-        try {
-            Excel::import(new DangerousCombinationImport(), $request->file('file'));
-        } catch (ServiceImportValidationException $e) {
-            return back()->withErrors(['import_error' => $e->getMessage()]);
-        }
-
-        return redirect()->route('medications.index')->with('success', 'Успешно импортированы.');
+        return $import->report()->flashTo(to_route('medications.index'));
     }
 }

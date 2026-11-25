@@ -2,72 +2,110 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\PackagingType;
+use App\Services\Stock\StockLedger;
+use App\Services\Stock\StockSection;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
+/**
+ * A receipt of goods into the main warehouse. Each medication line is a batch of its own.
+ */
 class MainWarehouseReceiptsGoodsRequest extends FormRequest
 {
+    /**
+     * The form renders a line for every item picked in its selects; lines left without a
+     * quantity were not received and are dropped before validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        foreach (StockSection::values() as $section) {
+            if (! is_array($this->input($section))) {
+                continue;
+            }
+
+            $this->merge([$section => array_values(array_filter(
+                $this->input($section),
+                fn (mixed $line): bool => is_array($line) && filled($line['id'] ?? null) && filled($line['quantity'] ?? null),
+            ))]);
+        }
+    }
 
     /**
-     * @return array<string>
+     * @return array<string, mixed>
      */
     public function rules(): array
     {
-        if ($this->medications) {
-            $medications = array_filter($this->medications, function ($item) {
-                return isset($item['id']) && $item['id'] !== 'ID' && !empty($item['quantity']);
-            });
-
-            $this->merge(['medications' => $medications]);
-        }
-
-
-        if ($this->supplies) {
-            $supplies = array_filter($this->supplies, function ($item) {
-                return isset($item['id']) && $item['id'] !== 'ID' && !empty($item['quantity']);
-            });
-
-            $this->merge(['supplies' => $supplies]);
-        }
-
-
-        if ($this->household) {
-            $household = array_filter($this->household, function ($item) {
-                return isset($item['id']) && $item['id'] !== 'ID' && !empty($item['quantity']);
-            });
-
-            $this->merge(['household' => $household]);
-        }
+        $quantity = ['required', 'integer', 'min:1', 'max:'.StockLedger::MAX_LINE_QUANTITY];
 
         return [
-            'medications' => 'nullable|array',
-            'medications.*.id' => 'required|exists:medications,id',
-            'medications.*.quantity' => 'required|integer|min:1',
-            'medications.*.expiration_date' => 'required|date',
-            'medications.*.date_of_receipt' => 'required|date',
-            'medications.*.batch_number' => 'required|string|max:255',
+            'medications' => ['nullable', 'array', 'required_without_all:supplies,household'],
+            'medications.*.id' => ['required', 'integer', 'exists:medications,id'],
+            'medications.*.quantity' => $quantity,
+            'medications.*.expiration_date' => ['required', 'date', 'after:today'],
+            'medications.*.date_of_receipt' => ['required', 'date', 'before_or_equal:today'],
+            'medications.*.batch_number' => ['required', 'string', 'max:255'],
 
+            'medications.*.packaging_type' => ['nullable', Rule::enum(PackagingType::class)],
+            'medications.*.quantity_per_package' => ['nullable', 'integer', 'min:1', 'max:'.StockLedger::MAX_LINE_QUANTITY],
+            'medications.*.package_size' => ['nullable', 'integer', 'min:1', 'max:'.StockLedger::MAX_LINE_QUANTITY],
+            'medications.*.retail_price' => ['required', 'numeric', 'min:0', 'max:999999999999'],
+            'medications.*.wholesale_price' => ['required', 'numeric', 'min:0', 'max:999999999999'],
+            'medications.*.supplier_id' => ['nullable', 'integer', 'exists:suppliers,id'],
 
-            "medications.*.packaging_type" => 'required|string',
-            "medications.*.quantity_per_package" => 'required|int',
-            "medications.*.package_size" => 'required|int',
-            "medications.*.retail_price" => 'required|int',
-            "medications.*.wholesale_price" => 'required|int',
-            "medications.*.supplier_id" => 'required|int',
+            'medications.*.markup' => ['nullable', 'numeric', 'min:0', 'max:999999'],
+            'medications.*.total_price' => ['nullable', 'numeric', 'min:0', 'max:999999999999'],
+            'medications.*.incoming_price_total' => ['nullable', 'numeric', 'min:0', 'max:999999999999'],
+            'medications.*.incoming_price_per_unit' => ['nullable', 'numeric', 'min:0', 'max:999999999999'],
+            'medications.*.incoming_sum' => ['nullable', 'numeric', 'min:0', 'max:999999999999'],
 
-            "medications.*.markup" => 'required|numeric|min:0',
-            "medications.*.total_price" => 'required|numeric|min:0',
-            "medications.*.incoming_price_total" => 'required|numeric|min:0',
-            "medications.*.incoming_price_per_unit" => 'required|numeric|min:0',
-            "medications.*.incoming_sum" => 'required|numeric|min:0',
-            "medications.*.stock" => 'required|integer|min:0',
+            'supplies' => ['nullable', 'array'],
+            'supplies.*.id' => ['required', 'integer', 'exists:medical_supplies,id'],
+            'supplies.*.quantity' => $quantity,
 
-            'supplies' => 'nullable|array',
-            'supplies.*.id' => 'required|int',
-            'supplies.*.quantity' => 'required|int',
+            'household' => ['nullable', 'array'],
+            'household.*.id' => ['required', 'integer', 'exists:household_materials,id'],
+            'household.*.quantity' => $quantity,
+        ];
+    }
 
-            'household' => 'nullable|array',
-            'household.*.id' => 'required|int',
-            'household.*.quantity' => 'required|int',
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'medications.required_without_all' => 'Добавьте в приход хотя бы один товар с количеством.',
+            'medications.*.expiration_date.after' => 'Партия с истёкшим сроком годности не принимается на склад.',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'medications.*.id' => 'медикамент',
+            'medications.*.quantity' => 'количество',
+            'medications.*.expiration_date' => 'срок годности',
+            'medications.*.date_of_receipt' => 'дата получения',
+            'medications.*.batch_number' => 'номер партии',
+            'medications.*.packaging_type' => 'тип упаковки',
+            'medications.*.quantity_per_package' => 'количество в упаковке',
+            'medications.*.package_size' => 'размер упаковки',
+            'medications.*.retail_price' => 'розничная цена',
+            'medications.*.wholesale_price' => 'закупочная цена',
+            'medications.*.supplier_id' => 'поставщик',
+            'medications.*.markup' => 'наценка',
+            'medications.*.total_price' => 'сумма',
+            'medications.*.incoming_price_total' => 'входная цена (всего)',
+            'medications.*.incoming_price_per_unit' => 'входная цена за единицу',
+            'medications.*.incoming_sum' => 'входная сумма',
+            'supplies.*.id' => 'расходный материал',
+            'supplies.*.quantity' => 'количество',
+            'household.*.id' => 'хозяйственный материал',
+            'household.*.quantity' => 'количество',
         ];
     }
 }

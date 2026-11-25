@@ -5,22 +5,24 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceMethodRequest;
 use App\Models\ServiceMethod;
-use App\Services\ServicMethodService;
+use App\Services\ServiceMethodService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ServiceMethodController extends Controller
+class ServiceMethodController extends Controller implements HasMiddleware
 {
-    protected ServicMethodService $service;
+    public function __construct(private readonly ServiceMethodService $service) {}
 
-    public function __construct(ServicMethodService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_service_methods'])->only('index');
-        $this->middleware(['permission:create_service_methods'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_service_methods'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_service_methods'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_service_methods', only: ['index']),
+            new Middleware('permission:create_service_methods', only: ['create', 'store']),
+            new Middleware('permission:edit_service_methods', only: ['edit', 'update']),
+            new Middleware('permission:delete_service_methods', only: ['destroy']),
+        ];
     }
 
     public function index(): View
@@ -40,10 +42,9 @@ class ServiceMethodController extends Controller
 
     public function store(ServiceMethodRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('service.methods.index')->with('success', 'Метод успешно добавлен!');
+        return to_route('service.methods.index')->with('success', 'Метод успешно добавлен!');
     }
 
     public function edit(ServiceMethod $method): View
@@ -53,16 +54,15 @@ class ServiceMethodController extends Controller
 
     public function update(ServiceMethodRequest $request, ServiceMethod $method): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($method, (array)$validated);
+        $this->service->update($method, $request->validated());
 
-        return redirect()->route('service.methods.index')->with('success', 'Метод успешно обновлен!');
+        return to_route('service.methods.index')->with('success', 'Метод успешно обновлен!');
     }
 
     public function destroy(ServiceMethod $method): RedirectResponse
     {
         $this->service->destroy($method);
 
-        return redirect()->route('service.methods.index')->with('success', 'Метод успешно удален!');
+        return to_route('service.methods.index')->with('success', 'Метод успешно удален!');
     }
 }

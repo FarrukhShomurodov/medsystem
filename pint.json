@@ -1,3 +1,22 @@
 {
-    "present": "per"
+    "preset": "laravel",
+    "rules": {
+        "combine_consecutive_issets": true,
+        "combine_consecutive_unsets": true,
+        "explicit_string_variable": true,
+        "global_namespace_import": {
+            "import_classes": true,
+            "import_constants": false,
+            "import_functions": false
+        },
+        "no_useless_else": true,
+        "ordered_class_elements": {
+            "order": ["use_trait", "case", "constant", "property", "construct", "method"]
+        },
+        "phpdoc_no_empty_return": true,
+        "phpdoc_trim_consecutive_blank_line_separation": true,
+        "trailing_comma_in_multiline": {
+            "elements": ["arguments", "arrays", "match", "parameters"]
+        }
+    }
 }

@@ -9,33 +9,32 @@ use App\Models\Floor;
 use App\Models\WardRoom;
 use App\Models\Warehouse;
 use App\Services\DepartmentService;
-use App\Traits\HandlesStaffAvailability;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class DepartmentController extends Controller
+class DepartmentController extends Controller implements HasMiddleware
 {
-    use HandlesStaffAvailability;
+    public function __construct(private readonly DepartmentService $service) {}
 
-    protected DepartmentService $service;
-
-    public function __construct(DepartmentService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_departments'])->only('index');
-        $this->middleware(['permission:create_departments'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_departments'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_departments'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_departments', only: ['index']),
+            new Middleware('permission:create_departments', only: ['create', 'store']),
+            new Middleware('permission:edit_departments', only: ['edit', 'update']),
+            new Middleware('permission:delete_departments', only: ['destroy']),
+        ];
     }
 
     public function index(): View
     {
         $departments = Department::query()
             ->select(['id', 'name', 'floor_id', 'warehouse_id'])
-            ->with('warehouse')
-            ->with('rooms')
-            ->orderBy('id', 'desc')
+            ->with(['warehouse', 'floor'])
+            ->withCount('rooms')
+            ->orderByDesc('id')
             ->paginate(10);
 
         return view('admin.departments.index', compact('departments'));
@@ -43,7 +42,7 @@ class DepartmentController extends Controller
 
     public function create(): View
     {
-        $wardRooms = WardRoom::query()->get();
+        $wardRooms = WardRoom::query()->withCount('beds')->get();
         $warehouses = Warehouse::query()->get();
         $floors = Floor::query()->get();
 
@@ -52,34 +51,32 @@ class DepartmentController extends Controller
 
     public function store(DepartmentRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('departments.index')->with('success', 'Отделение успешно добавлен!');
+        return to_route('departments.index')->with('success', 'Отделение успешно добавлено!');
     }
 
     public function edit(Department $department): View
     {
-        $wardRooms = WardRoom::query()->get();
+        $department->load(['rooms', 'staffs.position', 'staffs.staff']);
+        $wardRooms = WardRoom::query()->withCount('beds')->get();
         $warehouses = Warehouse::query()->get();
         $floors = Floor::query()->get();
-        $department->with('staffs');
 
         return view('admin.departments.edit', compact('department', 'wardRooms', 'warehouses', 'floors'));
     }
 
     public function update(DepartmentRequest $request, Department $department): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($department, (array)$validated);
+        $this->service->update($department, $request->validated());
 
-        return redirect()->route('departments.index')->with('success', 'Отделение успешно обновлен!');
+        return to_route('departments.index')->with('success', 'Отделение успешно обновлено!');
     }
 
     public function destroy(Department $department): RedirectResponse
     {
         $this->service->destroy($department);
 
-        return redirect()->route('departments.index')->with('success', 'Отделение успешно удален!');
+        return to_route('departments.index')->with('success', 'Отделение успешно удалено!');
     }
 }

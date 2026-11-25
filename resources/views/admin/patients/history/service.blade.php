@@ -1,114 +1,84 @@
-@php use App\Models\PatientService; @endphp
-<div class="border-bottom pb-4 mb-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="mb-0">
-            <i class="bi bi-clipboard-data me-2 text-info"></i>
-            {{ $data->service->name }}
-        </h5>
-        <div>
-            {!! $data->getStatusBadge() !!}
-            <span class="text-muted">
-                {{ \Carbon\Carbon::parse($data->created_at)->format('d.m.Y') }}
-            </span>
+{{-- A service of the patient card history (api.patients.history.partial). patient-card.js sends the status select. --}}
+<div class="border-bottom pb-3 mb-3">
+    <div class="d-flex justify-content-between align-items-center gap-2 mb-3">
+        <h3 class="mb-0">
+            <i class="bx bx-clipboard text-info me-2" aria-hidden="true"></i>{{ $data->service?->name }}
+        </h3>
+        <div class="text-nowrap">
+            <x-status-badge :status="$data->status" class="me-1" />
+            <span class="text-secondary">{{ \Carbon\Carbon::parse($data->created_at)->format('d.m.Y') }}</span>
         </div>
     </div>
 
     <div class="row g-3">
         <div class="col-md-4">
-            <div class="mb-3">
-                <small class="text-muted d-block mb-1">
-                    <i class="bi bi-clock-history me-1"></i>
-                    Дата оказания
-                </small>
-                <div class="fs-5">
-                    {{ \Carbon\Carbon::parse($data->service_date)->format('d.m.Y') }}
-                </div>
-            </div>
+            <div class="datagrid-title"><i class="bx bx-history me-1" aria-hidden="true"></i>Дата оказания</div>
+            <div class="fs-3">{{ \Carbon\Carbon::parse($data->service_date)->format('d.m.Y') }}</div>
         </div>
 
         <div class="col-md-4">
-            <div class="mb-3">
-                <small class="text-muted d-block mb-1">
-                    <i class="bi bi-geo-alt me-1"></i>
-                    Место оказания
-                </small>
-                <div class="fs-5">
-                    {{ $data->place == 'institution' ? 'Учреждение' : 'Кабинет'}}
+            <div class="datagrid-title"><i class="bx bx-map-pin me-1" aria-hidden="true"></i>Место оказания</div>
+            <div class="fs-3">{{ $data->place?->label() ?? '—' }}</div>
+        </div>
+
+        {{-- The status route (api.patient-services.update-status) needs edit_patient_services and accepts only
+             the next statuses of the order, never "paid": payment is taken at the cash desk. The badge above
+             shows the status to everyone. A final status cannot be left again, so patient-card.js asks
+             the question of its option (data-question, data-accept) before it sends one. --}}
+        @php
+            $status = $data->status;
+            $serviceName = $data->service?->name ?? 'без названия';
+            $confirmations = [
+                \App\Enums\ServiceStatus::Cancelled->value => [
+                    "Отменить заказ услуги «{$serviceName}»? Отменённый заказ нельзя вернуть, услугу придётся назначить заново.",
+                    'Отменить услугу',
+                ],
+                \App\Enums\ServiceStatus::Completed->value => [
+                    "Завершить услугу «{$serviceName}»? Статус больше нельзя будет изменить.",
+                    'Завершить услугу',
+                ],
+            ];
+        @endphp
+        @if (! $status->isFinal())
+            @can('edit_patient_services')
+                <div class="col-md-4">
+                    <label class="form-label" for="service_status">Статус</label>
+                    <select id="service_status" class="form-select select2 service_status"
+                            data-status-url="{{ route('api.patient-services.update-status', $data->id) }}"
+                            data-saved-status="{{ $status->value }}">
+                        @foreach ([$status, ...$status->manualNextStatuses()] as $option)
+                            @php
+                                [$question, $accept] = $option->isFinal()
+                                    ? $confirmations[$option->value] ?? ["Перевести услугу в статус «{$option->label()}»? Изменить его потом будет нельзя.", $option->label()]
+                                    : [null, null];
+                            @endphp
+                            <option value="{{ $option->value }}" @if ($question) data-question="{{ $question }}" data-accept="{{ $accept }}" @endif @selected($option === $status)>{{ $option->label() }}</option>
+                        @endforeach
+                    </select>
                 </div>
-            </div>
-        </div>
+            @endcan
+        @endif
 
-        <div class="col-md-4">
-            <label class="form-label" for="service_status">Статус</label>
-            <select id="service_status" class="form-control select2 service_status" data-service-id="{{ $data->id }}">
-                @foreach(PatientService::STATUS as $status)
-                    <option value="{{ $status }}" @selected($data->status == $status)>
-                        {{ PatientService::getStatusTranslate($status)  }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
-        @if($data->result)
+        @if ($data->result)
             <div class="col-12">
-                <hr class="my-2">
-                <div class="mb-3">
-                    <small class="text-muted d-block mb-1">
-                        <i class="bi bi-file-earmark-text me-1"></i>
-                        Результат
-                    </small>
-                    <div class="fst-italic">
-                        {{ $data->result }}
-                    </div>
-                </div>
+                <div class="datagrid-title"><i class="bx bx-file me-1" aria-hidden="true"></i>Результат</div>
+                <div class="fst-italic">{{ $data->result }}</div>
             </div>
         @endif
     </div>
 </div>
 
-@if($data->surveyResponses()->count() > 0)
-    @foreach($data->surveyResponses as $response)
-        @include('admin.patients.history.patient_med_document', ['data' => $response])
-    @endforeach
-@endif
+@foreach ($data->surveyResponses as $response)
+    @include('admin.patients.history.patient_med_document', ['data' => $response])
+@endforeach
 
-<div class="mt-3 mb-3 text-end">
-    <button type="button"
-            class="btn btn-sm btn-outline-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#createDocumentModal"
-            data-service-id="{{ $data->id }}">
-        <i class="bi bi-paperclip me-1"></i>
-        Прикрепить документ
-    </button>
-</div>
-
-<script>
-    $('.service_status').on('change', function () {
-        const serviceId = $(this).data('service-id');
-        const newStatus = $(this).val();
-
-        $.ajax({
-            url: `/api/patient/service/update-status/${serviceId}`,
-            method: 'GET',
-            data: {
-                status: newStatus
-            },
-            beforeSend: function () {
-                // Блокировка элемента на время запроса
-                $('#service_status').prop('disabled', true);
-            },
-            success: function (response) {
-                window.location.reload();
-            },
-            error: function (xhr) {
-
-                // Возвращаем предыдущее значение
-                $('#service_status').val(triggeredStatus).trigger('change');
-            },
-            complete: function () {
-                $('#service_status').prop('disabled', false);
-            }
-        });
-    });
-</script>
+@can('store_survey_response')
+    <div class="text-end">
+        <button type="button" class="btn btn-sm btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#createDocumentModal"
+                data-service-id="{{ $data->id }}">
+            <i class="bx bx-paperclip" aria-hidden="true"></i>Прикрепить документ
+        </button>
+    </div>
+@endcan

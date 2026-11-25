@@ -1,88 +1,44 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>MED ERA | Создать группу</title>
+@section('title', 'Создать группу услуг')
+
+@section('header')
+    <x-page-header title="Создать группу услуг" :breadcrumbs="['Группы услуг' => route('service.groups.index')]" />
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light"><a class="text-muted"
-                                             href="{{ route('service.groups.index') }}">Группы</a> /</span>Создать
-    </h6>
-
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bx bx-error-circle fs-4 me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
-    </div>
-
-    <div class="card shadow-sm mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Создать группу</h5>
-        </div>
-        <div class="card-body">
-            <form action="{{ route('service.groups.store') }}" method="POST">
-                @csrf
-
-                {{-- Названия --}}
-                <div class="mb-3">
-                    <label class="form-label" for="name">Названия <span class="text-danger">*</span></label>
-                    <div class="input-group input-group-merge">
-                        <span class="input-group-text @error('name') text-danger icon-border @enderror">
-                            <i class="bx bx-rename"></i>
-                        </span>
-                        <input type="text" id="name"
-                               class="form-control @error('name') is-invalid @enderror"
-                               placeholder="Названия"
-                               name="name"
-                               value="{{ old('name') }}" required />
-                    </div>
-                    @error('name')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                {{-- Подгруппы --}}
-                <div class="mb-3">
-                    <label class="form-label">Подгруппы <span class="text-danger">*</span></label>
-                    <div id="beds-container">
-                        <div class="input-group mb-2">
-                            <input type="text" name="sub_groups[]" class="form-control" placeholder="Названия подгруппы" required>
-                            <button type="button" class="btn btn-outline-danger remove-bed-sub-group"><i class="bx bx-x"></i></button>
+    <div class="card">
+        <form method="POST" action="{{ route('service.groups.store') }}">
+            @csrf
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label required" for="name">Название</label>
+                        <div class="input-group input-group-flat">
+                            <span class="input-group-text"><i class="bx bx-rename" aria-hidden="true"></i></span>
+                            <input type="text" id="name" name="name" class="form-control @error('name') is-invalid @enderror"
+                                   placeholder="Название" value="{{ old('name') }}" required>
                         </div>
+                        @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
-                    <button type="button" class="btn btn-outline-primary" id="add-sub-group"><i class="bx bx-plus"></i> Добавить подгруппу</button>
+
+                    <fieldset class="col-md-6" data-row-list>
+                        <legend class="form-label required">Подгруппы</legend>
+                        <div class="vstack gap-2" data-row-list-items>
+                            @include('admin.service_groups._sub-group', ['name' => 'sub_groups[]', 'subGroup' => null])
+                        </div>
+                        <template data-row-list-template>
+                            @include('admin.service_groups._sub-group', ['name' => 'sub_groups[]', 'subGroup' => null])
+                        </template>
+                        @error('sub_groups')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        @error('sub_groups.*')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <button type="button" class="btn btn-outline-primary mt-2" data-row-add><i class="bx bx-plus" aria-hidden="true"></i>Добавить подгруппу</button>
+                    </fieldset>
                 </div>
-
-                <button type="submit" class="btn btn-primary">Сохранить</button>
-            </form>
-        </div>
+            </div>
+            <div class="card-footer text-end">
+                <button class="btn btn-primary" type="submit">Сохранить</button>
+            </div>
+        </form>
     </div>
-@endsection
-
-@section('scripts')
-    <script>
-        $(document).ready(function () {
-            $('#add-sub-group').on('click', function () {
-                const bedInput = `
-                    <div class="input-group mb-2">
-                        <input type="text" name="sub_groups[]" class="form-control" placeholder="Названия подгруппы" required>
-                        <button type="button" class="btn btn-outline-danger remove-bed-sub-group"><i class="bx bx-x"></i></button>
-                    </div>
-                `;
-                $('#beds-container').append(bedInput);
-            });
-
-            $(document).on('click', '.remove-bed-sub-group', function () {
-                $(this).closest('.input-group').remove();
-            });
-        });
-
-    </script>
 @endsection

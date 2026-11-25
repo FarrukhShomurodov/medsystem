@@ -3,71 +3,38 @@
 namespace App\Services;
 
 use App\Models\Patient;
-use App\Models\SurveyResponses;
+use App\Models\SurveyResponse;
 use Illuminate\Support\Facades\DB;
 
 class SurveyResponseService
 {
-    private PatientServiceAssignService $patientService;
-
-    public function __construct(AnalyzeService $service, PatientServiceAssignService $patientService)
-    {
-        $this->patientService = $patientService;
-    }
-
     /**
-     * @param array<string, mixed> $validated
+     * The response belongs to the examination map it was filled in on, or else to the patient's
+     * active map, if any.
+     *
+     * @param  array{survey_id: int, patient_id: int, examination_map_id?: int|null, patient_service_id?: int|null, answers: array<int|string, string>}  $validated
      */
-    public function store(array $validated): SurveyResponses
+    public function store(array $validated): SurveyResponse
     {
-        $surveyResponse = DB::transaction(function () use ($validated) {
-            $map = Patient::find($validated['patient_id'])->examinationMaps()->where('is_active', true);
+        $patient = Patient::query()->findOrFail($validated['patient_id']);
+        $mapId = $validated['examination_map_id'] ?? $patient->activeExaminationMap()->value('id');
 
-            if ($map->exists()) {
-                $validated['examination_map_id'] = $map->first()->id;
-            }
+        return DB::transaction(function () use ($validated, $patient, $mapId): SurveyResponse {
+            $response = SurveyResponse::query()->create([
+                'patient_id' => $patient->id,
+                'examination_map_id' => $mapId,
+                'patient_service_id' => $validated['patient_service_id'] ?? null,
+                'survey_id' => $validated['survey_id'],
+            ]);
 
-            $surveyResponse = SurveyResponses::query()->create($validated);
+            $response->answers()->createMany(
+                collect($validated['answers'])
+                    ->map(fn (string $answer, int|string $questionId): array => ['question_id' => (int) $questionId, 'answer' => $answer])
+                    ->values()
+                    ->all(),
+            );
 
-            foreach ($validated['answers'] as $index => $answer) {
-                $surveyResponse->answers()->create([
-                    'question_id' => $index,
-                    'answer' => $answer,
-                ]);
-            }
-
-//            $map = $surveyResponse->map;
-//            $patient = $map->patient;
-
-//            if (isset($validated['service_id'])){
-//                $serviceData = [
-//                    'service_id' => $validated['service_id'],
-//                    'patient_id' => $patient->id,
-//                    'examination_map_id' => $map->id,
-//                    'service_date' => $validated['service_date'],
-//                    'place' => $validated['place'],
-//                    'status' => $validated['service_status'],
-//                    'staffs' => $validated['staffs'],
-//                ];
-//
-//                if (isset($validated['procedures'])) {
-//                    $serviceData['procedures'] = $validated['procedures'];
-//                    $serviceData['procedure_dates'] = $validated['procedure_dates'];
-//                }
-//
-//                if (isset($validated['medications'])) {
-//                    $serviceData['medications'] = $validated['medications'];
-//                    $serviceData['dosages'] = $validated['dosages'];
-//                    $serviceData['admission_periods'] = $validated['admission_periods'];
-//                    $serviceData['medication_notes'] = $validated['medication_notes'];
-//                }
-//
-//                $this->patientService->store($serviceData);
-//            }
-
-            return $surveyResponse;
+            return $response;
         });
-
-        return $surveyResponse;
     }
 }

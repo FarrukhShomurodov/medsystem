@@ -7,12 +7,12 @@ use Illuminate\Foundation\Http\FormRequest;
 class PharmacyTypeRequest extends FormRequest
 {
     /**
-     * @return array<string
+     * @return array<string, mixed>
      */
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
         ];
     }
 }

@@ -1,70 +1,58 @@
 @extends('admin.layouts.app')
 
+@section('title', $document->title)
+
+@section('header')
+    <x-page-header :title="$document->title" pretitle="Заполнение документа" />
+@endsection
+
 @section('content')
-    <div class="alert-container position-fixed top-0 end-0 p-3" style="z-index: 10050;">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-solid-danger alert-dismissible d-flex align-items-center  py-2 px-3 mb-2" role="alert">
-                    <i class="bx bx-error-circle me-2"></i>
-                    {{ $error }}
-                    <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endforeach
-        @endif
-    </div>
-
-    <div class="container mt-3">
-        <h5 class="mb-3">Заполнение документа: <strong>{{ $document->title }}</strong></h5>
-
-        <form action="{{ route('document.response.store') }}" method="POST" class="">
+    <div class="card">
+        <form action="{{ route('document.response.store') }}" method="POST">
             @csrf
-
             <input type="hidden" name="document_id" value="{{ $document->id }}">
             <input type="hidden" name="patient_id" value="{{ $patientId }}">
-            <input type="hidden" name="previous_url" value="{{ url()->previous() }}">
+            <input type="hidden" name="previous_url" value="{{ $back }}">
 
-            <div class="row">
-                @foreach($document->questions as $question)
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-semibold mb-1">{{ $loop->iteration }}. {{ $question->question }}</label>
-
-                        @if($question->type === 'text')
-                            <input type="text" name="answers[{{ $question->id }}]" class="form-control form-control-sm" required>
-
-                        @elseif($question->type === 'boolean')
-                            <div class="form-check form-switch mt-1">
+            <div class="card-body">
+                <div class="row g-3">
+                    @foreach ($document->questions as $question)
+                        @php $field = 'answers.'.$question->id; @endphp
+                        <div class="col-md-6">
+                            @if ($question->type === \App\Enums\QuestionType::Text)
+                                <label class="form-label required" for="answer-{{ $question->id }}">{{ $loop->iteration }}. {{ $question->question }}</label>
+                                <input type="text" id="answer-{{ $question->id }}" name="answers[{{ $question->id }}]"
+                                       class="form-control @error($field) is-invalid @enderror" value="{{ old($field) }}" required>
+                            @elseif ($question->type === \App\Enums\QuestionType::Boolean)
+                                <div class="form-label">{{ $loop->iteration }}. {{ $question->question }}</div>
                                 <input type="hidden" name="answers[{{ $question->id }}]" value="0">
-                                <input class="form-check-input" type="checkbox"
-                                       id="checkbox_{{ $question->id }}"
-                                       name="answers[{{ $question->id }}]"
-                                       value="1">
-                                <label class="form-check-label " for="checkbox_{{ $question->id }}">Да</label>
-                            </div>
-
-                        @elseif($question->type === 'choice')
-                            <div class="d-flex flex-column gap-1 mt-1">
-                                @foreach($question->options ?? [] as $option)
-                                    <div class="form-check">
-                                        <input class="form-check-input"
-                                               type="radio"
-                                               name="answers[{{ $question->id }}]"
-                                               value="{{ $option }}"
-                                               id="radio_{{ $question->id }}_{{ $loop->index }}"
-                                               required>
-                                        <label class="form-check-label" for="radio_{{ $question->id }}_{{ $loop->index }}">
-                                            {{ $option }}
+                                <label class="form-check form-switch" for="checkbox_{{ $question->id }}">
+                                    <input class="form-check-input" type="checkbox" id="checkbox_{{ $question->id }}"
+                                           name="answers[{{ $question->id }}]" value="1" @checked(old($field) === '1')>
+                                    <span class="form-check-label">Да</span>
+                                </label>
+                            @elseif ($question->type === \App\Enums\QuestionType::Choice)
+                                <fieldset>
+                                    <legend class="form-label required">{{ $loop->iteration }}. {{ $question->question }}</legend>
+                                    @foreach ($question->options ?? [] as $option)
+                                        <label class="form-check" for="radio_{{ $question->id }}_{{ $loop->index }}">
+                                            <input class="form-check-input @error($field) is-invalid @enderror" type="radio"
+                                                   name="answers[{{ $question->id }}]" value="{{ $option }}"
+                                                   id="radio_{{ $question->id }}_{{ $loop->index }}" @checked(old($field) === $option) required>
+                                            <span class="form-check-label">{{ $option }}</span>
                                         </label>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
-                @endforeach
+                                    @endforeach
+                                </fieldset>
+                            @endif
+                            @error($field)<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                    @endforeach
+                </div>
             </div>
 
-            <div class="mt-4 d-flex gap-2">
-                <button type="submit" class="btn btn-sm btn-primary">Сохранить</button>
-                <a href="{{ url()->previous() }}" class="btn btn-sm btn-secondary">Назад</a>
+            <div class="card-footer d-flex justify-content-end gap-2">
+                <a href="{{ $back }}" class="btn">Назад</a>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
             </div>
         </form>
     </div>

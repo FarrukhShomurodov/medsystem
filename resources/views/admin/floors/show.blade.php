@@ -1,85 +1,85 @@
 @extends('admin.layouts.app')
 
-@section('title')
-    <title>Медицинская система | Этаж - {{ $floor->name }}</title>
+@section('title', 'Этаж: '.$floor->name)
+
+@section('header')
+    <x-page-header :title="$floor->name" :breadcrumbs="['Этажи' => route('floors.index')]">
+        @can('edit_floors')
+            <x-slot:actions>
+                <a href="{{ route('floors.edit', $floor) }}" class="btn">Изменить</a>
+            </x-slot:actions>
+        @endcan
+    </x-page-header>
 @endsection
 
 @section('content')
-    <h6 class="py-3 breadcrumb-wrapper mb-4">
-        <span class="text-muted fw-light">
-            <a href="{{ route('floors.index') }}">Этажи</a> /
-        </span>
-        {{ $floor->name }}
-    </h6>
-
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">Информация об этаже</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Название:</strong> {{ $floor->name }}</p>
-        </div>
-    </div>
-
-    {{-- Отделения --}}
-    <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Отделения</h5>
-            <a href="{{ route('departments.create') }}" class="btn btn-sm btn-primary">Добавить отделение</a>
-        </div>
-        <div class="card-body">
-            @if($floor->departments->count())
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Название</th>
-                        <th>Склад</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($floor->departments as $index => $department)
+    <div class="row row-cards">
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Отделения</h2>
+                    @can('create_departments')
+                        <div class="card-actions">
+                            <a href="{{ route('departments.create') }}" class="btn btn-sm btn-primary"><i class="bx bx-plus" aria-hidden="true"></i>Добавить отделение</a>
+                        </div>
+                    @endcan
+                </div>
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter">
+                        <thead>
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $department->name }}</td>
-                            <td>{{ $department->warehouse->name ?? '—' }}</td>
+                            <th class="w-1">#</th>
+                            <th>Название</th>
+                            <th>Склад</th>
                         </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            @else
-                <p class="text-muted">Нет отделений на этом этаже.</p>
-            @endif
+                        </thead>
+                        <tbody>
+                        @forelse ($floor->departments as $department)
+                            <tr>
+                                <td class="text-secondary">{{ $loop->iteration }}</td>
+                                <td>{{ $department->name }}</td>
+                                <td>{{ $department->warehouse->name ?? '—' }}</td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="3"><x-empty-state title="Нет отделений на этом этаже" icon="bx-building-house" /></td></tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
 
-    {{-- Кабинеты --}}
-    <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Кабинеты</h5>
-            <a href="{{ route('offices.create') }}" class="btn btn-sm btn-primary">Добавить кабинет</a>
-        </div>
-        <div class="card-body">
-            @if($floor->offices->count())
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Название</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($floor->offices as $index => $office)
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Кабинеты</h2>
+                    @can('create_offices')
+                        <div class="card-actions">
+                            <a href="{{ route('offices.create') }}" class="btn btn-sm btn-primary"><i class="bx bx-plus" aria-hidden="true"></i>Добавить кабинет</a>
+                        </div>
+                    @endcan
+                </div>
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter">
+                        <thead>
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $office->name }}</td>
+                            <th class="w-1">#</th>
+                            <th>Название</th>
                         </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            @else
-                <p class="text-muted">Нет кабинетов на этом этаже.</p>
-            @endif
+                        </thead>
+                        <tbody>
+                        @forelse ($floor->offices as $office)
+                            <tr>
+                                <td class="text-secondary">{{ $loop->iteration }}</td>
+                                <td>{{ $office->name }}</td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="2"><x-empty-state title="Нет кабинетов на этом этаже" icon="bx-door-open" /></td></tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

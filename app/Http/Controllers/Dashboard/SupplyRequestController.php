@@ -2,178 +2,55 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Exceptions\Stock\StockException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Stock\RejectSupplyRequest;
 use App\Http\Requests\StoreSupplyRequest;
 use App\Models\SupplyRequest;
-use App\Services\SupplyRequestService;
+use App\Services\Stock\SupplyRequestService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class SupplyRequestController extends Controller
 {
-    protected $service;
+    public function __construct(private readonly SupplyRequestService $service) {}
 
-    public function __construct(SupplyRequestService $service)
+    public function index(): View
     {
-        $this->service = $service;
-    }
-
-    public function index()
-    {
-        $requests = SupplyRequest::with(['warehouse'])
-            ->orderBy('id', 'desc')
-            ->get();
+        $requests = SupplyRequest::query()
+            ->with(['warehouse', 'items.supplyable'])
+            ->latest('id')
+            ->paginate(20);
 
         return view('admin.main_warehouses.orders', compact('requests'));
     }
 
-
-    public function approve($id)
+    public function approve(SupplyRequest $supplyRequest): RedirectResponse
     {
-        $mainWarehouseId = 1;
-        $errors = [];
-
-        DB::transaction(function () use ($id, $mainWarehouseId, &$errors) {
-            $request = SupplyRequest::with('items.supplyable', 'warehouse')->findOrFail($id);
-            $warehouse = $request->warehouse;
-
-            foreach ($request->items as $item) {
-                $modelClass = $item->supplyable_type;
-                $itemId = $item->supplyable_id;
-                $quantity = $item->requested_quantity;
-
-                switch ($modelClass) {
-                    case \App\Models\Medication::class:
-                        $mainTable = DB::table('main_warehouse_medications');
-                        $existing = $mainTable->where('main_warehouse_id', $mainWarehouseId)
-                            ->where('medication_id', $itemId)
-                            ->first();
-
-                        if (!$existing || $existing->quantity < $quantity) {
-                            $errors[] = "Недостаточно медикамента ID: $itemId на главном складе.";
-                            break;
-                        }
-
-                        $mainTable->where('main_warehouse_id', $mainWarehouseId)
-                            ->where('medication_id', $itemId)
-                            ->update(['quantity' => $existing->quantity - $quantity, 'updated_at' => now()]);
-
-                        DB::table('warehouse_accountings')->insert(
-                            [
-                                'warehouse_id' => $warehouse->id,
-                                'medication_id' => $itemId,
-                                'quantity' => $quantity,
-                                'expiration_date' => $existing->expiration_date,
-                                'updated_at' => now(),
-                            ]
-                        );
-                        break;
-
-                    case \App\Models\MedicalSupply::class:
-                        $mainTable = DB::table('main_warehouse_medical_supplies');
-                        $existing = $mainTable->where('main_warehouse_id', $mainWarehouseId)
-                            ->where('supply_id', $itemId)
-                            ->first();
-
-                        if (!$existing || $existing->quantity < $quantity) {
-                            $errors[] = "Недостаточно мед. расходника ID: $itemId на главном складе.";
-                            break;
-                        }
-
-                        $mainTable->where('main_warehouse_id', $mainWarehouseId)
-                            ->where('supply_id', $itemId)
-                            ->update([
-                                'quantity' => $existing->quantity - $quantity,
-                                'updated_at' => now()
-                            ]);
-
-                        $warehouseTable = DB::table('warehouse_medical_supplies');
-                        $warehouseExisting = $warehouseTable->where('warehouse_id', $warehouse->id)
-                            ->where('supply_id', $itemId)
-                            ->first();
-
-                        if ($warehouseExisting) {
-                            $warehouseTable->where('warehouse_id', $warehouse->id)
-                                ->where('supply_id', $itemId)
-                                ->update([
-                                    'quantity' => $warehouseExisting->quantity + $quantity,
-                                    'updated_at' => now()
-                                ]);
-                        } else {
-                            $warehouseTable->insert([
-                                'warehouse_id' => $warehouse->id,
-                                'supply_id' => $itemId,
-                                'quantity' => $quantity,
-                                'created_at' => now(),
-                                'updated_at' => now()
-                            ]);
-                        }
-                        break;
-
-                    case \App\Models\HouseholdMaterial::class:
-                        $mainTable = DB::table('main_warehouse_household_materials');
-                        $existing = $mainTable->where('main_warehouse_id', $mainWarehouseId)
-                            ->where('household_material_id', $itemId)
-                            ->first();
-
-                        if (!$existing || $existing->quantity < $quantity) {
-                            $errors[] = "Недостаточно хоз. материала ID: $itemId на главном складе.";
-                            break;
-                        }
-
-                        $mainTable->where('main_warehouse_id', $mainWarehouseId)
-                            ->where('household_material_id', $itemId)
-                            ->update([
-                                'quantity' => $existing->quantity - $quantity,
-                                'updated_at' => now()
-                            ]);
-
-                        $warehouseTable = DB::table('warehouse_household_materials');
-                        $warehouseExisting = $warehouseTable->where('warehouse_id', $warehouse->id)
-                            ->where('household_material_id', $itemId)
-                            ->first();
-
-                        if ($warehouseExisting) {
-                            $warehouseTable->where('warehouse_id', $warehouse->id)
-                                ->where('household_material_id', $itemId)
-                                ->update([
-                                    'quantity' => $warehouseExisting->quantity + $quantity,
-                                    'updated_at' => now()
-                                ]);
-                        } else {
-                            $warehouseTable->insert([
-                                'warehouse_id' => $warehouse->id,
-                                'household_material_id' => $itemId,
-                                'quantity' => $quantity,
-                                'created_at' => now(),
-                                'updated_at' => now()
-                            ]);
-                        }
-                        break;
-
-                    default:
-                        $errors[] = "Неизвестный тип: $modelClass";
-                }
-            }
-
-            if (empty($errors)) {
-                $request->update(['status' => 'approved']);
-            }
-        });
-
-        if (!empty($errors)) {
-            return redirect()->back()->withErrors(implode("\n", $errors));
+        try {
+            $this->service->approve($supplyRequest);
+        } catch (StockException $e) {
+            return back()->with('error', $e->getMessage());
         }
 
-        return redirect()->back()->with('success', 'Заказ одобрен и материалы перемещены на склад');
+        return back()->with('success', 'Заказ одобрен: товары перемещены на склад отделения.');
+    }
+
+    public function reject(RejectSupplyRequest $request, SupplyRequest $supplyRequest): RedirectResponse
+    {
+        try {
+            $this->service->reject($supplyRequest, $request->reason());
+        } catch (StockException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return back()->with('success', 'Заказ отклонён: товары не перемещались.');
     }
 
     public function store(StoreSupplyRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
+        $this->service->store($request->supply());
 
-        $this->service->store((array)$validated);
-
-        return redirect()->route('warehouse.remains')->with('success', 'Заказ успешно создан!');
+        return to_route('warehouse.remains')->with('success', 'Заказ отправлен на главный склад.');
     }
 }

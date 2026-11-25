@@ -1,0 +1,103 @@
+# Local development environment.
+#   make up        # build and start everything
+#   make install   # composer install, key, migrate --seed, front-end build
+#   make assets-watch   # optional: Vite dev server with hot reload
+# App: http://localhost:${APP_PORT:-8080}
+#
+# The ports are published on 127.0.0.1 only: the database superuser and the demo accounts have
+# published default passwords. FORWARD_HOST_IP=0.0.0.0 in .env opens them to the network (to try
+# the app from a phone); change those passwords first.
+# There is no queue worker or mail catcher: the application queues no job and sends no mail.
+
+name: medsystem
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      target: dev
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    image: medsystem-app:dev
+    restart: unless-stopped
+    # No env_file: the source tree (.env included) is bind-mounted and Laravel reads .env itself on
+    # every request, so `key:generate` and later .env edits apply at once. A variable put into the
+    # container environment would win over .env until the container is recreated. Only what the
+    # stack fixes is set here: the database connection, always the "db" service, and the log stack.
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE:-medsystem}
+      DB_USERNAME: ${DB_USERNAME:-medsystem}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+      # Laravel's errors go to storage/logs/laravel.log as without Docker and to stderr, which
+      # php-fpm passes on to `docker compose logs` (`make logs`). A literal: ${...} would read the
+      # project's .env, where LOG_STACK is "single".
+      LOG_STACK: single,stderr
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "${FORWARD_HOST_IP:-127.0.0.1}:${APP_PORT:-8080}:80"
+    volumes:
+      - ./public:/var/www/html/public:ro
+      # The uploads of the public disk (staff photos, licence scans, contract terms) at the path
+      # the absolute public/storage link of `storage:link` points to. Only this folder: the
+      # patients' files in storage/app/private stay out of nginx's reach.
+      - ./storage/app/public:/var/www/html/storage/app/public:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      app:
+        condition: service_healthy
+
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    # pest --parallel rebuilds one test database per process at the same moment; with the default
+    # lock table (64 locks per connection) a dozen concurrent DROPs of the whole schema run out of it.
+    command: ["postgres", "-c", "max_locks_per_transaction=256"]
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-medsystem}
+      POSTGRES_USER: ${DB_USERNAME:-medsystem}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+    ports:
+      - "${FORWARD_HOST_IP:-127.0.0.1}:${FORWARD_DB_PORT:-54320}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Front-end: `make assets` builds public/build once; `make assets-watch` runs the Vite dev server
+  # with hot reload (the app then loads its CSS/JS from http://localhost:${VITE_PORT:-5173} until
+  # the server stops and removes public/hot). Only started on demand (profile "assets").
+  vite:
+    image: node:24-alpine
+    profiles: [assets]
+    working_dir: /app
+    command: sh -c "npm ci --no-audit --no-fund && npm run dev"
+    environment:
+      VITE_DOCKER: "1"
+      VITE_PORT: ${VITE_PORT:-5173}
+    ports:
+      - "${FORWARD_HOST_IP:-127.0.0.1}:${VITE_PORT:-5173}:${VITE_PORT:-5173}"
+    volumes:
+      - .:/app
+      # Linux packages of their own: the host's node_modules may hold Windows/macOS binaries.
+      - node_modules:/app/node_modules
+
+volumes:
+  pgdata:
+  node_modules:

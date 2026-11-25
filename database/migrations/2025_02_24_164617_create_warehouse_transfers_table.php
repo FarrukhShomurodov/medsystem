@@ -4,10 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
-        Schema::create('warehouse_transfers', function (Blueprint $table) {
+        Schema::create('warehouse_transfers', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('warehouse_id')->constrained()->cascadeOnDelete();
             $table->foreignId('supplier_id')->constrained('suppliers')->cascadeOnDelete();

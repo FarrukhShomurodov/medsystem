@@ -11,6 +11,9 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
+        <testsuite name="Arch">
+            <directory>tests/Arch</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>
@@ -18,16 +21,34 @@
         </include>
     </source>
     <php>
-        <env name="APP_ENV" value="testing"/>
-        <env name="APP_MAINTENANCE_DRIVER" value="file"/>
-        <env name="BCRYPT_ROUNDS" value="4"/>
-        <env name="CACHE_STORE" value="array"/>
-        <!-- <env name="DB_CONNECTION" value="sqlite"/> -->
-        <!-- <env name="DB_DATABASE" value=":memory:"/> -->
-        <env name="MAIL_MAILER" value="array"/>
-        <env name="PULSE_ENABLED" value="false"/>
-        <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="SESSION_DRIVER" value="array"/>
-        <env name="TELESCOPE_ENABLED" value="false"/>
+        <!-- A sequential run (`composer test`) keeps growing over the ~1,250 tests, and the Arch
+             suite parses the whole app at the end: PHP's default 128M or 256M is not enough. -->
+        <ini name="memory_limit" value="1G"/>
+        <!--
+            Forced: a variable of the real environment (`docker compose exec -e`, CI, a shell
+            export) would otherwise win over these test values, and tests must not inherit
+            local drivers.
+        -->
+        <env name="APP_ENV" value="testing" force="true"/>
+        <env name="APP_MAINTENANCE_DRIVER" value="file" force="true"/>
+        <env name="BCRYPT_ROUNDS" value="4" force="true"/>
+        <env name="BROADCAST_CONNECTION" value="null" force="true"/>
+        <env name="CACHE_STORE" value="array" force="true"/>
+        <!-- The exceptions the suite reports go to storage/logs/laravel.log, not to the stderr of
+             `make test` (the compose stack sets LOG_STACK=single,stderr). -->
+        <env name="LOG_CHANNEL" value="single" force="true"/>
+        <env name="MAIL_MAILER" value="array" force="true"/>
+        <env name="QUEUE_CONNECTION" value="sync" force="true"/>
+        <env name="SESSION_DRIVER" value="array" force="true"/>
+        <env name="PULSE_ENABLED" value="false" force="true"/>
+        <env name="TELESCOPE_ENABLED" value="false" force="true"/>
+        <env name="NIGHTWATCH_ENABLED" value="false" force="true"/>
+        <!-- The hospital's calendar: days, slots and "today" are Tashkent's, whatever a local .env says. -->
+        <env name="APP_TIMEZONE" value="Asia/Tashkent" force="true"/>
+
+        <!-- Defaults only: a DB_* variable set in the real environment wins (CI sets its own). -->
+        <env name="DB_CONNECTION" value="pgsql"/>
+        <env name="DB_DATABASE" value="medsystem_testing"/>
+        <env name="DB_URL" value=""/>
     </php>
 </phpunit>

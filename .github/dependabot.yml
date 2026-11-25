@@ -1,0 +1,107 @@
+# Dependabot version updates, once a week. Minor and patch updates of an ecosystem arrive together
+# in one pull request; a major update gets a pull request of its own. A release must be a few days
+# old before it is proposed (cooldown). Security updates do not wait for the schedule or the
+# cooldown.
+version: 2
+
+updates:
+  - package-ecosystem: composer
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Asia/Tashkent
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      composer-minor-and-patch:
+        patterns: ["*"]
+        update-types: [minor, patch]
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Asia/Tashkent
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      npm-minor-and-patch:
+        patterns: ["*"]
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Asia/Tashkent
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: ci
+      include: scope
+    groups:
+      actions-minor-and-patch:
+        patterns: ["*"]
+        update-types: [minor, patch]
+
+  # Base images of docker/php/Dockerfile (node, composer). The PHP image is chosen by the
+  # PHP_VERSION build argument, which Dependabot does not resolve.
+  - package-ecosystem: docker
+    directory: /docker/php
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Asia/Tashkent
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      docker-minor-and-patch:
+        patterns: ["*"]
+        update-types: [minor, patch]
+    ignore:
+      # Node.js majors alternate between LTS and short-lived releases: move to the next LTS by hand.
+      - dependency-name: node
+        update-types: ["version-update:semver-major"]
+
+  # Images of compose.yaml (nginx, PostgreSQL, Node.js).
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Asia/Tashkent
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      compose-minor-and-patch:
+        patterns: ["*"]
+        update-types: [minor, patch]
+    ignore:
+      # A new PostgreSQL major cannot open the data directory of the old one (pgdata volume):
+      # upgrading needs a dump and restore, so it is done by hand, together with CI's service image.
+      - dependency-name: postgres
+        update-types: ["version-update:semver-major"]
+      - dependency-name: node
+        update-types: ["version-update:semver-major"]

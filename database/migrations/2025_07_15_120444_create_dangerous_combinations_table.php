@@ -4,10 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
-        Schema::create('dangerous_combinations', function (Blueprint $table) {
+        Schema::create('dangerous_combinations', function (Blueprint $table): void {
             $table->id();
             $table->string('drug1_en')->nullable();
             $table->string('drug1_ru')->nullable();
@@ -25,6 +26,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('medication_interactions');
+        Schema::dropIfExists('dangerous_combinations');
     }
 };

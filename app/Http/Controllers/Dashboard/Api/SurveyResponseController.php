@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Dashboard\Api;
 
-use App\Models\SurveyResponses;
+use App\Http\Controllers\Controller;
+use App\Models\SurveyResponse;
 use Illuminate\Http\JsonResponse;
 
-class SurveyResponseController
+class SurveyResponseController extends Controller
 {
-    public function show(SurveyResponses $response): JsonResponse
+    public function show(SurveyResponse $response): JsonResponse
     {
-        $response->load('survey', 'answers.question');
-        return response()->json($response);
+        return response()->json($response->load(['survey', 'answers.question']));
     }
 }

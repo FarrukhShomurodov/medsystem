@@ -11,6 +11,6 @@ class MedicationAdditionalSubstance extends Model
     protected $fillable = [
         'medication_composition_id',
         'substance_name',
-        'substance_dosage'
+        'substance_dosage',
     ];
 }

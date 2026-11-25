@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\EquipmentStatus;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property EquipmentStatus|null $status
+ */
 class Equipment extends Model
 {
     protected $fillable = [
@@ -24,5 +28,11 @@ class Equipment extends Model
         'status',
     ];
 
-    const STATUS = ['работает', 'сломан'];
+    protected function casts(): array
+    {
+        return [
+            'price' => 'decimal:2',
+            'status' => EquipmentStatus::class,
+        ];
+    }
 }

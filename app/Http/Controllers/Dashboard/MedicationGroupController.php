@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MedicationGroupRequest;
 use App\Models\MedicationGroup;
 use App\Services\MedicationGroupService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class MedicationGroupController extends Controller
+class MedicationGroupController extends Controller implements HasMiddleware
 {
-    protected MedicationGroupService $service;
+    public function __construct(private readonly MedicationGroupService $service) {}
 
-    public function __construct(MedicationGroupService $service)
+    public static function middleware(): array
     {
-        $this->middleware(['permission:list_medication_groups'])->only('index');
-        $this->middleware(['permission:create_medication_groups'])->only(['create', 'store']);
-        $this->middleware(['permission:edit_medication_groups'])->only(['edit', 'update']);
-        $this->middleware(['permission:delete_medication_groups'])->only('destroy');
-
-        $this->service = $service;
+        return [
+            new Middleware('permission:list_medication_groups', only: ['index']),
+            new Middleware('permission:create_medication_groups', only: ['create', 'store']),
+            new Middleware('permission:edit_medication_groups', only: ['edit', 'update']),
+            new Middleware('permission:delete_medication_groups', only: ['destroy']),
+        ];
     }
 
     public function index(): View
@@ -41,10 +42,9 @@ class MedicationGroupController extends Controller
 
     public function store(MedicationGroupRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->store((array)$validated);
+        $this->service->store($request->validated());
 
-        return redirect()->route('medication.groups.index')->with('success', 'Группа успешно добавлена!');
+        return to_route('medication.groups.index')->with('success', 'Группа успешно добавлена!');
     }
 
     public function edit(MedicationGroup $group): View
@@ -54,16 +54,15 @@ class MedicationGroupController extends Controller
 
     public function update(MedicationGroupRequest $request, MedicationGroup $group): RedirectResponse
     {
-        $validated = $request->validated();
-        $this->service->update($group, (array)$validated);
+        $this->service->update($group, $request->validated());
 
-        return redirect()->route('medication.groups.index')->with('success', 'Группа успешно обновлена!');
+        return to_route('medication.groups.index')->with('success', 'Группа успешно обновлена!');
     }
 
     public function destroy(MedicationGroup $group): RedirectResponse
     {
         $this->service->destroy($group);
 
-        return redirect()->route('medication.groups.index')->with('success', 'Группа успешно удалена!');
+        return to_route('medication.groups.index')->with('success', 'Группа успешно удалена!');
     }
 }
