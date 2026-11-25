@@ -45,7 +45,7 @@ jobs:
           php-version: '8.3'
           extensions: ${{ env.PHP_EXTENSIONS }}
           coverage: none
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
       # Security advisories fail the job; an abandoned package (today a dev dependency of
       # rector-laravel) is listed but does not.
       - name: Composer packages
@@ -67,7 +67,7 @@ jobs:
           php-version: '8.3'
           extensions: ${{ env.PHP_EXTENSIONS }}
           coverage: none
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
       - run: composer lint
 
   static-analysis:
@@ -80,7 +80,7 @@ jobs:
           php-version: '8.3'
           extensions: ${{ env.PHP_EXTENSIONS }}
           coverage: none
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
       - name: Larastan (level 8 and paths from phpstan.neon.dist, no baseline)
         run: vendor/bin/phpstan analyse --memory-limit=2G --no-progress --error-format=github
       - name: Rector (nothing left to change)
@@ -124,7 +124,7 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: ${{ env.PHP_EXTENSIONS }}
           coverage: pcov
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
 
       - name: Prepare environment
         run: |
